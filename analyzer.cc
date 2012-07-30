@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
 
   TH1F* deltaEtaJets = new TH1F("deltaEtaJets","#Delta#eta Jets",50,0.0,10.0);
 
-  TH1F* efficiencies = new TH1F("deltaEtaJets","#Delta#eta Jets",3,0.0,3.0);
+  TH1F* countsHist = new TH1F("countsHist","Event Counts",3,0.0,3.0);
   
   unsigned nLightJets = 0;
   unsigned nBJets = 0;
@@ -106,12 +106,12 @@ int main(int argc, char *argv[])
     unsigned nPhotons = photons->GetEntries();
     unsigned nJets = jets->GetEntries();
 
-    efficiencies->Fill(0.0);
+    countsHist->Fill(0.0);
 
     if(nMuons <2)
 	continue;
 
-    efficiencies->Fill(1.0);
+    countsHist->Fill(1.0);
 /*
     for(unsigned i=0; i<nMuons; i++)
     {
@@ -233,7 +233,7 @@ jet with pT > 30 GeV/c in the rapidity region between the two jets.
     TLorentzVector diMuon = pMuon1+pMuon2;
     mDiMuVBFSelected->Fill(diMuon.M());
     ptDiMuVBFSelected->Fill(diMuon.Pt());
-    efficiencies->Fill(2.0);
+    countsHist->Fill(2.0);
   }
 
   c1->Clear();
@@ -291,7 +291,7 @@ jet with pT > 30 GeV/c in the rapidity region between the two jets.
   ptDiMu->Write();
   ptDiMuVBFSelected->Write();
 
-  efficiencies->Write();
+  countsHist->Write();
 
   return 0;
 }
