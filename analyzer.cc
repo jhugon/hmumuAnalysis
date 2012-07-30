@@ -37,6 +37,9 @@ int main(int argc, char *argv[])
 
   TFile * outFile = new TFile("outfile.root","RECREATE");
 
+  long maxEvents = 100000000;
+  //maxEvents = 20000;
+
   for(unsigned iarg=1; iarg<argc;iarg++)
   {
     tree->AddFile(argv[iarg]);
@@ -64,18 +67,24 @@ int main(int argc, char *argv[])
   tree->SetBranchAddress("trueMetPhi",&trueMetPhi);
   tree->SetBranchAddress("trueSumPt",&trueSumPt);
 
-  TH1F* mDiMu = new TH1F("mDiMu","DiMuon Mass",50,0,200);
-  TH1F* mDiMuSelected = new TH1F("mDiMuSelected","DiMuon Mass after VBF Selection",50,0,200);
-  TH1F* mDiEl = new TH1F("mDiEl","DiElectron Mass",50,0,200);
-  TH1F* mDiJet = new TH1F("mDiJet","DiJet Mass",50,0,200);
-  TH1F* mDiPh = new TH1F("mDiPh","DiPhoton Mass",50,0,200);
+  TH1F* mDiMu = new TH1F("mDiMu","DiMuon Mass",200,0,200);
+  TH1F* mDiMuVBFSelected = new TH1F("mDiMuVBFSelected","DiMuon Mass after VBF Selection",200,0,200);
+  TH1F* mDiJet = new TH1F("mDiJet","DiJet Mass",500,0,2000);
 
-  TH1F* ptMu1 = new TH1F("ptMu1","Leading Muon Pt",50,0,200);
-  TH1F* ptMu2 = new TH1F("ptMu2","Sub-Leading Muon Pt",50,0,200);
-  TH1F* ptJet1 = new TH1F("ptJet1","Leading Jet Pt",50,0,200);
-  TH1F* ptJet2 = new TH1F("ptJet2","Sub-Leading Jet Pt",50,0,200);
+  TH1F* ptDiMu = new TH1F("ptDiMu","DiMuon Pt",250,0,500);
+  TH1F* ptDiMuVBFSelected = new TH1F("ptDiMuVBFSelected","DiMuon Pt after VBF Selection",250,0,500);
 
-  TH1F* deltaEtaJets = new TH1F("deltaEtaJets","#Delta#eta Jets",50,-10.0,10.0);
+  TH1F* ptMu1 = new TH1F("ptMu1","Leading Muon Pt",100,0,200);
+  TH1F* ptMu2 = new TH1F("ptMu2","Sub-Leading Muon Pt",100,0,200);
+  TH1F* ptJet1 = new TH1F("ptJet1","Leading Jet Pt",200,0,1000);
+  TH1F* ptJet2 = new TH1F("ptJet2","Sub-Leading Jet Pt",200,0,1000);
+
+  TH1F* etaMu1 = new TH1F("etaMu1","Leading Muon #eta",50,-2.5,2.5);
+  TH1F* etaMu2 = new TH1F("etaMu2","Sub-Leading Muon #eta",50,-2.5,2.5);
+  TH1F* etaJet1 = new TH1F("etaJet1","Leading Jet #eta",50,-5.0,5.0);
+  TH1F* etaJet2 = new TH1F("etaJet2","Sub-Leading Jet #eta",50,-5.0,5.0);
+
+  TH1F* deltaEtaJets = new TH1F("deltaEtaJets","#Delta#eta Jets",50,0.0,10.0);
   
   unsigned nLightJets = 0;
   unsigned nBJets = 0;
@@ -85,6 +94,8 @@ int main(int argc, char *argv[])
   cout << "nEvents: " << nEvents << endl;
   for(unsigned i=0; i<nEvents;i++)
   {
+    if(i > maxEvents)
+	continue;
     tree->GetEvent(i);
     if (i % 1000 == 0) cout << "Event: " << i << endl;
 
@@ -92,6 +103,9 @@ int main(int argc, char *argv[])
     unsigned nElectrons = electrons->GetEntries();
     unsigned nPhotons = photons->GetEntries();
     unsigned nJets = jets->GetEntries();
+
+    if(nMuons <2)
+	continue;
 
 /*
     for(unsigned i=0; i<nMuons; i++)
@@ -117,11 +131,40 @@ int main(int argc, char *argv[])
 */
 	
 
-    mDiMu->Fill(getDiM(muons,2.4));
-    mDiEl->Fill(getDiM(electrons,2.5));
-    mDiPh->Fill(getDiM(photons,2.5));
-    mDiJet->Fill(getDiM(jets,5.0));
-    deltaEtaJets->Fill(getDeltaEta(jets,5.0));
+    if(nMuons>=2)
+    {
+      TParticle * muon1 = (TParticle*) muons->At(0);
+      TParticle * muon2 = (TParticle*) muons->At(1);
+      TLorentzVector pMuon1;
+      TLorentzVector pMuon2;
+      muon1->Momentum(pMuon1);
+      muon2->Momentum(pMuon2);
+      TLorentzVector diMuon = pMuon1+pMuon2;
+      mDiMu->Fill(diMuon.M());
+      ptDiMu->Fill(diMuon.Pt());
+      ptMu1->Fill(muon1->Pt());
+      ptMu2->Fill(muon2->Pt());
+      etaMu1->Fill(muon1->Eta());
+      etaMu2->Fill(muon2->Eta());
+    }
+    if(nJets>=2)
+    {
+      TParticle * jet1 = (TParticle*) jets->At(0);
+      TParticle * jet2 = (TParticle*) jets->At(1);
+  
+      TLorentzVector pJet1;
+      TLorentzVector pJet2;
+      jet1->Momentum(pJet1);
+      jet2->Momentum(pJet2);
+      TLorentzVector diJet = pJet1+pJet2;
+
+      mDiJet->Fill(diJet.M());
+      deltaEtaJets->Fill(fabs(jet1->Eta()-jet2->Eta()));
+      ptJet1->Fill(jet1->Pt());
+      ptJet2->Fill(jet2->Pt());
+      etaJet1->Fill(jet1->Eta());
+      etaJet2->Fill(jet2->Eta());
+    }
 
 /*
 HIG-12-007 PAS H->tautau
@@ -176,21 +219,25 @@ jet with pT > 30 GeV/c in the rapidity region between the two jets.
     if (jetInRapidityGap)
         continue;
     //VBF Selected
-    mDiMuSelected->Fill(getDiM(muons,2.4));
+    TParticle * muon1 = (TParticle*) muons->At(0);
+    TParticle * muon2 = (TParticle*) muons->At(1);
+    TLorentzVector pMuon1;
+    TLorentzVector pMuon2;
+    muon1->Momentum(pMuon1);
+    muon2->Momentum(pMuon2);
+    TLorentzVector diMuon = pMuon1+pMuon2;
+    mDiMuVBFSelected->Fill(diMuon.M());
+    ptDiMuVBFSelected->Fill(diMuon.Pt());
   }
 
   c1->Clear();
   mDiMu->Draw();
   c1->SaveAs("mDiMu.png");
-  c1->Clear();
-  mDiEl->Draw();
-  c1->SaveAs("mDiEl.png");
-  c1->Clear();
+  ptDiMu->Draw();
+  c1->SaveAs("ptDiMu.png");
   mDiJet->Draw();
   c1->SaveAs("mDiJet.png");
-  c1->Clear();
-  mDiPh->Draw();
-  c1->SaveAs("mDiPh.png");
+
   ptMu1->Draw();
   c1->SaveAs("ptMu1.png");
   ptMu2->Draw();
@@ -200,24 +247,43 @@ jet with pT > 30 GeV/c in the rapidity region between the two jets.
   ptJet2->Draw();
   c1->SaveAs("ptJet2.png");
 
+  etaMu1->Draw();
+  c1->SaveAs("etaMu1.png");
+  etaMu2->Draw();
+  c1->SaveAs("etaMu2.png");
+  etaJet1->Draw();
+  c1->SaveAs("etaJet1.png");
+  etaJet2->Draw();
+  c1->SaveAs("etaJet2.png");
+
   deltaEtaJets->Draw();
   c1->SaveAs("deltaEtaJets.png");
 
-  mDiMuSelected->Draw();
-  c1->SaveAs("mDiMuSelected.png");
+  mDiMuVBFSelected->Draw();
+  c1->SaveAs("mDiMuVBFSelected.png");
+  ptDiMuVBFSelected->Draw();
+  c1->SaveAs("ptDiMuVBFSelected.png");
 
   outFile->cd();
 
   mDiMu->Write();
-  mDiEl->Write();
   mDiJet->Write();
-  mDiPh->Write();
+
   ptMu1->Write();
   ptMu2->Write();
   ptJet1->Write();
   ptJet2->Write();
+
+  etaMu1->Write();
+  etaMu2->Write();
+  etaJet1->Write();
+  etaJet2->Write();
+
   deltaEtaJets->Write();
-  mDiMuSelected->Write();
+  mDiMuVBFSelected->Write();
+
+  ptDiMu->Write();
+  ptDiMuVBFSelected->Write();
 
   return 0;
 }
