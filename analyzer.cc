@@ -35,6 +35,8 @@ int main(int argc, char *argv[])
   TCanvas* c1 = new TCanvas("c1");
   TChain * tree = new TChain("tree");
 
+  TFile * outFile = new TFile("outfile.root","RECREATE");
+
   for(unsigned iarg=1; iarg<argc;iarg++)
   {
     tree->AddFile(argv[iarg]);
@@ -63,6 +65,7 @@ int main(int argc, char *argv[])
   tree->SetBranchAddress("trueSumPt",&trueSumPt);
 
   TH1F* mDiMu = new TH1F("mDiMu","DiMuon Mass",50,0,200);
+  TH1F* mDiMuSelected = new TH1F("mDiMuSelected","DiMuon Mass after VBF Selection",50,0,200);
   TH1F* mDiEl = new TH1F("mDiEl","DiElectron Mass",50,0,200);
   TH1F* mDiJet = new TH1F("mDiJet","DiJet Mass",50,0,200);
   TH1F* mDiPh = new TH1F("mDiPh","DiPhoton Mass",50,0,200);
@@ -119,6 +122,61 @@ int main(int argc, char *argv[])
     mDiPh->Fill(getDiM(photons,2.5));
     mDiJet->Fill(getDiM(jets,5.0));
     deltaEtaJets->Fill(getDeltaEta(jets,5.0));
+
+/*
+HIG-12-007 PAS H->tautau
+The VBF category requires at least two jets with pT > 30 GeV/c, |η1 − η2 | > 4.0 and
+η1 · η2 < 0 (with η1 the pseudorapidty of the leading jet and η2 the pseudorapidity
+of the subleading jet), and a di-jet invariant mass m12 > 400 GeV/c2 , with no other
+jet with pT > 30 GeV/c in the rapidity region between the two jets.
+*/
+
+
+    //VBF Selection
+    if(muons->GetEntries()<2)
+        continue;
+    if(jets->GetEntries()<2)
+        continue;
+    TParticle * jet1 = (TParticle*) jets->At(0);
+    TParticle * jet2 = (TParticle*) jets->At(1);
+    if(fabs(jet1->Eta()-jet2->Eta())<= 4.0)
+        continue;
+    if(jet1->Eta()*jet2->Eta() >= 0)
+        continue;
+
+    TLorentzVector pJet1;
+    TLorentzVector pJet2;
+    jet1->Momentum(pJet1);
+    jet2->Momentum(pJet2);
+    TLorentzVector diJet = pJet1+pJet2;
+    if(diJet.M()<=400.0)
+        continue;
+
+    float etaMax = jet1->Eta();
+    float etaMin = 9999999.0;
+    if(etaMax < jet2->Eta())
+    {
+        etaMax = jet2->Eta();
+        etaMin = jet1->Eta();
+    }
+    else
+    {
+        etaMin = jet2->Eta();
+    }
+    bool jetInRapidityGap=false;
+    for(float iJet=2; iJet<jets->GetEntries();iJet++)
+    {
+      TParticle * jet = (TParticle*) jets->At(0);
+      if(jet->Eta() < etaMax && jet->Eta() > etaMin)
+      {
+        jetInRapidityGap = true;
+        break;
+      }
+    }
+    if (jetInRapidityGap)
+        continue;
+    //VBF Selected
+    mDiMuSelected->Fill(getDiM(muons,2.4));
   }
 
   c1->Clear();
@@ -144,6 +202,22 @@ int main(int argc, char *argv[])
 
   deltaEtaJets->Draw();
   c1->SaveAs("deltaEtaJets.png");
+
+  mDiMuSelected->Draw();
+  c1->SaveAs("mDiMuSelected.png");
+
+  outFile->cd();
+
+  mDiMu->Write();
+  mDiEl->Write();
+  mDiJet->Write();
+  mDiPh->Write();
+  ptMu1->Write();
+  ptMu2->Write();
+  ptJet1->Write();
+  ptJet2->Write();
+  deltaEtaJets->Write();
+  mDiMuSelected->Write();
 
   return 0;
 }
