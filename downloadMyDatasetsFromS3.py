@@ -1,20 +1,15 @@
 #!/usr/bin/python
 
+# Can be run like: ./run.sh cloud-hep-testing-1 ana1 vbfHmumu ZHmumu WHmumu 
+
 import sys
 import os
 import re
 import argparse
 import boto
 
-bucketName = "cloud-hep-testing-1"
-folderNames = [
-"WHmumu",
-"ZHmumu",
-"vbfHmumu3",
-"Zmumujets",
-"ZmumujetsMgt100",
-"ggHmumu"
-]
+bucketName = sys.argv[1]
+folderNames = sys.argv[3:]
 
 s3 = boto.connect_s3()
 try:
