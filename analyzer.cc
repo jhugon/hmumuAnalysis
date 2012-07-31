@@ -23,10 +23,10 @@ double getDeltaEta(TClonesArray* particles, double maxEta);
 
 int main(int argc, char *argv[])
 {
-  if (argc < 2) 
+  if (argc < 3) 
   {
-	std::cout << "testReader requires >=1 argument:" << std::endl
-	<< "testReader <infilename.root>" << std::endl;
+	std::cout << "testReader requires >=2 argument:" << std::endl
+	<< "analyzer <outfilename.root> <infilenames.root...>" << std::endl;
 	return 1;
   }
 
@@ -35,12 +35,12 @@ int main(int argc, char *argv[])
   TCanvas* c1 = new TCanvas("c1");
   TChain * tree = new TChain("tree");
 
-  TFile * outFile = new TFile("outfile.root","RECREATE");
+  TFile * outFile = new TFile(argv[1],"RECREATE");
 
   long maxEvents = 100000000;
   //maxEvents = 20000;
 
-  for(unsigned iarg=1; iarg<argc;iarg++)
+  for(unsigned iarg=2; iarg<argc;iarg++)
   {
     tree->AddFile(argv[iarg]);
   }
