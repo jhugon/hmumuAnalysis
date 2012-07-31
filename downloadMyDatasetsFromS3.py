@@ -16,7 +16,6 @@ folderNames = [
 "ggHmumu"
 ]
 
-bucketName = args.bucket
 s3 = boto.connect_s3()
 try:
   bucket = s3.get_bucket(bucketName)
