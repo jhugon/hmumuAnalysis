@@ -69,10 +69,14 @@ int main(int argc, char *argv[])
 
   TH1F* mDiMu = new TH1F("mDiMu","DiMuon Mass",200,0,200);
   TH1F* mDiMuVBFSelected = new TH1F("mDiMuVBFSelected","DiMuon Mass after VBF Selection",200,0,200);
+  TH1F* mDiMuVBFLooseSelected = new TH1F("mDiMuVBFLooseSelected","DiMuon Mass after VBFLoose Selection",200,0,200);
+  TH1F* mDiMuZPt30Selected = new TH1F("mDiMuZPt30Selected","DiMuon Mass after p_T^{#mu#mu}>30 GeV Selection",200,0,200);
+  TH1F* mDiMuZPt50Selected = new TH1F("mDiMuZPt50Selected","DiMuon Mass after p_T^{#mu#mu}>50 GeV Selection",200,0,200);
   TH1F* mDiJet = new TH1F("mDiJet","DiJet Mass",500,0,2000);
 
   TH1F* ptDiMu = new TH1F("ptDiMu","DiMuon Pt",250,0,500);
   TH1F* ptDiMuVBFSelected = new TH1F("ptDiMuVBFSelected","DiMuon Pt after VBF Selection",250,0,500);
+  TH1F* ptDiMuVBFLooseSelected = new TH1F("ptDiMuVBFLooseSelected","DiMuon Pt after VBFLoose Selection",250,0,500);
 
   TH1F* ptMu1 = new TH1F("ptMu1","Leading Muon Pt",100,0,200);
   TH1F* ptMu2 = new TH1F("ptMu2","Sub-Leading Muon Pt",100,0,200);
@@ -86,7 +90,7 @@ int main(int argc, char *argv[])
 
   TH1F* deltaEtaJets = new TH1F("deltaEtaJets","#Delta#eta Jets",50,0.0,10.0);
 
-  TH1F* countsHist = new TH1F("countsHist","Event Counts",3,0.0,3.0);
+  TH1F* countsHist = new TH1F("countsHist","Event Counts",4,0.0,4.0);
   
   unsigned nLightJets = 0;
   unsigned nBJets = 0;
@@ -96,7 +100,7 @@ int main(int argc, char *argv[])
   cout << "nEvents: " << nEvents << endl;
   for(unsigned i=0; i<nEvents;i++)
   {
-    if(i > maxEvents)
+    if(i >= maxEvents)
 	continue;
     tree->GetEvent(i);
     if (i % 1000 == 0) cout << "Event: " << i << endl;
@@ -151,6 +155,15 @@ int main(int argc, char *argv[])
       ptMu2->Fill(muon2->Pt());
       etaMu1->Fill(muon1->Eta());
       etaMu2->Fill(muon2->Eta());
+
+      if (diMuon.Pt()>30.0)
+      {
+        mDiMuZPt30Selected->Fill(diMuon.M());
+        if (diMuon.Pt()>50.0)
+        {
+          mDiMuZPt50Selected->Fill(diMuon.M());
+        }
+      }
     }
     if(nJets>=2)
     {
@@ -171,23 +184,14 @@ int main(int argc, char *argv[])
       etaJet2->Fill(jet2->Eta());
     }
 
-/*
-HIG-12-007 PAS H->tautau
-The VBF category requires at least two jets with pT > 30 GeV/c, |η1 − η2 | > 4.0 and
-η1 · η2 < 0 (with η1 the pseudorapidty of the leading jet and η2 the pseudorapidity
-of the subleading jet), and a di-jet invariant mass m12 > 400 GeV/c2 , with no other
-jet with pT > 30 GeV/c in the rapidity region between the two jets.
-*/
-
-
-    //VBF Selection
+    //VBFLoose Selection
     if(muons->GetEntries()<2)
         continue;
     if(jets->GetEntries()<2)
         continue;
     TParticle * jet1 = (TParticle*) jets->At(0);
     TParticle * jet2 = (TParticle*) jets->At(1);
-    if(fabs(jet1->Eta()-jet2->Eta())<= 4.0)
+    if(fabs(jet1->Eta()-jet2->Eta())<= 3.0)
         continue;
     if(jet1->Eta()*jet2->Eta() >= 0)
         continue;
@@ -197,7 +201,7 @@ jet with pT > 30 GeV/c in the rapidity region between the two jets.
     jet1->Momentum(pJet1);
     jet2->Momentum(pJet2);
     TLorentzVector diJet = pJet1+pJet2;
-    if(diJet.M()<=400.0)
+    if(diJet.M()<=300.0)
         continue;
 
     float etaMax = jet1->Eta();
@@ -223,7 +227,8 @@ jet with pT > 30 GeV/c in the rapidity region between the two jets.
     }
     if (jetInRapidityGap)
         continue;
-    //VBF Selected
+
+    //VBFLoose Selected
     TParticle * muon1 = (TParticle*) muons->At(0);
     TParticle * muon2 = (TParticle*) muons->At(1);
     TLorentzVector pMuon1;
@@ -231,9 +236,66 @@ jet with pT > 30 GeV/c in the rapidity region between the two jets.
     muon1->Momentum(pMuon1);
     muon2->Momentum(pMuon2);
     TLorentzVector diMuon = pMuon1+pMuon2;
+    mDiMuVBFLooseSelected->Fill(diMuon.M());
+    ptDiMuVBFLooseSelected->Fill(diMuon.Pt());
+    countsHist->Fill(2.0);
+
+/*
+HIG-12-007 PAS H->tautau
+The VBF category requires at least two jets with pT > 30 GeV/c, |η1 − η2 | > 4.0 and
+η1 · η2 < 0 (with η1 the pseudorapidty of the leading jet and η2 the pseudorapidity
+of the subleading jet), and a di-jet invariant mass m12 > 400 GeV/c2 , with no other
+jet with pT > 30 GeV/c in the rapidity region between the two jets.
+*/
+
+
+    //VBF Selection
+    if(muons->GetEntries()<2)
+        continue;
+    if(jets->GetEntries()<2)
+        continue;
+    //TParticle * jet1 = (TParticle*) jets->At(0);
+    //TParticle * jet2 = (TParticle*) jets->At(1);
+    if(fabs(jet1->Eta()-jet2->Eta())<= 4.0)
+        continue;
+    if(jet1->Eta()*jet2->Eta() >= 0)
+        continue;
+
+    //TLorentzVector pJet1;
+    //TLorentzVector pJet2;
+    //jet1->Momentum(pJet1);
+    //jet2->Momentum(pJet2);
+    //TLorentzVector diJet = pJet1+pJet2;
+    if(diJet.M()<=400.0)
+        continue;
+
+    //float etaMax = jet1->Eta();
+    //float etaMin = 9999999.0;
+    //if(etaMax < jet2->Eta())
+    //{
+    //    etaMax = jet2->Eta();
+    //    etaMin = jet1->Eta();
+    //}
+    //else
+    //{
+    //    etaMin = jet2->Eta();
+    //}
+    //bool jetInRapidityGap=false;
+    //for(float iJet=2; iJet<jets->GetEntries();iJet++)
+    //{
+    //  TParticle * jet = (TParticle*) jets->At(0);
+    //  if(jet->Eta() < etaMax && jet->Eta() > etaMin)
+    //  {
+    //    jetInRapidityGap = true;
+    //    break;
+    //  }
+    //}
+    //if (jetInRapidityGap)
+    //    continue;
+    //VBF Selected
     mDiMuVBFSelected->Fill(diMuon.M());
     ptDiMuVBFSelected->Fill(diMuon.Pt());
-    countsHist->Fill(2.0);
+    countsHist->Fill(3.0);
   }
 
   c1->Clear();
@@ -270,6 +332,16 @@ jet with pT > 30 GeV/c in the rapidity region between the two jets.
   ptDiMuVBFSelected->Draw();
   c1->SaveAs("ptDiMuVBFSelected.png");
 
+  mDiMuVBFLooseSelected->Draw();
+  c1->SaveAs("mDiMuVBFLooseSelected.png");
+  ptDiMuVBFLooseSelected->Draw();
+  c1->SaveAs("ptDiMuVBFLooseSelected.png");
+
+  mDiMuZPt30Selected->Draw();
+  c1->SaveAs("mDiMuZPt30Selected.png");
+  mDiMuZPt50Selected->Draw();
+  c1->SaveAs("mDiMuZPt50Selected.png");
+
   outFile->cd();
 
   mDiMu->Write();
@@ -287,9 +359,10 @@ jet with pT > 30 GeV/c in the rapidity region between the two jets.
 
   deltaEtaJets->Write();
   mDiMuVBFSelected->Write();
+  mDiMuVBFLooseSelected->Write();
 
   ptDiMu->Write();
-  ptDiMuVBFSelected->Write();
+  ptDiMuVBFLooseSelected->Write();
 
   countsHist->Write();
 
