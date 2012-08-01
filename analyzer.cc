@@ -80,6 +80,13 @@ int main(int argc, char *argv[])
   TH1F* ptDiMuVBFSelected = new TH1F("ptDiMuVBFSelected","DiMuon Pt after VBF Selection",250,0,500);
   TH1F* ptDiMuVBFLooseSelected = new TH1F("ptDiMuVBFLooseSelected","DiMuon Pt after VBFLoose Selection",250,0,500);
 
+  TH1F* yDiMu = new TH1F("yDiMu","DiMuon Rapidity",100,-4,4);
+  TH1F* yDiMuVBFSelected = new TH1F("yDiMuVBFSelected","DiMuon Rapidity after VBF Selection",100,-4,4);
+  TH1F* yDiMuVBFLooseSelected = new TH1F("yDiMuVBFLooseSelected","DiMuon Rapidity after VBFLoose Selection",100,-4,4);
+  TH1F* yDiMuZPt30Selected = new TH1F("yDiMuZPt30Selected","DiMuon Rapidity after #mu#mu Pt>30 Selection",100,-4,4);
+  TH1F* yDiMuZPt50Selected = new TH1F("yDiMuZPt50Selected","DiMuon Rapidity after #mu#mu Pt>50 Selection",100,-4,4);
+  TH1F* yDiMuZPt75Selected = new TH1F("yDiMuZPt75Selected","DiMuon Rapidity after #mu#mu Pt>75 Selection",100,-4,4);
+
   TH1F* ptMu1 = new TH1F("ptMu1","Leading Muon Pt",100,0,200);
   TH1F* ptMu2 = new TH1F("ptMu2","Sub-Leading Muon Pt",100,0,200);
   TH1F* ptJet1 = new TH1F("ptJet1","Leading Jet Pt",200,0,1000);
@@ -160,6 +167,7 @@ int main(int argc, char *argv[])
       muon2->Momentum(pMuon2);
       TLorentzVector diMuon = pMuon1+pMuon2;
       mDiMu->Fill(diMuon.M());
+      yDiMu->Fill(diMuon.Rapidity());
       ptDiMu->Fill(diMuon.Pt());
       ptMu1->Fill(muon1->Pt());
       ptMu2->Fill(muon2->Pt());
@@ -170,14 +178,17 @@ int main(int argc, char *argv[])
       {
         countsHist->Fill(5.0);
         mDiMuZPt30Selected->Fill(diMuon.M());
+        yDiMuZPt30Selected->Fill(diMuon.Rapidity());
         if (diMuon.Pt()>50.0)
         {
           countsHist->Fill(6.0);
           mDiMuZPt50Selected->Fill(diMuon.M());
+          yDiMuZPt50Selected->Fill(diMuon.Rapidity());
           if (diMuon.Pt()>75.0)
           {
             countsHist->Fill(7.0);
             mDiMuZPt75Selected->Fill(diMuon.M());
+            yDiMuZPt75Selected->Fill(diMuon.Rapidity());
           }
         }
       }
@@ -255,6 +266,7 @@ int main(int argc, char *argv[])
     TLorentzVector diMuon = pMuon1+pMuon2;
     mDiMuVBFLooseSelected->Fill(diMuon.M());
     ptDiMuVBFLooseSelected->Fill(diMuon.Pt());
+    yDiMuVBFLooseSelected->Fill(diMuon.Rapidity());
     countsHist->Fill(2.0);
 
 /*
@@ -312,6 +324,7 @@ jet with pT > 30 GeV/c in the rapidity region between the two jets.
     //VBF Selected
     mDiMuVBFSelected->Fill(diMuon.M());
     ptDiMuVBFSelected->Fill(diMuon.Pt());
+    yDiMuVBFSelected->Fill(diMuon.Rapidity());
     countsHist->Fill(3.0);
 
     //VBF Tight Selection
@@ -399,6 +412,13 @@ jet with pT > 30 GeV/c in the rapidity region between the two jets.
   mDiMuZPt30Selected->Write();
   mDiMuZPt50Selected->Write();
   mDiMuZPt75Selected->Write();
+
+  yDiMu->Write();
+  yDiMuVBFSelected->Write();
+  yDiMuVBFLooseSelected->Write();
+  yDiMuZPt30Selected->Write();
+  yDiMuZPt50Selected->Write();
+  yDiMuZPt75Selected->Write();
 
   countsHist->Write();
 
