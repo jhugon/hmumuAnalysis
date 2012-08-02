@@ -132,6 +132,11 @@ int main(int argc, char *argv[])
     if(nMuons <2)
 	continue;
 
+    TParticle * muon1 = (TParticle*) muons->At(0);
+    TParticle * muon2 = (TParticle*) muons->At(1);
+    if(fabs(muon1->Eta())>2.1 || fabs(muon2->Eta())>2.1 || muon1->Pt()<45.0 || muon2->Pt()<45.0 )
+         continue;
+
     countsHist->Fill(1.0);
 /*
     for(unsigned i=0; i<nMuons; i++)
@@ -155,12 +160,9 @@ int main(int argc, char *argv[])
 	bool isBTag = getBTag((TParticle*) jets->At(i));
     }
 */
-	
 
     if(nMuons>=2)
     {
-      TParticle * muon1 = (TParticle*) muons->At(0);
-      TParticle * muon2 = (TParticle*) muons->At(1);
       TLorentzVector pMuon1;
       TLorentzVector pMuon2;
       muon1->Momentum(pMuon1);
@@ -257,8 +259,6 @@ int main(int argc, char *argv[])
         continue;
 
     //VBFLoose Selected
-    TParticle * muon1 = (TParticle*) muons->At(0);
-    TParticle * muon2 = (TParticle*) muons->At(1);
     TLorentzVector pMuon1;
     TLorentzVector pMuon2;
     muon1->Momentum(pMuon1);
