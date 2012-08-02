@@ -134,7 +134,14 @@ int main(int argc, char *argv[])
 
     TParticle * muon1 = (TParticle*) muons->At(0);
     TParticle * muon2 = (TParticle*) muons->At(1);
-    if(fabs(muon1->Eta())>2.1 || fabs(muon2->Eta())>2.1 || muon1->Pt()<45.0 || muon2->Pt()<45.0 )
+    //if(fabs(muon1->Eta())>2.1 || fabs(muon2->Eta())>2.1 || muon1->Pt()<45.0 || muon2->Pt()<45.0 )
+    //     continue;
+    TLorentzVector pMuon1;
+    TLorentzVector pMuon2;
+    muon1->Momentum(pMuon1);
+    muon2->Momentum(pMuon2);
+    TLorentzVector diMuon = pMuon1+pMuon2;
+    if(diMuon.M()<123.0 || diMuon.M()>127.0)
          continue;
 
     countsHist->Fill(1.0);
@@ -163,11 +170,6 @@ int main(int argc, char *argv[])
 
     if(nMuons>=2)
     {
-      TLorentzVector pMuon1;
-      TLorentzVector pMuon2;
-      muon1->Momentum(pMuon1);
-      muon2->Momentum(pMuon2);
-      TLorentzVector diMuon = pMuon1+pMuon2;
       mDiMu->Fill(diMuon.M());
       yDiMu->Fill(diMuon.Rapidity());
       ptDiMu->Fill(diMuon.Pt());
@@ -259,11 +261,6 @@ int main(int argc, char *argv[])
         continue;
 
     //VBFLoose Selected
-    TLorentzVector pMuon1;
-    TLorentzVector pMuon2;
-    muon1->Momentum(pMuon1);
-    muon2->Momentum(pMuon2);
-    TLorentzVector diMuon = pMuon1+pMuon2;
     mDiMuVBFLooseSelected->Fill(diMuon.M());
     ptDiMuVBFLooseSelected->Fill(diMuon.Pt());
     yDiMuVBFLooseSelected->Fill(diMuon.Rapidity());
