@@ -111,6 +111,12 @@ int main(int argc, char *argv[])
 
   TH1F* cosThetaStarHist = new TH1F("cosThetaStar","cos(#theta^{*})",50,-1.,1.);
   TH1F* cosThetaStar2FillHist = new TH1F("cosThetaStar2Fill","cos(#theta^{*})",50,-1.,1.);
+  TH1F* cosThetaStarVBFSelectedHist = new TH1F("cosThetaStarVBFSelected","cos(#theta^{*})",50,-1.,1.);
+  TH1F* cosThetaStarVBFLooseSelectedHist = new TH1F("cosThetaStarVBFLooseSelected","cos(#theta^{*})",50,-1.,1.);
+  TH1F* cosThetaStarVBFTightSelectedHist = new TH1F("cosThetaStarVBFTightSelected","cos(#theta^{*})",50,-1.,1.);
+  TH1F* cosThetaStarZPt30SelectedHist = new TH1F("cosThetaStarZPt30Selected","cos(#theta^{*})",50,-1.,1.);
+  TH1F* cosThetaStarZPt50SelectedHist = new TH1F("cosThetaStarZPt50Selected","cos(#theta^{*})",50,-1.,1.);
+  TH1F* cosThetaStarZPt75SelectedHist = new TH1F("cosThetaStarZPt75Selected","cos(#theta^{*})",50,-1.,1.);
   
   unsigned nLightJets = 0;
   unsigned nBJets = 0;
@@ -202,16 +208,19 @@ int main(int argc, char *argv[])
         countsHist->Fill(5.0);
         mDiMuZPt30Selected->Fill(diMuon.M());
         yDiMuZPt30Selected->Fill(diMuon.Rapidity());
+        cosThetaStarZPt30SelectedHist->Fill(cosThetaStar);
         if (diMuon.Pt()>50.0)
         {
           countsHist->Fill(6.0);
           mDiMuZPt50Selected->Fill(diMuon.M());
           yDiMuZPt50Selected->Fill(diMuon.Rapidity());
+          cosThetaStarZPt50SelectedHist->Fill(cosThetaStar);
           if (diMuon.Pt()>75.0)
           {
             countsHist->Fill(7.0);
             mDiMuZPt75Selected->Fill(diMuon.M());
             yDiMuZPt75Selected->Fill(diMuon.Rapidity());
+            cosThetaStarZPt75SelectedHist->Fill(cosThetaStar);
           }
         }
       }
@@ -283,6 +292,7 @@ int main(int argc, char *argv[])
     mDiMuVBFLooseSelected->Fill(diMuon.M());
     ptDiMuVBFLooseSelected->Fill(diMuon.Pt());
     yDiMuVBFLooseSelected->Fill(diMuon.Rapidity());
+    cosThetaStarVBFLooseSelectedHist->Fill(cosThetaStar);
     countsHist->Fill(2.0);
 
 /*
@@ -341,6 +351,7 @@ jet with pT > 30 GeV/c in the rapidity region between the two jets.
     mDiMuVBFSelected->Fill(diMuon.M());
     ptDiMuVBFSelected->Fill(diMuon.Pt());
     yDiMuVBFSelected->Fill(diMuon.Rapidity());
+    cosThetaStarVBFSelectedHist->Fill(cosThetaStar);
     countsHist->Fill(3.0);
 
     //VBF Tight Selection
@@ -350,6 +361,7 @@ jet with pT > 30 GeV/c in the rapidity region between the two jets.
     //    continue;
     countsHist->Fill(4.0);
     mDiMuVBFTightSelected->Fill(diMuon.M());
+    cosThetaStarVBFTightSelectedHist->Fill(cosThetaStar);
 
   }
 
@@ -445,6 +457,12 @@ jet with pT > 30 GeV/c in the rapidity region between the two jets.
 
   cosThetaStarHist->Write();
   cosThetaStar2FillHist->Write();
+  cosThetaStarVBFSelectedHist->Write();
+  cosThetaStarVBFLooseSelectedHist->Write();
+  cosThetaStarVBFTightSelectedHist->Write();
+  cosThetaStarZPt30SelectedHist->Write();
+  cosThetaStarZPt50SelectedHist->Write();
+  cosThetaStarZPt75SelectedHist->Write();
 
   return 0;
 }
