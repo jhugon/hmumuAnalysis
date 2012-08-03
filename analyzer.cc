@@ -108,6 +108,9 @@ int main(int argc, char *argv[])
   countsHist->GetXaxis()->SetBinLabel(6,"ZPt30");
   countsHist->GetXaxis()->SetBinLabel(7,"ZPt50");
   countsHist->GetXaxis()->SetBinLabel(8,"ZPt75");
+
+  TH1F* cosThetaStarHist = new TH1F("cosThetaStar","cos(#theta^{*})",50,-1.,1.);
+  TH1F* cosThetaStar2FillHist = new TH1F("cosThetaStar2Fill","cos(#theta^{*})",50,-1.,1.);
   
   unsigned nLightJets = 0;
   unsigned nBJets = 0;
@@ -134,15 +137,28 @@ int main(int argc, char *argv[])
 
     TParticle * muon1 = (TParticle*) muons->At(0);
     TParticle * muon2 = (TParticle*) muons->At(1);
-    //if(fabs(muon1->Eta())>2.1 || fabs(muon2->Eta())>2.1 || muon1->Pt()<45.0 || muon2->Pt()<45.0 )
-    //     continue;
     TLorentzVector pMuon1;
     TLorentzVector pMuon2;
     muon1->Momentum(pMuon1);
     muon2->Momentum(pMuon2);
     TLorentzVector diMuon = pMuon1+pMuon2;
-    if(diMuon.M()<123.0 || diMuon.M()>127.0)
-         continue;
+
+    TLorentzVector starMuon1 = pMuon1;
+    TLorentzVector starMuon2 = pMuon2;
+    TVector3 boost = diMuon.BoostVector();
+    starMuon1.Boost(-boost);
+    starMuon2.Boost(-boost);
+
+    double cosThetaStar=0.0;
+    if (muon1->GetPdgCode()>0)
+        cosThetaStar = starMuon1.CosTheta();
+    else
+        cosThetaStar = starMuon2.CosTheta();
+
+    //if(fabs(muon1->Eta())>2.1 || fabs(muon2->Eta())>2.1 || muon1->Pt()<45.0 || muon2->Pt()<45.0 )
+    //     continue;
+    //if(diMuon.M()<123.0 || diMuon.M()>127.0)
+    //     continue;
 
     countsHist->Fill(1.0);
 /*
@@ -177,6 +193,9 @@ int main(int argc, char *argv[])
       ptMu2->Fill(muon2->Pt());
       etaMu1->Fill(muon1->Eta());
       etaMu2->Fill(muon2->Eta());
+      cosThetaStarHist->Fill(cosThetaStar);
+      cosThetaStar2FillHist->Fill(starMuon1.CosTheta());
+      cosThetaStar2FillHist->Fill(starMuon2.CosTheta());
 
       if (diMuon.Pt()>30.0)
       {
@@ -382,6 +401,11 @@ jet with pT > 30 GeV/c in the rapidity region between the two jets.
   mDiMuZPt75Selected->Draw();
   c1->SaveAs("mDiMuZPt75Selected.png");
 
+  cosThetaStarHist->Draw();
+  c1->SaveAs("cosThetaStar.png");
+  cosThetaStar2FillHist->Draw();
+  c1->SaveAs("cosThetaStar2Fill.png");
+
   outFile->cd();
 
   mDiMu->Write();
@@ -418,6 +442,9 @@ jet with pT > 30 GeV/c in the rapidity region between the two jets.
   yDiMuZPt75Selected->Write();
 
   countsHist->Write();
+
+  cosThetaStarHist->Write();
+  cosThetaStar2FillHist->Write();
 
   return 0;
 }
