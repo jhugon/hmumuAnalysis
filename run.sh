@@ -4,9 +4,6 @@
 
 echo "Setting-up Environment"
 startdir=`pwd`
-cd ~/work
-source setupEnv.sh
-cd $startdir
 
 echo "Building Analysis Package"
 scons
