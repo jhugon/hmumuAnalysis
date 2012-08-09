@@ -17,6 +17,8 @@
 #include "DataFormats.h"
 #include "Helpers.h"
 
+//#define JETPUID
+
 using namespace std;
 
 int main(int argc, char *argv[])
@@ -28,6 +30,10 @@ int main(int argc, char *argv[])
 	return 1;
   }
 
+  float minMmm = 200.0;
+  float maxMmm = 100.0;
+  minMmm = 123.0;
+  maxMmm = 127.0;
 
   TChain * tree = new TChain("tree");
 
@@ -56,6 +62,27 @@ int main(int argc, char *argv[])
   tree->SetBranchAddress("recoCandMass", &recoCandMass);
   tree->SetBranchAddress("recoCandPt"  , &recoCandPt );
   tree->SetBranchAddress("recoCandY"  , &recoCandY );
+
+  _PFJetInfo jets;
+  tree->SetBranchAddress("pfJets",&jets);
+
+#ifdef JETPUID
+  float puJetFullDisc[10];
+  float puJetSimpleDisc[10];
+  float puJetCutDisc[10];
+
+  tree->SetBranchAddress("puJetFullDisc",&puJetFullDisc);
+  tree->SetBranchAddress("puJetSimpleDisc",&puJetSimpleDisc);
+  tree->SetBranchAddress("puJetCutDisc",&puJetCutDisc);
+
+  int puJetFullId[10];
+  int puJetSimpleId[10];
+  int puJetCutId[10];
+
+  tree->SetBranchAddress("puJetFullId",&puJetFullId);
+  tree->SetBranchAddress("puJetSimpleId",&puJetSimpleId);
+  tree->SetBranchAddress("puJetCutId",&puJetCutId);
+#endif
 
   //////////////////////////
   // Histograms
@@ -109,6 +136,10 @@ int main(int argc, char *argv[])
   TH1F* cosThetaStarZPt30SelectedHist = new TH1F("cosThetaStarZPt30Selected","cos(#theta^{*})",50,-1.,1.);
   TH1F* cosThetaStarZPt50SelectedHist = new TH1F("cosThetaStarZPt50Selected","cos(#theta^{*})",50,-1.,1.);
   TH1F* cosThetaStarZPt75SelectedHist = new TH1F("cosThetaStarZPt75Selected","cos(#theta^{*})",50,-1.,1.);
+
+  TH1F* puJetIDSimpleDiscJet1Hist = new TH1F("puJetIDSimpleDiscJet1","PU Jet ID--Simple Discriminator Leading Jet",50,-1.,1.);
+  TH1F* puJetIDSimpleDiscJet2Hist = new TH1F("puJetIDSimpleDiscJet2","PU Jet ID--Simple Discriminator Sub-Leading Jet",50,-1.,1.);
+  TH1F* puJetIDSimpleDiscJet3Hist = new TH1F("puJetIDSimpleDiscJet3","PU Jet ID--Simple Discriminator 3rd Leading Jet",50,-1.,1.);
   
   unsigned nLightJets = 0;
   unsigned nBJets = 0;
@@ -126,7 +157,10 @@ int main(int argc, char *argv[])
     countsHist->Fill(0.0);
 
     if (!isKinTight_2012(reco1) || !isKinTight_2012(reco2))
-      continue;
+        continue;
+
+    if (recoCandMass < minMmm || recoCandMass > maxMmm)
+        continue;
 
     countsHist->Fill(1.0);
 
@@ -204,145 +238,121 @@ int main(int argc, char *argv[])
         }
       }
     }
-/*
-    if(nJets>=2)
+    // Jet Part
+    bool goodJets = false;
+    if(jets.nPFjets>=2 && jets.pfJetPt[0]>30.0 && jets.pfJetPt[2]>30.0)
+        goodJets = true;
+
+    if(goodJets)
     {
-      TParticle * jet1 = (TParticle*) jets->At(0);
-      TParticle * jet2 = (TParticle*) jets->At(1);
-  
       TLorentzVector pJet1;
       TLorentzVector pJet2;
-      jet1->Momentum(pJet1);
-      jet2->Momentum(pJet2);
+      pJet1.SetPtEtaPhiM(jets.pfJetPx[0],jets.pfJetPy[0],jets.pfJetPz[0],jets.pfJetM[0]);
+      pJet2.SetPtEtaPhiM(jets.pfJetPx[1],jets.pfJetPy[1],jets.pfJetPz[1],jets.pfJetM[1]);
       TLorentzVector diJet = pJet1+pJet2;
 
       mDiJet->Fill(diJet.M());
-      deltaEtaJets->Fill(fabs(jet1->Eta()-jet2->Eta()));
-      ptJet1->Fill(jet1->Pt());
-      ptJet2->Fill(jet2->Pt());
-      etaJet1->Fill(jet1->Eta());
-      etaJet2->Fill(jet2->Eta());
-    }
+      double dEtaJets = fabs(jets.pfJetEta[0]-jets.pfJetEta[1]);
+      double etaJetProduct = jets.pfJetEta[0]*jets.pfJetEta[1];
+      deltaEtaJets->Fill(dEtaJets);
+      ptJet1->Fill(jets.pfJetPt[0]);
+      ptJet2->Fill(jets.pfJetPt[1]);
+      etaJet1->Fill(jets.pfJetEta[0]);
+      etaJet2->Fill(jets.pfJetEta[1]);
 
-    //VBFLoose Selection
-    if(muons->GetEntries()<2)
-        continue;
-    if(jets->GetEntries()<2)
-        continue;
-    TParticle * jet1 = (TParticle*) jets->At(0);
-    TParticle * jet2 = (TParticle*) jets->At(1);
-    if(fabs(jet1->Eta()-jet2->Eta())<= 3.0)
-        continue;
-    if(jet1->Eta()*jet2->Eta() >= 0)
-        continue;
-
-    TLorentzVector pJet1;
-    TLorentzVector pJet2;
-    jet1->Momentum(pJet1);
-    jet2->Momentum(pJet2);
-    TLorentzVector diJet = pJet1+pJet2;
-    if(diJet.M()<=300.0)
-        continue;
-
-    float etaMax = jet1->Eta();
-    float etaMin = 9999999.0;
-    if(etaMax < jet2->Eta())
-    {
-        etaMax = jet2->Eta();
-        etaMin = jet1->Eta();
-    }
-    else
-    {
-        etaMin = jet2->Eta();
-    }
-    bool jetInRapidityGap=false;
-    for(float iJet=2; iJet<jets->GetEntries();iJet++)
-    {
-      TParticle * jet = (TParticle*) jets->At(0);
-      if(jet->Eta() < etaMax && jet->Eta() > etaMin)
+      // Seeing if there are jets in the rapidity gap
+      float etaMax = jets.pfJetEta[0];
+      float etaMin = 9999999.0;
+      if(etaMax < jets.pfJetEta[1])
       {
-        jetInRapidityGap = true;
-        break;
+          etaMax = jets.pfJetEta[1];
+          etaMin = jets.pfJetEta[0];
       }
-    }
-    if (jetInRapidityGap)
-        continue;
+      else
+      {
+          etaMin = jets.pfJetEta[1];
+      }
+      bool jetInRapidityGap=false;
+      for(unsigned iJet=2; (iJet < jets.nPFjets && iJet < 10);iJet++)
+      {
+        if(jets.pfJetPt[iJet] > 30.0)
+        {
+          if(jets.pfJetEta[iJet] < etaMax && jets.pfJetEta[iJet] > etaMin)
+          {
+            jetInRapidityGap = true;
+            break;
+          }
+        }
+      }
 
-    //VBFLoose Selected
-    mDiMuVBFLooseSelected->Fill(recoCandMass);
-    ptDiMuVBFLooseSelected->Fill(recoCandPt);
-    yDiMuVBFLooseSelected->Fill(recoCandY);
-    cosThetaStarVBFLooseSelectedHist->Fill(cosThetaStar);
-    countsHist->Fill(2.0);
+#ifdef JETPUID
+      for(unsigned iJet=0; (iJet < jets.nPFjets && iJet < 10);iJet++)
+      {
+        if(jets.pfJetPt[iJet]>30.0)
+        {
+          if (iJet==0)
+            puJetIDSimpleDiscJet1Hist->Fill(puJetSimpleDisc[iJet]);
+          else if (iJet==1)
+            puJetIDSimpleDiscJet2Hist->Fill(puJetSimpleDisc[iJet]);
+          else if (iJet==2)
+            puJetIDSimpleDiscJet3Hist->Fill(puJetSimpleDisc[iJet]);
+        }
+      }
+#endif
 
+
+      //VBFLoose Selection
+      if(dEtaJets <= 3.0)
+          continue;
+      if(etaJetProduct >= 0)
+          continue;
+      if(diJet.M()<=300.0)
+          continue;
+      if (jetInRapidityGap)
+          continue;
+  
+      //VBFLoose Selected
+      mDiMuVBFLooseSelected->Fill(recoCandMass);
+      ptDiMuVBFLooseSelected->Fill(recoCandPt);
+      yDiMuVBFLooseSelected->Fill(recoCandY);
+      cosThetaStarVBFLooseSelectedHist->Fill(cosThetaStar);
+      countsHist->Fill(2.0);
+  
 //HIG-12-007 PAS H->tautau
 //The VBF category requires at least two jets with pT > 30 GeV/c, |η1 − η2 | > 4.0 and
 //η1 · η2 < 0 (with η1 the pseudorapidty of the leading jet and η2 the pseudorapidity
 //of the subleading jet), and a di-jet invariant mass m12 > 400 GeV/c2 , with no other
 //jet with pT > 30 GeV/c in the rapidity region between the two jets.
+  
+  
+      //VBF Selection
+      if(dEtaJets <= 4.0)
+          continue;
+      if(diJet.M()<=400.0)
+          continue;
+      // Below already checked
+      //if(etaJetProduct >= 0)
+      //    continue;
+      //if (jetInRapidityGap)
+      //    continue;
+  
+      //VBF Selected
+      mDiMuVBFSelected->Fill(recoCandMass);
+      ptDiMuVBFSelected->Fill(recoCandPt);
+      yDiMuVBFSelected->Fill(recoCandY);
+      cosThetaStarVBFSelectedHist->Fill(cosThetaStar);
+      countsHist->Fill(3.0);
+  
+      //VBF Tight Selection
+      if(dEtaJets <= 5.0)
+          continue;
 
-
-    //VBF Selection
-    if(muons->GetEntries()<2)
-        continue;
-    if(jets->GetEntries()<2)
-        continue;
-    //TParticle * jet1 = (TParticle*) jets->At(0);
-    //TParticle * jet2 = (TParticle*) jets->At(1);
-    if(fabs(jet1->Eta()-jet2->Eta())<= 4.0)
-        continue;
-    if(jet1->Eta()*jet2->Eta() >= 0)
-        continue;
-
-    //TLorentzVector pJet1;
-    //TLorentzVector pJet2;
-    //jet1->Momentum(pJet1);
-    //jet2->Momentum(pJet2);
-    //TLorentzVector diJet = pJet1+pJet2;
-    if(diJet.M()<=400.0)
-        continue;
-
-    //float etaMax = jet1->Eta();
-    //float etaMin = 9999999.0;
-    //if(etaMax < jet2->Eta())
-    //{
-    //    etaMax = jet2->Eta();
-    //    etaMin = jet1->Eta();
-    //}
-    //else
-    //{
-    //    etaMin = jet2->Eta();
-    //}
-    //bool jetInRapidityGap=false;
-    //for(float iJet=2; iJet<jets->GetEntries();iJet++)
-    //{
-    //  TParticle * jet = (TParticle*) jets->At(0);
-    //  if(jet->Eta() < etaMax && jet->Eta() > etaMin)
-    //  {
-    //    jetInRapidityGap = true;
-    //    break;
-    //  }
-    //}
-    //if (jetInRapidityGap)
-    //    continue;
-    //VBF Selected
-    mDiMuVBFSelected->Fill(recoCandMass);
-    ptDiMuVBFSelected->Fill(recoCandPt);
-    yDiMuVBFSelected->Fill(recoCandY);
-    cosThetaStarVBFSelectedHist->Fill(cosThetaStar);
-    countsHist->Fill(3.0);
-
-    //VBF Tight Selection
-    if(fabs(jet1->Eta()-jet2->Eta())<= 5.0)
-        continue;
-    //if(diJet.M()<=500.0)
-    //    continue;
-    countsHist->Fill(4.0);
-    mDiMuVBFTightSelected->Fill(recoCandMass);
-    cosThetaStarVBFTightSelectedHist->Fill(cosThetaStar);
-
-*/
-  }
+      //VBF Tight Selected
+      countsHist->Fill(4.0);
+      mDiMuVBFTightSelected->Fill(recoCandMass);
+      cosThetaStarVBFTightSelectedHist->Fill(cosThetaStar);
+    } //end jet part
+  }// end event loop
 
   outFile->cd();
 
@@ -388,6 +398,10 @@ int main(int argc, char *argv[])
   cosThetaStarZPt30SelectedHist->Write();
   cosThetaStarZPt50SelectedHist->Write();
   cosThetaStarZPt75SelectedHist->Write();
+
+  puJetIDSimpleDiscJet1Hist->Write();
+  puJetIDSimpleDiscJet2Hist->Write();
+  puJetIDSimpleDiscJet3Hist->Write();
 
   cout << "analyzer done." << endl << endl;
   return 0;
