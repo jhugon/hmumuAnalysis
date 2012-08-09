@@ -24,3 +24,4 @@ env.Append(LIBPATH=libpath)
 env.Append(LIBS=libs)
  
 env.Program(target="analyzer", source=["analyzer.cc"])
+env.Program(target="trainingTreeMaker", source=["trainingTreeMaker.cc"])
