@@ -30,8 +30,8 @@ int main(int argc, char *argv[])
 	return 1;
   }
 
-  float minMmm = 200.0;
-  float maxMmm = 100.0;
+  float minMmm = 100.0;
+  float maxMmm = 200.0;
   minMmm = 123.0;
   maxMmm = 127.0;
 
