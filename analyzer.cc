@@ -14,12 +14,10 @@
 #include <TLegend.h>
 #include <TF1.h>
 
-#include "PhysicsObjectFunctions.h"
+#include "DataFormats.h"
+#include "Helpers.h"
 
 using namespace std;
-
-double getDiM(TClonesArray*, double maxEta);
-double getDeltaEta(TClonesArray* particles, double maxEta);
 
 int main(int argc, char *argv[])
 {
@@ -45,27 +43,22 @@ int main(int argc, char *argv[])
     tree->AddFile(argv[iarg]);
   }
 
-  TClonesArray* muons = new TClonesArray("TParticle");
-  TClonesArray* electrons = new TClonesArray("TParticle");
-  TClonesArray* photons = new TClonesArray("TParticle");
-  TClonesArray* jets = new TClonesArray("TParticle");
-  double met=0.0;
-  double metPhi=0.0;
-  double sumPt=0.0;
-  double trueMet=0.0;
-  double trueMetPhi=0.0;
-  double trueSumPt=0.0;
+  //////////////////////////
+  // Tree Branches
 
-  tree->SetBranchAddress("muons",&muons);
-  tree->SetBranchAddress("electrons",&electrons);
-  tree->SetBranchAddress("photons",&photons);
-  tree->SetBranchAddress("jets",&jets);
-  tree->SetBranchAddress("met",&met);
-  tree->SetBranchAddress("metPhi",&metPhi);
-  tree->SetBranchAddress("sumPt",&sumPt);
-  tree->SetBranchAddress("trueMet",&trueMet);
-  tree->SetBranchAddress("trueMetPhi",&trueMetPhi);
-  tree->SetBranchAddress("trueSumPt",&trueSumPt);
+  _MuonInfo reco1, reco2;
+
+  tree->SetBranchAddress("reco1", &reco1);
+  tree->SetBranchAddress("reco2", &reco2);
+
+  float recoCandMass, recoCandPt, recoCandY;
+
+  tree->SetBranchAddress("recoCandMass", &recoCandMass);
+  tree->SetBranchAddress("recoCandPt"  , &recoCandPt );
+  tree->SetBranchAddress("recoCandY"  , &recoCandY );
+
+  //////////////////////////
+  // Histograms
 
   TH1F* mDiMu = new TH1F("mDiMu","DiMuon Mass",200,0,200);
   TH1F* mDiMuVBFSelected = new TH1F("mDiMuVBFSelected","DiMuon Mass after VBF Selection",200,0,200);
@@ -110,7 +103,6 @@ int main(int argc, char *argv[])
   countsHist->GetXaxis()->SetBinLabel(8,"ZPt75");
 
   TH1F* cosThetaStarHist = new TH1F("cosThetaStar","cos(#theta^{*})",50,-1.,1.);
-  TH1F* cosThetaStar2FillHist = new TH1F("cosThetaStar2Fill","cos(#theta^{*})",50,-1.,1.);
   TH1F* cosThetaStarVBFSelectedHist = new TH1F("cosThetaStarVBFSelected","cos(#theta^{*})",50,-1.,1.);
   TH1F* cosThetaStarVBFLooseSelectedHist = new TH1F("cosThetaStarVBFLooseSelected","cos(#theta^{*})",50,-1.,1.);
   TH1F* cosThetaStarVBFTightSelectedHist = new TH1F("cosThetaStarVBFTightSelected","cos(#theta^{*})",50,-1.,1.);
@@ -127,26 +119,24 @@ int main(int argc, char *argv[])
   for(unsigned i=0; i<nEvents;i++)
   {
     if(i >= maxEvents)
-	continue;
+      continue;
     tree->GetEvent(i);
     if (i % 1000 == 0) cout << "Event: " << i << endl;
 
-    unsigned nMuons = muons->GetEntries();
-    unsigned nElectrons = electrons->GetEntries();
-    unsigned nPhotons = photons->GetEntries();
-    unsigned nJets = jets->GetEntries();
-
     countsHist->Fill(0.0);
 
-    if(nMuons <2)
-	continue;
+    if (!isKinTight_2012(reco1) || !isKinTight_2012(reco2))
+      continue;
 
-    TParticle * muon1 = (TParticle*) muons->At(0);
-    TParticle * muon2 = (TParticle*) muons->At(1);
+    countsHist->Fill(1.0);
+
+    //////////////////////////////////////////
+    //Computing CosTheta*
+
     TLorentzVector pMuon1;
     TLorentzVector pMuon2;
-    muon1->Momentum(pMuon1);
-    muon2->Momentum(pMuon2);
+    pMuon1.SetPtEtaPhiM(reco1.pt,reco1.eta,reco1.phi,0.105);
+    pMuon2.SetPtEtaPhiM(reco2.pt,reco2.eta,reco2.phi,0.105);
     TLorentzVector diMuon = pMuon1+pMuon2;
 
     TLorentzVector starMuon1 = pMuon1;
@@ -155,76 +145,53 @@ int main(int argc, char *argv[])
     starMuon1.Boost(-boost);
     starMuon2.Boost(-boost);
 
+
     double cosThetaStar=0.0;
-    if (muon1->GetPdgCode()>0)
-        cosThetaStar = starMuon1.CosTheta();
+    if (reco1.charge>0)
+    {
+        TVector3 directionOfBoost = starMuon1.BoostVector();
+        cosThetaStar = directionOfBoost.Dot(diMuon.BoostVector()) / (directionOfBoost.Mag()*diMuon.BoostVector().Mag());
+    }
     else
-        cosThetaStar = starMuon2.CosTheta();
-
-    //if(fabs(muon1->Eta())>2.1 || fabs(muon2->Eta())>2.1 || muon1->Pt()<45.0 || muon2->Pt()<45.0 )
-    //     continue;
-    //if(diMuon.M()<123.0 || diMuon.M()>127.0)
-    //     continue;
-
-    countsHist->Fill(1.0);
-/*
-    for(unsigned i=0; i<nMuons; i++)
     {
-	TParticle* tmpMuon = (TParticle*) muons->At(i);
-	float relIso = getIso(tmpMuon)/tmpMuon->Pt();
+        TVector3 directionOfBoost = starMuon2.BoostVector();
+        cosThetaStar = directionOfBoost.Dot(diMuon.BoostVector()) / (directionOfBoost.Mag()*diMuon.BoostVector().Mag());
     }
-    for(unsigned i=0; i<nElectrons; i++)
-    {
-	TParticle* tmpEl = (TParticle*) electrons->At(i);
-	float relIso = getIso(tmpEl)/tmpEl->Pt();
-    }
-    for(unsigned i=0; i<nPhotons; i++)
-    {
-	TParticle* tmpPh = (TParticle*) photons->At(i);
-	float relIso = getIso(tmpPh)/tmpPh->Pt();
-    }
-    for(unsigned i=0; i<nJets; i++)
-    {
-	bool isB = getGenB((TParticle*) jets->At(i));
-	bool isBTag = getBTag((TParticle*) jets->At(i));
-    }
-*/
 
-    if(nMuons>=2)
-    {
-      mDiMu->Fill(diMuon.M());
-      yDiMu->Fill(diMuon.Rapidity());
-      ptDiMu->Fill(diMuon.Pt());
-      ptMu1->Fill(muon1->Pt());
-      ptMu2->Fill(muon2->Pt());
-      etaMu1->Fill(muon1->Eta());
-      etaMu2->Fill(muon2->Eta());
-      cosThetaStarHist->Fill(cosThetaStar);
-      cosThetaStar2FillHist->Fill(starMuon1.CosTheta());
-      cosThetaStar2FillHist->Fill(starMuon2.CosTheta());
+    //////////////////////////////////////////
+    // Filling Hists
 
-      if (diMuon.Pt()>30.0)
+    mDiMu->Fill(recoCandMass);
+    yDiMu->Fill(recoCandY);
+    ptDiMu->Fill(recoCandPt);
+    ptMu1->Fill(reco1.pt);
+    ptMu2->Fill(reco2.pt);
+    etaMu1->Fill(reco1.eta);
+    etaMu2->Fill(reco2.eta);
+    cosThetaStarHist->Fill(cosThetaStar);
+  
+    if (recoCandPt>30.0)
+    {
+      countsHist->Fill(5.0);
+      mDiMuZPt30Selected->Fill(recoCandMass);
+      yDiMuZPt30Selected->Fill(recoCandY);
+      cosThetaStarZPt30SelectedHist->Fill(cosThetaStar);
+      if (recoCandPt>50.0)
       {
-        countsHist->Fill(5.0);
-        mDiMuZPt30Selected->Fill(diMuon.M());
-        yDiMuZPt30Selected->Fill(diMuon.Rapidity());
-        cosThetaStarZPt30SelectedHist->Fill(cosThetaStar);
-        if (diMuon.Pt()>50.0)
+        countsHist->Fill(6.0);
+        mDiMuZPt50Selected->Fill(recoCandMass);
+        yDiMuZPt50Selected->Fill(recoCandY);
+        cosThetaStarZPt50SelectedHist->Fill(cosThetaStar);
+        if (recoCandPt>75.0)
         {
-          countsHist->Fill(6.0);
-          mDiMuZPt50Selected->Fill(diMuon.M());
-          yDiMuZPt50Selected->Fill(diMuon.Rapidity());
-          cosThetaStarZPt50SelectedHist->Fill(cosThetaStar);
-          if (diMuon.Pt()>75.0)
-          {
-            countsHist->Fill(7.0);
-            mDiMuZPt75Selected->Fill(diMuon.M());
-            yDiMuZPt75Selected->Fill(diMuon.Rapidity());
-            cosThetaStarZPt75SelectedHist->Fill(cosThetaStar);
-          }
+          countsHist->Fill(7.0);
+          mDiMuZPt75Selected->Fill(recoCandMass);
+          yDiMuZPt75Selected->Fill(recoCandY);
+          cosThetaStarZPt75SelectedHist->Fill(cosThetaStar);
         }
       }
     }
+/*
     if(nJets>=2)
     {
       TParticle * jet1 = (TParticle*) jets->At(0);
@@ -289,19 +256,17 @@ int main(int argc, char *argv[])
         continue;
 
     //VBFLoose Selected
-    mDiMuVBFLooseSelected->Fill(diMuon.M());
-    ptDiMuVBFLooseSelected->Fill(diMuon.Pt());
-    yDiMuVBFLooseSelected->Fill(diMuon.Rapidity());
+    mDiMuVBFLooseSelected->Fill(recoCandMass);
+    ptDiMuVBFLooseSelected->Fill(recoCandPt);
+    yDiMuVBFLooseSelected->Fill(recoCandY);
     cosThetaStarVBFLooseSelectedHist->Fill(cosThetaStar);
     countsHist->Fill(2.0);
 
-/*
-HIG-12-007 PAS H->tautau
-The VBF category requires at least two jets with pT > 30 GeV/c, |η1 − η2 | > 4.0 and
-η1 · η2 < 0 (with η1 the pseudorapidty of the leading jet and η2 the pseudorapidity
-of the subleading jet), and a di-jet invariant mass m12 > 400 GeV/c2 , with no other
-jet with pT > 30 GeV/c in the rapidity region between the two jets.
-*/
+//HIG-12-007 PAS H->tautau
+//The VBF category requires at least two jets with pT > 30 GeV/c, |η1 − η2 | > 4.0 and
+//η1 · η2 < 0 (with η1 the pseudorapidty of the leading jet and η2 the pseudorapidity
+//of the subleading jet), and a di-jet invariant mass m12 > 400 GeV/c2 , with no other
+//jet with pT > 30 GeV/c in the rapidity region between the two jets.
 
 
     //VBF Selection
@@ -348,9 +313,9 @@ jet with pT > 30 GeV/c in the rapidity region between the two jets.
     //if (jetInRapidityGap)
     //    continue;
     //VBF Selected
-    mDiMuVBFSelected->Fill(diMuon.M());
-    ptDiMuVBFSelected->Fill(diMuon.Pt());
-    yDiMuVBFSelected->Fill(diMuon.Rapidity());
+    mDiMuVBFSelected->Fill(recoCandMass);
+    ptDiMuVBFSelected->Fill(recoCandPt);
+    yDiMuVBFSelected->Fill(recoCandY);
     cosThetaStarVBFSelectedHist->Fill(cosThetaStar);
     countsHist->Fill(3.0);
 
@@ -360,9 +325,10 @@ jet with pT > 30 GeV/c in the rapidity region between the two jets.
     //if(diJet.M()<=500.0)
     //    continue;
     countsHist->Fill(4.0);
-    mDiMuVBFTightSelected->Fill(diMuon.M());
+    mDiMuVBFTightSelected->Fill(recoCandMass);
     cosThetaStarVBFTightSelectedHist->Fill(cosThetaStar);
 
+*/
   }
 
   c1->Clear();
@@ -415,8 +381,6 @@ jet with pT > 30 GeV/c in the rapidity region between the two jets.
 
   cosThetaStarHist->Draw();
   c1->SaveAs("cosThetaStar.png");
-  cosThetaStar2FillHist->Draw();
-  c1->SaveAs("cosThetaStar2Fill.png");
 
   outFile->cd();
 
@@ -456,7 +420,6 @@ jet with pT > 30 GeV/c in the rapidity region between the two jets.
   countsHist->Write();
 
   cosThetaStarHist->Write();
-  cosThetaStar2FillHist->Write();
   cosThetaStarVBFSelectedHist->Write();
   cosThetaStarVBFLooseSelectedHist->Write();
   cosThetaStarVBFTightSelectedHist->Write();
@@ -465,63 +428,4 @@ jet with pT > 30 GeV/c in the rapidity region between the two jets.
   cosThetaStarZPt75SelectedHist->Write();
 
   return 0;
-}
-
-double getDiM(TClonesArray* particles, double maxEta)
-{
-        if(particles->GetEntries() < 2)
-            return -1.0;
-        TParticle* part0 = NULL;
-        TParticle* part1 = NULL;
-        for(unsigned i=0; i< particles->GetEntries();i++)
-        {
-            TParticle * tmpPart = (TParticle*) particles->At(0);
-            if(fabs(tmpPart->Eta())<maxEta)
-            {
-                if(part0 == NULL)
-                {
-                    part0 = tmpPart;
-                }
-                else if(part1 == NULL)
-                {
-                    part1 = tmpPart;
-                    break;
-                }
-            }
-        }
-        if(part0 == NULL || part1 == NULL)
-            return -1.0;
-
-        TLorentzVector p0;
-        TLorentzVector p1;
-        part0->Momentum(p0);
-        part1->Momentum(p1);
-        return (p0+p1).M();
-}
-
-double getDeltaEta(TClonesArray* particles, double maxEta)
-{
-        if(particles->GetEntries() < 2)
-            return -999999.0;
-        TParticle* part0 = NULL;
-        TParticle* part1 = NULL;
-        for(unsigned i=0; i< particles->GetEntries();i++)
-        {
-            TParticle * tmpPart = (TParticle*) particles->At(0);
-            if(fabs(tmpPart->Eta())<maxEta)
-            {
-                if(part0 == NULL)
-                {
-                    part0 = tmpPart;
-                }
-                else if(part1 == NULL)
-                {
-                    part1 = tmpPart;
-                    break;
-                }
-            }
-        }
-        if(part0 == NULL || part1 == NULL)
-            return -999999.0;
-        return part0->Eta() - part1->Eta();
 }
