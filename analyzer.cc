@@ -28,9 +28,7 @@ int main(int argc, char *argv[])
 	return 1;
   }
 
-  gStyle->SetOptStat(0);
 
-  TCanvas* c1 = new TCanvas("c1");
   TChain * tree = new TChain("tree");
 
   TFile * outFile = new TFile(argv[1],"RECREATE");
@@ -41,7 +39,9 @@ int main(int argc, char *argv[])
   for(unsigned iarg=2; iarg<argc;iarg++)
   {
     tree->AddFile(argv[iarg]);
+    cout << "Running on file " << argv[iarg] << endl;
   }
+  cout << "Output file " << argv[1] << endl;
 
   //////////////////////////
   // Tree Branches
@@ -331,57 +331,6 @@ int main(int argc, char *argv[])
 */
   }
 
-  c1->Clear();
-  mDiMu->Draw();
-  c1->SaveAs("mDiMu.png");
-  ptDiMu->Draw();
-  c1->SaveAs("ptDiMu.png");
-  mDiJet->Draw();
-  c1->SaveAs("mDiJet.png");
-
-  ptMu1->Draw();
-  c1->SaveAs("ptMu1.png");
-  ptMu2->Draw();
-  c1->SaveAs("ptMu2.png");
-  ptJet1->Draw();
-  c1->SaveAs("ptJet1.png");
-  ptJet2->Draw();
-  c1->SaveAs("ptJet2.png");
-
-  etaMu1->Draw();
-  c1->SaveAs("etaMu1.png");
-  etaMu2->Draw();
-  c1->SaveAs("etaMu2.png");
-  etaJet1->Draw();
-  c1->SaveAs("etaJet1.png");
-  etaJet2->Draw();
-  c1->SaveAs("etaJet2.png");
-
-  deltaEtaJets->Draw();
-  c1->SaveAs("deltaEtaJets.png");
-
-  mDiMuVBFSelected->Draw();
-  c1->SaveAs("mDiMuVBFSelected.png");
-  ptDiMuVBFSelected->Draw();
-  c1->SaveAs("ptDiMuVBFSelected.png");
-
-  mDiMuVBFLooseSelected->Draw();
-  c1->SaveAs("mDiMuVBFLooseSelected.png");
-  mDiMuVBFTightSelected->Draw();
-  c1->SaveAs("mDiMuVBFTightSelected.png");
-  ptDiMuVBFLooseSelected->Draw();
-  c1->SaveAs("ptDiMuVBFLooseSelected.png");
-
-  mDiMuZPt30Selected->Draw();
-  c1->SaveAs("mDiMuZPt30Selected.png");
-  mDiMuZPt50Selected->Draw();
-  c1->SaveAs("mDiMuZPt50Selected.png");
-  mDiMuZPt75Selected->Draw();
-  c1->SaveAs("mDiMuZPt75Selected.png");
-
-  cosThetaStarHist->Draw();
-  c1->SaveAs("cosThetaStar.png");
-
   outFile->cd();
 
   mDiMu->Write();
@@ -427,5 +376,6 @@ int main(int argc, char *argv[])
   cosThetaStarZPt50SelectedHist->Write();
   cosThetaStarZPt75SelectedHist->Write();
 
+  cout << "analyzer done." << endl << endl;
   return 0;
 }
