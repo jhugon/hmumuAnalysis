@@ -107,6 +107,8 @@ int main(int argc, char *argv[])
   TH1F* yDiMuZPt50Selected = new TH1F("yDiMuZPt50Selected","DiMuon Rapidity after #mu#mu Pt>50 Selection",100,-4,4);
   TH1F* yDiMuZPt75Selected = new TH1F("yDiMuZPt75Selected","DiMuon Rapidity after #mu#mu Pt>75 Selection",100,-4,4);
 
+  TH2F* yVptDiMu = new TH2F("yVptDiMu","DiMuon Rapidity v. p_{T}",250,0,500,100,0,4);
+
   TH1F* ptMu1 = new TH1F("ptMu1","Leading Muon Pt",100,0,200);
   TH1F* ptMu2 = new TH1F("ptMu2","Sub-Leading Muon Pt",100,0,200);
   TH1F* ptJet1 = new TH1F("ptJet1","Leading Jet Pt",200,0,1000);
@@ -211,6 +213,7 @@ int main(int argc, char *argv[])
     mDiMu->Fill(recoCandMass);
     yDiMu->Fill(recoCandY);
     ptDiMu->Fill(recoCandPt);
+    yVptDiMu->Fill(recoCandPt,fabs(recoCandY));
     ptMu1->Fill(muon1.pt);
     ptMu2->Fill(muon2.pt);
     etaMu1->Fill(muon1.eta);
@@ -388,6 +391,8 @@ int main(int argc, char *argv[])
   yDiMuZPt30Selected->Write();
   yDiMuZPt50Selected->Write();
   yDiMuZPt75Selected->Write();
+
+  yVptDiMu->Write();
 
   countsHist->Write();
 

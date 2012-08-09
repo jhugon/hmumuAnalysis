@@ -51,8 +51,8 @@
 void TMVAClassification( TString myMethodList = "" )
 {
 
-   TString inSigfname = "sigMVAIn.root";
-   TString inBckfname = "bckMVAIn.root";
+   TString inSigfname = "signalTree.root";
+   TString inBckfname = "backgroundTree.root";
    // Trees are name "tree"
 
    // The explicit loading of the shared libTMVA is done in TMVAlogon.C, defined in .rootrc
