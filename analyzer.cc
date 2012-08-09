@@ -130,13 +130,26 @@ int main(int argc, char *argv[])
 
     countsHist->Fill(1.0);
 
+    _MuonInfo muon1;
+    _MuonInfo muon2;
+    if(reco1.pt>reco2.pt)
+    {
+        muon1 = reco1;
+        muon2 = reco2;
+    }
+    else
+    {
+        muon1 = reco2;
+        muon2 = reco1;
+    }
+
     //////////////////////////////////////////
     //Computing CosTheta*
 
     TLorentzVector pMuon1;
     TLorentzVector pMuon2;
-    pMuon1.SetPtEtaPhiM(reco1.pt,reco1.eta,reco1.phi,0.105);
-    pMuon2.SetPtEtaPhiM(reco2.pt,reco2.eta,reco2.phi,0.105);
+    pMuon1.SetPtEtaPhiM(muon1.pt,muon1.eta,muon1.phi,0.105);
+    pMuon2.SetPtEtaPhiM(muon2.pt,muon2.eta,muon2.phi,0.105);
     TLorentzVector diMuon = pMuon1+pMuon2;
 
     TLorentzVector starMuon1 = pMuon1;
@@ -147,7 +160,7 @@ int main(int argc, char *argv[])
 
 
     double cosThetaStar=0.0;
-    if (reco1.charge>0)
+    if (muon1.charge>0)
     {
         TVector3 directionOfBoost = starMuon1.BoostVector();
         cosThetaStar = directionOfBoost.Dot(diMuon.BoostVector()) / (directionOfBoost.Mag()*diMuon.BoostVector().Mag());
@@ -164,10 +177,10 @@ int main(int argc, char *argv[])
     mDiMu->Fill(recoCandMass);
     yDiMu->Fill(recoCandY);
     ptDiMu->Fill(recoCandPt);
-    ptMu1->Fill(reco1.pt);
-    ptMu2->Fill(reco2.pt);
-    etaMu1->Fill(reco1.eta);
-    etaMu2->Fill(reco2.eta);
+    ptMu1->Fill(muon1.pt);
+    ptMu2->Fill(muon2.pt);
+    etaMu1->Fill(muon1.eta);
+    etaMu2->Fill(muon2.eta);
     cosThetaStarHist->Fill(cosThetaStar);
   
     if (recoCandPt>30.0)
