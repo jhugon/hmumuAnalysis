@@ -211,15 +211,15 @@ int main(int argc, char *argv[])
   
     // Jet Part
     bool goodJets = false;
-    if(jets.nPFjets>=2 && jets.pfJetPt[0]>30.0 && jets.pfJetPt[2]>30.0)
+    if(jets.nPFjets>=2 && jets.pfJetPt[0]>30.0 && jets.pfJetPt[1]>30.0)
         goodJets = true;
 
     if(goodJets)
     {
       TLorentzVector pJet1;
       TLorentzVector pJet2;
-      pJet1.SetPtEtaPhiM(jets.pfJetPx[0],jets.pfJetPy[0],jets.pfJetPz[0],jets.pfJetM[0]);
-      pJet2.SetPtEtaPhiM(jets.pfJetPx[1],jets.pfJetPy[1],jets.pfJetPz[1],jets.pfJetM[1]);
+      pJet1.SetXYZM(jets.pfJetPx[0],jets.pfJetPy[0],jets.pfJetPz[0],jets.pfJetM[0]);
+      pJet2.SetXYZM(jets.pfJetPx[1],jets.pfJetPy[1],jets.pfJetPz[1],jets.pfJetM[1]);
       TLorentzVector diJet = pJet1+pJet2;
 
       mDiJet = diJet.M();
