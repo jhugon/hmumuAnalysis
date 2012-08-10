@@ -253,7 +253,6 @@ int main(int argc, char *argv[])
       pJet1.SetXYZM(jets.pfJetPx[0],jets.pfJetPy[0],jets.pfJetPz[0],jets.pfJetM[0]);
       pJet2.SetXYZM(jets.pfJetPx[1],jets.pfJetPy[1],jets.pfJetPz[1],jets.pfJetM[1]);
       TLorentzVector diJet = pJet1+pJet2;
-      cout << "diJet Mass: " << diJet.M() << endl;
 
       mDiJet->Fill(diJet.M());
       double dEtaJets = fabs(jets.pfJetEta[0]-jets.pfJetEta[1]);
