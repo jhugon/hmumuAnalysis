@@ -82,7 +82,7 @@ void TMVAClassification( TString myMethodList = "" )
    Use["CutsD"]           = 0;
    Use["CutsPCA"]         = 0;
    Use["CutsGA"]          = 0;
-   Use["CutsSA"]          = 1;
+   Use["CutsSA"]          = 0;
    // 
    // --- 1-dimensional likelihood ("naive Bayes estimator")
    Use["Likelihood"]      = 1;
@@ -115,7 +115,7 @@ void TMVAClassification( TString myMethodList = "" )
    Use["FDA_MCMT"]        = 0;
    //
    // --- Neural Networks (all are feed-forward Multilayer Perceptrons)
-   Use["MLP"]             = 1; // Recommended ANN
+   Use["MLP"]             = 0; // Recommended ANN
    Use["MLPBFGS"]         = 0; // Recommended ANN with optional training method
    Use["MLPBNN"]          = 0; // Recommended ANN with BFGS training method and bayesian regulator
    Use["CFMlpANN"]        = 0; // Depreciated ANN from ALEPH
@@ -126,7 +126,7 @@ void TMVAClassification( TString myMethodList = "" )
    // 
    // --- Boosted Decision Trees
    Use["BDT"]             = 1; // uses Adaptive Boost
-   Use["BDTG"]            = 1; // uses Gradient Boost
+   Use["BDTG"]            = 0; // uses Gradient Boost
    Use["BDTB"]            = 0; // uses Bagging
    Use["BDTD"]            = 0; // decorrelation + Adaptive Boost
    Use["BDTF"]            = 0; // allow usage of fisher discriminant for node splitting 
