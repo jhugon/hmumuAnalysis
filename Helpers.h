@@ -38,4 +38,16 @@ bool isKinTight_2012(_MuonInfo& muon)
   return isKinTight_2012;
 }
 
+enum PUJetID
+{
+  kTight  = 0,
+  kMedium = 1,
+  kLoose  = 2
+};
+
+bool passPUJetID(int flag, puJetId desiredLevel)
+{
+ return ( flag & (1 << desiredLevel) ) != 0;
+}
+
 #endif

@@ -142,6 +142,16 @@ int main(int argc, char *argv[])
   TH1F* puJetIDSimpleDiscJet1Hist = new TH1F("puJetIDSimpleDiscJet1","PU Jet ID--Simple Discriminator Leading Jet",50,-1.,1.);
   TH1F* puJetIDSimpleDiscJet2Hist = new TH1F("puJetIDSimpleDiscJet2","PU Jet ID--Simple Discriminator Sub-Leading Jet",50,-1.,1.);
   TH1F* puJetIDSimpleDiscJet3Hist = new TH1F("puJetIDSimpleDiscJet3","PU Jet ID--Simple Discriminator 3rd Leading Jet",50,-1.,1.);
+
+  TH1F* puJetIDSimpleJet1Hist = new TH1F("puJetIDSimpleJet1","PU Jet ID--Simple Loose Leading Jet",2,0,2);
+  puJetIDSimpleJet1Hist->GetXaxis()->SetBinLabel(1,"Fail");
+  puJetIDSimpleJet1Hist->GetXaxis()->SetBinLabel(2,"Pass");
+  TH1F* puJetIDSimpleJet2Hist = new TH1F("puJetIDSimpleJet2","PU Jet ID--Simple Loose Sub-Leading Jet",2,-0,2);
+  puJetIDSimpleJet2Hist->GetXaxis()->SetBinLabel(1,"Fail");
+  puJetIDSimpleJet2Hist->GetXaxis()->SetBinLabel(2,"Pass");
+  TH1F* puJetIDSimpleJet3Hist = new TH1F("puJetIDSimpleJet3","PU Jet ID--Simple Loose 3rd Leading Jet",2,-0,2);
+  puJetIDSimpleJet3Hist->GetXaxis()->SetBinLabel(1,"Fail");
+  puJetIDSimpleJet3Hist->GetXaxis()->SetBinLabel(2,"Pass");
   
   unsigned nLightJets = 0;
   unsigned nBJets = 0;
@@ -299,10 +309,16 @@ int main(int argc, char *argv[])
             puJetIDSimpleDiscJet2Hist->Fill(puJetSimpleDisc[iJet]);
           else if (iJet==2)
             puJetIDSimpleDiscJet3Hist->Fill(puJetSimpleDisc[iJet]);
+
+          if (iJet==0)
+            puJetIDSimpleJet1Hist->Fill(passPUJetID(puJetSimpleId[iJet],PUJetID::kLoose));
+          else if (iJet==1)
+            puJetIDSimpleJet2Hist->Fill(passPUJetID(puJetSimpleId[iJet],PUJetID::kLoose));
+          else if (iJet==2)
+            puJetIDSimpleJet3Hist->Fill(passPUJetID(puJetSimpleId[iJet],PUJetID::kLoose));
         }
       }
 #endif
-
 
       //VBFLoose Selection
       if(dEtaJets <= 3.0)
@@ -407,6 +423,10 @@ int main(int argc, char *argv[])
   puJetIDSimpleDiscJet1Hist->Write();
   puJetIDSimpleDiscJet2Hist->Write();
   puJetIDSimpleDiscJet3Hist->Write();
+
+  puJetIDSimpleJet1Hist->Write();
+  puJetIDSimpleJet2Hist->Write();
+  puJetIDSimpleJet3Hist->Write();
 
   cout << "analyzer done." << endl << endl;
   return 0;
