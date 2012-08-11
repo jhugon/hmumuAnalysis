@@ -311,11 +311,11 @@ int main(int argc, char *argv[])
             puJetIDSimpleDiscJet3Hist->Fill(puJetSimpleDisc[iJet]);
 
           if (iJet==0)
-            puJetIDSimpleJet1Hist->Fill(passPUJetID(puJetSimpleId[iJet],PUJetID::kLoose));
+            puJetIDSimpleJet1Hist->Fill(passPUJetID(puJetSimpleId[iJet],puJetLoose));
           else if (iJet==1)
-            puJetIDSimpleJet2Hist->Fill(passPUJetID(puJetSimpleId[iJet],PUJetID::kLoose));
+            puJetIDSimpleJet2Hist->Fill(passPUJetID(puJetSimpleId[iJet],puJetLoose));
           else if (iJet==2)
-            puJetIDSimpleJet3Hist->Fill(passPUJetID(puJetSimpleId[iJet],PUJetID::kLoose));
+            puJetIDSimpleJet3Hist->Fill(passPUJetID(puJetSimpleId[iJet],puJetLoose));
         }
       }
 #endif
