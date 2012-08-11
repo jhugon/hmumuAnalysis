@@ -32,8 +32,8 @@ int main(int argc, char *argv[])
 
   float minMmm = 100.0;
   float maxMmm = 200.0;
-  minMmm = 123.0;
-  maxMmm = 127.0;
+//  minMmm = 123.0;
+//  maxMmm = 127.0;
 
   TChain * tree = new TChain("tree");
 

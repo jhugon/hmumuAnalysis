@@ -222,20 +222,20 @@ void TMVAClassification( TString myMethodList = "" )
 
    factory->AddVariable( "ptMu1","Leading #mu p_{T}","GeV", 'F' );
    factory->AddVariable( "ptMu2","Sub-Leading #mu p_{T}","GeV", 'F' );
-   factory->AddSpectator( "etaMu1","Leading #mu #eta","", 'F' );
-   factory->AddSpectator( "etaMu2","Sub-Leading #mu #eta","", 'F' );
+   factory->AddVariable( "etaMu1","Leading #mu #eta","", 'F' );
+   factory->AddVariable( "etaMu2","Sub-Leading #mu #eta","", 'F' );
 
    factory->AddSpectator( "ptJet1","Leading Jet p_{T}","GeV", 'F' );
    factory->AddSpectator( "ptJet2","Sub-Leading Jet p_{T}","GeV", 'F' );
    factory->AddSpectator( "etaJet1","Leading Jet #eta","", 'F' );
    factory->AddSpectator( "etaJet2","Sub-Leading Jet #eta","", 'F' );
 
-   factory->AddVariable( "cosThetaStar","cos(#theta^{#star})","", 'F' );
+   factory->AddSpectator( "cosThetaStar","cos(#theta^{#star})","", 'F' );
    factory->AddSpectator( "deltaEtaJets","#Delta#eta(jj)","", 'F' );
    factory->AddSpectator( "productEtaJets","#eta(j_{1})#times#eta(j_{2})","", 'F' );
    factory->AddSpectator( "nJetsInRapidityGap","N_{jets} in #eta Gap","", 'I' );
    //TCut mycuts = "ptMu1>20.0 && ptMu2>20.0 && abs(etaMu1)<2.4 && abs(etaMu2)<2.4 && mDiMu > 110.0 && mDiMu < 150.0";
-   TCut mycuts = "";
+   TCut mycuts = "mDiMu > 110 && mDiMu < 150.0";
 
    //factory->AddVariable( "myvar2 := var1-var2", "Expression 2", "", 'F' );
 
