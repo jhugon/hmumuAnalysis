@@ -39,7 +39,9 @@ int main(int argc, char *argv[])
   for(unsigned iarg=2; iarg<argc;iarg++)
   {
     tree->AddFile(argv[iarg]);
+    cout << "Running on file " << argv[iarg] << endl;
   }
+  cout << "Output file " << argv[1] << endl;
 
   //////////////////////////
   // Tree Branches
@@ -187,7 +189,8 @@ int main(int argc, char *argv[])
     starMuon1.Boost(-boost);
     starMuon2.Boost(-boost);
 
-    if (muon1.charge>0)
+    //if (muon1.charge>0)
+    if ((int) (1000 * muon1.pt) % 2 == 0)
     {
         TVector3 directionOfBoost = starMuon1.BoostVector();
         cosThetaStar = directionOfBoost.Dot(diMuon.BoostVector()) / (directionOfBoost.Mag()*diMuon.BoostVector().Mag());

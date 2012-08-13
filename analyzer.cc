@@ -87,13 +87,18 @@ int main(int argc, char *argv[])
   //////////////////////////
   // Histograms
 
-  TH1F* mDiMu = new TH1F("mDiMu","DiMuon Mass",200,0,200);
-  TH1F* mDiMuVBFSelected = new TH1F("mDiMuVBFSelected","DiMuon Mass after VBF Selection",200,0,200);
-  TH1F* mDiMuVBFLooseSelected = new TH1F("mDiMuVBFLooseSelected","DiMuon Mass after VBFLoose Selection",200,0,200);
-  TH1F* mDiMuVBFTightSelected = new TH1F("mDiMuVBFTightSelected","DiMuon Mass after VBFTight Selection",200,0,200);
-  TH1F* mDiMuZPt30Selected = new TH1F("mDiMuZPt30Selected","DiMuon Mass after p_T^{#mu#mu}>30 GeV Selection",200,0,200);
-  TH1F* mDiMuZPt50Selected = new TH1F("mDiMuZPt50Selected","DiMuon Mass after p_T^{#mu#mu}>50 GeV Selection",200,0,200);
-  TH1F* mDiMuZPt75Selected = new TH1F("mDiMuZPt75Selected","DiMuon Mass after p_T^{#mu#mu}>75 GeV Selection",200,0,200);
+  TH1F* mDiMu = new TH1F("mDiMu","DiMuon Mass",400,0,400);
+  TH1F* mDiMuVBFSelected = new TH1F("mDiMuVBFSelected","DiMuon Mass after VBF Selection",400,0,400);
+  TH1F* mDiMuVBFLooseSelected = new TH1F("mDiMuVBFLooseSelected","DiMuon Mass after VBFLoose Selection",400,0,400);
+  TH1F* mDiMuVBFTightSelected = new TH1F("mDiMuVBFTightSelected","DiMuon Mass after VBFTight Selection",400,0,400);
+  TH1F* mDiMuZPt30Selected = new TH1F("mDiMuZPt30Selected","DiMuon Mass after p_T^{#mu#mu}>30 GeV Selection",400,0,400);
+  TH1F* mDiMuZPt50Selected = new TH1F("mDiMuZPt50Selected","DiMuon Mass after p_T^{#mu#mu}>50 GeV Selection",400,0,400);
+  TH1F* mDiMuZPt75Selected = new TH1F("mDiMuZPt75Selected","DiMuon Mass after p_T^{#mu#mu}>75 GeV Selection",400,0,400);
+
+  TH1F* mDiMuEta11 = new TH1F("mDiMuEta11","DiMuon Mass",400,0,400);
+  TH1F* mDiMuEta12 = new TH1F("mDiMuEta12","DiMuon Mass",400,0,400);
+  TH1F* mDiMuEta22 = new TH1F("mDiMuEta22","DiMuon Mass",400,0,400);
+
   TH1F* mDiJet = new TH1F("mDiJet","DiJet Mass",500,0,2000);
 
   TH1F* ptDiMu = new TH1F("ptDiMu","DiMuon Pt",250,0,500);
@@ -206,7 +211,8 @@ int main(int argc, char *argv[])
 
 
     double cosThetaStar=0.0;
-    if (muon1.charge>0)
+    //if (muon1.charge>0)
+    if ((int) (1000 * muon1.pt) % 2 == 0)
     {
         TVector3 directionOfBoost = starMuon1.BoostVector();
         cosThetaStar = directionOfBoost.Dot(diMuon.BoostVector()) / (directionOfBoost.Mag()*diMuon.BoostVector().Mag());
@@ -251,6 +257,21 @@ int main(int argc, char *argv[])
         }
       }
     }
+
+    // Eta Categories
+    if(fabs(muon1.eta) < 1.0 && fabs(muon2.eta) < 1.0)
+    {
+      mDiMuEta11->Fill(recoCandMass);
+    }
+    if(fabs(muon1.eta) < 1.0 || fabs(muon2.eta) < 1.0)
+    {
+      mDiMuEta12->Fill(recoCandMass);
+    }
+    else
+    {
+      mDiMuEta22->Fill(recoCandMass);
+    }
+
     // Jet Part
     bool goodJets = false;
     if(jets.nPFjets>=2 && jets.pfJetPt[0]>30.0 && jets.pfJetPt[1]>30.0)
@@ -392,6 +413,10 @@ int main(int argc, char *argv[])
   mDiMuVBFSelected->Write();
   mDiMuVBFLooseSelected->Write();
   mDiMuVBFTightSelected->Write();
+
+  mDiMuEta11->Write();
+  mDiMuEta12->Write();
+  mDiMuEta22->Write();
 
   ptDiMu->Write();
   ptDiMuVBFSelected->Write();
