@@ -32,8 +32,8 @@ int main(int argc, char *argv[])
 
   float minMmm = 100.0;
   float maxMmm = 200.0;
-//  minMmm = 123.0;
-//  maxMmm = 127.0;
+  //minMmm = 123.0;
+  //maxMmm = 127.0;
 
   TChain * tree = new TChain("tree");
 
@@ -87,17 +87,17 @@ int main(int argc, char *argv[])
   //////////////////////////
   // Histograms
 
-  TH1F* mDiMu = new TH1F("mDiMu","DiMuon Mass",400,0,400);
-  TH1F* mDiMuVBFSelected = new TH1F("mDiMuVBFSelected","DiMuon Mass after VBF Selection",400,0,400);
-  TH1F* mDiMuVBFLooseSelected = new TH1F("mDiMuVBFLooseSelected","DiMuon Mass after VBFLoose Selection",400,0,400);
-  TH1F* mDiMuVBFTightSelected = new TH1F("mDiMuVBFTightSelected","DiMuon Mass after VBFTight Selection",400,0,400);
-  TH1F* mDiMuZPt30Selected = new TH1F("mDiMuZPt30Selected","DiMuon Mass after p_T^{#mu#mu}>30 GeV Selection",400,0,400);
-  TH1F* mDiMuZPt50Selected = new TH1F("mDiMuZPt50Selected","DiMuon Mass after p_T^{#mu#mu}>50 GeV Selection",400,0,400);
-  TH1F* mDiMuZPt75Selected = new TH1F("mDiMuZPt75Selected","DiMuon Mass after p_T^{#mu#mu}>75 GeV Selection",400,0,400);
+  TH1F* mDiMu = new TH1F("mDiMu","DiMuon Mass",800,0,400);
+  TH1F* mDiMuVBFSelected = new TH1F("mDiMuVBFSelected","DiMuon Mass after VBF Selection",800,0,400);
+  TH1F* mDiMuVBFLooseSelected = new TH1F("mDiMuVBFLooseSelected","DiMuon Mass after VBFLoose Selection",800,0,400);
+  TH1F* mDiMuVBFTightSelected = new TH1F("mDiMuVBFTightSelected","DiMuon Mass after VBFTight Selection",800,0,400);
+  TH1F* mDiMuZPt30Selected = new TH1F("mDiMuZPt30Selected","DiMuon Mass after p_T^{#mu#mu}>30 GeV Selection",800,0,400);
+  TH1F* mDiMuZPt50Selected = new TH1F("mDiMuZPt50Selected","DiMuon Mass after p_T^{#mu#mu}>50 GeV Selection",800,0,400);
+  TH1F* mDiMuZPt75Selected = new TH1F("mDiMuZPt75Selected","DiMuon Mass after p_T^{#mu#mu}>75 GeV Selection",800,0,400);
 
-  TH1F* mDiMuEta11 = new TH1F("mDiMuEta11","DiMuon Mass",400,0,400);
-  TH1F* mDiMuEta12 = new TH1F("mDiMuEta12","DiMuon Mass",400,0,400);
-  TH1F* mDiMuEta22 = new TH1F("mDiMuEta22","DiMuon Mass",400,0,400);
+  TH1F* mDiMuEta11 = new TH1F("mDiMuEta11","DiMuon Mass",800,0,400);
+  TH1F* mDiMuEta12 = new TH1F("mDiMuEta12","DiMuon Mass",800,0,400);
+  TH1F* mDiMuEta22 = new TH1F("mDiMuEta22","DiMuon Mass",800,0,400);
 
   TH1F* mDiJet = new TH1F("mDiJet","DiJet Mass",500,0,2000);
 
