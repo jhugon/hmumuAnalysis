@@ -92,12 +92,15 @@ int main(int argc, char *argv[])
   // Histograms
 
   TH1F* mDiMu = new TH1F("mDiMu","DiMuon Mass",1600,0,400);
-  TH1F* mDiMuVBFSelected = new TH1F("mDiMuVBFSelected","DiMuon Mass after VBF Selection",1600,0,400);
-  TH1F* mDiMuVBFLooseSelected = new TH1F("mDiMuVBFLooseSelected","DiMuon Mass after VBFLoose Selection",1600,0,400);
-  TH1F* mDiMuVBFTightSelected = new TH1F("mDiMuVBFTightSelected","DiMuon Mass after VBFTight Selection",1600,0,400);
-  TH1F* mDiMuZPt30Selected = new TH1F("mDiMuZPt30Selected","DiMuon Mass after p_T^{#mu#mu}>30 GeV Selection",1600,0,400);
-  TH1F* mDiMuZPt50Selected = new TH1F("mDiMuZPt50Selected","DiMuon Mass after p_T^{#mu#mu}>50 GeV Selection",1600,0,400);
-  TH1F* mDiMuZPt75Selected = new TH1F("mDiMuZPt75Selected","DiMuon Mass after p_T^{#mu#mu}>75 GeV Selection",1600,0,400);
+  TH1F* mDiMuVBFM = new TH1F("mDiMuVBFM","DiMuon Mass after VBF Selection",1600,0,400);
+  TH1F* mDiMuVBFL = new TH1F("mDiMuVBFL","DiMuon Mass after VBFLoose Selection",1600,0,400);
+  TH1F* mDiMuVBFT = new TH1F("mDiMuVBFT","DiMuon Mass after VBFTight Selection",1600,0,400);
+  TH1F* mDiMuVBFVL = new TH1F("mDiMuVBFVL","DiMuon Mass after VBFVeryLoose Selection",1600,0,400);
+  TH1F* mDiMuPtL30 = new TH1F("mDiMuPtL30","DiMuon Mass after p_T^{#mu#mu}>30 GeV Selection",1600,0,400);
+  TH1F* mDiMuPt30to50 = new TH1F("mDiMuPt30to50","DiMuon Mass after p_T^{#mu#mu}>30 GeV Selection",1600,0,400);
+  TH1F* mDiMuPt50to75 = new TH1F("mDiMuPt50to75","DiMuon Mass after p_T^{#mu#mu}>50 GeV Selection",1600,0,400);
+  TH1F* mDiMuPt75to125 = new TH1F("mDiMuPt75to125","DiMuon Mass after p_T^{#mu#mu}>50 GeV Selection",1600,0,400);
+  TH1F* mDiMuPt125 = new TH1F("mDiMuPt125","DiMuon Mass after p_T^{#mu#mu}>75 GeV Selection",1600,0,400);
 
   TH1F* mDiMuEta11 = new TH1F("mDiMuEta11","DiMuon Mass",1600,0,400);
   TH1F* mDiMuEta12 = new TH1F("mDiMuEta12","DiMuon Mass",1600,0,400);
@@ -106,15 +109,15 @@ int main(int argc, char *argv[])
   TH1F* mDiJet = new TH1F("mDiJet","DiJet Mass",500,0,2000);
 
   TH1F* ptDiMu = new TH1F("ptDiMu","DiMuon Pt",250,0,500);
-  TH1F* ptDiMuVBFSelected = new TH1F("ptDiMuVBFSelected","DiMuon Pt after VBF Selection",250,0,500);
-  TH1F* ptDiMuVBFLooseSelected = new TH1F("ptDiMuVBFLooseSelected","DiMuon Pt after VBFLoose Selection",250,0,500);
+  TH1F* ptDiMuVBFM = new TH1F("ptDiMuVBFM","DiMuon Pt after VBF Selection",250,0,500);
+  TH1F* ptDiMuVBFL = new TH1F("ptDiMuVBFL","DiMuon Pt after VBFLoose Selection",250,0,500);
 
   TH1F* yDiMu = new TH1F("yDiMu","DiMuon Rapidity",100,-4,4);
-  TH1F* yDiMuVBFSelected = new TH1F("yDiMuVBFSelected","DiMuon Rapidity after VBF Selection",100,-4,4);
-  TH1F* yDiMuVBFLooseSelected = new TH1F("yDiMuVBFLooseSelected","DiMuon Rapidity after VBFLoose Selection",100,-4,4);
-  TH1F* yDiMuZPt30Selected = new TH1F("yDiMuZPt30Selected","DiMuon Rapidity after #mu#mu Pt>30 Selection",100,-4,4);
-  TH1F* yDiMuZPt50Selected = new TH1F("yDiMuZPt50Selected","DiMuon Rapidity after #mu#mu Pt>50 Selection",100,-4,4);
-  TH1F* yDiMuZPt75Selected = new TH1F("yDiMuZPt75Selected","DiMuon Rapidity after #mu#mu Pt>75 Selection",100,-4,4);
+  TH1F* yDiMuVBFM = new TH1F("yDiMuVBFM","DiMuon Rapidity after VBF Selection",100,-4,4);
+  TH1F* yDiMuVBFL = new TH1F("yDiMuVBFL","DiMuon Rapidity after VBFLoose Selection",100,-4,4);
+  TH1F* yDiMuPt30 = new TH1F("yDiMuPt30","DiMuon Rapidity after #mu#mu Pt>30 Selection",100,-4,4);
+  TH1F* yDiMuPt50 = new TH1F("yDiMuPt50","DiMuon Rapidity after #mu#mu Pt>50 Selection",100,-4,4);
+  TH1F* yDiMuPt75 = new TH1F("yDiMuPt75","DiMuon Rapidity after #mu#mu Pt>75 Selection",100,-4,4);
 
   TH2F* yVptDiMu = new TH2F("yVptDiMu","DiMuon Rapidity v. p_{T}",250,0,500,100,0,4);
 
@@ -136,17 +139,17 @@ int main(int argc, char *argv[])
   countsHist->GetXaxis()->SetBinLabel(3,"VBFL");
   countsHist->GetXaxis()->SetBinLabel(4,"VBF");
   countsHist->GetXaxis()->SetBinLabel(5,"VBFT");
-  countsHist->GetXaxis()->SetBinLabel(6,"ZPt30");
-  countsHist->GetXaxis()->SetBinLabel(7,"ZPt50");
-  countsHist->GetXaxis()->SetBinLabel(8,"ZPt75");
+  countsHist->GetXaxis()->SetBinLabel(6,"Pt30");
+  countsHist->GetXaxis()->SetBinLabel(7,"Pt50");
+  countsHist->GetXaxis()->SetBinLabel(8,"Pt75");
 
   TH1F* cosThetaStarHist = new TH1F("cosThetaStar","cos(#theta^{*})",50,-1.,1.);
-  TH1F* cosThetaStarVBFSelectedHist = new TH1F("cosThetaStarVBFSelected","cos(#theta^{*})",50,-1.,1.);
-  TH1F* cosThetaStarVBFLooseSelectedHist = new TH1F("cosThetaStarVBFLooseSelected","cos(#theta^{*})",50,-1.,1.);
-  TH1F* cosThetaStarVBFTightSelectedHist = new TH1F("cosThetaStarVBFTightSelected","cos(#theta^{*})",50,-1.,1.);
-  TH1F* cosThetaStarZPt30SelectedHist = new TH1F("cosThetaStarZPt30Selected","cos(#theta^{*})",50,-1.,1.);
-  TH1F* cosThetaStarZPt50SelectedHist = new TH1F("cosThetaStarZPt50Selected","cos(#theta^{*})",50,-1.,1.);
-  TH1F* cosThetaStarZPt75SelectedHist = new TH1F("cosThetaStarZPt75Selected","cos(#theta^{*})",50,-1.,1.);
+  TH1F* cosThetaStarVBFMHist = new TH1F("cosThetaStarVBFM","cos(#theta^{*})",50,-1.,1.);
+  TH1F* cosThetaStarVBFLHist = new TH1F("cosThetaStarVBFL","cos(#theta^{*})",50,-1.,1.);
+  TH1F* cosThetaStarVBFTHist = new TH1F("cosThetaStarVBFT","cos(#theta^{*})",50,-1.,1.);
+  TH1F* cosThetaStarPt30Hist = new TH1F("cosThetaStarPt30","cos(#theta^{*})",50,-1.,1.);
+  TH1F* cosThetaStarPt50Hist = new TH1F("cosThetaStarPt50","cos(#theta^{*})",50,-1.,1.);
+  TH1F* cosThetaStarPt75Hist = new TH1F("cosThetaStarPt75","cos(#theta^{*})",50,-1.,1.);
 
   TH1F* puJetIDSimpleDiscJet1Hist = new TH1F("puJetIDSimpleDiscJet1","PU Jet ID--Simple Discriminator Leading Jet",50,-1.,1.);
   TH1F* puJetIDSimpleDiscJet2Hist = new TH1F("puJetIDSimpleDiscJet2","PU Jet ID--Simple Discriminator Sub-Leading Jet",50,-1.,1.);
@@ -335,25 +338,21 @@ int main(int argc, char *argv[])
     if (recoCandPt>30.0)
     {
       countsHist->Fill(5.0);
-      mDiMuZPt30Selected->Fill(recoCandMass);
-      yDiMuZPt30Selected->Fill(recoCandY);
-      cosThetaStarZPt30SelectedHist->Fill(cosThetaStar);
+      yDiMuPt30->Fill(recoCandY);
+      cosThetaStarPt30Hist->Fill(cosThetaStar);
       if (recoCandPt>50.0)
       {
         countsHist->Fill(6.0);
-        mDiMuZPt50Selected->Fill(recoCandMass);
-        yDiMuZPt50Selected->Fill(recoCandY);
-        cosThetaStarZPt50SelectedHist->Fill(cosThetaStar);
+        yDiMuPt50->Fill(recoCandY);
+        cosThetaStarPt50Hist->Fill(cosThetaStar);
         if (recoCandPt>75.0)
         {
           countsHist->Fill(7.0);
-          mDiMuZPt75Selected->Fill(recoCandMass);
-          yDiMuZPt75Selected->Fill(recoCandY);
-          cosThetaStarZPt75SelectedHist->Fill(cosThetaStar);
+          yDiMuPt75->Fill(recoCandY);
+          cosThetaStarPt75Hist->Fill(cosThetaStar);
         }
       }
     }
-
     // Eta Categories
     if(fabs(muon1.eta) < 1.0 && fabs(muon2.eta) < 1.0)
     {
@@ -368,23 +367,12 @@ int main(int argc, char *argv[])
       mDiMuEta22->Fill(recoCandMass);
     }
 
-    // Muon Only MVA
-    if (recoCandMass>110.0 && recoCandMass < 140.0)
-    {
-        float likelihooodDisc = readerMuonOnly->EvaluateMVA("Likelihood");
-        float BDTDisc = readerMuonOnly->EvaluateMVA("BDT");
-        float LDDisc = readerMuonOnly->EvaluateMVA("LD");
-        //std::cout << "BDT: "<< BDTDisc << " likelihood: " << likelihooodDisc << " LD: " << LDDisc << std::endl;
-        likelihoodHistMuonOnly->Fill(likelihooodDisc);
-        LDHistMuonOnly->Fill(LDDisc);
-        BDTHistMuonOnly->Fill(BDTDisc);
-    }
-
     // Jet Part
     bool goodJets = false;
     if(jets.nPFjets>=2 && jets.pfJetPt[0]>30.0 && jets.pfJetPt[1]>30.0)
         goodJets = true;
 
+    bool VBFCategory = false;
     if(goodJets)
     {
       TLorentzVector pJet1;
@@ -462,6 +450,7 @@ int main(int argc, char *argv[])
       //VBF MVA
       if (nJetsInRapidityGapMVA==0 && productEtaJetsMVA<0.0)
       {
+        VBFCategory=true;
         float likelihooodDisc = readerVBF->EvaluateMVA("Likelihood");
         float BDTDisc = readerVBF->EvaluateMVA("BDT");
         float LDDisc = readerVBF->EvaluateMVA("LD");
@@ -469,24 +458,38 @@ int main(int argc, char *argv[])
         likelihoodHistVBF->Fill(likelihooodDisc);
         LDHistVBF->Fill(LDDisc);
         BDTHistVBF->Fill(BDTDisc);
+        mDiMuVBFVL->Fill(recoCandMass);
       }
 
       //VBFLoose Selection
+      bool vbfLoose = true;
       if(dEtaJets <= 3.0)
-          continue;
+          vbfLoose =false;
       if(etaJetProduct >= 0)
-          continue;
+          vbfLoose =false;
       if(diJet.M()<=300.0)
-          continue;
+          vbfLoose =false;
       if (jetInRapidityGap)
-          continue;
+          vbfLoose =false;
+
+      //VBF Selection
+      bool vbfSelected = vbfLoose;
+      if(dEtaJets <= 4.0)
+        vbfSelected=false;
+      if(diJet.M()<=400.0)
+        vbfSelected=false;
+      // Below already checked
+      //if(etaJetProduct >= 0)
+      //    continue;
+      //if (jetInRapidityGap)
+      //    continue;
   
-      //VBFLoose Selected
-      mDiMuVBFLooseSelected->Fill(recoCandMass);
-      ptDiMuVBFLooseSelected->Fill(recoCandPt);
-      yDiMuVBFLooseSelected->Fill(recoCandY);
-      cosThetaStarVBFLooseSelectedHist->Fill(cosThetaStar);
-      countsHist->Fill(2.0);
+      //VBF Tight Selection
+      bool vbfTight = vbfSelected;
+      if(dEtaJets <= 5.0)
+        vbfTight=false;
+
+  
   
 //HIG-12-007 PAS H->tautau
 //The VBF category requires at least two jets with pT > 30 GeV/c, |η1 − η2 | > 4.0 and
@@ -495,33 +498,59 @@ int main(int argc, char *argv[])
 //jet with pT > 30 GeV/c in the rapidity region between the two jets.
   
   
-      //VBF Selection
-      if(dEtaJets <= 4.0)
-          continue;
-      if(diJet.M()<=400.0)
-          continue;
-      // Below already checked
-      //if(etaJetProduct >= 0)
-      //    continue;
-      //if (jetInRapidityGap)
-      //    continue;
+      if(vbfTight)
+      {
+        countsHist->Fill(4.0);
+        mDiMuVBFT->Fill(recoCandMass);
+        cosThetaStarVBFTHist->Fill(cosThetaStar);
+      }
+      else if(vbfSelected)
+      {
+        mDiMuVBFM->Fill(recoCandMass);
+        ptDiMuVBFM->Fill(recoCandPt);
+        yDiMuVBFM->Fill(recoCandY);
+        cosThetaStarVBFMHist->Fill(cosThetaStar);
+        countsHist->Fill(3.0);
+      }
+      else if(vbfLoose)
+      {
+        mDiMuVBFL->Fill(recoCandMass);
+        ptDiMuVBFL->Fill(recoCandPt);
+        yDiMuVBFL->Fill(recoCandY);
+        cosThetaStarVBFLHist->Fill(cosThetaStar);
+        countsHist->Fill(2.0);
+      }
   
-      //VBF Selected
-      mDiMuVBFSelected->Fill(recoCandMass);
-      ptDiMuVBFSelected->Fill(recoCandPt);
-      yDiMuVBFSelected->Fill(recoCandY);
-      cosThetaStarVBFSelectedHist->Fill(cosThetaStar);
-      countsHist->Fill(3.0);
-  
-      //VBF Tight Selection
-      if(dEtaJets <= 5.0)
-          continue;
-
-      //VBF Tight Selected
-      countsHist->Fill(4.0);
-      mDiMuVBFTightSelected->Fill(recoCandMass);
-      cosThetaStarVBFTightSelectedHist->Fill(cosThetaStar);
     } //end jet part
+
+    if (!VBFCategory)
+    {
+      if(recoCandPt<30.0)
+          mDiMuPtL30->Fill(recoCandMass);
+      else if(recoCandPt>=30.0 && recoCandPt<50.0)
+          mDiMuPt30to50->Fill(recoCandMass);
+      else if(recoCandPt>=50.0 && recoCandPt<75.0)
+          mDiMuPt50to75->Fill(recoCandMass);
+      else if(recoCandPt>=75.0 && recoCandPt<125.0)
+          mDiMuPt75to125->Fill(recoCandMass);
+      else if(recoCandPt>=125.0)
+          mDiMuPt125->Fill(recoCandMass);
+
+      // Muon Only MVA
+      if (recoCandMass>110.0 && recoCandMass < 140.0)
+      {
+        float likelihooodDisc = readerMuonOnly->EvaluateMVA("Likelihood");
+        float BDTDisc = readerMuonOnly->EvaluateMVA("BDT");
+        float LDDisc = readerMuonOnly->EvaluateMVA("LD");
+        //std::cout << "BDT: "<< BDTDisc << " likelihood: " << likelihooodDisc << " LD: " << LDDisc << std::endl;
+        likelihoodHistMuonOnly->Fill(likelihooodDisc);
+        LDHistMuonOnly->Fill(LDDisc);
+        BDTHistMuonOnly->Fill(BDTDisc);
+      }
+
+    }
+
+
   }// end event loop
 
   outFile->cd();
@@ -540,40 +569,43 @@ int main(int argc, char *argv[])
   etaJet2->Write();
 
   deltaEtaJets->Write();
-  mDiMuVBFSelected->Write();
-  mDiMuVBFLooseSelected->Write();
-  mDiMuVBFTightSelected->Write();
+  mDiMuVBFM->Write();
+  mDiMuVBFL->Write();
+  mDiMuVBFT->Write();
+  mDiMuVBFVL->Write();
 
   mDiMuEta11->Write();
   mDiMuEta12->Write();
   mDiMuEta22->Write();
 
   ptDiMu->Write();
-  ptDiMuVBFSelected->Write();
-  ptDiMuVBFLooseSelected->Write();
+  ptDiMuVBFM->Write();
+  ptDiMuVBFL->Write();
 
-  mDiMuZPt30Selected->Write();
-  mDiMuZPt50Selected->Write();
-  mDiMuZPt75Selected->Write();
+  mDiMuPtL30->Write();
+  mDiMuPt30to50->Write();
+  mDiMuPt50to75->Write();
+  mDiMuPt75to125->Write();
+  mDiMuPt125->Write();
 
   yDiMu->Write();
-  yDiMuVBFSelected->Write();
-  yDiMuVBFLooseSelected->Write();
-  yDiMuZPt30Selected->Write();
-  yDiMuZPt50Selected->Write();
-  yDiMuZPt75Selected->Write();
+  yDiMuVBFM->Write();
+  yDiMuVBFL->Write();
+  yDiMuPt30->Write();
+  yDiMuPt50->Write();
+  yDiMuPt75->Write();
 
   yVptDiMu->Write();
 
   countsHist->Write();
 
   cosThetaStarHist->Write();
-  cosThetaStarVBFSelectedHist->Write();
-  cosThetaStarVBFLooseSelectedHist->Write();
-  cosThetaStarVBFTightSelectedHist->Write();
-  cosThetaStarZPt30SelectedHist->Write();
-  cosThetaStarZPt50SelectedHist->Write();
-  cosThetaStarZPt75SelectedHist->Write();
+  cosThetaStarVBFMHist->Write();
+  cosThetaStarVBFLHist->Write();
+  cosThetaStarVBFTHist->Write();
+  cosThetaStarPt30Hist->Write();
+  cosThetaStarPt50Hist->Write();
+  cosThetaStarPt75Hist->Write();
 
   puJetIDSimpleDiscJet1Hist->Write();
   puJetIDSimpleDiscJet2Hist->Write();
