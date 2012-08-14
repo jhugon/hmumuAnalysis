@@ -14,6 +14,10 @@
 #include <TLegend.h>
 #include <TF1.h>
 
+#include "TMVA/Tools.h"
+#include "TMVA/Reader.h"
+#include "TMVA/MethodCuts.h"
+
 #include "DataFormats.h"
 #include "Helpers.h"
 
@@ -87,17 +91,17 @@ int main(int argc, char *argv[])
   //////////////////////////
   // Histograms
 
-  TH1F* mDiMu = new TH1F("mDiMu","DiMuon Mass",800,0,400);
-  TH1F* mDiMuVBFSelected = new TH1F("mDiMuVBFSelected","DiMuon Mass after VBF Selection",800,0,400);
-  TH1F* mDiMuVBFLooseSelected = new TH1F("mDiMuVBFLooseSelected","DiMuon Mass after VBFLoose Selection",800,0,400);
-  TH1F* mDiMuVBFTightSelected = new TH1F("mDiMuVBFTightSelected","DiMuon Mass after VBFTight Selection",800,0,400);
-  TH1F* mDiMuZPt30Selected = new TH1F("mDiMuZPt30Selected","DiMuon Mass after p_T^{#mu#mu}>30 GeV Selection",800,0,400);
-  TH1F* mDiMuZPt50Selected = new TH1F("mDiMuZPt50Selected","DiMuon Mass after p_T^{#mu#mu}>50 GeV Selection",800,0,400);
-  TH1F* mDiMuZPt75Selected = new TH1F("mDiMuZPt75Selected","DiMuon Mass after p_T^{#mu#mu}>75 GeV Selection",800,0,400);
+  TH1F* mDiMu = new TH1F("mDiMu","DiMuon Mass",1600,0,400);
+  TH1F* mDiMuVBFSelected = new TH1F("mDiMuVBFSelected","DiMuon Mass after VBF Selection",1600,0,400);
+  TH1F* mDiMuVBFLooseSelected = new TH1F("mDiMuVBFLooseSelected","DiMuon Mass after VBFLoose Selection",1600,0,400);
+  TH1F* mDiMuVBFTightSelected = new TH1F("mDiMuVBFTightSelected","DiMuon Mass after VBFTight Selection",1600,0,400);
+  TH1F* mDiMuZPt30Selected = new TH1F("mDiMuZPt30Selected","DiMuon Mass after p_T^{#mu#mu}>30 GeV Selection",1600,0,400);
+  TH1F* mDiMuZPt50Selected = new TH1F("mDiMuZPt50Selected","DiMuon Mass after p_T^{#mu#mu}>50 GeV Selection",1600,0,400);
+  TH1F* mDiMuZPt75Selected = new TH1F("mDiMuZPt75Selected","DiMuon Mass after p_T^{#mu#mu}>75 GeV Selection",1600,0,400);
 
-  TH1F* mDiMuEta11 = new TH1F("mDiMuEta11","DiMuon Mass",800,0,400);
-  TH1F* mDiMuEta12 = new TH1F("mDiMuEta12","DiMuon Mass",800,0,400);
-  TH1F* mDiMuEta22 = new TH1F("mDiMuEta22","DiMuon Mass",800,0,400);
+  TH1F* mDiMuEta11 = new TH1F("mDiMuEta11","DiMuon Mass",1600,0,400);
+  TH1F* mDiMuEta12 = new TH1F("mDiMuEta12","DiMuon Mass",1600,0,400);
+  TH1F* mDiMuEta22 = new TH1F("mDiMuEta22","DiMuon Mass",1600,0,400);
 
   TH1F* mDiJet = new TH1F("mDiJet","DiJet Mass",500,0,2000);
 
@@ -157,11 +161,57 @@ int main(int argc, char *argv[])
   TH1F* puJetIDSimpleJet3Hist = new TH1F("puJetIDSimpleJet3","PU Jet ID--Simple Loose 3rd Leading Jet",2,-0,2);
   puJetIDSimpleJet3Hist->GetXaxis()->SetBinLabel(1,"Fail");
   puJetIDSimpleJet3Hist->GetXaxis()->SetBinLabel(2,"Pass");
+
+  TH1F* BDTHistMuonOnly = new TH1F("BDTHistMuonOnly","BDT Discriminator",100,-5,5);
+  TH1F* likelihoodHistMuonOnly = new TH1F("likelihoodHistMuonOnly","Likelihood Discriminator",100,-5,5);
+  TH1F* LDHistMuonOnly = new TH1F("LDHistMuonOnly","LD Discriminator",100,-5,5);
+
+  //for MVA Applyer
+
+  float cosThetaStar=0.0;
+  float mDiJetMVA=-10.0;
+  float ptDiJetMVA=-10.0;
+  float yDiJetMVA=-10.0;
+  float ptMu1MVA=-10.0;
+  float ptMu2MVA=-10.0;
+  float etaMu1MVA=-10.0;
+  float etaMu2MVA=-10.0;
+  float ptJet1MVA=-10.0;
+  float ptJet2MVA=-10.0;
+  float etaJet1MVA=-10.0;
+  float etaJet2MVA=-10.0;
+  float deltaEtaJetsMVA=-10.0;
+  float productEtaJetsMVA=-10.0;
+  int nJetsInRapidityGapMVA=-10;
+
+  //Muon Only MVA
+   TMVA::Reader * readerMuonOnly = new TMVA::Reader("!Color:!Silent");
+   readerMuonOnly->AddVariable( "mDiMu", &recoCandMass);
+   readerMuonOnly->AddVariable( "ptDiMu", &recoCandPt);
+   readerMuonOnly->AddVariable( "yDiMu", &recoCandY);
+   readerMuonOnly->AddSpectator( "mDiJet", &mDiJetMVA);
+   readerMuonOnly->AddSpectator( "ptDiJet", &ptDiJetMVA);
+   readerMuonOnly->AddSpectator( "yDiJet", &yDiJetMVA);
+
+   readerMuonOnly->AddVariable( "ptMu1", &ptMu1MVA);
+   readerMuonOnly->AddVariable( "ptMu2", &ptMu2MVA);
+   readerMuonOnly->AddVariable( "etaMu1", &etaMu1MVA);
+   readerMuonOnly->AddVariable( "etaMu2", &etaMu2MVA);
+
+   readerMuonOnly->AddSpectator( "ptJet1", &ptJet1MVA);
+   readerMuonOnly->AddSpectator( "ptJet2", &ptJet2MVA);
+   readerMuonOnly->AddSpectator( "etaJet1", &etaJet1MVA);
+   readerMuonOnly->AddSpectator( "etaJet2", &etaJet2MVA);
+
+   readerMuonOnly->AddVariable( "cosThetaStar", &cosThetaStar);
+   readerMuonOnly->AddSpectator( "deltaEtaJets", &deltaEtaJetsMVA);
+   readerMuonOnly->AddSpectator( "productEtaJets", &productEtaJetsMVA);
+   readerMuonOnly->AddSpectator( "nJetsInRapidityGap", &nJetsInRapidityGapMVA);
+
+   readerMuonOnly->BookMVA("BDT","weightsMuonOnly/TMVAClassification_BDT.weights.xml");
+   readerMuonOnly->BookMVA("Likelihood","weightsMuonOnly/TMVAClassification_Likelihood.weights.xml");
+   readerMuonOnly->BookMVA("LD","weightsMuonOnly/TMVAClassification_LD.weights.xml");
   
-  unsigned nLightJets = 0;
-  unsigned nBJets = 0;
-  unsigned nBTagLightJets = 0;
-  unsigned nBTagBJets = 0;
   unsigned nEvents = tree->GetEntries();
   cout << "nEvents: " << nEvents << endl;
   for(unsigned i=0; i<nEvents;i++)
@@ -194,6 +244,22 @@ int main(int argc, char *argv[])
         muon2 = reco1;
     }
 
+    cosThetaStar=-10.0;
+    mDiJetMVA=-10.0;
+    ptDiJetMVA=-10.0;
+    yDiJetMVA=-10.0;
+    ptMu1MVA=muon1.pt;
+    ptMu2MVA=muon2.pt;
+    etaMu1MVA=muon1.eta;
+    etaMu2MVA=muon2.eta;
+    ptJet1MVA=-10.0;
+    ptJet2MVA=-10.0;
+    etaJet1MVA=-10.0;
+    etaJet2MVA=-10.0;
+    deltaEtaJetsMVA=-10.0;
+    productEtaJetsMVA=-10.0;
+    nJetsInRapidityGapMVA=-10;
+
     //////////////////////////////////////////
     //Computing CosTheta*
 
@@ -209,8 +275,6 @@ int main(int argc, char *argv[])
     starMuon1.Boost(-boost);
     starMuon2.Boost(-boost);
 
-
-    double cosThetaStar=0.0;
     //if (muon1.charge>0)
     if ((int) (1000 * muon1.pt) % 2 == 0)
     {
@@ -272,6 +336,18 @@ int main(int argc, char *argv[])
       mDiMuEta22->Fill(recoCandMass);
     }
 
+    // Muon Only MVA
+    if (recoCandMass>110.0 && recoCandMass < 140.0)
+    {
+        float likelihooodDisc = readerMuonOnly->EvaluateMVA("Likelihood");
+        float BDTDisc = readerMuonOnly->EvaluateMVA("BDT");
+        float LDDisc = readerMuonOnly->EvaluateMVA("LD");
+        //std::cout << "BDT: "<< BDTDisc << " likelihood: " << likelihooodDisc << " LD: " << LDDisc << std::endl;
+        likelihoodHistMuonOnly->Fill(likelihooodDisc);
+        LDHistMuonOnly->Fill(likelihooodDisc);
+        BDTHistMuonOnly->Fill(likelihooodDisc);
+    }
+
     // Jet Part
     bool goodJets = false;
     if(jets.nPFjets>=2 && jets.pfJetPt[0]>30.0 && jets.pfJetPt[1]>30.0)
@@ -307,6 +383,7 @@ int main(int argc, char *argv[])
           etaMin = jets.pfJetEta[1];
       }
       bool jetInRapidityGap=false;
+      nJetsInRapidityGapMVA = 0;
       for(unsigned iJet=2; (iJet < jets.nPFjets && iJet < 10);iJet++)
       {
         if(jets.pfJetPt[iJet] > 30.0)
@@ -314,7 +391,7 @@ int main(int argc, char *argv[])
           if(jets.pfJetEta[iJet] < etaMax && jets.pfJetEta[iJet] > etaMin)
           {
             jetInRapidityGap = true;
-            break;
+            nJetsInRapidityGapMVA++;
           }
         }
       }
@@ -340,6 +417,15 @@ int main(int argc, char *argv[])
         }
       }
 #endif
+
+      mDiJetMVA = diJet.M();
+      yDiJetMVA = diJet.Rapidity();
+      ptDiJetMVA = diJet.Pt();
+      ptJet1MVA = pJet1.Pt();
+      ptJet2MVA = pJet2.Pt();
+      etaJet1MVA = pJet1.Eta();
+      etaJet2MVA = pJet2.Eta();
+      productEtaJetsMVA = etaJetProduct;
 
       //VBFLoose Selection
       if(dEtaJets <= 3.0)
@@ -453,6 +539,11 @@ int main(int argc, char *argv[])
   puJetIDSimpleJet2Hist->Write();
   puJetIDSimpleJet3Hist->Write();
 
+  BDTHistMuonOnly->Write();
+  likelihoodHistMuonOnly->Write();
+  LDHistMuonOnly->Write();
+
+  delete readerMuonOnly;
   cout << "analyzer done." << endl << endl;
   return 0;
 }

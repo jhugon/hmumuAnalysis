@@ -187,7 +187,6 @@ void TMVAClassification( TString myMethodList = "" )
    // [all types of expressions that can also be parsed by TTree::Draw( "expression" )]
 
    // VBF Analysis
-   /*
    factory->AddVariable( "mDiMu","m_{#mu#mu}","GeV", 'F' );
    factory->AddVariable( "ptDiMu","p_{T,#mu#mu}","GeV", 'F' );
    factory->AddVariable( "yDiMu","y_{#mu#mu}","", 'F' );
@@ -209,9 +208,9 @@ void TMVAClassification( TString myMethodList = "" )
    factory->AddVariable( "deltaEtaJets","#Delta#eta(jj)","", 'F' );
    factory->AddSpectator( "productEtaJets","#eta(j_{1})#times#eta(j_{2})","", 'F' );
    factory->AddSpectator( "nJetsInRapidityGap","N_{jets} in #eta Gap","", 'I' );
-   TCut mycuts = "ptMu1>20.0 && ptMu2>20.0 && abs(etaMu1)<2.4 && abs(etaMu2)<2.4 && nJetsInRapidityGap==0 && productEtaJets<0.0";
-  */
+   TCut mycuts = "ptMu1>20.0 && ptMu2>20.0 && abs(etaMu1)<2.4 && abs(etaMu2)<2.4 && nJetsInRapidityGap!=0 && productEtaJets>=0.0";
 
+/*
    // Muon Only Analysis
    factory->AddVariable( "mDiMu","m_{#mu#mu}","GeV", 'F' );
    factory->AddVariable( "ptDiMu","p_{T,#mu#mu}","GeV", 'F' );
@@ -234,8 +233,9 @@ void TMVAClassification( TString myMethodList = "" )
    factory->AddSpectator( "deltaEtaJets","#Delta#eta(jj)","", 'F' );
    factory->AddSpectator( "productEtaJets","#eta(j_{1})#times#eta(j_{2})","", 'F' );
    factory->AddSpectator( "nJetsInRapidityGap","N_{jets} in #eta Gap","", 'I' );
-   //TCut mycuts = "ptMu1>20.0 && ptMu2>20.0 && abs(etaMu1)<2.4 && abs(etaMu2)<2.4 && mDiMu > 110.0 && mDiMu < 150.0";
-   TCut mycuts = "mDiMu > 110 && mDiMu < 140.0";
+   //TCut mycuts = "mDiMu > 110 && mDiMu < 140.0 && ptMu1>20.0 && ptMu2>20.0 && abs(etaMu1)<2.4 && abs(etaMu2)<2.4 && (nJetsInRapidityGap!=0 || productEtaJets>=0.0)";
+   TCut mycuts = "mDiMu > 110 && mDiMu < 140.0 && ptMu1>20.0 && ptMu2>20.0 && abs(etaMu1)<2.4 && abs(etaMu2)<2.4";
+*/
 
    //factory->AddVariable( "myvar2 := var1-var2", "Expression 2", "", 'F' );
 
