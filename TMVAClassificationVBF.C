@@ -48,10 +48,10 @@
 #include "TMVA/Tools.h"
 #endif
 
-void TMVAClassification( TString myMethodList = "" )
+void TMVAClassificationVBF( TString myMethodList = "" )
 {
 
-   TString inSigfname = "signalTree.root";
+   TString inSigfname = "signalTreeVBF.root";
    TString inBckfname = "backgroundTree.root";
    // Trees are name "tree"
 
@@ -161,7 +161,7 @@ void TMVAClassification( TString myMethodList = "" )
    // --- Here the preparation phase begins
 
    // Create a ROOT output file where TMVA will store ntuples, histograms, etc.
-   TString outfileName( "TMVA.root" );
+   TString outfileName( "TMVAVBF.root" );
    TFile* outputFile = TFile::Open( outfileName, "RECREATE" );
 
    // Create the factory object. Later you can choose the methods
