@@ -378,14 +378,6 @@ int main(int argc, char *argv[])
         likelihoodHistMuonOnly->Fill(likelihooodDisc);
         LDHistMuonOnly->Fill(LDDisc);
         BDTHistMuonOnly->Fill(BDTDisc);
-
-        likelihooodDisc = readerVBF->EvaluateMVA("Likelihood");
-        BDTDisc = readerVBF->EvaluateMVA("BDT");
-        LDDisc = readerVBF->EvaluateMVA("LD");
-
-        likelihoodHistVBF->Fill(likelihooodDisc);
-        LDHistVBF->Fill(LDDisc);
-        BDTHistVBF->Fill(BDTDisc);
     }
 
     // Jet Part
@@ -466,6 +458,18 @@ int main(int argc, char *argv[])
       etaJet1MVA = pJet1.Eta();
       etaJet2MVA = pJet2.Eta();
       productEtaJetsMVA = etaJetProduct;
+
+      //VBF MVA
+      if (nJetsInRapidityGapMVA==0 && productEtaJetsMVA<0.0)
+      {
+        float likelihooodDisc = readerVBF->EvaluateMVA("Likelihood");
+        float BDTDisc = readerVBF->EvaluateMVA("BDT");
+        float LDDisc = readerVBF->EvaluateMVA("LD");
+        //std::cout << "BDT: "<< BDTDisc << " likelihood: " << likelihooodDisc << " LD: " << LDDisc << std::endl;
+        likelihoodHistVBF->Fill(likelihooodDisc);
+        LDHistVBF->Fill(LDDisc);
+        BDTHistVBF->Fill(BDTDisc);
+      }
 
       //VBFLoose Selection
       if(dEtaJets <= 3.0)
