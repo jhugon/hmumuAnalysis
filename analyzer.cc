@@ -162,9 +162,13 @@ int main(int argc, char *argv[])
   puJetIDSimpleJet3Hist->GetXaxis()->SetBinLabel(1,"Fail");
   puJetIDSimpleJet3Hist->GetXaxis()->SetBinLabel(2,"Pass");
 
-  TH1F* BDTHistMuonOnly = new TH1F("BDTHistMuonOnly","BDT Discriminator",100,-5,5);
-  TH1F* likelihoodHistMuonOnly = new TH1F("likelihoodHistMuonOnly","Likelihood Discriminator",100,-5,5);
-  TH1F* LDHistMuonOnly = new TH1F("LDHistMuonOnly","LD Discriminator",100,-5,5);
+  TH1F* BDTHistMuonOnly = new TH1F("BDTHistMuonOnly","BDT Discriminator",100,-1,1);
+  TH1F* likelihoodHistMuonOnly = new TH1F("likelihoodHistMuonOnly","Likelihood Discriminator",100,-1,1);
+  TH1F* LDHistMuonOnly = new TH1F("LDHistMuonOnly","LD Discriminator",100,-1,1);
+
+  TH1F* BDTHistVBF = new TH1F("BDTHistVBF","BDT Discriminator",100,-1,1);
+  TH1F* likelihoodHistVBF = new TH1F("likelihoodHistVBF","Likelihood Discriminator",100,-1,1);
+  TH1F* LDHistVBF = new TH1F("LDHistVBF","LD Discriminator",100,-1,1);
 
   //for MVA Applyer
 
@@ -211,6 +215,34 @@ int main(int argc, char *argv[])
    readerMuonOnly->BookMVA("BDT","weightsMuonOnly/TMVAClassification_BDT.weights.xml");
    readerMuonOnly->BookMVA("Likelihood","weightsMuonOnly/TMVAClassification_Likelihood.weights.xml");
    readerMuonOnly->BookMVA("LD","weightsMuonOnly/TMVAClassification_LD.weights.xml");
+
+  //VBF MVA
+   TMVA::Reader * readerVBF = new TMVA::Reader("!Color:!Silent");
+   readerVBF->AddVariable( "mDiMu", &recoCandMass);
+   readerVBF->AddVariable( "ptDiMu", &recoCandPt);
+   readerVBF->AddVariable( "yDiMu", &recoCandY);
+   readerVBF->AddVariable( "mDiJet", &mDiJetMVA);
+   readerVBF->AddSpectator( "ptDiJet", &ptDiJetMVA);
+   readerVBF->AddSpectator( "yDiJet", &yDiJetMVA);
+
+   readerVBF->AddVariable( "ptMu1", &ptMu1MVA);
+   readerVBF->AddVariable( "ptMu2", &ptMu2MVA);
+   readerVBF->AddSpectator( "etaMu1", &etaMu1MVA);
+   readerVBF->AddSpectator( "etaMu2", &etaMu2MVA);
+
+   readerVBF->AddSpectator( "ptJet1", &ptJet1MVA);
+   readerVBF->AddSpectator( "ptJet2", &ptJet2MVA);
+   readerVBF->AddSpectator( "etaJet1", &etaJet1MVA);
+   readerVBF->AddSpectator( "etaJet2", &etaJet2MVA);
+
+   readerVBF->AddVariable( "cosThetaStar", &cosThetaStar);
+   readerVBF->AddVariable( "deltaEtaJets", &deltaEtaJetsMVA);
+   readerVBF->AddSpectator( "productEtaJets", &productEtaJetsMVA);
+   readerVBF->AddSpectator( "nJetsInRapidityGap", &nJetsInRapidityGapMVA);
+
+   readerVBF->BookMVA("BDT","weightsVBF/TMVAClassification_BDT.weights.xml");
+   readerVBF->BookMVA("Likelihood","weightsVBF/TMVAClassification_Likelihood.weights.xml");
+   readerVBF->BookMVA("LD","weightsVBF/TMVAClassification_LD.weights.xml");
   
   unsigned nEvents = tree->GetEntries();
   cout << "nEvents: " << nEvents << endl;
@@ -344,8 +376,16 @@ int main(int argc, char *argv[])
         float LDDisc = readerMuonOnly->EvaluateMVA("LD");
         //std::cout << "BDT: "<< BDTDisc << " likelihood: " << likelihooodDisc << " LD: " << LDDisc << std::endl;
         likelihoodHistMuonOnly->Fill(likelihooodDisc);
-        LDHistMuonOnly->Fill(likelihooodDisc);
-        BDTHistMuonOnly->Fill(likelihooodDisc);
+        LDHistMuonOnly->Fill(LDDisc);
+        BDTHistMuonOnly->Fill(BDTDisc);
+
+        likelihooodDisc = readerVBF->EvaluateMVA("Likelihood");
+        BDTDisc = readerVBF->EvaluateMVA("BDT");
+        LDDisc = readerVBF->EvaluateMVA("LD");
+
+        likelihoodHistVBF->Fill(likelihooodDisc);
+        LDHistVBF->Fill(LDDisc);
+        BDTHistVBF->Fill(BDTDisc);
     }
 
     // Jet Part
@@ -543,7 +583,12 @@ int main(int argc, char *argv[])
   likelihoodHistMuonOnly->Write();
   LDHistMuonOnly->Write();
 
+  BDTHistVBF->Write();
+  likelihoodHistVBF->Write();
+  LDHistVBF->Write();
+
   delete readerMuonOnly;
+  delete readerVBF;
   cout << "analyzer done." << endl << endl;
   return 0;
 }
