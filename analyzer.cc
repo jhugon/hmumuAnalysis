@@ -165,13 +165,13 @@ int main(int argc, char *argv[])
   puJetIDSimpleJet3Hist->GetXaxis()->SetBinLabel(1,"Fail");
   puJetIDSimpleJet3Hist->GetXaxis()->SetBinLabel(2,"Pass");
 
-  TH1F* BDTHistMuonOnly = new TH1F("BDTHistMuonOnly","BDT Discriminator",100,-1,1);
-  TH1F* likelihoodHistMuonOnly = new TH1F("likelihoodHistMuonOnly","Likelihood Discriminator",100,-1,1);
-  TH1F* LDHistMuonOnly = new TH1F("LDHistMuonOnly","LD Discriminator",100,-1,1);
+  TH1F* BDTHistMuonOnly = new TH1F("BDTHistMuonOnly","BDT Discriminator",2000,-1,1);
+  TH1F* likelihoodHistMuonOnly = new TH1F("likelihoodHistMuonOnly","Likelihood Discriminator",2000,-1,1);
+  TH1F* LDHistMuonOnly = new TH1F("LDHistMuonOnly","LD Discriminator",2000,-1,1);
 
-  TH1F* BDTHistVBF = new TH1F("BDTHistVBF","BDT Discriminator",100,-1,1);
-  TH1F* likelihoodHistVBF = new TH1F("likelihoodHistVBF","Likelihood Discriminator",100,-1,1);
-  TH1F* LDHistVBF = new TH1F("LDHistVBF","LD Discriminator",100,-1,1);
+  TH1F* BDTHistVBF = new TH1F("BDTHistVBF","BDT Discriminator",2000,-1,1);
+  TH1F* likelihoodHistVBF = new TH1F("likelihoodHistVBF","Likelihood Discriminator",2000,-1,1);
+  TH1F* LDHistVBF = new TH1F("LDHistVBF","LD Discriminator",2000,-1,1);
 
   //for MVA Applyer
 
