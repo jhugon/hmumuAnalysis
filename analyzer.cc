@@ -372,7 +372,8 @@ int main(int argc, char *argv[])
     if(jets.nPFjets>=2 && jets.pfJetPt[0]>30.0 && jets.pfJetPt[1]>30.0)
         goodJets = true;
 
-    bool VBFCategory = false;
+    bool VBFVeryLoose = false;
+    bool vbfLoose = true;
     if(goodJets)
     {
       TLorentzVector pJet1;
@@ -450,7 +451,7 @@ int main(int argc, char *argv[])
       //VBF MVA
       if (nJetsInRapidityGapMVA==0 && productEtaJetsMVA<0.0)
       {
-        VBFCategory=true;
+        VBFVeryLoose=true;
         float likelihooodDisc = readerVBF->EvaluateMVA("Likelihood");
         float BDTDisc = readerVBF->EvaluateMVA("BDT");
         float LDDisc = readerVBF->EvaluateMVA("LD");
@@ -462,7 +463,7 @@ int main(int argc, char *argv[])
       }
 
       //VBFLoose Selection
-      bool vbfLoose = true;
+      vbfLoose = true;
       if(dEtaJets <= 3.0)
           vbfLoose =false;
       if(etaJetProduct >= 0)
@@ -523,7 +524,7 @@ int main(int argc, char *argv[])
   
     } //end jet part
 
-    if (!VBFCategory)
+    if (!vbfLoose)
     {
       if(recoCandPt<30.0)
           mDiMuPtL30->Fill(recoCandMass);
@@ -535,7 +536,10 @@ int main(int argc, char *argv[])
           mDiMuPt75to125->Fill(recoCandMass);
       else if(recoCandPt>=125.0)
           mDiMuPt125->Fill(recoCandMass);
+    }
 
+    if (!VBFVeryLoose)
+    {
       // Muon Only MVA
       if (recoCandMass>110.0 && recoCandMass < 140.0)
       {
