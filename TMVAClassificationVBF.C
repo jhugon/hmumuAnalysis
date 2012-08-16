@@ -227,24 +227,37 @@ void TMVAClassificationVBF( TString myMethodList = "" )
 
    // Read training and test data
    // (it is also possible to use ASCII format as input -> see TMVA Users Guide)
-   TFile *inputSig = TFile::Open( inSigfname );
-   TFile *inputBck = TFile::Open( inBckfname );
-   
-   std::cout << "--- TMVAClassification       : Using Signal input file: " << inputSig->GetName() << std::endl;
-   std::cout << "--- TMVAClassification       : Using Background input file: " << inputBck->GetName() << std::endl;
-   
-   // --- Register the training and test trees
+   TFile *inputSigInc = TFile::Open( "signalTreeInc.root" );
+   TFile *inputSigVBF = TFile::Open( "signalTreeVBF.root" );
 
-   TTree *signal     = (TTree*)inputSig->Get("tree");
-   TTree *background = (TTree*)inputBck->Get("tree");
+   TFile *inputBckDY = TFile::Open( "backgroundTreeDY.root");
+   TFile *inputBckTT = TFile::Open( "backgroundTreeTT.root");
+   
+   TTree *signalInc     = (TTree*)inputSigInc->Get("tree");
+   TTree *signalVBF     = (TTree*)inputSigVBF->Get("tree");
+
+   TTree *backgroundDY = (TTree*)inputBckDY->Get("tree");
+   TTree *backgroundTT = (TTree*)inputBckTT->Get("tree");
    
    // global event weights per tree (see below for setting event-wise weights)
-   Double_t signalWeight     = 1.0;
-   Double_t backgroundWeight = 1.0;
+   Double_t signalWeightInc     = 4.236e-3*10000.;
+   Double_t signalWeightVBF     = 3.338e-4*10000.;
+
+   Double_t backgroundWeightDY = 3503.71*30459503.;
+   Double_t backgroundWeightTT = 225.197*6416135.;
    
    // You can add an arbitrary number of signal or background trees
-   factory->AddSignalTree    ( signal,     signalWeight     );
-   factory->AddBackgroundTree( background, backgroundWeight );
+   factory->AddSignalTree    ( signalInc,     signalWeightInc     );
+   factory->AddSignalTree    ( signalVBF,     signalWeightVBF     );
+
+   factory->AddBackgroundTree( backgroundDY, backgroundWeightDY );
+   factory->AddBackgroundTree( backgroundTT, backgroundWeightTT );
+
+   std::cout << "Weight SigGGH: "<< signalWeightInc << std::endl;
+   std::cout << "Weight SigVBF: "<< signalWeightVBF << std::endl;
+   std::cout << "Weight BakDY: "<< backgroundWeightDY << std::endl;
+   std::cout << "Weight BakTT: "<< backgroundWeightTT << std::endl;
+
    
    // To give different trees for training and testing, do as follows:
    //    factory->AddSignalTree( signalTrainingTree, signalTrainWeight, "Training" );
