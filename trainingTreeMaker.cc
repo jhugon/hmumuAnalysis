@@ -99,6 +99,13 @@ int main(int argc, char *argv[])
   float productEtaJets=-10.0;
   int nJetsInRapidityGap=-10;
 
+  float deltaEtaMuons=-10.0;
+  float deltaPhiMuons=-10.0;
+  float deltaRMuons=-10.0;
+  float deltaPhiJets=-10.0;
+  float deltaRJets=-10.0;
+
+
   TFile * outFile = new TFile(argv[1],"RECREATE");
   outFile->cd();
 
@@ -122,6 +129,12 @@ int main(int argc, char *argv[])
   outTree->Branch("deltaEtaJets",&deltaEtaJets,"deltaEtaJets/F");
   outTree->Branch("productEtaJets",&productEtaJets,"productEtaJets/F");
   outTree->Branch("nJetsInRapidityGap",&nJetsInRapidityGap,"nJetsInRapidityGap/I");
+
+  outTree->Branch("deltaPhiJets",&deltaPhiJets,"deltaPhiJets/F");
+  outTree->Branch("deltaRJets",&deltaRJets,"deltaRJets/F");
+  outTree->Branch("deltaEtaMuons",&deltaEtaMuons,"deltaEtaMuons/F");
+  outTree->Branch("deltaPhiMuons",&deltaPhiMuons,"deltaPhiMuons/F");
+  outTree->Branch("deltaRMuons",&deltaRMuons,"deltaRMuons/F");
   
   unsigned nLightJets = 0;
   unsigned nBJets = 0;
@@ -154,6 +167,11 @@ int main(int argc, char *argv[])
     deltaEtaJets=-10.0;
     productEtaJets=-10.0;
     nJetsInRapidityGap=-10;
+    deltaEtaMuons=-10.0;
+    deltaPhiMuons=-10.0;
+    deltaRMuons=-10.0;
+    deltaPhiJets=-10.0;
+    deltaRJets=-10.0;
 
     if (!isKinTight_2012(reco1) || !isKinTight_2012(reco2))
         continue;
@@ -211,6 +229,9 @@ int main(int argc, char *argv[])
     ptMu2 = muon2.pt;
     etaMu1 = muon1.eta;
     etaMu2 = muon2.eta;
+    deltaEtaMuons=fabs(muon1.eta-muon2.eta);
+    deltaPhiMuons = pMuon1.DeltaPhi(pMuon2);
+    deltaRMuons = pMuon1.DeltaR(pMuon2);
   
     // Jet Part
     bool goodJets = false;
@@ -229,6 +250,8 @@ int main(int argc, char *argv[])
       ptDiJet = diJet.Pt();
       yDiJet = diJet.Rapidity();
       deltaEtaJets = fabs(jets.pfJetEta[0]-jets.pfJetEta[1]);
+      deltaPhiJets = pJet1.DeltaPhi(pJet2);
+      deltaRJets = pJet1.DeltaR(pJet2);
       productEtaJets = jets.pfJetEta[0]*jets.pfJetEta[1];
       ptJet1 = jets.pfJetPt[0];
       ptJet2 = jets.pfJetPt[1];

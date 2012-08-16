@@ -131,7 +131,13 @@ int main(int argc, char *argv[])
   TH1F* etaJet1 = new TH1F("etaJet1","Leading Jet #eta",50,-5.0,5.0);
   TH1F* etaJet2 = new TH1F("etaJet2","Sub-Leading Jet #eta",50,-5.0,5.0);
 
-  TH1F* deltaEtaJets = new TH1F("deltaEtaJets","#Delta#eta Jets",50,0.0,10.0);
+  TH1F* deltaEtaJetsHist = new TH1F("deltaEtaJets","#Delta#eta Jets",50,0.0,10.0);
+  TH1F* deltaPhiJetsHist = new TH1F("deltaPhiJets","#Delta#phi Jets",50,0.0,10.0);
+  TH1F* deltaRJetsHist = new TH1F("deltaRJets","#Delta R Jets",50,0.0,10.0);
+
+  TH1F* deltaEtaMuonsHist = new TH1F("deltaEtaMuons","#Delta#eta Jets",50,0.0,10.0);
+  TH1F* deltaPhiMuonsHist = new TH1F("deltaPhiMuons","#Delta#phi Jets",50,0.0,10.0);
+  TH1F* deltaRMuonsHist = new TH1F("deltaRMuons","#Delta R Jets",50,0.0,10.0);
 
   TH1F* countsHist = new TH1F("countsHist","Event Counts",10,0.0,10.0);
   countsHist->GetXaxis()->SetBinLabel(1,"total");
@@ -190,6 +196,12 @@ int main(int argc, char *argv[])
   float deltaEtaJetsMVA=-10.0;
   float productEtaJetsMVA=-10.0;
   int nJetsInRapidityGapMVA=-10;
+
+  float deltaEtaMuons=-10.0;
+  float deltaPhiMuons=-10.0;
+  float deltaRMuons=-10.0;
+  float deltaPhiJets=-10.0;
+  float deltaRJets=-10.0;
 
   //Muon Only MVA
    TMVA::Reader * readerMuonOnly = new TMVA::Reader("!Color:!Silent");
@@ -294,6 +306,11 @@ int main(int argc, char *argv[])
     deltaEtaJetsMVA=-10.0;
     productEtaJetsMVA=-10.0;
     nJetsInRapidityGapMVA=-10;
+    deltaEtaMuons=fabs(muon1.eta-muon2.eta);
+    deltaPhiMuons=-10.0;
+    deltaRMuons=-10.0;
+    deltaPhiJets=-10.0;
+    deltaRJets=-10.0;
 
     //////////////////////////////////////////
     //Computing CosTheta*
@@ -303,6 +320,9 @@ int main(int argc, char *argv[])
     pMuon1.SetPtEtaPhiM(muon1.pt,muon1.eta,muon1.phi,0.105);
     pMuon2.SetPtEtaPhiM(muon2.pt,muon2.eta,muon2.phi,0.105);
     TLorentzVector diMuon = pMuon1+pMuon2;
+
+    deltaPhiMuons = pMuon1.DeltaPhi(pMuon2);
+    deltaRMuons = pMuon1.DeltaR(pMuon2);
 
     TLorentzVector starMuon1 = pMuon1;
     TLorentzVector starMuon2 = pMuon2;
@@ -334,6 +354,10 @@ int main(int argc, char *argv[])
     etaMu1->Fill(muon1.eta);
     etaMu2->Fill(muon2.eta);
     cosThetaStarHist->Fill(cosThetaStar);
+
+    deltaPhiMuonsHist->Fill(deltaPhiMuons);
+    deltaEtaMuonsHist->Fill(deltaEtaMuons);
+    deltaRMuonsHist->Fill(deltaRMuons);
   
     if (recoCandPt>30.0)
     {
@@ -385,11 +409,17 @@ int main(int argc, char *argv[])
       mDiJet->Fill(diJet.M());
       double dEtaJets = fabs(jets.pfJetEta[0]-jets.pfJetEta[1]);
       double etaJetProduct = jets.pfJetEta[0]*jets.pfJetEta[1];
-      deltaEtaJets->Fill(dEtaJets);
+      deltaPhiJets = pJet1.DeltaPhi(pJet2);
+      deltaRJets = pJet1.DeltaR(pJet2);
+
       ptJet1->Fill(jets.pfJetPt[0]);
       ptJet2->Fill(jets.pfJetPt[1]);
       etaJet1->Fill(jets.pfJetEta[0]);
       etaJet2->Fill(jets.pfJetEta[1]);
+
+      deltaEtaJetsHist->Fill(dEtaJets);
+      deltaPhiJetsHist->Fill(deltaPhiJets);
+      deltaRJetsHist->Fill(deltaRJets);
 
       // Seeing if there are jets in the rapidity gap
       float etaMax = jets.pfJetEta[0];
@@ -572,7 +602,13 @@ int main(int argc, char *argv[])
   etaJet1->Write();
   etaJet2->Write();
 
-  deltaEtaJets->Write();
+  deltaEtaJetsHist->Write();
+  deltaPhiJetsHist->Write();
+  deltaRJetsHist->Write();
+  deltaEtaMuonsHist->Write();
+  deltaPhiMuonsHist->Write();
+  deltaRMuonsHist->Write();
+
   mDiMuVBFM->Write();
   mDiMuVBFL->Write();
   mDiMuVBFT->Write();

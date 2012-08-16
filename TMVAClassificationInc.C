@@ -208,6 +208,13 @@ void TMVAClassificationInc( TString myMethodList = "" )
    factory->AddSpectator( "deltaEtaJets","#Delta#eta(jj)","", 'F' );
    factory->AddSpectator( "productEtaJets","#eta(j_{1})#times#eta(j_{2})","", 'F' );
    factory->AddSpectator( "nJetsInRapidityGap","N_{jets} in #eta Gap","", 'I' );
+
+   factory->AddSpectator("deltaPhiJets","#Delta#phi(jj)","",'F');
+   factory->AddSpectator("deltaRJets","#DeltaR(jj)","",'F');
+   factory->AddVariable("deltaEtaMuons","#Delta#eta(#mu#mu)","",'F');
+   factory->AddVariable("deltaPhiMuons","#Delta#phi(#mu#mu)","",'F');
+   factory->AddSpectator("deltaRMuons","#DeltaR(#mu#mu)","",'F');
+
    TCut mycuts = "mDiMu > 110 && mDiMu < 140.0 && ptMu1>20.0 && ptMu2>20.0 && abs(etaMu1)<2.4 && abs(etaMu2)<2.4 && (nJetsInRapidityGap!=0 || productEtaJets>=0.0)";
    //TCut mycuts = "mDiMu > 110 && mDiMu < 140.0 && ptMu1>20.0 && ptMu2>20.0 && abs(etaMu1)<2.4 && abs(etaMu2)<2.4";
 
