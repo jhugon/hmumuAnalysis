@@ -209,7 +209,7 @@ void TMVAClassificationVBF( TString myMethodList = "" )
    factory->AddSpectator( "productEtaJets","#eta(j_{1})#times#eta(j_{2})","", 'F' );
    factory->AddSpectator( "nJetsInRapidityGap","N_{jets} in #eta Gap","", 'I' );
 
-   factory->AddSpectator("deltaPhiJets","#Delta#phi(jj)","",'F');
+   factory->AddVariable("deltaPhiJets","#Delta#phi(jj)","",'F');
    factory->AddSpectator("deltaRJets","#DeltaR(jj)","",'F');
    factory->AddSpectator("deltaEtaMuons","#Delta#eta(#mu#mu)","",'F');
    factory->AddSpectator("deltaPhiMuons","#Delta#phi(#mu#mu)","",'F');

@@ -22,6 +22,7 @@
 #include "Helpers.h"
 
 //#define JETPUID
+#define MVAREADER
 
 using namespace std;
 
@@ -203,6 +204,7 @@ int main(int argc, char *argv[])
   float deltaPhiJets=-10.0;
   float deltaRJets=-10.0;
 
+#ifdef MVAREADER
   //Muon Only MVA
    TMVA::Reader * readerMuonOnly = new TMVA::Reader("!Color:!Silent");
    readerMuonOnly->AddVariable( "mDiMu", &recoCandMass);
@@ -227,6 +229,12 @@ int main(int argc, char *argv[])
    readerMuonOnly->AddSpectator( "productEtaJets", &productEtaJetsMVA);
    readerMuonOnly->AddSpectator( "nJetsInRapidityGap", &nJetsInRapidityGapMVA);
 
+   readerMuonOnly->AddSpectator( "deltaPhiJets", &deltaPhiJets);
+   readerMuonOnly->AddSpectator( "deltaRJets", &deltaRJets);
+   readerMuonOnly->AddVariable( "deltaEtaMuons", &deltaEtaMuons);
+   readerMuonOnly->AddVariable( "deltaPhiMuons", &deltaPhiMuons);
+   readerMuonOnly->AddSpectator( "deltaRMuons", &deltaRMuons);
+
    readerMuonOnly->BookMVA("BDT","weightsMuonOnly/TMVAClassification_BDT.weights.xml");
    readerMuonOnly->BookMVA("Likelihood","weightsMuonOnly/TMVAClassification_Likelihood.weights.xml");
    readerMuonOnly->BookMVA("LD","weightsMuonOnly/TMVAClassification_LD.weights.xml");
@@ -237,13 +245,13 @@ int main(int argc, char *argv[])
    readerVBF->AddVariable( "ptDiMu", &recoCandPt);
    readerVBF->AddVariable( "yDiMu", &recoCandY);
    readerVBF->AddVariable( "mDiJet", &mDiJetMVA);
-   readerVBF->AddSpectator( "ptDiJet", &ptDiJetMVA);
-   readerVBF->AddSpectator( "yDiJet", &yDiJetMVA);
+   readerVBF->AddVariable( "ptDiJet", &ptDiJetMVA);
+   readerVBF->AddVariable( "yDiJet", &yDiJetMVA);
 
    readerVBF->AddVariable( "ptMu1", &ptMu1MVA);
    readerVBF->AddVariable( "ptMu2", &ptMu2MVA);
-   readerVBF->AddSpectator( "etaMu1", &etaMu1MVA);
-   readerVBF->AddSpectator( "etaMu2", &etaMu2MVA);
+   readerVBF->AddVariable( "etaMu1", &etaMu1MVA);
+   readerVBF->AddVariable( "etaMu2", &etaMu2MVA);
 
    readerVBF->AddSpectator( "ptJet1", &ptJet1MVA);
    readerVBF->AddSpectator( "ptJet2", &ptJet2MVA);
@@ -255,9 +263,16 @@ int main(int argc, char *argv[])
    readerVBF->AddSpectator( "productEtaJets", &productEtaJetsMVA);
    readerVBF->AddSpectator( "nJetsInRapidityGap", &nJetsInRapidityGapMVA);
 
+   readerVBF->AddVariable( "deltaPhiJets", &deltaPhiJets);
+   readerVBF->AddSpectator( "deltaRJets", &deltaRJets);
+   readerVBF->AddSpectator( "deltaEtaMuons", &deltaEtaMuons);
+   readerVBF->AddSpectator( "deltaPhiMuons", &deltaPhiMuons);
+   readerVBF->AddSpectator( "deltaRMuons", &deltaRMuons);
+
    readerVBF->BookMVA("BDT","weightsVBF/TMVAClassification_BDT.weights.xml");
    readerVBF->BookMVA("Likelihood","weightsVBF/TMVAClassification_Likelihood.weights.xml");
    readerVBF->BookMVA("LD","weightsVBF/TMVAClassification_LD.weights.xml");
+#endif
   
   unsigned nEvents = tree->GetEntries();
   cout << "nEvents: " << nEvents << endl;
@@ -482,6 +497,7 @@ int main(int argc, char *argv[])
       if (nJetsInRapidityGapMVA==0 && productEtaJetsMVA<0.0)
       {
         VBFVeryLoose=true;
+#ifdef MVAREADER
         float likelihooodDisc = readerVBF->EvaluateMVA("Likelihood");
         float BDTDisc = readerVBF->EvaluateMVA("BDT");
         float LDDisc = readerVBF->EvaluateMVA("LD");
@@ -490,6 +506,7 @@ int main(int argc, char *argv[])
         LDHistVBF->Fill(LDDisc);
         BDTHistVBF->Fill(BDTDisc);
         mDiMuVBFVL->Fill(recoCandMass);
+#endif
       }
 
       //VBFLoose Selection
@@ -573,6 +590,7 @@ int main(int argc, char *argv[])
       // Muon Only MVA
       if (recoCandMass>110.0 && recoCandMass < 140.0)
       {
+#ifdef MVAREADER
         float likelihooodDisc = readerMuonOnly->EvaluateMVA("Likelihood");
         float BDTDisc = readerMuonOnly->EvaluateMVA("BDT");
         float LDDisc = readerMuonOnly->EvaluateMVA("LD");
@@ -580,6 +598,7 @@ int main(int argc, char *argv[])
         likelihoodHistMuonOnly->Fill(likelihooodDisc);
         LDHistMuonOnly->Fill(LDDisc);
         BDTHistMuonOnly->Fill(BDTDisc);
+#endif
       }
 
     }
@@ -663,8 +682,10 @@ int main(int argc, char *argv[])
   likelihoodHistVBF->Write();
   LDHistVBF->Write();
 
+#ifdef MVAREADER
   delete readerMuonOnly;
   delete readerVBF;
+#endif
   cout << "analyzer done." << endl << endl;
   return 0;
 }
