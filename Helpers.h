@@ -3,6 +3,17 @@
 #include "DataFormats.h"
 #include <algorithm>
 
+float getRelIso(_MuonInfo& muon)
+{
+  // tracker iso cut
+  //if (muon.trackIsoSumPt/muon.pt>0.1) return isKinTight_2012;  
+
+  float result = muon.sumChargedHadronPtR04 + 
+    std::max(0.0,muon.sumNeutralHadronEtR04 + muon.sumPhotonEtR04 - 0.5*muon.sumPUPtR04);
+
+  return result/muon.pt;
+}
+
 bool isKinTight_2012(_MuonInfo& muon) 
 {
 
@@ -18,11 +29,7 @@ bool isKinTight_2012(_MuonInfo& muon)
   // kinematic cuts
   if (muon.numTrackerLayers < 6) return isKinTight_2012; // # hits in tracker
 
-  // tracker iso cut
-  //if (muon.trackIsoSumPt/muon.pt>0.1) return isKinTight_2012;  
-
-  if ( ( muon.sumChargedHadronPtR04 + 
-    std::max(0.0,muon.sumNeutralHadronEtR04 + muon.sumPhotonEtR04 - 0.5*muon.sumPUPtR04) ) / muon.pt > 0.12) 
+  if(getRelIso(muon) > 0.12)
       return isKinTight_2012;
 
   // beam spot cut

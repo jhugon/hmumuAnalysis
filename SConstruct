@@ -29,6 +29,26 @@ libs.append("TreePlayer")
 env.Append(CPPPATH=includes)
 env.Append(LIBPATH=libpath)
 env.Append(LIBS=libs)
+
+#Checking for things to exist (~autoConf)
+if not env.GetOption("clean"):
+  conf = Configure(env)
+  if not conf.CheckCXX():
+    print("Error: C++ Compiler Broken")
+    Exit(1)
+  if not conf.CheckSHCXX():
+    print("Error: C++ Compiler Broken")
+    Exit(1)
+  if not conf.CheckLibWithHeader("Hist","TH1F.h","c++","TH1F h;"):
+    print("Error: ROOT libs must be installed!")
+    Exit(1)
+  if not conf.CheckLibWithHeader("EG","TGenerator.h","c++","TGenerator g;"):
+    print("Error: ROOT lib libEG.a must be installed!")
+    Exit(1)
+  if not conf.CheckLibWithHeader("TMVA",["TFile.h","TMVA/Factory.h"],"c++",'TMVA::Factory f("",&(TFile("")),"");'):
+    print("Error: ROOT lib libTMVA.a must be installed!")
+    Exit(1)
+  env = conf.Finish()
  
 env.Program(target="analyzer", source=["analyzer.cc"])
 env.Program(target="trainingTreeMaker", source=["trainingTreeMaker.cc"])

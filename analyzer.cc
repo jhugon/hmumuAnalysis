@@ -21,7 +21,7 @@
 #include "DataFormats.h"
 #include "Helpers.h"
 
-//#define JETPUID
+#define JETPUID
 #define MVAREADER
 
 using namespace std;
@@ -180,6 +180,14 @@ int main(int argc, char *argv[])
   TH1F* likelihoodHistVBF = new TH1F("likelihoodHistVBF","Likelihood Discriminator",2000,-1,1);
   TH1F* LDHistVBF = new TH1F("LDHistVBF","LD Discriminator",2000,-1,1);
 
+  TH1F* relIsoMu1Hist = new TH1F("relIsoMu1","",1000,0,10.0);
+  TH1F* relIsoMu2Hist = new TH1F("relIsoMu2","",1000,0,10.0);
+
+  TH1F* nJetsHist = new TH1F("nJets","",11,0,11);
+  TH1F* htHist = new TH1F("ht","",200,0,2000);
+  TH1F* nJetsInRapidtyGapHist = new TH1F("nJetsInRapidtyGap","",11,0,11);
+  TH1F* htInRapidityGapHist = new TH1F("htInRapidtyGap","",200,0,2000);
+
   //for MVA Applyer
 
   float cosThetaStar=0.0;
@@ -203,6 +211,13 @@ int main(int argc, char *argv[])
   float deltaRMuons=-10.0;
   float deltaPhiJets=-10.0;
   float deltaRJets=-10.0;
+
+  // Not implemented in MVA yet
+  float relIsoMu1=-10.0;
+  float relIsoMu2=-10.0;
+  float ht=0.0;
+  int nJets=0;
+  float htInRapidityGap=0.0;
 
 #ifdef MVAREADER
   //Muon Only MVA
@@ -327,6 +342,12 @@ int main(int argc, char *argv[])
     deltaPhiJets=-10.0;
     deltaRJets=-10.0;
 
+    relIsoMu1 = getRelIso(muon1);
+    relIsoMu2 = getRelIso(muon2);
+    ht = 0.0;
+    nJets = 0;
+    htInRapidityGap = 0.0;
+
     //////////////////////////////////////////
     //Computing CosTheta*
 
@@ -373,6 +394,9 @@ int main(int argc, char *argv[])
     deltaPhiMuonsHist->Fill(deltaPhiMuons);
     deltaEtaMuonsHist->Fill(deltaEtaMuons);
     deltaRMuonsHist->Fill(deltaRMuons);
+
+    relIsoMu1Hist->Fill(relIsoMu1);
+    relIsoMu2Hist->Fill(relIsoMu2);
   
     if (recoCandPt>30.0)
     {
@@ -407,6 +431,17 @@ int main(int argc, char *argv[])
     }
 
     // Jet Part
+    for(unsigned iJet=0; (iJet < jets.nPFjets && iJet < 10);iJet++)
+    {
+        if(jets.pfJetPt[iJet] > 30.0)
+        {
+          nJets++;
+          ht += jets.pfJetPt[iJet];
+        }
+    }
+    nJetsHist->Fill(nJets);
+    htHist->Fill(ht);
+
     bool goodJets = false;
     if(jets.nPFjets>=2 && jets.pfJetPt[0]>30.0 && jets.pfJetPt[1]>30.0)
         goodJets = true;
@@ -458,6 +493,7 @@ int main(int argc, char *argv[])
           {
             jetInRapidityGap = true;
             nJetsInRapidityGapMVA++;
+            htInRapidityGap += jets.pfJetPt[iJet];
           }
         }
       }
@@ -492,6 +528,9 @@ int main(int argc, char *argv[])
       etaJet1MVA = pJet1.Eta();
       etaJet2MVA = pJet2.Eta();
       productEtaJetsMVA = etaJetProduct;
+
+      nJetsInRapidtyGapHist->Fill(nJetsInRapidityGapMVA);
+      htInRapidityGapHist->Fill(htInRapidityGap);
 
       //VBF MVA
       if (nJetsInRapidityGapMVA==0 && productEtaJetsMVA<0.0)
@@ -681,6 +720,14 @@ int main(int argc, char *argv[])
   BDTHistVBF->Write();
   likelihoodHistVBF->Write();
   LDHistVBF->Write();
+
+  relIsoMu1Hist->Write();
+  relIsoMu2Hist->Write();
+
+  nJetsHist->Write();
+  htHist->Write();
+  nJetsInRapidtyGapHist->Write();
+  htInRapidityGapHist->Write();
 
 #ifdef MVAREADER
   delete readerMuonOnly;
