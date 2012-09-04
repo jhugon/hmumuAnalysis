@@ -56,7 +56,7 @@ class MVA
   float cosThetaStar;
   float deltaEtaJets;
   float productEtaJets;
-  int nJetsInRapidityGap;
+  float nJetsInRapidityGap;
 
   float deltaEtaMuons;
   float deltaPhiMuons;
@@ -68,7 +68,7 @@ class MVA
   float relIsoMu1;
   float relIsoMu2;
   float ht;
-  int nJets;
+  float nJets;
   float htInRapidityGap;
 
   //////////////////////

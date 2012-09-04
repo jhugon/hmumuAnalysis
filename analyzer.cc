@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
   if (optionMap.count("train")) 
   {
       cout << "Training enabled" << "\n";
-      const string formatStringTrain("Hist.root");
+      const string formatStringTrain("TrainingTree.root");
       trainingTreeFileName = regex_replace(inputFileName,re,formatStringTrain);
       cout << "Training Tree File Name: " << trainingTreeFileName << "\n";
   }
@@ -423,6 +423,18 @@ int main(int argc, char *argv[])
 //of the subleading jet), and a di-jet invariant mass m12 > 400 GeV/c2 , with no other
 //jet with pT > 30 GeV/c in the rapidity region between the two jets.
 
+    mva.writeEvent();
+
+    float bdtValueVBF, lhValueVBF;
+    float bdtValueInclusive, lhValueInclusive;
+    mva.getMVA(bdtValueVBF,lhValueVBF);
+    mva.getMVA(bdtValueInclusive,lhValueInclusive);
+
+    BDTHistMuonOnly->Fill(bdtValueInclusive);
+    likelihoodHistMuonOnly->Fill(lhValueInclusive);
+
+    BDTHistVBF->Fill(bdtValueVBF);
+    likelihoodHistVBF->Fill(lhValueVBF);
 
   }// end event loop
 

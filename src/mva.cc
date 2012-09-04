@@ -25,50 +25,60 @@ MVA::MVA(const std::string outFileName)
     outTree_->Branch("cosThetaStar",&cosThetaStar,"cosThetaStar/F");
     outTree_->Branch("deltaEtaJets",&deltaEtaJets,"deltaEtaJets/F");
     outTree_->Branch("productEtaJets",&productEtaJets,"productEtaJets/F");
-    outTree_->Branch("nJetsInRapidityGap",&nJetsInRapidityGap,"nJetsInRapidityGap/I");
+    outTree_->Branch("nJetsInRapidityGap",&nJetsInRapidityGap,"nJetsInRapidityGap/F");
   
     outTree_->Branch("deltaPhiJets",&deltaPhiJets,"deltaPhiJets/F");
     outTree_->Branch("deltaRJets",&deltaRJets,"deltaRJets/F");
     outTree_->Branch("deltaEtaMuons",&deltaEtaMuons,"deltaEtaMuons/F");
     outTree_->Branch("deltaPhiMuons",&deltaPhiMuons,"deltaPhiMuons/F");
     outTree_->Branch("deltaRMuons",&deltaRMuons,"deltaRMuons/F");
+
+    outTree_->Branch("relIsoMu1",&relIsoMu1,"relIsoMu1/F");
+    outTree_->Branch("relIsoMu2",&relIsoMu2,"relIsoMu2/F");
+    outTree_->Branch("ht",&ht,"ht/F");
+    outTree_->Branch("nJets",&nJets,"nJets/F");
+    outTree_->Branch("htInRapidityGap",&htInRapidityGap,"htInRapidityGap/F");
   }
 
-  reader_ = new TMVA::Reader("!Color:!Silent");
-
-  reader_->AddVariable("mDiMu",&mDiMu);
-  reader_->AddVariable("ptDiMu",&ptDiMu);
-  reader_->AddVariable("yDiMu",&yDiMu);
-  reader_->AddVariable("mDiJet",&mDiJet);
-  reader_->AddVariable("ptDiJet",&ptDiJet);
-  reader_->AddVariable("yDiJet",&yDiJet);
-  reader_->AddVariable("ptMu1",&ptMu1);
-  reader_->AddVariable("ptMu2",&ptMu2);
-  reader_->AddVariable("etaMu1",&etaMu1);
-  reader_->AddVariable("etaMu2",&etaMu2);
-  reader_->AddVariable("ptJet1",&ptJet1);
-  reader_->AddVariable("ptJet2",&ptJet2);
-  reader_->AddVariable("etaJet1",&etaJet1);
-  reader_->AddVariable("etaJet2",&etaJet2);
-  reader_->AddVariable("cosThetaStar",&cosThetaStar);
-  reader_->AddVariable("deltaEtaJets",&deltaEtaJets);
-  reader_->AddVariable("productEtaJets",&productEtaJets);
-  reader_->AddVariable("nJetsInRapidityGap",&nJetsInRapidityGap);
+  if(outFileName.size()<1)
+  {
+    reader_ = new TMVA::Reader("!Color:!Silent");
   
-  reader_->AddVariable("deltaPhiJets",&deltaPhiJets);
-  reader_->AddVariable("deltaRJets",&deltaRJets);
-  reader_->AddVariable("deltaEtaMuons",&deltaEtaMuons);
-  reader_->AddVariable("deltaPhiMuons",&deltaPhiMuons);
-  reader_->AddVariable("deltaRMuons",&deltaRMuons);
-
-  reader_->BookMVA("BDT","weightsMuonOnly/TMVAClassification_BDT.weights.xml");
-  reader_->BookMVA("Likelihood","weightsMuonOnly/TMVAClassification_Likelihood.weights.xml");
+    reader_->AddVariable("mDiMu",&mDiMu);
+    reader_->AddVariable("ptDiMu",&ptDiMu);
+    reader_->AddVariable("yDiMu",&yDiMu);
+    reader_->AddVariable("mDiJet",&mDiJet);
+    reader_->AddVariable("ptDiJet",&ptDiJet);
+    reader_->AddVariable("yDiJet",&yDiJet);
+    reader_->AddVariable("ptMu1",&ptMu1);
+    reader_->AddVariable("ptMu2",&ptMu2);
+    reader_->AddVariable("etaMu1",&etaMu1);
+    reader_->AddVariable("etaMu2",&etaMu2);
+    reader_->AddVariable("ptJet1",&ptJet1);
+    reader_->AddVariable("ptJet2",&ptJet2);
+    reader_->AddVariable("etaJet1",&etaJet1);
+    reader_->AddVariable("etaJet2",&etaJet2);
+    reader_->AddVariable("cosThetaStar",&cosThetaStar);
+    reader_->AddVariable("deltaEtaJets",&deltaEtaJets);
+    reader_->AddVariable("productEtaJets",&productEtaJets);
+    reader_->AddVariable("nJetsInRapidityGap",&nJetsInRapidityGap);
+    
+    reader_->AddVariable("deltaPhiJets",&deltaPhiJets);
+    reader_->AddVariable("deltaRJets",&deltaRJets);
+    reader_->AddVariable("deltaEtaMuons",&deltaEtaMuons);
+    reader_->AddVariable("deltaPhiMuons",&deltaPhiMuons);
+    reader_->AddVariable("deltaRMuons",&deltaRMuons);
+  
+    reader_->BookMVA("BDT","weightsMuonOnly/TMVAClassification_BDT.weights.xml");
+    reader_->BookMVA("Likelihood","weightsMuonOnly/TMVAClassification_Likelihood.weights.xml");
+  }
 }
 
 MVA::~MVA()
 {
   if (outTree_ != NULL)
   {
+    outFile_->cd();
     outTree_->Write();
     delete outTree_;
   }
@@ -86,8 +96,16 @@ MVA::~MVA()
 void
 MVA::getMVA(float& bdtValue, float& lhValue)
 {
-  reader_->EvaluateMVA("BDT");
-  reader_->EvaluateMVA("Likelihood");
+  if(reader_!=NULL)
+  {
+    bdtValue = reader_->EvaluateMVA("BDT");
+    lhValue = reader_->EvaluateMVA("Likelihood");
+  }
+  else
+  {
+    bdtValue = -1000.0;
+    lhValue = -1000.0;
+  }
 }
 
 void
@@ -110,7 +128,7 @@ MVA::resetValues()
   cosThetaStar=-10.0;
   deltaEtaJets=-10.0;
   productEtaJets=-10.0;
-  nJetsInRapidityGap=10.0;
+  nJetsInRapidityGap=-10.0;
 
   deltaEtaMuons=-10.0;
   deltaPhiMuons=-10.0;
@@ -121,6 +139,6 @@ MVA::resetValues()
   relIsoMu1=-10.0;
   relIsoMu2=-10.0;
   ht=0.0;
-  nJets=0;
+  nJets=0.0;
   htInRapidityGap=0.0;
 }
