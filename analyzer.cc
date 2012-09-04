@@ -21,19 +21,52 @@
 #include "DataFormats.h"
 #include "Helpers.h"
 
+#include "boost/program_options.hpp"
+
 #define JETPUID
 #define MVAREADER
+#define TESTOPTIONS
 
 using namespace std;
+using namespace boost;
 
 int main(int argc, char *argv[])
 {
-  if (argc < 3) 
+  /////////////////////////////////////////////
+  //////////// Configuration Options //////////
+  /////////////////////////////////////////////
+
+  const char* optionIntro = "H->MuMu Analyzer\n\nUsage: ./analyzer [--help] [--train] <inputFileName.root>\n\nAllowed Options";
+  program_options::options_description optionDesc(optionIntro);
+  optionDesc.add_options()
+      ("help", "Produce Help Message")
+      ("train", "Train MVAs")
+      ("input-file",program_options::value<string>(), "Input File Name")
+  ;
+  
+  program_options::positional_options_description optionPos;
+  optionPos.add("input-file",-1);
+  
+  program_options::variables_map optionMap;
+  program_options::store(program_options::command_line_parser(argc, argv).options(optionDesc).positional(optionPos).run(), optionMap);
+  program_options::notify(optionMap);    
+  
+  if (optionMap.count("help")) 
   {
-	std::cout << "testReader requires >=2 argument:" << std::endl
-	<< "analyzer <outfilename.root> <infilenames.root...>" << std::endl;
-	return 1;
+      cout << optionDesc << "\n";
+      return 1;
   }
+  
+  if (optionMap.count("input-file"))
+  {
+     cout << "Input File Name: "<<optionMap["input-file"].as<string>() << endl;
+  }
+
+  /////////////////////////////
+  //////////// Setup //////////
+  /////////////////////////////
+
+#ifndef TESTOPTIONS
 
   float minMmm = 100.0;
   float maxMmm = 200.0;
@@ -732,6 +765,7 @@ int main(int argc, char *argv[])
 #ifdef MVAREADER
   delete readerMuonOnly;
   delete readerVBF;
+#endif
 #endif
   cout << "analyzer done." << endl << endl;
   return 0;

@@ -14,6 +14,11 @@ libpath = []
 libs = []
 env.MergeFlags('-fPIC -O2 -lm')
 
+#boost
+#includes.append("/usr/include/boost141")
+libs.append("boost_program_options")
+#libpath.append("/usr/lib/boost141")
+
 #root
 env.ParseConfig('root-config --cflags')
 env.ParseConfig('root-config --libs')
@@ -47,6 +52,12 @@ if not env.GetOption("clean"):
     Exit(1)
   if not conf.CheckLibWithHeader("TMVA",["TFile.h","TMVA/Factory.h"],"c++",'TMVA::Factory f("",&(TFile("")),"");'):
     print("Error: ROOT lib libTMVA.a must be installed!")
+    Exit(1)
+  if not conf.CheckCXXHeader("boost/program_options.hpp"):
+    print("Error: boost/program_options.hpp header not installed!")
+    Exit(1)
+  if not conf.CheckLibWithHeader("boost_program_options","boost/program_options.hpp","c++",'boost::program_options::options_description optionDesc("options");'):
+    print("Error: boost/program_options.hpp header and lib must be installed!")
     Exit(1)
   env = conf.Finish()
  

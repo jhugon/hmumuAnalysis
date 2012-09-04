@@ -1,0 +1,7 @@
+*.png
+*.pdf
+*.root
+*.d
+.scon*
+weights*
+log*
