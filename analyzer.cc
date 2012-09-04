@@ -38,17 +38,17 @@ int main(int argc, char *argv[])
   //////////// Configuration Options //////////
   /////////////////////////////////////////////
 
-  const char* optionIntro = "H->MuMu Analyzer\n\nUsage: ./analyzer [--help] [--train] [--maxEvents N] <inputFileName.root>\n\nAllowed Options";
+  const char* optionIntro = "H->MuMu Analyzer\n\nUsage: ./analyzer [--help] [--train] [--maxEvents N] <inputFileName.root> <outputFileName.root>\n\nAllowed Options";
   program_options::options_description optionDesc(optionIntro);
   optionDesc.add_options()
       ("help", "Produce Help Message")
-      ("train", "Train MVAs")
-      ("input-file",program_options::value<string>(), "Input File Name")
+      ("trainingTree",program_options::value<string>(), "Create Training Tree File with filename")
+      ("filenames",program_options::value<vector<string> >(), "Input & Output File Names")
       ("maxEvents",program_options::value<int>(), "Maximum Number of Events to Process")
   ;
   
   program_options::positional_options_description optionPos;
-  optionPos.add("input-file",-1);
+  optionPos.add("filenames",-1);
   
   program_options::variables_map optionMap;
   program_options::store(program_options::command_line_parser(argc, argv).options(optionDesc).positional(optionPos).run(), optionMap);
@@ -61,13 +61,21 @@ int main(int argc, char *argv[])
   }
   
   std::string inputFileName;
-  if (optionMap.count("input-file"))
+  std::string outputFileName;
+  if (optionMap.count("filenames")>0)
   {
-     inputFileName = optionMap["input-file"].as<string>();
+     vector<string> filenames = optionMap["filenames"].as<vector<string> >();
+     if(filenames.size()>2)
+     {
+       cout << "Error: Extra filenames on command line, exiting." << endl;
+       return 1;
+     }
+     inputFileName = filenames[0];
+     outputFileName = filenames[0];
   }
   else
   {
-     cout << "Error: Input file name argument required, exiting." << endl;
+     cout << "Error: Input file name  and ouput file name arguments required, exiting." << endl;
      return 1;
   }
 
@@ -89,11 +97,6 @@ int main(int argc, char *argv[])
   float minMmm = 70.0;
   float maxMmm = 200.0;
 
-  string outputFileName;
-  outputFileName = inputFileName;
-  const regex re("\\.root");
-  const string formatString("Hist.root");
-  outputFileName = regex_replace(outputFileName,re,formatString);
   cout << "Input File Name: " << inputFileName << endl;
   cout << "Output File Name: " << outputFileName << endl;
   
@@ -103,11 +106,10 @@ int main(int argc, char *argv[])
   TFile * outFile = new TFile(outputFileName.c_str(),"RECREATE");
 
   std::string trainingTreeFileName = "";
-  if (optionMap.count("train")) 
+  if (optionMap.count("trainingTree")) 
   {
       cout << "Training enabled" << "\n";
-      const string formatStringTrain("TrainingTree.root");
-      trainingTreeFileName = regex_replace(inputFileName,re,formatStringTrain);
+      trainingTreeFileName = optionMap["trainingTree"].as<string>();
       cout << "Training Tree File Name: " << trainingTreeFileName << "\n";
   }
 
