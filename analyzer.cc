@@ -23,6 +23,8 @@
 
 #include "boost/program_options.hpp"
 
+#include <limits.h>
+
 #define JETPUID
 #define MVAREADER
 #define TESTOPTIONS
@@ -36,12 +38,13 @@ int main(int argc, char *argv[])
   //////////// Configuration Options //////////
   /////////////////////////////////////////////
 
-  const char* optionIntro = "H->MuMu Analyzer\n\nUsage: ./analyzer [--help] [--train] <inputFileName.root>\n\nAllowed Options";
+  const char* optionIntro = "H->MuMu Analyzer\n\nUsage: ./analyzer [--help] [--train] [--maxEvents N] <inputFileName.root>\n\nAllowed Options";
   program_options::options_description optionDesc(optionIntro);
   optionDesc.add_options()
       ("help", "Produce Help Message")
       ("train", "Train MVAs")
       ("input-file",program_options::value<string>(), "Input File Name")
+      ("maxEvents",program_options::value<int>(), "Maximum Number of Events to Process")
   ;
   
   program_options::positional_options_description optionPos;
@@ -57,10 +60,34 @@ int main(int argc, char *argv[])
       return 1;
   }
   
+  std::string inputFileName;
   if (optionMap.count("input-file"))
   {
-     cout << "Input File Name: "<<optionMap["input-file"].as<string>() << endl;
+     inputFileName = optionMap["input-file"].as<string>();
   }
+  else
+  {
+     cout << "Error: Input file name argument required, exiting." << endl;
+     return 1;
+  }
+
+  bool train=false;
+  if (optionMap.count("train")) 
+  {
+      cout << "Training enabled" << "\n";
+      train=true;
+  }
+
+  int maxEvents = std::numeric_limits<int>::max();
+  if (optionMap.count("maxEvents")) 
+  {
+      int tmp = optionMap["maxEvents"].as<int>();
+      if (tmp > 0)
+      {
+        maxEvents = tmp;
+      }
+  }
+  cout << "maxEvents = "<< maxEvents << "\n";
 
   /////////////////////////////
   //////////// Setup //////////

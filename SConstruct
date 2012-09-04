@@ -1,10 +1,5 @@
-
-# SPODS--Simple Physics Object based Detector Simulation
-# Copyright (C) 2011, 2012 Justin Hugon
-
-# Main SCONS Build Configuration File
-
 import os
+import sys
 import glob
 
 env = Environment(ENV = {'PATH':os.environ['PATH']} )
@@ -50,7 +45,8 @@ if not env.GetOption("clean"):
   if not conf.CheckLibWithHeader("EG","TGenerator.h","c++","TGenerator g;"):
     print("Error: ROOT lib libEG.a must be installed!")
     Exit(1)
-  if not conf.CheckLibWithHeader("TMVA",["TFile.h","TMVA/Factory.h"],"c++",'TMVA::Factory f("",&(TFile("")),"");'):
+  #if not conf.CheckLibWithHeader("TMVA",["TFile.h","TMVA/Factory.h"],"c++",'TMVA::Factory f;'):
+  if not conf.CheckLibWithHeader("TMVA",["TMVA/Tools.h"],"c++",'TMVA::Tools::Instance();'):
     print("Error: ROOT lib libTMVA.a must be installed!")
     Exit(1)
   if not conf.CheckCXXHeader("boost/program_options.hpp"):
