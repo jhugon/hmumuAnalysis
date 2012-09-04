@@ -12,6 +12,7 @@ env.MergeFlags('-fPIC -O2 -lm')
 #boost
 #includes.append("/usr/include/boost141")
 libs.append("boost_program_options")
+libs.append("boost_regex")
 #libpath.append("/usr/lib/boost141")
 
 #root
@@ -45,7 +46,6 @@ if not env.GetOption("clean"):
   if not conf.CheckLibWithHeader("EG","TGenerator.h","c++","TGenerator g;"):
     print("Error: ROOT lib libEG.a must be installed!")
     Exit(1)
-  #if not conf.CheckLibWithHeader("TMVA",["TFile.h","TMVA/Factory.h"],"c++",'TMVA::Factory f;'):
   if not conf.CheckLibWithHeader("TMVA",["TMVA/Tools.h"],"c++",'TMVA::Tools::Instance();'):
     print("Error: ROOT lib libTMVA.a must be installed!")
     Exit(1)
@@ -54,6 +54,8 @@ if not env.GetOption("clean"):
     Exit(1)
   if not conf.CheckLibWithHeader("boost_program_options","boost/program_options.hpp","c++",'boost::program_options::options_description optionDesc("options");'):
     print("Error: boost/program_options.hpp header and lib must be installed!")
+  if not conf.CheckLibWithHeader("boost_regex","boost/regex.hpp","c++",'boost::regex re("aregex");'):
+    print("Error: boost/regex.hpp header and lib must be installed!")
     Exit(1)
   env = conf.Finish()
  

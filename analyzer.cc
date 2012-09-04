@@ -22,6 +22,7 @@
 #include "Helpers.h"
 
 #include "boost/program_options.hpp"
+#include "boost/regex.hpp"
 
 #include <limits.h>
 
@@ -92,6 +93,19 @@ int main(int argc, char *argv[])
   /////////////////////////////
   //////////// Setup //////////
   /////////////////////////////
+
+  string outputFileName;
+  outputFileName = inputFileName;
+  const regex re("\\.root");
+  const string formatString("Hist.root");
+  outputFileName = regex_replace(outputFileName,re,formatString);
+  cout << "Input File Name: " << inputFileName << endl;
+  cout << "Output File Name: " << outputFileName << endl;
+  
+  TChain * tree = new TChain("tree");
+  tree->AddFile(inputFileName.c_str());
+
+  TFile * outFile = new TFile(outputFileName.c_str(),"RECREATE");
 
 #ifndef TESTOPTIONS
 
