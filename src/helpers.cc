@@ -1,7 +1,5 @@
-#ifndef helpers_h
-#define helpers_h
-#include "DataFormats.h"
-#include <algorithm>
+#include "helpers.h"
+#include <cmath>
 
 float getRelIso(_MuonInfo& muon)
 {
@@ -45,16 +43,8 @@ bool isKinTight_2012(_MuonInfo& muon)
   return isKinTight_2012;
 }
 
-enum PUJetID
-{
-  puJetTight  = 0,
-  puJetMedium = 1,
-  puJetLoose  = 2
-};
-
 bool passPUJetID(int flag, PUJetID desiredLevel)
 {
  return ( flag & (1 << desiredLevel) ) != 0;
 }
 
-#endif

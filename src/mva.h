@@ -18,7 +18,7 @@
 #include <TF1.h>
 
 #include "DataFormats.h"
-#include "Helpers.h"
+#include "helpers.h"
 
 #include "TMVA/Tools.h"
 #include "TMVA/Factory.h"
@@ -63,6 +63,13 @@ class MVA
   float deltaRMuons;
   float deltaPhiJets;
   float deltaRJets;
+
+  // Not implemented in MVA yet
+  float relIsoMu1;
+  float relIsoMu2;
+  float ht;
+  int nJets;
+  float htInRapidityGap;
 
   //////////////////////
   

@@ -62,5 +62,5 @@ if not env.GetOption("clean"):
   env = conf.Finish()
  
 env.Library(targer="src/mva",source=["src/mva.cc"])
-env.Program(target="analyzer", source=["analyzer.cc"])
-env.Program(target="trainingTreeMaker", source=["trainingTreeMaker.cc"])
+env.Library(targer="src/helpers",source=["src/helpers.cc"])
+env.Program(target="analyzer", source=["analyzer.cc","src/libmva.a","src/libhelpers.a"])

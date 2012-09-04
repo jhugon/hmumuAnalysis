@@ -117,4 +117,10 @@ MVA::resetValues()
   deltaRMuons=-10.0;
   deltaPhiJets=-10.0;
   deltaRJets=-10.0;
+
+  relIsoMu1=-10.0;
+  relIsoMu2=-10.0;
+  ht=0.0;
+  nJets=0;
+  htInRapidityGap=0.0;
 }
