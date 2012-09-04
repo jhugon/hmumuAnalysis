@@ -9,6 +9,8 @@ libpath = []
 libs = []
 env.MergeFlags('-fPIC -O2 -lm')
 
+includes.append("src/")
+
 #boost
 #includes.append("/usr/include/boost141")
 libs.append("boost_program_options")
@@ -59,5 +61,6 @@ if not env.GetOption("clean"):
     Exit(1)
   env = conf.Finish()
  
+env.Library(targer="src/mva",source=["src/mva.cc"])
 env.Program(target="analyzer", source=["analyzer.cc"])
 env.Program(target="trainingTreeMaker", source=["trainingTreeMaker.cc"])

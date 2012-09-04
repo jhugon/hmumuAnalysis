@@ -20,15 +20,22 @@
 #include "DataFormats.h"
 #include "Helpers.h"
 
+#include "TMVA/Tools.h"
+#include "TMVA/Factory.h"
+#include "TMVA/Reader.h"
+#include "TMVA/MethodCuts.h"
+
 using namespace std;
 
 class MVA
 {
   public:
 
-  MVA();
+
+  MVA(const std::string outFileName);
   ~MVA();
-  float getMVA();
+  void getMVA(float& bdtValue, float& lhValue);
+  void resetValues();
 
   /////////////////////
 
@@ -59,9 +66,12 @@ class MVA
 
   //////////////////////
   
-  TMVA::Reader * reader_;
-  TTree * outTree_;
-  TTree * outFile_;
-}
+  TMVA::Reader* reader_;
+  TFile* outFile_;
+  TTree* outTree_;
+
+  void writeEvent(){if(outTree_ != NULL) outTree_->Fill();};
+
+};
 
 #endif
