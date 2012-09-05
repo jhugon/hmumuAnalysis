@@ -70,8 +70,13 @@ int main(int argc, char *argv[])
        cout << "Error: Extra filenames on command line, exiting." << endl;
        return 1;
      }
+     if(filenames.size()<2)
+     {
+       cout << "Error: Need both input file and output file names, exiting." << endl;
+       return 1;
+     }
      inputFileName = filenames[0];
-     outputFileName = filenames[0];
+     outputFileName = filenames[1];
   }
   else
   {

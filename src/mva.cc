@@ -2,6 +2,10 @@
 
 MVA::MVA(const std::string outFileName)
 {
+  reader_ = NULL;
+  outTree_ = NULL;
+  outFile_ = NULL;
+
   if(outFileName.size()>0)
   {
     outFile_ = new TFile(outFileName.c_str(),"RECREATE");
@@ -96,7 +100,7 @@ MVA::~MVA()
 void
 MVA::getMVA(float& bdtValue, float& lhValue)
 {
-  if(reader_!=NULL)
+  if(reader_ != NULL)
   {
     bdtValue = reader_->EvaluateMVA("BDT");
     lhValue = reader_->EvaluateMVA("Likelihood");
