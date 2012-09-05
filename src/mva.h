@@ -32,7 +32,7 @@ class MVA
   public:
 
 
-  MVA(const std::string outFileName);
+  MVA(const std::string configFileName, const std::string outFileName);
   ~MVA();
   void getMVA(float& bdtValue, float& lhValue);
   void resetValues();
@@ -64,7 +64,6 @@ class MVA
   float deltaPhiJets;
   float deltaRJets;
 
-  // Not implemented in MVA yet
   float relIsoMu1;
   float relIsoMu2;
   float ht;

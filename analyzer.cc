@@ -226,7 +226,7 @@ int main(int argc, char *argv[])
 
   //for MVA
 
-  MVA mva(trainingTreeFileName);
+  MVA mva("inclusive.cfg",trainingTreeFileName);
   
   unsigned nEvents = tree->GetEntries();
   cout << "nEvents: " << nEvents << endl;
