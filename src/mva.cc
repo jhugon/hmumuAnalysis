@@ -90,6 +90,11 @@ MVA::MVA(const std::string configFileName, const std::string outFileName)
         ("nJets",program_options::value<int>(),"")
         ("htInRapidityGap",program_options::value<int>(),"")
         ("weightsDirName",program_options::value<std::string>(),"")
+
+        ("sigFile",program_options::value<std::vector<std::string> >(),"")
+        ("bakFile",program_options::value<std::vector<std::string> >(),"")
+        ("sigWeight",program_options::value<std::vector<float> >(),"")
+        ("bakWeight",program_options::value<std::vector<float> >(),"")
     ;
   
     program_options::variables_map optionMap;
