@@ -422,104 +422,7 @@ int main(int argc, char *argv[])
       ttreeList.push_back(tmptree);
    }
 
-/*
-   TFile *inputSigInc = TFile::Open( "signalTreeInc.root" );
-   TFile *inputSigVBF = TFile::Open( "signalTreeVBF.root" );
-
-   TFile *inputBckDY = TFile::Open( "backgroundTreeDY.root");
-   TFile *inputBckTT = TFile::Open( "backgroundTreeTT.root");
-   
-   TTree *signalInc     = (TTree*)inputSigInc->Get("tree");
-   TTree *signalVBF     = (TTree*)inputSigVBF->Get("tree");
-
-   TTree *backgroundDY = (TTree*)inputBckDY->Get("tree");
-   TTree *backgroundTT = (TTree*)inputBckTT->Get("tree");
-   
-   // global event weights per tree (see below for setting event-wise weights)
-   Double_t signalWeightInc     = 4.236e-3*10000.;
-   Double_t signalWeightVBF     = 3.338e-4*10000.;
-
-   Double_t backgroundWeightDY = 3503.71*30459503.;
-   Double_t backgroundWeightTT = 225.197*6416135.;
-   
-   // You can add an arbitrary number of signal or background trees
-   factory->AddSignalTree    ( signalInc,     signalWeightInc     );
-   factory->AddSignalTree    ( signalVBF,     signalWeightVBF     );
-
-   factory->AddBackgroundTree( backgroundDY, backgroundWeightDY );
-   factory->AddBackgroundTree( backgroundTT, backgroundWeightTT );
-
-   std::cout << "Weight SigGGH: "<< signalWeightInc << std::endl;
-   std::cout << "Weight SigVBF: "<< signalWeightVBF << std::endl;
-   std::cout << "Weight BakDY: "<< backgroundWeightDY << std::endl;
-   std::cout << "Weight BakTT: "<< backgroundWeightTT << std::endl;
-
-   //std::cout << "File SigGGH: \n";
-   //inputSigInc->Print();
-   //std::cout << "File SigVBF: \n";
-   //inputSigVBF->Print();
-   //std::cout << "File BakDY: \n";
-   //inputBckDY->Print();
-   //std::cout << "File BakTT: \n";
-   //inputBckTT->Print();
-   
-   // To give different trees for training and testing, do as follows:
-   //    factory->AddSignalTree( signalTrainingTree, signalTrainWeight, "Training" );
-   //    factory->AddSignalTree( signalTestTree,     signalTestWeight,  "Test" );
-   
-   // Use the following code instead of the above two or four lines to add signal and background
-   // training and test events "by hand"
-   // NOTE that in this case one should not give expressions (such as "var1+var2") in the input
-   //      variable definition, but simply compute the expression before adding the event
-   //
-   //     // --- begin ----------------------------------------------------------
-   //     std::vector<Double_t> vars( 4 ); // vector has size of number of input variables
-   //     Float_t  treevars[4], weight;
-   //     
-   //     // Signal
-   //     for (UInt_t ivar=0; ivar<4; ivar++) signal->SetBranchAddress( Form( "var%i", ivar+1 ), &(treevars[ivar]) );
-   //     for (UInt_t i=0; i<signal->GetEntries(); i++) {
-   //        signal->GetEntry(i);
-   //        for (UInt_t ivar=0; ivar<4; ivar++) vars[ivar] = treevars[ivar];
-   //        // add training and test events; here: first half is training, second is testing
-   //        // note that the weight can also be event-wise
-   //        if (i < signal->GetEntries()/2.0) factory->AddSignalTrainingEvent( vars, signalWeight );
-   //        else                              factory->AddSignalTestEvent    ( vars, signalWeight );
-   //     }
-   //   
-   //     // Background (has event weights)
-   //     background->SetBranchAddress( "weight", &weight );
-   //     for (UInt_t ivar=0; ivar<4; ivar++) background->SetBranchAddress( Form( "var%i", ivar+1 ), &(treevars[ivar]) );
-   //     for (UInt_t i=0; i<background->GetEntries(); i++) {
-   //        background->GetEntry(i);
-   //        for (UInt_t ivar=0; ivar<4; ivar++) vars[ivar] = treevars[ivar];
-   //        // add training and test events; here: first half is training, second is testing
-   //        // note that the weight can also be event-wise
-   //        if (i < background->GetEntries()/2) factory->AddBackgroundTrainingEvent( vars, backgroundWeight*weight );
-   //        else                                factory->AddBackgroundTestEvent    ( vars, backgroundWeight*weight );
-   //     }
-         // --- end ------------------------------------------------------------
-   //
-   // --- end of tree registration 
-
-   // Set individual event weights (the variables must exist in the original TTree)
-   //    for signal    : factory->SetSignalWeightExpression    ("weight1*weight2");
-   //    for background: factory->SetBackgroundWeightExpression("weight1*weight2");
-   //factory->SetBackgroundWeightExpression( "weight" );
-
-   // Apply additional cuts on the signal and background samples (can be different)
-
-   TCut mycutb = mycuts; // for example: TCut mycutb = "abs(var1)<0.5";
-
-   // Tell the factory how to use the training and testing events
-   //
-   // If no numbers of events are given, half of the events in the tree are used 
-   // for training, and the other half for testing:
-   //    factory->PrepareTrainingAndTestTree( mycut, "SplitMode=random:!V" );
-   // To also specify the number of testing events, use:
-   //    factory->PrepareTrainingAndTestTree( mycut,
-   //                                         "NSigTrain=3000:NBkgTrain=3000:NSigTest=3000:NBkgTest=3000:SplitMode=Random:!V" );
-   factory->PrepareTrainingAndTestTree( mycuts, mycutb,
+   factory->PrepareTrainingAndTestTree( "","",
                                         "nTrain_Signal=0:nTrain_Background=0:SplitMode=Random:NormMode=NumEvents:!V" );
 
    // ---- Book MVA methods
@@ -732,9 +635,8 @@ int main(int argc, char *argv[])
 
    delete factory;
 
-   // Launch the GUI for the root macros
-   //if (!gROOT->IsBatch()) TMVAGui( outfileName );
-*/
+   ////////////////////////////////////////////////////////////
+
    for(unsigned iFile=0;iFile<ttreeList.size();iFile++)
    {
      delete ttreeList[iFile];
