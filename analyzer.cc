@@ -41,10 +41,10 @@ int main(int argc, char *argv[])
   const char* optionIntro = "H->MuMu Analyzer\n\nUsage: ./analyzer [--help] [--train] [--maxEvents N] <inputFileName.root> <outputFileName.root>\n\nAllowed Options";
   program_options::options_description optionDesc(optionIntro);
   optionDesc.add_options()
-      ("help", "Produce Help Message")
-      ("trainingTree",program_options::value<string>(), "Create Training Tree File with filename")
+      ("help,h", "Produce Help Message")
+      ("trainingTree,t",program_options::value<string>(), "Create Training Tree File with filename")
       ("filenames",program_options::value<vector<string> >(), "Input & Output File Names")
-      ("maxEvents",program_options::value<int>(), "Maximum Number of Events to Process")
+      ("maxEvents,m",program_options::value<int>(), "Maximum Number of Events to Process")
   ;
   
   program_options::positional_options_description optionPos;
