@@ -216,6 +216,11 @@ int main(int argc, char *argv[])
   TH1F* BDTHistVBF = new TH1F("BDTHistVBF","BDT Discriminator",2000,-1,1);
   TH1F* likelihoodHistVBF = new TH1F("likelihoodHistVBF","Likelihood Discriminator",2000,-1,1);
 
+  TH2F* BDTHistMuonOnlyVMass = new TH2F("BDTHistMuonOnlyVMass","BDT Discriminator",1600,0,400,2000,-1,1);
+  TH2F* likelihoodHistMuonOnlyVMass = new TH2F("likelihoodHistMuonOnlyVMass","Likelihood Discriminator",1600,0,400,2000,-1,1);
+  TH2F* BDTHistVBFVMass = new TH2F("BDTHistVBFVMass","BDT Discriminator",1600,0,400,2000,-1,1);
+  TH2F* likelihoodHistVBFVMass = new TH2F("likelihoodHistVBFVMass","Likelihood Discriminator",1600,0,400,2000,-1,1);
+
   TH1F* relIsoMu1Hist = new TH1F("relIsoMu1","",1000,0,10.0);
   TH1F* relIsoMu2Hist = new TH1F("relIsoMu2","",1000,0,10.0);
 
@@ -227,15 +232,22 @@ int main(int argc, char *argv[])
   //for MVA
 
   MVA mva("inclusive.cfg",trainingTreeFileName);
-  
+
   unsigned nEvents = tree->GetEntries();
   cout << "nEvents: " << nEvents << endl;
+
+  unsigned reportEach=1000;
+  if (nEvents/1000>reportEach)
+    reportEach = nEvents/1000;
+  if (maxEvents/1000>reportEach)
+    reportEach = maxEvents/1000;
+  
   for(unsigned i=0; i<nEvents;i++)
   {
     if(i >= maxEvents)
       continue;
     tree->GetEvent(i);
-    if (i % 1000 == 0) cout << "Event: " << i << endl;
+    if (i % reportEach == 0) cout << "Event: " << i << endl;
 
     countsHist->Fill(0.0);
 
@@ -439,9 +451,13 @@ int main(int argc, char *argv[])
 
     BDTHistMuonOnly->Fill(bdtValueInclusive);
     likelihoodHistMuonOnly->Fill(lhValueInclusive);
-
     BDTHistVBF->Fill(bdtValueVBF);
     likelihoodHistVBF->Fill(lhValueVBF);
+
+    BDTHistMuonOnlyVMass->Fill(recoCandMass, bdtValueInclusive);
+    likelihoodHistMuonOnlyVMass->Fill(recoCandMass, lhValueInclusive);
+    BDTHistVBFVMass->Fill(recoCandMass, bdtValueVBF);
+    likelihoodHistVBFVMass->Fill(recoCandMass, lhValueVBF);
 
   }// end event loop
 
@@ -490,6 +506,11 @@ int main(int argc, char *argv[])
 
   BDTHistVBF->Write();
   likelihoodHistVBF->Write();
+
+  BDTHistMuonOnlyVMass->Write();
+  likelihoodHistMuonOnlyVMass->Write();
+  BDTHistVBFVMass->Write();
+  likelihoodHistVBFVMass->Write();
 
   relIsoMu1Hist->Write();
   relIsoMu2Hist->Write();
