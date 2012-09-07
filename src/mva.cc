@@ -93,6 +93,7 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
           ("nJets",program_options::value<int>(),"")
           ("htInRapidityGap",program_options::value<int>(),"")
           ("weightsDirName",program_options::value<std::string>(),"")
+          ("vbfSelection",program_options::value<int>(),"")
   
           ("sigFile",program_options::value<std::vector<std::string> >(),"")
           ("bakFile",program_options::value<std::vector<std::string> >(),"")
@@ -315,7 +316,7 @@ MVA::resetValues()
   etaJet2=-10.0;
   cosThetaStar=-10.0;
   deltaEtaJets=-10.0;
-  productEtaJets=-10.0;
+  productEtaJets=0.0;
   nJetsInRapidityGap=-10.0;
 
   deltaEtaMuons=-10.0;

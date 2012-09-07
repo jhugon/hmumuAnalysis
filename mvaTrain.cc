@@ -195,6 +195,7 @@ int main(int argc, char *argv[])
         ("nJets",program_options::value<int>(),"")
         ("htInRapidityGap",program_options::value<int>(),"")
         ("weightsDirName",program_options::value<std::string>(),"")
+        ("vbfSelection",program_options::value<int>(),"")
         ("sigFile",program_options::value<std::vector<std::string> >(),"")
         ("bakFile",program_options::value<std::vector<std::string> >(),"")
         ("sigWeight",program_options::value<std::vector<float> >(),"")
@@ -355,7 +356,11 @@ int main(int argc, char *argv[])
       throw;
     }
 
-   TCut mycuts = "";
+    std::string cuts;
+    if (optionMap.count("vbfSelection") && optionMap["vbfSelection"].as<int>() == 1)
+      cuts = "mDiJet>300.0 && deltaEtaJets>3.0 && productEtaJets<0.0 && nJetsInRapidityGap == 0";
+    else
+      cuts = "!(mDiJet>300.0 && deltaEtaJets>3.0 && productEtaJets<0.0 && nJetsInRapidityGap == 0)";
 
    if (optionMap.count("sigFile")<1)
    {
@@ -423,7 +428,7 @@ int main(int argc, char *argv[])
       ttreeList.push_back(tmptree);
    }
 
-   factory->PrepareTrainingAndTestTree( "","",
+   factory->PrepareTrainingAndTestTree( cuts.c_str(),cuts.c_str(),
                                         "nTrain_Signal=0:nTrain_Background=0:SplitMode=Random:NormMode=NumEvents:!V" );
 
    // ---- Book MVA methods

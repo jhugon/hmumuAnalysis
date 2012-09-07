@@ -445,16 +445,23 @@ int main(int argc, char *argv[])
 
     mva.writeEvent();
 
-    BDTHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","BDT"));
-    likelihoodHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","likelihood"));
-    BDTHistVBF->Fill(mva.getMVA("vbf.cfg","BDT"));
-    likelihoodHistVBF->Fill(mva.getMVA("vbf.cfg","likelihood"));
+    bool vbfPreselection = mva.mDiJet>300.0 && mva.deltaEtaJets>3.0 && mva.productEtaJets<0.0 && mva.nJetsInRapidityGap == 0;
 
+    if(!vbfPreselection)
+    {
+      BDTHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","BDT"));
+      likelihoodHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","likelihood"));
+      BDTHistMuonOnlyVMass->Fill(recoCandMass, mva.getMVA("inclusive.cfg","BDT"));
+      likelihoodHistMuonOnlyVMass->Fill(recoCandMass, mva.getMVA("inclusive.cfg","likelihood"));
+    }
+    else
+    {
+      BDTHistVBFVMass->Fill(recoCandMass, mva.getMVA("vbf.cfg","BDT"));
+      likelihoodHistVBFVMass->Fill(recoCandMass, mva.getMVA("vbf.cfg","likelihood"));
+      BDTHistVBF->Fill(mva.getMVA("vbf.cfg","BDT"));
+      likelihoodHistVBF->Fill(mva.getMVA("vbf.cfg","likelihood"));
+    }
 
-    BDTHistMuonOnlyVMass->Fill(recoCandMass, mva.getMVA("inclusive.cfg","BDT"));
-    likelihoodHistMuonOnlyVMass->Fill(recoCandMass, mva.getMVA("inclusive.cfg","likelihood"));
-    BDTHistVBFVMass->Fill(recoCandMass, mva.getMVA("vbf.cfg","BDT"));
-    likelihoodHistVBFVMass->Fill(recoCandMass, mva.getMVA("vbf.cfg","likelihood"));
 
   }// end event loop
 
