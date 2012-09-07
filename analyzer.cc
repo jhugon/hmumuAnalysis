@@ -231,7 +231,10 @@ int main(int argc, char *argv[])
 
   //for MVA
 
-  MVA mva("inclusive.cfg",trainingTreeFileName);
+  std::vector<std::string> mvaConfigNames;
+  mvaConfigNames.push_back("inclusive.cfg");
+  mvaConfigNames.push_back("vbf.cfg");
+  MVA mva(mvaConfigNames,trainingTreeFileName);
 
   unsigned nEvents = tree->GetEntries();
   cout << "nEvents: " << nEvents << endl;
@@ -239,8 +242,6 @@ int main(int argc, char *argv[])
   unsigned reportEach=1000;
   if (nEvents/1000>reportEach)
     reportEach = nEvents/1000;
-  if (maxEvents/1000>reportEach)
-    reportEach = maxEvents/1000;
   
   for(unsigned i=0; i<nEvents;i++)
   {
@@ -444,20 +445,16 @@ int main(int argc, char *argv[])
 
     mva.writeEvent();
 
-    float bdtValueVBF, lhValueVBF;
-    float bdtValueInclusive, lhValueInclusive;
-    mva.getMVA(bdtValueVBF,lhValueVBF);
-    mva.getMVA(bdtValueInclusive,lhValueInclusive);
+    BDTHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","BDT"));
+    likelihoodHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","likelihood"));
+    BDTHistVBF->Fill(mva.getMVA("vbf.cfg","BDT"));
+    likelihoodHistVBF->Fill(mva.getMVA("vbf.cfg","likelihood"));
 
-    BDTHistMuonOnly->Fill(bdtValueInclusive);
-    likelihoodHistMuonOnly->Fill(lhValueInclusive);
-    BDTHistVBF->Fill(bdtValueVBF);
-    likelihoodHistVBF->Fill(lhValueVBF);
 
-    BDTHistMuonOnlyVMass->Fill(recoCandMass, bdtValueInclusive);
-    likelihoodHistMuonOnlyVMass->Fill(recoCandMass, lhValueInclusive);
-    BDTHistVBFVMass->Fill(recoCandMass, bdtValueVBF);
-    likelihoodHistVBFVMass->Fill(recoCandMass, lhValueVBF);
+    BDTHistMuonOnlyVMass->Fill(recoCandMass, mva.getMVA("inclusive.cfg","BDT"));
+    likelihoodHistMuonOnlyVMass->Fill(recoCandMass, mva.getMVA("inclusive.cfg","likelihood"));
+    BDTHistVBFVMass->Fill(recoCandMass, mva.getMVA("vbf.cfg","BDT"));
+    likelihoodHistVBFVMass->Fill(recoCandMass, mva.getMVA("vbf.cfg","likelihood"));
 
   }// end event loop
 

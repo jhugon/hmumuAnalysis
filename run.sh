@@ -3,7 +3,7 @@
 nice scons -j4
 
 #TRAININGTREES="true"
-#TRAIN="true"
+TRAIN="true"
 
 echo "#######################"
 echo "   Running Analizer"
@@ -26,8 +26,10 @@ if [ "$TRAIN" = "true" ]; then
 echo "#######################"
 echo "    Training MVAs"
 echo "#######################"
-echo "training..."
-./mvaTrain inclusive.cfg >& logMVA
+echo "training Inclusive..."
+./mvaTrain inclusive.cfg >& logMVAInc
+echo "training VBF..."
+./mvaTrain vbf.cfg >& logMVAVBF
 echo "done training."
 echo "#######################"
 echo "#######################"

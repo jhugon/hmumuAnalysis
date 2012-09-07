@@ -1,6 +1,8 @@
 #ifndef hmumu_mva_h
 #define hmumu_mva_h
 
+#include <map>
+
 #include <TSystem.h>
 #include <TROOT.h>
 #include <TClonesArray.h>
@@ -32,9 +34,9 @@ class MVA
   public:
 
 
-  MVA(const std::string configFileName, const std::string outFileName);
+  MVA(const std::vector<std::string> configFileNames, const std::string outFileName);
   ~MVA();
-  void getMVA(float& bdtValue, float& lhValue);
+  float getMVA(const std::string configFileName, const std::string mvaName);
   void resetValues();
 
   /////////////////////
@@ -72,7 +74,7 @@ class MVA
 
   //////////////////////
   
-  TMVA::Reader* reader_;
+  std::map<std::string,TMVA::Reader*> readers_;
   TFile* outFile_;
   TTree* outTree_;
 

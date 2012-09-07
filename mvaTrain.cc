@@ -21,6 +21,7 @@
 #endif
 
 #include "boost/program_options.hpp"
+#include <cstdio>
 
 #define JETPUID
 
@@ -647,4 +648,20 @@ int main(int argc, char *argv[])
      delete tfileList[iFile];
    }
 
+   ///////////////////////////////////////////////////////////
+
+   int renameStatus = std::rename( "weights", weightsDirName.c_str() );
+   if ( renameStatus == 0 )
+   {
+     std::cout << "Renamed weights directory from 'weights' to " << weightsDirName << std::endl;
+   }
+   else
+   {
+     std::perror( "Error renaming weights Directory" );
+     return 1;
+   }
+
+   std::cout << "done.";
+
+   return 0;
 }
