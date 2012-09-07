@@ -260,7 +260,7 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
   
       reader->BookMVA("BDT",std::string(weightsDirName).append("/TMVAClassification_BDT.weights.xml").c_str());
       reader->BookMVA("Likelihood",std::string(weightsDirName).append("/TMVAClassification_Likelihood.weights.xml").c_str());
-      readers_.insert(make_pair(weightsDirName,reader));
+      readers_.insert(make_pair(*configFileName,reader));
     } // end Config file loop
   }
 }

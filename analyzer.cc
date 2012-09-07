@@ -450,16 +450,16 @@ int main(int argc, char *argv[])
     if(!vbfPreselection)
     {
       BDTHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","BDT"));
-      likelihoodHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","likelihood"));
+      likelihoodHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","Likelihood"));
       BDTHistMuonOnlyVMass->Fill(recoCandMass, mva.getMVA("inclusive.cfg","BDT"));
-      likelihoodHistMuonOnlyVMass->Fill(recoCandMass, mva.getMVA("inclusive.cfg","likelihood"));
+      likelihoodHistMuonOnlyVMass->Fill(recoCandMass, mva.getMVA("inclusive.cfg","Likelihood"));
     }
     else
     {
       BDTHistVBFVMass->Fill(recoCandMass, mva.getMVA("vbf.cfg","BDT"));
-      likelihoodHistVBFVMass->Fill(recoCandMass, mva.getMVA("vbf.cfg","likelihood"));
+      likelihoodHistVBFVMass->Fill(recoCandMass, mva.getMVA("vbf.cfg","Likelihood"));
       BDTHistVBF->Fill(mva.getMVA("vbf.cfg","BDT"));
-      likelihoodHistVBF->Fill(mva.getMVA("vbf.cfg","likelihood"));
+      likelihoodHistVBF->Fill(mva.getMVA("vbf.cfg","Likelihood"));
     }
 
 
