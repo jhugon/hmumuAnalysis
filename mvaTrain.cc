@@ -22,6 +22,8 @@
 
 #include "boost/program_options.hpp"
 #include "boost/regex.hpp"
+#include "boost/filesystem/operations.hpp"
+#include "boost/filesystem/exception.hpp"
 #include <cstdio>
 
 #define JETPUID
@@ -659,15 +661,13 @@ int main(int argc, char *argv[])
 
    ///////////////////////////////////////////////////////////
 
-   int renameStatus = std::rename( "weights", weightsDirName.c_str() );
-   if ( renameStatus == 0 )
+   try
    {
-     std::cout << "Renamed weights directory from 'weights' to " << weightsDirName << std::endl;
+     filesystem::rename("weights",weightsDirName);
    }
-   else
+   catch (const boost::filesystem::filesystem_error& ex)
    {
-     std::perror( "Error renaming weights Directory" );
-     return 1;
+     std::cout << "Warining, rename reports Error: " << ex.what() << std::endl;
    }
 
    std::cout << "done.";

@@ -13,9 +13,10 @@ includes.append("src/")
 
 #boost
 #includes.append("/usr/include/boost141")
+#libpath.append("/usr/lib/boost141")
 libs.append("boost_program_options")
 libs.append("boost_regex")
-#libpath.append("/usr/lib/boost141")
+libs.append("boost_filesystem")
 
 #root
 env.ParseConfig('root-config --cflags')
@@ -56,8 +57,12 @@ if not env.GetOption("clean"):
     Exit(1)
   if not conf.CheckLibWithHeader("boost_program_options","boost/program_options.hpp","c++",'boost::program_options::options_description optionDesc("options");'):
     print("Error: boost/program_options.hpp header and lib must be installed!")
+    Exit(1)
   if not conf.CheckLibWithHeader("boost_regex","boost/regex.hpp","c++",'boost::regex re("aregex");'):
     print("Error: boost/regex.hpp header and lib must be installed!")
+    Exit(1)
+  if not conf.CheckLibWithHeader("boost_filesystem","boost/filesystem/operations.hpp","c++",'boost::filesystem::path p("p");'):
+    print("Error: boost/filesystem.hpp header and lib must be installed!")
     Exit(1)
   env = conf.Finish()
  
