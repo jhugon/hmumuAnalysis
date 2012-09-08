@@ -446,6 +446,8 @@ int main(int argc, char *argv[])
     mva.writeEvent();
 
     bool vbfPreselection = mva.mDiJet>300.0 && mva.deltaEtaJets>3.0 && mva.productEtaJets<0.0 && mva.nJetsInRapidityGap == 0;
+    //if(vbfPreselection)
+    //  std::cout << "VBF Preselected!!";
 
     if(!vbfPreselection)
     {

@@ -21,6 +21,7 @@
 #endif
 
 #include "boost/program_options.hpp"
+#include "boost/regex.hpp"
 #include <cstdio>
 
 #define JETPUID
@@ -127,7 +128,10 @@ int main(int argc, char *argv[])
    // --- Here the preparation phase begins
 
    // Create a ROOT output file where TMVA will store ntuples, histograms, etc.
-   TString outfileName( "TMVA.root" );
+   TString outfileName( configFileName.c_str() );
+   outfileName.ReplaceAll(".cfg",".root");
+   outfileName = TString("TMVA_") + outfileName;
+   std::cout << "Outfile name: " << outfileName << endl;
    TFile* outputFile = TFile::Open( outfileName, "RECREATE" );
 
    // Create the factory object. Later you can choose the methods

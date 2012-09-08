@@ -317,7 +317,7 @@ MVA::resetValues()
   cosThetaStar=-10.0;
   deltaEtaJets=-10.0;
   productEtaJets=0.0;
-  nJetsInRapidityGap=-10.0;
+  nJetsInRapidityGap=0.0;
 
   deltaEtaMuons=-10.0;
   deltaPhiMuons=-10.0;
