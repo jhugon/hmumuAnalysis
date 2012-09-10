@@ -155,34 +155,57 @@ int main(int argc, char *argv[])
 
   //////////////////////////
   // Histograms
+  std::map<std::string,TH1F*> histMap;
+  std::map<std::string,TH2F*> histMap2D;
+  std::map<std::string,TH1F*>::iterator histMapIter;
+  std::map<std::string,TH2F*>::iterator histMap2DIter;
 
   TH1F* mDiMu = new TH1F("mDiMu","DiMuon Mass",1600,0,400);
+  histMap.insert(make_pair("mDiMu",mDiMu));
 
   TH1F* mDiJet = new TH1F("mDiJet","DiJet Mass",500,0,2000);
+  histMap.insert(make_pair("mDiJet",mDiJet));
 
   TH1F* ptDiMu = new TH1F("ptDiMu","DiMuon Pt",250,0,500);
+  histMap.insert(make_pair("ptDiMu",ptDiMu));
 
   TH1F* yDiMu = new TH1F("yDiMu","DiMuon Rapidity",100,-4,4);
+  histMap.insert(make_pair("yDiMu",yDiMu));
 
   TH2F* yVptDiMu = new TH2F("yVptDiMu","DiMuon Rapidity v. p_{T}",250,0,500,100,0,4);
+  histMap2D.insert(make_pair("yVptDiMu",yVptDiMu));
 
   TH1F* ptMu1 = new TH1F("ptMu1","Leading Muon Pt",100,0,200);
+  histMap.insert(make_pair("ptMu1",ptMu1));
   TH1F* ptMu2 = new TH1F("ptMu2","Sub-Leading Muon Pt",100,0,200);
+  histMap.insert(make_pair("ptMu2",ptMu2));
   TH1F* ptJet1 = new TH1F("ptJet1","Leading Jet Pt",200,0,1000);
+  histMap.insert(make_pair("ptJet1",ptJet1));
   TH1F* ptJet2 = new TH1F("ptJet2","Sub-Leading Jet Pt",200,0,1000);
+  histMap.insert(make_pair("ptJet2",ptJet2));
 
   TH1F* etaMu1 = new TH1F("etaMu1","Leading Muon #eta",50,-2.5,2.5);
+  histMap.insert(make_pair("etaMu1",etaMu1));
   TH1F* etaMu2 = new TH1F("etaMu2","Sub-Leading Muon #eta",50,-2.5,2.5);
+  histMap.insert(make_pair("etaMu2",etaMu2));
   TH1F* etaJet1 = new TH1F("etaJet1","Leading Jet #eta",50,-5.0,5.0);
+  histMap.insert(make_pair("etaJet1",etaJet1));
   TH1F* etaJet2 = new TH1F("etaJet2","Sub-Leading Jet #eta",50,-5.0,5.0);
+  histMap.insert(make_pair("etaJet2",etaJet2));
 
   TH1F* deltaEtaJetsHist = new TH1F("deltaEtaJets","#Delta#eta Jets",50,0.0,10.0);
+  histMap.insert(make_pair("deltaEtaJets",deltaEtaJetsHist));
   TH1F* deltaPhiJetsHist = new TH1F("deltaPhiJets","#Delta#phi Jets",50,0.0,3.2);
+  histMap.insert(make_pair("deltaPhiJets",deltaPhiJetsHist));
   TH1F* deltaRJetsHist = new TH1F("deltaRJets","#Delta R Jets",50,0.0,10.0);
+  histMap.insert(make_pair("deltaRJets",deltaRJetsHist));
 
   TH1F* deltaEtaMuonsHist = new TH1F("deltaEtaMuons","#Delta#eta Jets",50,0.0,10.0);
+  histMap.insert(make_pair("deltaEtaJets",deltaEtaMuonsHist));
   TH1F* deltaPhiMuonsHist = new TH1F("deltaPhiMuons","#Delta#phi Jets",50,0.0,3.2);
+  histMap.insert(make_pair("deltaPhiJets",deltaPhiMuonsHist));
   TH1F* deltaRMuonsHist = new TH1F("deltaRMuons","#Delta R Jets",50,0.0,10.0);
+  histMap.insert(make_pair("deltaRMuons",deltaRMuonsHist));
 
   TH1F* countsHist = new TH1F("countsHist","Event Counts",10,0.0,10.0);
   countsHist->GetXaxis()->SetBinLabel(1,"total");
@@ -193,41 +216,63 @@ int main(int argc, char *argv[])
   countsHist->GetXaxis()->SetBinLabel(6,"Pt30");
   countsHist->GetXaxis()->SetBinLabel(7,"Pt50");
   countsHist->GetXaxis()->SetBinLabel(8,"Pt75");
+  histMap.insert(make_pair("countsHist",countsHist));
 
   TH1F* cosThetaStarHist = new TH1F("cosThetaStar","cos(#theta^{*})",50,-1.,1.);
+  histMap.insert(make_pair("cosThetaStar",cosThetaStarHist));
 
   TH1F* puJetIDSimpleDiscJet1Hist = new TH1F("puJetIDSimpleDiscJet1","PU Jet ID--Simple Discriminator Leading Jet",50,-1.,1.);
+  histMap.insert(make_pair("puJetIDSimpleDiscJet1",puJetIDSimpleDiscJet1Hist));
   TH1F* puJetIDSimpleDiscJet2Hist = new TH1F("puJetIDSimpleDiscJet2","PU Jet ID--Simple Discriminator Sub-Leading Jet",50,-1.,1.);
+  histMap.insert(make_pair("puJetIDSimpleDiscJet2",puJetIDSimpleDiscJet2Hist));
   TH1F* puJetIDSimpleDiscJet3Hist = new TH1F("puJetIDSimpleDiscJet3","PU Jet ID--Simple Discriminator 3rd Leading Jet",50,-1.,1.);
+  histMap.insert(make_pair("puJetIDSimpleDiscJet3",puJetIDSimpleDiscJet3Hist));
 
   TH1F* puJetIDSimpleJet1Hist = new TH1F("puJetIDSimpleJet1","PU Jet ID--Simple Loose Leading Jet",2,0,2);
+  histMap.insert(make_pair("puJetIDSimpleJet1",puJetIDSimpleJet1Hist));
   puJetIDSimpleJet1Hist->GetXaxis()->SetBinLabel(1,"Fail");
   puJetIDSimpleJet1Hist->GetXaxis()->SetBinLabel(2,"Pass");
   TH1F* puJetIDSimpleJet2Hist = new TH1F("puJetIDSimpleJet2","PU Jet ID--Simple Loose Sub-Leading Jet",2,-0,2);
+  histMap.insert(make_pair("puJetIDSimpleJet2",puJetIDSimpleJet2Hist));
   puJetIDSimpleJet2Hist->GetXaxis()->SetBinLabel(1,"Fail");
   puJetIDSimpleJet2Hist->GetXaxis()->SetBinLabel(2,"Pass");
   TH1F* puJetIDSimpleJet3Hist = new TH1F("puJetIDSimpleJet3","PU Jet ID--Simple Loose 3rd Leading Jet",2,-0,2);
+  histMap.insert(make_pair("puJetIDSimpleJet3",puJetIDSimpleJet3Hist));
   puJetIDSimpleJet3Hist->GetXaxis()->SetBinLabel(1,"Fail");
   puJetIDSimpleJet3Hist->GetXaxis()->SetBinLabel(2,"Pass");
 
   TH1F* BDTHistMuonOnly = new TH1F("BDTHistMuonOnly","BDT Discriminator",2000,-1,1);
+  histMap.insert(make_pair("BDTHistMuonOnly",BDTHistMuonOnly));
   TH1F* likelihoodHistMuonOnly = new TH1F("likelihoodHistMuonOnly","Likelihood Discriminator",2000,-1,1);
+  histMap.insert(make_pair("likelihoodHistMuonOnly",likelihoodHistMuonOnly));
 
   TH1F* BDTHistVBF = new TH1F("BDTHistVBF","BDT Discriminator",2000,-1,1);
+  histMap.insert(make_pair("BDTHistVBF",BDTHistVBF));
   TH1F* likelihoodHistVBF = new TH1F("likelihoodHistVBF","Likelihood Discriminator",2000,-1,1);
+  histMap.insert(make_pair("likelihoodHistVBF",likelihoodHistVBF));
 
   TH2F* BDTHistMuonOnlyVMass = new TH2F("BDTHistMuonOnlyVMass","BDT Discriminator",1600,0,400,2000,-1,1);
+  histMap2D.insert(make_pair("BDTHistMuonOnlyVMass",BDTHistMuonOnlyVMass));
   TH2F* likelihoodHistMuonOnlyVMass = new TH2F("likelihoodHistMuonOnlyVMass","Likelihood Discriminator",1600,0,400,2000,-1,1);
+  histMap2D.insert(make_pair("likelihoodHistMuonOnlyVMass",likelihoodHistMuonOnlyVMass));
   TH2F* BDTHistVBFVMass = new TH2F("BDTHistVBFVMass","BDT Discriminator",1600,0,400,2000,-1,1);
+  histMap2D.insert(make_pair("BDTHistVBFVMass",BDTHistVBFVMass));
   TH2F* likelihoodHistVBFVMass = new TH2F("likelihoodHistVBFVMass","Likelihood Discriminator",1600,0,400,2000,-1,1);
+  histMap2D.insert(make_pair("likelihoodHistVBFVMass",likelihoodHistVBFVMass));
 
   TH1F* relIsoMu1Hist = new TH1F("relIsoMu1","",1000,0,10.0);
+  histMap.insert(make_pair("relIsoMu1",relIsoMu1Hist));
   TH1F* relIsoMu2Hist = new TH1F("relIsoMu2","",1000,0,10.0);
+  histMap.insert(make_pair("relIsoMu2",relIsoMu2Hist));
 
   TH1F* nJetsHist = new TH1F("nJets","",11,0,11);
+  histMap.insert(make_pair("nJets",nJetsHist));
   TH1F* htHist = new TH1F("ht","",200,0,2000);
-  TH1F* nJetsInRapidtyGapHist = new TH1F("nJetsInRapidtyGap","",11,0,11);
-  TH1F* htInRapidityGapHist = new TH1F("htInRapidtyGap","",200,0,2000);
+  histMap.insert(make_pair("ht",htHist));
+  TH1F* nJetsInRapidityGapHist = new TH1F("nJetsInRapidityGap","",11,0,11);
+  histMap.insert(make_pair("nJetsInRapidityGap",nJetsInRapidityGapHist));
+  TH1F* htInRapidityGapHist = new TH1F("htInRapidityGap","",200,0,2000);
+  histMap.insert(make_pair("htInRapidityGap",htInRapidityGapHist));
 
   //for MVA
 
@@ -433,7 +478,7 @@ int main(int argc, char *argv[])
       mva.productEtaJets = etaJetProduct;
       mva.deltaEtaJets = dEtaJets;
 
-      nJetsInRapidtyGapHist->Fill(mva.nJetsInRapidityGap);
+      nJetsInRapidityGapHist->Fill(mva.nJetsInRapidityGap);
       htInRapidityGapHist->Fill(mva.htInRapidityGap);
     }
   
@@ -469,62 +514,15 @@ int main(int argc, char *argv[])
 
   outFile->cd();
 
-  mDiMu->Write();
-  mDiJet->Write();
+  for(histMapIter = histMap.begin(); histMapIter != histMap.end(); histMapIter++)
+  {
+    histMapIter->second->Write();
+  }
 
-  ptMu1->Write();
-  ptMu2->Write();
-  ptJet1->Write();
-  ptJet2->Write();
-
-  etaMu1->Write();
-  etaMu2->Write();
-  etaJet1->Write();
-  etaJet2->Write();
-
-  deltaEtaJetsHist->Write();
-  deltaPhiJetsHist->Write();
-  deltaRJetsHist->Write();
-  deltaEtaMuonsHist->Write();
-  deltaPhiMuonsHist->Write();
-  deltaRMuonsHist->Write();
-
-  ptDiMu->Write();
-
-  yDiMu->Write();
-
-  yVptDiMu->Write();
-
-  countsHist->Write();
-
-  cosThetaStarHist->Write();
-
-  puJetIDSimpleDiscJet1Hist->Write();
-  puJetIDSimpleDiscJet2Hist->Write();
-  puJetIDSimpleDiscJet3Hist->Write();
-
-  puJetIDSimpleJet1Hist->Write();
-  puJetIDSimpleJet2Hist->Write();
-  puJetIDSimpleJet3Hist->Write();
-
-  BDTHistMuonOnly->Write();
-  likelihoodHistMuonOnly->Write();
-
-  BDTHistVBF->Write();
-  likelihoodHistVBF->Write();
-
-  BDTHistMuonOnlyVMass->Write();
-  likelihoodHistMuonOnlyVMass->Write();
-  BDTHistVBFVMass->Write();
-  likelihoodHistVBFVMass->Write();
-
-  relIsoMu1Hist->Write();
-  relIsoMu2Hist->Write();
-
-  nJetsHist->Write();
-  htHist->Write();
-  nJetsInRapidtyGapHist->Write();
-  htInRapidityGapHist->Write();
+  for(histMap2DIter = histMap2D.begin(); histMap2DIter != histMap2D.end(); histMap2DIter++)
+  {
+    histMap2DIter->second->Write();
+  }
 
   cout << "analyzer done." << endl << endl;
   return 0;
