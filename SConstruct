@@ -9,6 +9,8 @@ libpath = []
 libs = []
 env.MergeFlags('-fPIC -O2 -lm')
 
+env.MergeFlags("-D BLIND")
+
 includes.append("src/")
 
 #boost

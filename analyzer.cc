@@ -104,6 +104,32 @@ int main(int argc, char *argv[])
 
   cout << "Input File Name: " << inputFileName << endl;
   cout << "Output File Name: " << outputFileName << endl;
+
+  // Check to see if it is data
+  bool isData = false;
+  std::vector<std::string> dataWords;
+  dataWords.push_back("Run2012");
+  dataWords.push_back("Run2011");
+  dataWords.push_back("SingleMu");
+  dataWords.push_back("DoubleMu");
+  std::vector<std::string>::const_iterator dataWord;
+  for(dataWord = dataWords.begin(); dataWord != dataWords.end();dataWord++)
+  {
+    regex re(*dataWord);
+    //bool tmpIsData = regex_match(inputFileName,re);
+    //if(tmpIsData)
+    if(regex_search(inputFileName,re))
+    {
+        isData = true;
+    }
+  }
+
+  if(isData)
+    std::cout << "This is a Real Data Sample\n";
+  else
+    std::cout << "This is a MC Sample\n";
+
+  ////////////
   
   TChain * tree = new TChain("tree");
   tree->AddFile(inputFileName.c_str());
@@ -300,6 +326,7 @@ int main(int argc, char *argv[])
   mvaConfigNames.push_back("vbf.cfg");
   MVA mva(mvaConfigNames,trainingTreeFileName);
 
+
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -317,6 +344,12 @@ int main(int argc, char *argv[])
       continue;
     tree->GetEvent(i);
     if (i % reportEach == 0) cout << "Event: " << i << endl;
+
+#ifdef BLIND
+    bool inBlindWindow = recoCandMass < 145.0 && recoCandMass > 105.0;
+    if (inBlindWindow && isData)
+        continue;
+#endif
 
     countsHist->Fill(0.0);
 
