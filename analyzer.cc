@@ -38,12 +38,12 @@ int main(int argc, char *argv[])
   //////////// Configuration Options //////////
   /////////////////////////////////////////////
 
-  const char* optionIntro = "H->MuMu Analyzer\n\nUsage: ./analyzer [--help] [--train] [--maxEvents N] <inputFileName.root> <outputFileName.root>\n\nAllowed Options";
+  const char* optionIntro = "H->MuMu Analyzer\n\nUsage: ./analyzer [--help] [--train] [--maxEvents N] <outputFileName.root> <inputFileName.root> [<inputFileName2.root>...]\n\nAllowed Options";
   program_options::options_description optionDesc(optionIntro);
   optionDesc.add_options()
       ("help,h", "Produce Help Message")
       ("trainingTree,t",program_options::value<string>(), "Create Training Tree File with filename")
-      ("filenames",program_options::value<vector<string> >(), "Input & Output File Names")
+      ("filenames",program_options::value<vector<string> >(), "Input & Output File Names, put output name first followed by all input file names")
       ("maxEvents,m",program_options::value<int>(), "Maximum Number of Events to Process")
   ;
   
@@ -59,24 +59,20 @@ int main(int argc, char *argv[])
       cout << optionDesc << "\n";
       return 1;
   }
-  
-  std::string inputFileName;
+
+  std::vector<std::string> filenames;
+  vector<string>::const_iterator filename;
   std::string outputFileName;
   if (optionMap.count("filenames")>0)
   {
-     vector<string> filenames = optionMap["filenames"].as<vector<string> >();
-     if(filenames.size()>2)
-     {
-       cout << "Error: Extra filenames on command line, exiting." << endl;
-       return 1;
-     }
+     filenames = optionMap["filenames"].as<vector<string> >();
      if(filenames.size()<2)
      {
        cout << "Error: Need both input file and output file names, exiting." << endl;
        return 1;
      }
-     inputFileName = filenames[0];
-     outputFileName = filenames[1];
+     outputFileName = filenames[0];
+     filenames.erase(filenames.begin());
   }
   else
   {
@@ -102,9 +98,6 @@ int main(int argc, char *argv[])
   float minMmm = 70.0;
   float maxMmm = 200.0;
 
-  cout << "Input File Name: " << inputFileName << endl;
-  cout << "Output File Name: " << outputFileName << endl;
-
   // Check to see if it is data
   bool isData = false;
   std::vector<std::string> dataWords;
@@ -116,9 +109,7 @@ int main(int argc, char *argv[])
   for(dataWord = dataWords.begin(); dataWord != dataWords.end();dataWord++)
   {
     regex re(*dataWord);
-    //bool tmpIsData = regex_match(inputFileName,re);
-    //if(tmpIsData)
-    if(regex_search(inputFileName,re))
+    if(regex_search(filenames[0],re))
     {
         isData = true;
     }
@@ -132,8 +123,15 @@ int main(int argc, char *argv[])
   ////////////
   
   TChain * tree = new TChain("tree");
-  tree->AddFile(inputFileName.c_str());
 
+  cout << "Input File Names: \n"; 
+  for(filename = filenames.begin();filename != filenames.end();filename++)
+  {
+    cout<<"  "<< *filename << endl;
+    tree->AddFile(filename->c_str());
+  }
+
+  cout << "Output File Name: " << outputFileName << endl;
   TFile * outFile = new TFile(outputFileName.c_str(),"RECREATE");
 
   std::string trainingTreeFileName = "";
