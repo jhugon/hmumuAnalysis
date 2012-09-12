@@ -153,11 +153,12 @@ int main(int argc, char *argv[])
   tree->SetBranchAddress("reco1", &reco1);
   tree->SetBranchAddress("reco2", &reco2);
 
-  float recoCandMass, recoCandPt, recoCandY;
+  float recoCandMass, recoCandPt, recoCandY, recoCandPhi;
 
   tree->SetBranchAddress("recoCandMass", &recoCandMass);
   tree->SetBranchAddress("recoCandPt"  , &recoCandPt );
   tree->SetBranchAddress("recoCandY"  , &recoCandY );
+  tree->SetBranchAddress("recoCandPhi"  , &recoCandPhi );
 
   _PFJetInfo jets;
   tree->SetBranchAddress("pfJets",&jets);
@@ -201,6 +202,11 @@ int main(int argc, char *argv[])
 
   TH2F* yVptDiMu = new TH2F("yVptDiMu","DiMuon Rapidity v. p_{T}",250,0,500,100,0,4);
   histMap2D.insert(make_pair("yVptDiMu",yVptDiMu));
+  TH2F* ptVmDiMu = new TH2F("ptVmDiMu","DiMuon p_{T} v. Mass",1600,0,400,250,0,250);
+  histMap2D.insert(make_pair("ptVmDiMu",ptVmDiMu));
+  TH2F* yVmDiMu = new TH2F("ptVmDiMu","DiMuon |y| v. Mass",1600,0,400,100,0,4);
+  TH2F* phiVmDiMu = new TH2F("phiVmDiMu","DiMuon #phi v. Mass",1600,0,400,100,0,3.2);
+  histMap2D.insert(make_pair("phiVmDiMu",phiVmDiMu));
 
   TH1F* ptMu1 = new TH1F("ptMu1","Leading Muon Pt",100,0,200);
   histMap.insert(make_pair("ptMu1",ptMu1));
@@ -427,6 +433,9 @@ int main(int argc, char *argv[])
     yDiMu->Fill(mva.yDiMu);
     ptDiMu->Fill(mva.ptDiMu);
     yVptDiMu->Fill(mva.ptDiMu,fabs(mva.yDiMu));
+    yVmDiMu->Fill(mva.mDiMu,fabs(mva.yDiMu));
+    ptVmDiMu->Fill(mva.mDiMu,mva.ptDiMu);
+    phiVmDiMu->Fill(mva.mDiMu,recoCandPhi);
     ptMu1->Fill(mva.ptMu1);
     ptMu2->Fill(mva.ptMu2);
     etaMu1->Fill(mva.etaMu1);
