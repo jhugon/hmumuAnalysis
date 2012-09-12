@@ -98,6 +98,9 @@ int main(int argc, char *argv[])
   float minMmm = 70.0;
   float maxMmm = 200.0;
 
+  float minBlind = 105;
+  float maxBlind = 145;
+
   // Check to see if it is data
   bool isData = false;
   std::vector<std::string> dataWords;
@@ -298,11 +301,12 @@ int main(int argc, char *argv[])
   TH1F* htInRapidityGapHist = new TH1F("htInRapidityGap","",200,0,2000);
   histMap.insert(make_pair("htInRapidityGap",htInRapidityGapHist));
 
-  // Small Mass Window Hists
+  // Other Sets of Hists
   std::map<std::string,TH1F*> histMap4GeVWindow;
   std::map<std::string,TH1F*> histMapPtDiMu100;
   std::map<std::string,TH1F*> histMapVBFPresel;
   std::map<std::string,TH1F*> histMapIncPresel;
+  std::map<std::string,TH1F*> histMapNotBlindWindow;
   for(histMapIter = histMap.begin(); histMapIter != histMap.end(); histMapIter++)
   {
     TH1F* tmp;
@@ -314,6 +318,8 @@ int main(int argc, char *argv[])
     histMapVBFPresel.insert(make_pair(histMapIter->first,tmp));
     tmp = (TH1F*) histMapIter->second->Clone();
     histMapIncPresel.insert(make_pair(histMapIter->first,tmp));
+    tmp = (TH1F*) histMapIter->second->Clone();
+    histMapNotBlindWindow.insert(make_pair(histMapIter->first,tmp));
   }
 
   //////////////////////////
@@ -323,7 +329,6 @@ int main(int argc, char *argv[])
   mvaConfigNames.push_back("inclusive.cfg");
   mvaConfigNames.push_back("vbf.cfg");
   MVA mva(mvaConfigNames,trainingTreeFileName);
-
 
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -343,8 +348,8 @@ int main(int argc, char *argv[])
     tree->GetEvent(i);
     if (i % reportEach == 0) cout << "Event: " << i << endl;
 
+    bool inBlindWindow = recoCandMass < maxBlind && recoCandMass > minBlind;
 #ifdef BLIND
-    bool inBlindWindow = recoCandMass < 145.0 && recoCandMass > 105.0;
     if (inBlindWindow && isData)
         continue;
 #endif
@@ -524,7 +529,7 @@ int main(int argc, char *argv[])
       ptJet1->Fill(mva.ptJet1);
       ptJet2->Fill(mva.ptJet2);
       etaJet1->Fill(mva.etaJet1);
-      etaJet2->Fill(mva.etaJet1);
+      etaJet2->Fill(mva.etaJet2);
       deltaEtaJetsHist->Fill(mva.deltaEtaJets);
       deltaPhiJetsHist->Fill(mva.deltaPhiJets);
       deltaRJetsHist->Fill(mva.deltaRJets);
@@ -582,7 +587,7 @@ int main(int argc, char *argv[])
       histMap4GeVWindow["ptJet1"]->Fill(mva.ptJet1);
       histMap4GeVWindow["ptJet2"]->Fill(mva.ptJet2);
       histMap4GeVWindow["etaJet1"]->Fill(mva.etaJet1);
-      histMap4GeVWindow["etaJet2"]->Fill(mva.etaJet1);
+      histMap4GeVWindow["etaJet2"]->Fill(mva.etaJet2);
       histMap4GeVWindow["deltaEtaJets"]->Fill(mva.deltaEtaJets);
       histMap4GeVWindow["deltaPhiJets"]->Fill(mva.deltaPhiJets);
       histMap4GeVWindow["deltaRJets"]->Fill(mva.deltaRJets);
@@ -613,7 +618,7 @@ int main(int argc, char *argv[])
       histMapPtDiMu100["ptJet1"]->Fill(mva.ptJet1);
       histMapPtDiMu100["ptJet2"]->Fill(mva.ptJet2);
       histMapPtDiMu100["etaJet1"]->Fill(mva.etaJet1);
-      histMapPtDiMu100["etaJet2"]->Fill(mva.etaJet1);
+      histMapPtDiMu100["etaJet2"]->Fill(mva.etaJet2);
       histMapPtDiMu100["deltaEtaJets"]->Fill(mva.deltaEtaJets);
       histMapPtDiMu100["deltaPhiJets"]->Fill(mva.deltaPhiJets);
       histMapPtDiMu100["deltaRJets"]->Fill(mva.deltaRJets);
@@ -644,7 +649,7 @@ int main(int argc, char *argv[])
       histMapVBFPresel["ptJet1"]->Fill(mva.ptJet1);
       histMapVBFPresel["ptJet2"]->Fill(mva.ptJet2);
       histMapVBFPresel["etaJet1"]->Fill(mva.etaJet1);
-      histMapVBFPresel["etaJet2"]->Fill(mva.etaJet1);
+      histMapVBFPresel["etaJet2"]->Fill(mva.etaJet2);
       histMapVBFPresel["deltaEtaJets"]->Fill(mva.deltaEtaJets);
       histMapVBFPresel["deltaPhiJets"]->Fill(mva.deltaPhiJets);
       histMapVBFPresel["deltaRJets"]->Fill(mva.deltaRJets);
@@ -675,7 +680,7 @@ int main(int argc, char *argv[])
       histMapIncPresel["ptJet1"]->Fill(mva.ptJet1);
       histMapIncPresel["ptJet2"]->Fill(mva.ptJet2);
       histMapIncPresel["etaJet1"]->Fill(mva.etaJet1);
-      histMapIncPresel["etaJet2"]->Fill(mva.etaJet1);
+      histMapIncPresel["etaJet2"]->Fill(mva.etaJet2);
       histMapIncPresel["deltaEtaJets"]->Fill(mva.deltaEtaJets);
       histMapIncPresel["deltaPhiJets"]->Fill(mva.deltaPhiJets);
       histMapIncPresel["deltaRJets"]->Fill(mva.deltaRJets);
@@ -683,6 +688,37 @@ int main(int argc, char *argv[])
       histMapIncPresel["htInRapidityGap"]->Fill(mva.htInRapidityGap);
       histMapIncPresel["nJets"]->Fill(mva.nJets);
       histMapIncPresel["ht"]->Fill(mva.ht);
+    }
+
+    //Not In Blinding Window Plots
+    if (!inBlindWindow)
+    {
+      histMapNotBlindWindow["mDiMu"]->Fill(mva.mDiMu);
+      histMapNotBlindWindow["yDiMu"]->Fill(mva.yDiMu);
+      histMapNotBlindWindow["ptDiMu"]->Fill(mva.ptDiMu);
+      histMapNotBlindWindow["ptMu1"]->Fill(mva.ptMu1);
+      histMapNotBlindWindow["ptMu2"]->Fill(mva.ptMu2);
+      histMapNotBlindWindow["etaMu1"]->Fill(mva.etaMu1);
+      histMapNotBlindWindow["etaMu2"]->Fill(mva.etaMu2);
+      histMapNotBlindWindow["cosThetaStar"]->Fill(mva.cosThetaStar);
+      histMapNotBlindWindow["deltaPhiMuons"]->Fill(mva.deltaPhiMuons);
+      histMapNotBlindWindow["deltaEtaMuons"]->Fill(mva.deltaEtaMuons);
+      histMapNotBlindWindow["deltaRMuons"]->Fill(mva.deltaRMuons);
+      histMapNotBlindWindow["relIsoMu1"]->Fill(mva.relIsoMu1);
+      histMapNotBlindWindow["relIsoMu2"]->Fill(mva.relIsoMu2);
+
+      histMapNotBlindWindow["mDiJet"]->Fill(mva.mDiJet);
+      histMapNotBlindWindow["ptJet1"]->Fill(mva.ptJet1);
+      histMapNotBlindWindow["ptJet2"]->Fill(mva.ptJet2);
+      histMapNotBlindWindow["etaJet1"]->Fill(mva.etaJet1);
+      histMapNotBlindWindow["etaJet2"]->Fill(mva.etaJet2);
+      histMapNotBlindWindow["deltaEtaJets"]->Fill(mva.deltaEtaJets);
+      histMapNotBlindWindow["deltaPhiJets"]->Fill(mva.deltaPhiJets);
+      histMapNotBlindWindow["deltaRJets"]->Fill(mva.deltaRJets);
+      histMapNotBlindWindow["nJetsInRapidityGap"]->Fill(mva.nJetsInRapidityGap);
+      histMapNotBlindWindow["htInRapidityGap"]->Fill(mva.htInRapidityGap);
+      histMapNotBlindWindow["nJets"]->Fill(mva.nJets);
+      histMapNotBlindWindow["ht"]->Fill(mva.ht);
     }
 
   }// end event loop
@@ -727,6 +763,13 @@ int main(int argc, char *argv[])
   TDirectory* dirIncPresel = outFile->mkdir("IncPresel");
   dirIncPresel->cd();
   for(histMapIter = histMapIncPresel.begin(); histMapIter != histMapIncPresel.end(); histMapIter++)
+  {
+    histMapIter->second->Write();
+  }
+
+  TDirectory* dirNotBlindWindow = outFile->mkdir("NotBlindWindow");
+  dirNotBlindWindow->cd();
+  for(histMapIter = histMapNotBlindWindow.begin(); histMapIter != histMapNotBlindWindow.end(); histMapIter++)
   {
     histMapIter->second->Write();
   }
