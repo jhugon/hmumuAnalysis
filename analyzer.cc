@@ -307,6 +307,15 @@ int main(int argc, char *argv[])
   TH1F* htInRapidityGapHist = new TH1F("htInRapidityGap","",200,0,2000);
   histMap.insert(make_pair("htInRapidityGap",htInRapidityGapHist));
 
+  for(histMapIter = histMap.begin(); histMapIter != histMap.end(); histMapIter++)
+  {
+    histMapIter->second->Sumw2();
+  }
+  for(histMap2DIter = histMap2D.begin(); histMap2DIter != histMap2D.end(); histMap2DIter++)
+  {
+    histMap2DIter->second->Sumw2();
+  }
+
   // Other Sets of Hists
   std::map<std::string,TH1F*> histMap4GeVWindow;
   std::map<std::string,TH1F*> histMapPtDiMu100;

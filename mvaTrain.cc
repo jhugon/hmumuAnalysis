@@ -24,6 +24,10 @@
 #include "boost/regex.hpp"
 #include "boost/filesystem/operations.hpp"
 #include "boost/filesystem/exception.hpp"
+#include <boost/lexical_cast.hpp>
+//Defines method of std::string that appends any type :-)
+#define appendAny(a) append(boost::lexical_cast<std::string>(a))
+
 #include <cstdio>
 
 #define JETPUID
@@ -113,7 +117,7 @@ int main(int argc, char *argv[])
    // 
    // --- Boosted Decision Trees
    Use["BDT"]             = 1; // uses Adaptive Boost
-   Use["BDTG"]            = 0; // uses Gradient Boost
+   Use["BDTG"]            = 1; // uses Gradient Boost
    Use["BDTB"]            = 0; // uses Bagging
    Use["BDTD"]            = 0; // decorrelation + Adaptive Boost
    Use["BDTF"]            = 0; // allow usage of fisher discriminant for node splitting 
@@ -147,7 +151,7 @@ int main(int argc, char *argv[])
    // All TMVA output can be suppressed by removing the "!" (not) in
    // front of the "Silent" argument in the option string
    TMVA::Factory *factory = new TMVA::Factory( "TMVAClassification", outputFile,
-                                               "!V:!Silent:!Color:!DrawProgressBar:Transformations=I;D;P;G,D:AnalysisType=Classification" );
+                                               "!V:!Silent:!Color:!DrawProgressBar:AnalysisType=Classification:CreateMVAPdfs" );
 
    // If you wish to modify default settings
    // (please check "src/Config.h" to see all available global options)
@@ -206,8 +210,11 @@ int main(int argc, char *argv[])
         ("bakFile",program_options::value<std::vector<std::string> >(),"")
         ("sigWeight",program_options::value<std::vector<float> >(),"")
         ("bakWeight",program_options::value<std::vector<float> >(),"")
+
+        ("nTrees",program_options::value<unsigned>(),"")
+        ("nEventsMin",program_options::value<unsigned>(),"")
     ;
-  
+
     program_options::variables_map optionMap;
     program_options::store(program_options::parse_config_file(infile, optionDesc), optionMap);
     program_options::notify(optionMap);    
@@ -434,6 +441,23 @@ int main(int argc, char *argv[])
       ttreeList.push_back(tmptree);
    }
 
+    //std::string bdtOptions = "!H:!V:NTrees=850:nEventsMin=150:MaxDepth=3:BoostType=AdaBoost:AdaBoostBeta=0.5:SeparationType=GiniIndex:nCuts=20:PruneMethod=NoPruning"
+    unsigned BDTnTrees = 850;
+    unsigned BDTnEventsMin = 150;
+    if (optionMap.count("nTrees"))
+        BDTnTrees = optionMap["nTrees"].as<unsigned>();
+    if (optionMap.count("nEventsMin"))
+        BDTnEventsMin = optionMap["nEventsMin"].as<unsigned>();
+    std::string bdtOptions = "!H:!V:NTrees=";
+    bdtOptions.appendAny(BDTnTrees);
+    bdtOptions.appendAny(":nEventsMin=");
+    bdtOptions.appendAny(BDTnEventsMin);
+    bdtOptions.appendAny(
+      ":MaxDepth=3:BoostType=AdaBoost:AdaBoostBeta=0.5:SeparationType=GiniIndex:nCuts=20:PruneMethod=NoPruning"
+      );
+
+  std::cout << "BDT option string: " << bdtOptions << std::endl;
+
    factory->PrepareTrainingAndTestTree( cuts.c_str(),cuts.c_str(),
                                         "nTrain_Signal=0:nTrain_Background=0:SplitMode=Random:NormMode=NumEvents:!V" );
 
@@ -595,7 +619,7 @@ int main(int argc, char *argv[])
 
    if (Use["BDT"])  // Adaptive Boost
       factory->BookMethod( TMVA::Types::kBDT, "BDT",
-                           "!H:!V:NTrees=850:nEventsMin=150:MaxDepth=3:BoostType=AdaBoost:AdaBoostBeta=0.5:SeparationType=GiniIndex:nCuts=20:PruneMethod=NoPruning" );
+                            bdtOptions.c_str());
 
 
    if (Use["BDTB"]) // Bagging

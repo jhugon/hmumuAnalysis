@@ -54,6 +54,9 @@ if not env.GetOption("clean"):
   if not conf.CheckLibWithHeader("TMVA",["TMVA/Tools.h"],"c++",'TMVA::Tools::Instance();'):
     print("Error: ROOT lib libTMVA.a must be installed!")
     Exit(1)
+  if not conf.CheckCXXHeader("boost/lexical_cast.hpp"):
+    print("Error: boost/lexical_cast.hpp header not installed!")
+    Exit(1)
   if not conf.CheckCXXHeader("boost/program_options.hpp"):
     print("Error: boost/program_options.hpp header not installed!")
     Exit(1)
