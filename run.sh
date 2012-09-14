@@ -2,8 +2,8 @@
 
 nice scons -j4
 
-#TRAININGTREES="true"
-#TRAIN="true"
+TRAININGTREES="true"
+TRAIN="true"
 
 echo "#######################"
 echo "   Running Analyzer"
@@ -16,6 +16,8 @@ echo "Creating Training Trees"
 echo "#######################"
 nice ./analyzer ggHmumu125.root /data/uftrig01b/jhugon/hmumu/privateSignalV2/ggHmumu125.root --trainingTree signalTreeGG.root
 nice ./analyzer vbfHmumu125.root /data/uftrig01b/jhugon/hmumu/privateSignalV2/vbfHmumu125.root --trainingTree signalTreeVBF.root
+nice ./analyzer zHmumu125.root /data/uftrig01b/jhugon/hmumu/privateSignalV2/zHmumu125.root --trainingTree signalTreeZH.root
+nice ./analyzer wHmumu125.root /data/uftrig01b/jhugon/hmumu/privateSignalV2/wHmumu125.root --trainingTree signalTreeWH.root
 nice ./analyzer DYJetsToLL.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/NtuplesMCDYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v1/*.root --trainingTree backgroundTreeDY.root
 nice ./analyzer ttbar.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_2_6/NtuplesMCTTJets_TuneZ2star_8TeV-madgraph-tauola_Summer12-PU_S7_START52_V9-v1/*.root --trainingTree backgroundTreeTT.root
 echo "#######################"
@@ -38,6 +40,8 @@ fi
 # Run with full MVA
 nice ./analyzer ggHmumu125.root /data/uftrig01b/jhugon/hmumu/privateSignalV2/ggHmumu125.root
 nice ./analyzer vbfHmumu125.root /data/uftrig01b/jhugon/hmumu/privateSignalV2/vbfHmumu125.root
+nice ./analyzer zHmumu125.root /data/uftrig01b/jhugon/hmumu/privateSignalV2/zHmumu125.root
+nice ./analyzer wHmumu125.root /data/uftrig01b/jhugon/hmumu/privateSignalV2/wHmumu125.root
 nice ./analyzer DYJetsToLL.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/NtuplesMCDYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v1/*.root
 nice ./analyzer ttbar.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_2_6/NtuplesMCTTJets_TuneZ2star_8TeV-madgraph-tauola_Summer12-PU_S7_START52_V9-v1/*.root
 
