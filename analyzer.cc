@@ -417,6 +417,8 @@ int main(int argc, char *argv[])
     }
     mva.resetValues();
 
+    mva.weight = weight;
+
     mva.ptMu1=muon1.pt;
     mva.ptMu2=muon2.pt;
     mva.etaMu1=muon1.eta;

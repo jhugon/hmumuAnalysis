@@ -43,6 +43,8 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
     outTree_->Branch("ht",&ht,"ht/F");
     outTree_->Branch("nJets",&nJets,"nJets/F");
     outTree_->Branch("htInRapidityGap",&htInRapidityGap,"htInRapidityGap/F");
+
+    outTree_->Branch("weight",&weight,"weight/F");
   }
 
   if(outFileName.size()<1)
@@ -330,4 +332,6 @@ MVA::resetValues()
   ht=0.0;
   nJets=0.0;
   htInRapidityGap=0.0;
+
+  weight=1.0;
 }

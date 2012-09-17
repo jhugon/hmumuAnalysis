@@ -461,6 +461,10 @@ int main(int argc, char *argv[])
    factory->PrepareTrainingAndTestTree( cuts.c_str(),cuts.c_str(),
                                         "nTrain_Signal=0:nTrain_Background=0:SplitMode=Random:NormMode=NumEvents:!V" );
 
+   //Event Weights
+   factory->SetSignalWeightExpression    ("weight");
+   factory->SetBackgroundWeightExpression("weight");
+
    // ---- Book MVA methods
    //
    // Please lookup the various method configuration options in the corresponding cxx files, eg:

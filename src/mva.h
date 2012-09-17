@@ -72,6 +72,8 @@ class MVA
   float nJets;
   float htInRapidityGap;
 
+  float weight;
+
   //////////////////////
   
   std::map<std::string,TMVA::Reader*> readers_;
