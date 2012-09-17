@@ -56,13 +56,13 @@ nice ./analyzer ttbar.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_2_6/Ntupl
 
 nice ./analyzer SingleMuRun2012Av1.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/NtuplesDataSingleMuRun2012A-13Jul2012-v1/*.root
 nice ./analyzer SingleMuRun2012Bv1.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/NtuplesDataSingleMuRun2012B-13Jul2012-v1/*.root
-nice ./analyzer SingleMuRun2012Cv1.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/NtuplesDataSingleMuRun2012C-PromptReco-v1/*.root
-nice ./analyzer SingleMuRun2012Cv2.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/NtuplesDataSingleMuRun2012C-PromptReco-v2/*.root
+#nice ./analyzer SingleMuRun2012Cv1.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/NtuplesDataSingleMuRun2012C-PromptReco-v1/*.root
+#nice ./analyzer SingleMuRun2012Cv2.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/NtuplesDataSingleMuRun2012C-PromptReco-v2/*.root
 
 nice ./analyzer DoubleMuRun2012Av1.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/NtuplesDataDoubleMuRun2012A-13Jul2012-v1/*.root
 nice ./analyzer DoubleMuRun2012Bv1.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/NtuplesDataDoubleMuRun2012B-13Jul2012-v4/*.root
-nice ./analyzer DoubleMuRun2012Cv1.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/NtuplesDataDoubleMuRun2012C-PromptReco-v1/*.root
-nice ./analyzer DoubleMuRun2012Cv2.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/NtuplesDataDoubleMuRun2012C-PromptReco-v2/*.root
+#nice ./analyzer DoubleMuRun2012Cv1.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/NtuplesDataDoubleMuRun2012C-PromptReco-v1/*.root
+#nice ./analyzer DoubleMuRun2012Cv2.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/NtuplesDataDoubleMuRun2012C-PromptReco-v2/*.root
 
 echo "#######################"
 echo "#######################"
