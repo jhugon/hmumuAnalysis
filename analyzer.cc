@@ -181,6 +181,15 @@ int main(int argc, char *argv[])
   tree->SetBranchAddress("puJetCutId",&puJetCutId);
 #endif
 
+  int nPU;
+  tree->SetBranchAddress("nPU",&nPU);
+  _VertexInfo vertexInfo;
+  tree->SetBranchAddress("vertexInfo",&vertexInfo);
+  _EventInfo eventInfo;
+  tree->SetBranchAddress("eventInfo",&eventInfo);
+  _MetInfo met;
+  tree->SetBranchAddress("met",&met);
+
   //////////////////////////
   // Histograms
   std::map<std::string,TH1F*> histMap;
@@ -306,6 +315,13 @@ int main(int argc, char *argv[])
   histMap.insert(make_pair("nJetsInRapidityGap",nJetsInRapidityGapHist));
   TH1F* htInRapidityGapHist = new TH1F("htInRapidityGap","",200,0,2000);
   histMap.insert(make_pair("htInRapidityGap",htInRapidityGapHist));
+
+  TH1F* nPUHist = new TH1F("nPU","",100,0,100);
+  histMap.insert(make_pair("nPU",nPUHist));
+  TH1F* nVtxHist = new TH1F("nVtx","",100,0,100);
+  histMap.insert(make_pair("nVtx",nVtxHist));
+  TH1F* metHist = new TH1F("met","",160,0,800);
+  histMap.insert(make_pair("met",metHist));
 
   for(histMapIter = histMap.begin(); histMapIter != histMap.end(); histMapIter++)
   {
@@ -435,6 +451,14 @@ int main(int argc, char *argv[])
         mva.cosThetaStar = directionOfBoost.Dot(diMuon.BoostVector()) / (directionOfBoost.Mag()*diMuon.BoostVector().Mag());
     }
 
+    // Computing nVtx Valid
+    unsigned nVtx = 0;
+    for(unsigned iVtx=0;iVtx<vertexInfo.nVertices;iVtx++)
+    {
+      if(vertexInfo.isValid[i])
+        nVtx++;
+    }
+
     //////////////////////////////////////////
     // Filling Hists
 
@@ -457,6 +481,10 @@ int main(int argc, char *argv[])
 
     relIsoMu1Hist->Fill(mva.relIsoMu1);
     relIsoMu2Hist->Fill(mva.relIsoMu2);
+
+    nPUHist->Fill(nPU);
+    nVtxHist->Fill(nVtx);
+    metHist->Fill(met.pt);
 
     // Jet Part
     for(unsigned iJet=0; (iJet < jets.nPFjets && iJet < 10);iJet++)
@@ -600,6 +628,9 @@ int main(int argc, char *argv[])
       histMap4GeVWindow["deltaRMuons"]->Fill(mva.deltaRMuons);
       histMap4GeVWindow["relIsoMu1"]->Fill(mva.relIsoMu1);
       histMap4GeVWindow["relIsoMu2"]->Fill(mva.relIsoMu2);
+      histMap4GeVWindow["nPU"]->Fill(nPU);
+      histMap4GeVWindow["nVtx"]->Fill(nVtx);
+      histMap4GeVWindow["met"]->Fill(met.pt);
 
       histMap4GeVWindow["mDiJet"]->Fill(mva.mDiJet);
       histMap4GeVWindow["ptJet1"]->Fill(mva.ptJet1);
@@ -631,6 +662,9 @@ int main(int argc, char *argv[])
       histMapPtDiMu100["deltaRMuons"]->Fill(mva.deltaRMuons);
       histMapPtDiMu100["relIsoMu1"]->Fill(mva.relIsoMu1);
       histMapPtDiMu100["relIsoMu2"]->Fill(mva.relIsoMu2);
+      histMapPtDiMu100["nPU"]->Fill(nPU);
+      histMapPtDiMu100["nVtx"]->Fill(nVtx);
+      histMapPtDiMu100["met"]->Fill(met.pt);
 
       histMapPtDiMu100["mDiJet"]->Fill(mva.mDiJet);
       histMapPtDiMu100["ptJet1"]->Fill(mva.ptJet1);
@@ -662,6 +696,9 @@ int main(int argc, char *argv[])
       histMapVBFPresel["deltaRMuons"]->Fill(mva.deltaRMuons);
       histMapVBFPresel["relIsoMu1"]->Fill(mva.relIsoMu1);
       histMapVBFPresel["relIsoMu2"]->Fill(mva.relIsoMu2);
+      histMapVBFPresel["nPU"]->Fill(nPU);
+      histMapVBFPresel["nVtx"]->Fill(nVtx);
+      histMapVBFPresel["met"]->Fill(met.pt);
 
       histMapVBFPresel["mDiJet"]->Fill(mva.mDiJet);
       histMapVBFPresel["ptJet1"]->Fill(mva.ptJet1);
@@ -693,6 +730,9 @@ int main(int argc, char *argv[])
       histMapIncPresel["deltaRMuons"]->Fill(mva.deltaRMuons);
       histMapIncPresel["relIsoMu1"]->Fill(mva.relIsoMu1);
       histMapIncPresel["relIsoMu2"]->Fill(mva.relIsoMu2);
+      histMapIncPresel["nPU"]->Fill(nPU);
+      histMapIncPresel["nVtx"]->Fill(nVtx);
+      histMapIncPresel["met"]->Fill(met.pt);
 
       histMapIncPresel["mDiJet"]->Fill(mva.mDiJet);
       histMapIncPresel["ptJet1"]->Fill(mva.ptJet1);
@@ -724,6 +764,9 @@ int main(int argc, char *argv[])
       histMapNotBlindWindow["deltaRMuons"]->Fill(mva.deltaRMuons);
       histMapNotBlindWindow["relIsoMu1"]->Fill(mva.relIsoMu1);
       histMapNotBlindWindow["relIsoMu2"]->Fill(mva.relIsoMu2);
+      histMapNotBlindWindow["nPU"]->Fill(nPU);
+      histMapNotBlindWindow["nVtx"]->Fill(nVtx);
+      histMapNotBlindWindow["met"]->Fill(met.pt);
 
       histMapNotBlindWindow["mDiJet"]->Fill(mva.mDiJet);
       histMapNotBlindWindow["ptJet1"]->Fill(mva.ptJet1);

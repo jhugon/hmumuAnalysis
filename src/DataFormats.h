@@ -106,10 +106,10 @@ typedef struct {
 
 //MET
 typedef struct {
-  float metPx;
-  float metPy;
-  float metPt;
-  float metPhi;
+  float px;
+  float py;
+  float pt;
+  float phi;
   float sumEt;
 } _MetInfo;
 
