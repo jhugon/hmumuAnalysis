@@ -214,7 +214,7 @@ int main(int argc, char *argv[])
   histMap2D.insert(make_pair("yVptDiMu",yVptDiMu));
   TH2F* ptVmDiMu = new TH2F("ptVmDiMu","DiMuon p_{T} v. Mass",1600,0,400,250,0,250);
   histMap2D.insert(make_pair("ptVmDiMu",ptVmDiMu));
-  TH2F* yVmDiMu = new TH2F("ptVmDiMu","DiMuon |y| v. Mass",1600,0,400,100,0,4);
+  TH2F* yVmDiMu = new TH2F("yVmDiMu","DiMuon |y| v. Mass",1600,0,400,100,0,4);
   TH2F* phiVmDiMu = new TH2F("phiVmDiMu","DiMuon #phi v. Mass",1600,0,400,100,0,3.2);
   histMap2D.insert(make_pair("phiVmDiMu",phiVmDiMu));
 
