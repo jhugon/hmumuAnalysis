@@ -323,6 +323,8 @@ int main(int argc, char *argv[])
   histMap.insert(make_pair("nVtx",nVtxHist));
   TH1F* metHist = new TH1F("met","",160,0,800);
   histMap.insert(make_pair("met",metHist));
+  TH1F* weightHist = new TH1F("weight","",500,0,5.0);
+  histMap.insert(make_pair("weight",weightHist));
 
   for(histMapIter = histMap.begin(); histMapIter != histMap.end(); histMapIter++)
   {
@@ -495,6 +497,7 @@ int main(int argc, char *argv[])
     nPUHist->Fill(nPU, weight);
     nVtxHist->Fill(nVtx, weight);
     metHist->Fill(met.pt, weight);
+    weightHist->Fill(weight);
 
     // Jet Part
     for(unsigned iJet=0; (iJet < jets.nPFjets && iJet < 10);iJet++)
