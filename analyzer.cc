@@ -463,11 +463,11 @@ int main(int argc, char *argv[])
 
     // Computing nVtx Valid
     unsigned nVtx = 0;
-    for(unsigned iVtx=0;iVtx<vertexInfo.nVertices;iVtx++)
-    {
-      if(vertexInfo.isValid[i])
-        nVtx++;
-    }
+    //for(unsigned iVtx=0;iVtx<vertexInfo.nVertices;iVtx++)
+    //{
+    //  if(vertexInfo.isValid[i])
+    //    nVtx++;
+    //}
 
     //////////////////////////////////////////
     // Filling Hists
