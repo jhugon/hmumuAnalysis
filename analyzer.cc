@@ -29,6 +29,7 @@
 #include <limits.h>
 
 #define JETPUID
+//#define PUREWEIGHT
 
 using namespace std;
 using namespace boost;
@@ -182,8 +183,12 @@ int main(int argc, char *argv[])
   tree->SetBranchAddress("puJetCutId",&puJetCutId);
 #endif
 
+#ifdef PUREWEIGHT
   int nPU;
   tree->SetBranchAddress("nPU",&nPU);
+#else
+  int nPU=0;
+#endif
   _VertexInfo vertexInfo;
   tree->SetBranchAddress("vertexInfo",&vertexInfo);
   _EventInfo eventInfo;
@@ -367,7 +372,9 @@ int main(int argc, char *argv[])
   //////////////////////////
   //for PU reweighting
 
+#ifdef PUREWEIGHT
   reweight::LumiReWeighting lumiWeights("pileupDists/PileUpHistMC2012Summer50nsPoissonOOTPU.root","pileupDists/PileUpHist2012AB.root","pileup","pileup");
+#endif
 
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -393,7 +400,11 @@ int main(int argc, char *argv[])
         continue;
 #endif
 
+#ifdef PUREWEIGHT
     double weight = lumiWeights.weight(nPU);
+#else
+    double weight = 1.0;
+#endif
 
     countsHist->Fill(0.0, weight);
 
