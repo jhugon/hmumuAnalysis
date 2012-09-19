@@ -2,7 +2,7 @@
 
 nice scons -j4
 
-TRAININGTREES="true"
+#TRAININGTREES="true"
 TRAIN="true"
 
 echo "#######################"
