@@ -668,6 +668,16 @@ int main(int argc, char *argv[])
       histMap4GeVWindow["htInRapidityGap"]->Fill(mva.htInRapidityGap, weight);
       histMap4GeVWindow["nJets"]->Fill(mva.nJets, weight);
       histMap4GeVWindow["ht"]->Fill(mva.ht, weight);
+      if(!vbfPreselection)
+      {
+        histMap4GeVWindow["BDTHistMuonOnly"]->Fill(mva.getMVA("inclusive.cfg","BDT"), weight);
+        histMap4GeVWindow["likelihoodHistMuonOnly"]->Fill(mva.getMVA("inclusive.cfg","Likelihood"), weight);
+      }
+      else
+      {
+        histMap4GeVWindow["BDTHistVBF"]->Fill(mva.getMVA("vbf.cfg","BDT"), weight);
+        histMap4GeVWindow["likelihoodHistVBF"]->Fill(mva.getMVA("vbf.cfg","Likelihood"), weight);
+      }
     }
 
     //DiMu Pt > 100 Plots
@@ -702,6 +712,16 @@ int main(int argc, char *argv[])
       histMapPtDiMu100["htInRapidityGap"]->Fill(mva.htInRapidityGap, weight);
       histMapPtDiMu100["nJets"]->Fill(mva.nJets, weight);
       histMapPtDiMu100["ht"]->Fill(mva.ht, weight);
+      if(!vbfPreselection)
+      {
+        histMapPtDiMu100["BDTHistMuonOnly"]->Fill(mva.getMVA("inclusive.cfg","BDT"), weight);
+        histMapPtDiMu100["likelihoodHistMuonOnly"]->Fill(mva.getMVA("inclusive.cfg","Likelihood"), weight);
+      }
+      else
+      {
+        histMapPtDiMu100["BDTHistVBF"]->Fill(mva.getMVA("vbf.cfg","BDT"), weight);
+        histMapPtDiMu100["likelihoodHistVBF"]->Fill(mva.getMVA("vbf.cfg","Likelihood"), weight);
+      }
     }
 
     //VBF Preselected Plots
@@ -736,6 +756,16 @@ int main(int argc, char *argv[])
       histMapVBFPresel["htInRapidityGap"]->Fill(mva.htInRapidityGap, weight);
       histMapVBFPresel["nJets"]->Fill(mva.nJets, weight);
       histMapVBFPresel["ht"]->Fill(mva.ht, weight);
+      if(!vbfPreselection)
+      {
+        histMapVBFPresel["BDTHistMuonOnly"]->Fill(mva.getMVA("inclusive.cfg","BDT"), weight);
+        histMapVBFPresel["likelihoodHistMuonOnly"]->Fill(mva.getMVA("inclusive.cfg","Likelihood"), weight);
+      }
+      else
+      {
+        histMapVBFPresel["BDTHistVBF"]->Fill(mva.getMVA("vbf.cfg","BDT"), weight);
+        histMapVBFPresel["likelihoodHistVBF"]->Fill(mva.getMVA("vbf.cfg","Likelihood"), weight);
+      }
     }
 
     //Not VBF Preselected Plots
@@ -770,6 +800,16 @@ int main(int argc, char *argv[])
       histMapIncPresel["htInRapidityGap"]->Fill(mva.htInRapidityGap, weight);
       histMapIncPresel["nJets"]->Fill(mva.nJets, weight);
       histMapIncPresel["ht"]->Fill(mva.ht, weight);
+      if(!vbfPreselection)
+      {
+        histMapIncPresel["BDTHistMuonOnly"]->Fill(mva.getMVA("inclusive.cfg","BDT"), weight);
+        histMapIncPresel["likelihoodHistMuonOnly"]->Fill(mva.getMVA("inclusive.cfg","Likelihood"), weight);
+      }
+      else
+      {
+        histMapIncPresel["BDTHistVBF"]->Fill(mva.getMVA("vbf.cfg","BDT"), weight);
+        histMapIncPresel["likelihoodHistVBF"]->Fill(mva.getMVA("vbf.cfg","Likelihood"), weight);
+      }
     }
 
     //Not In Blinding Window Plots
@@ -804,6 +844,16 @@ int main(int argc, char *argv[])
       histMapNotBlindWindow["htInRapidityGap"]->Fill(mva.htInRapidityGap, weight);
       histMapNotBlindWindow["nJets"]->Fill(mva.nJets, weight);
       histMapNotBlindWindow["ht"]->Fill(mva.ht, weight);
+      if(!vbfPreselection)
+      {
+        histMapNotBlindWindow["BDTHistMuonOnly"]->Fill(mva.getMVA("inclusive.cfg","BDT"), weight);
+        histMapNotBlindWindow["likelihoodHistMuonOnly"]->Fill(mva.getMVA("inclusive.cfg","Likelihood"), weight);
+      }
+      else
+      {
+        histMapNotBlindWindow["BDTHistVBF"]->Fill(mva.getMVA("vbf.cfg","BDT"), weight);
+        histMapNotBlindWindow["likelihoodHistVBF"]->Fill(mva.getMVA("vbf.cfg","Likelihood"), weight);
+      }
     }
 
   }// end event loop
