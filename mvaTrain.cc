@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <ctime>
 #include <iostream>
 #include <fstream>
 #include <map>
@@ -37,6 +38,8 @@ using namespace boost;
 
 int main(int argc, char *argv[])
 {
+
+   time_t timeStart = time(NULL);
 
    if (argc < 2)
    {
@@ -77,8 +80,8 @@ int main(int argc, char *argv[])
    // 
    // --- 1-dimensional likelihood ("naive Bayes estimator")
    Use["Likelihood"]      = 1;
-   Use["LikelihoodD"]     = 0; // the "D" extension indicates decorrelated input variables (see option strings)
-   Use["LikelihoodPCA"]   = 0; // the "PCA" extension indicates PCA-transformed input variables (see option strings)
+   Use["LikelihoodD"]     = 1; // the "D" extension indicates decorrelated input variables (see option strings)
+   Use["LikelihoodPCA"]   = 1; // the "PCA" extension indicates PCA-transformed input variables (see option strings)
    Use["LikelihoodKDE"]   = 0;
    Use["LikelihoodMIX"]   = 0;
    //
@@ -92,8 +95,8 @@ int main(int argc, char *argv[])
    //
    // --- Linear Discriminant Analysis
    Use["LD"]              = 0; // Linear Discriminant identical to Fisher
-   Use["Fisher"]          = 0;
-   Use["FisherG"]         = 0;
+   Use["Fisher"]          = 1;
+   Use["FisherG"]         = 1;
    Use["BoostedFisher"]   = 0; // uses generalised MVA method boosting
    Use["HMatrix"]         = 0;
    //
@@ -117,7 +120,7 @@ int main(int argc, char *argv[])
    // 
    // --- Boosted Decision Trees
    Use["BDT"]             = 1; // uses Adaptive Boost
-   Use["BDTG"]            = 1; // uses Gradient Boost
+   Use["BDTG"]            = 0; // uses Gradient Boost
    Use["BDTB"]            = 0; // uses Bagging
    Use["BDTD"]            = 0; // decorrelation + Adaptive Boost
    Use["BDTF"]            = 0; // allow usage of fisher discriminant for node splitting 
@@ -453,7 +456,7 @@ int main(int argc, char *argv[])
     bdtOptions.appendAny(":nEventsMin=");
     bdtOptions.appendAny(BDTnEventsMin);
     bdtOptions.appendAny(
-      ":MaxDepth=3:BoostType=AdaBoost:AdaBoostBeta=0.5:SeparationType=GiniIndex:nCuts=20:PruneMethod=NoPruning:CreateMVAPdfs"
+      ":MaxDepth=3:BoostType=AdaBoost:AdaBoostBeta=0.5:SeparationType=GiniIndex:nCuts=20:PruneMethod=NoPruning"
       );
 
   std::cout << "BDT option string: " << bdtOptions << std::endl;
@@ -496,7 +499,7 @@ int main(int argc, char *argv[])
    // Likelihood ("naive Bayes estimator")
    if (Use["Likelihood"])
       factory->BookMethod( TMVA::Types::kLikelihood, "Likelihood",
-                           "H:!V:TransformOutput:PDFInterpol=Spline2:NSmoothSig[0]=20:NSmoothBkg[0]=20:NSmoothBkg[1]=10:NSmooth=1:NAvEvtPerBin=50:CreateMVAPdfs" );
+                           "H:!V:TransformOutput:PDFInterpol=Spline2:NSmoothSig[0]=20:NSmoothBkg[0]=20:NSmoothBkg[1]=10:NSmooth=1:NAvEvtPerBin=50" );
 
    // Decorrelated likelihood
    if (Use["LikelihoodD"])
@@ -656,14 +659,19 @@ int main(int argc, char *argv[])
 
    // ---- Now you can tell the factory to train, test, and evaluate the MVAs
 
+   time_t timePreTrain = time(NULL);
    // Train MVAs using the set of training events
    factory->TrainAllMethods();
 
+   time_t timePreTest = time(NULL);
    // ---- Evaluate all MVAs using the set of test events
    factory->TestAllMethods();
 
+   time_t timePreEval = time(NULL);
    // ----- Evaluate and compare performance of all configured MVAs
    factory->EvaluateAllMethods();
+
+   time_t timePostEval = time(NULL);
 
    // --------------------------------------------------------------
 
@@ -695,8 +703,16 @@ int main(int argc, char *argv[])
    }
    catch (const boost::filesystem::filesystem_error& ex)
    {
-     std::cout << "Warining, rename reports Error: " << ex.what() << std::endl;
+     std::cout << "Warning, rename reports Error: " << ex.what() << std::endl;
    }
+
+   std::cout << "Times: \n";
+   std::cout << "  Setup: "<<difftime(timePreTrain,timeStart)<<"\n";
+   std::cout << "  Train: "<<difftime(timePreTest,timePreTrain)<<"\n";
+   std::cout << "  Test: "<<difftime(timePreEval,timePreTest)<<"\n";
+   std::cout << "  Eval: "<<difftime(timePostEval,timePreEval)<<"\n";
+   std::cout << "  ------------------------"<<"\n";
+   std::cout << "  Total: "<<difftime(time(NULL),timeStart)<<"\n";
 
    std::cout << "done.";
 
