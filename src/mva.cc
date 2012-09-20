@@ -101,6 +101,9 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
           ("bakFile",program_options::value<std::vector<std::string> >(),"")
           ("sigWeight",program_options::value<std::vector<float> >(),"")
           ("bakWeight",program_options::value<std::vector<float> >(),"")
+
+          ("nTrees",program_options::value<unsigned>(),"")
+          ("nEventsMin",program_options::value<unsigned>(),"")
       ;
     
       program_options::variables_map optionMap;
