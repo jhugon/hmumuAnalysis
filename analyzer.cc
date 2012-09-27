@@ -350,6 +350,8 @@ int main(int argc, char *argv[])
   std::map<std::string,TH1F*> histMapVBFPresel;
   std::map<std::string,TH1F*> histMapIncPresel;
   std::map<std::string,TH1F*> histMapNotBlindWindow;
+  std::map<std::string,TH1F*> histMapUpperControlRegion;
+  std::map<std::string,TH1F*> histMapLowerControlRegion;
   for(histMapIter = histMap.begin(); histMapIter != histMap.end(); histMapIter++)
   {
     TH1F* tmp;
@@ -363,6 +365,10 @@ int main(int argc, char *argv[])
     histMapIncPresel.insert(make_pair(histMapIter->first,tmp));
     tmp = (TH1F*) histMapIter->second->Clone();
     histMapNotBlindWindow.insert(make_pair(histMapIter->first,tmp));
+    tmp = (TH1F*) histMapIter->second->Clone();
+    histMapUpperControlRegion.insert(make_pair(histMapIter->first,tmp));
+    tmp = (TH1F*) histMapIter->second->Clone();
+    histMapLowerControlRegion.insert(make_pair(histMapIter->first,tmp));
   }
 
   //////////////////////////
@@ -900,6 +906,95 @@ int main(int argc, char *argv[])
       }
     }
 
+    //Upper Control Region Plots
+    if (recoCandMass>maxBlind)
+    {
+      histMapUpperControlRegion["mDiMu"]->Fill(mva.mDiMu, weight);
+      histMapUpperControlRegion["yDiMu"]->Fill(mva.yDiMu, weight);
+      histMapUpperControlRegion["ptDiMu"]->Fill(mva.ptDiMu, weight);
+      histMapUpperControlRegion["ptMu1"]->Fill(mva.ptMu1, weight);
+      histMapUpperControlRegion["ptMu2"]->Fill(mva.ptMu2, weight);
+      histMapUpperControlRegion["etaMu1"]->Fill(mva.etaMu1, weight);
+      histMapUpperControlRegion["etaMu2"]->Fill(mva.etaMu2, weight);
+      histMapUpperControlRegion["cosThetaStar"]->Fill(mva.cosThetaStar, weight);
+      histMapUpperControlRegion["cosThetaStarCS"]->Fill(mva.cosThetaStarCS, weight);
+      histMapUpperControlRegion["deltaPhiMuons"]->Fill(mva.deltaPhiMuons, weight);
+      histMapUpperControlRegion["deltaEtaMuons"]->Fill(mva.deltaEtaMuons, weight);
+      histMapUpperControlRegion["deltaRMuons"]->Fill(mva.deltaRMuons, weight);
+      histMapUpperControlRegion["relIsoMu1"]->Fill(mva.relIsoMu1, weight);
+      histMapUpperControlRegion["relIsoMu2"]->Fill(mva.relIsoMu2, weight);
+      histMapUpperControlRegion["nPU"]->Fill(nPU, weight);
+      histMapUpperControlRegion["nVtx"]->Fill(nVtx, weight);
+      histMapUpperControlRegion["met"]->Fill(met.pt, weight);
+
+      histMapUpperControlRegion["mDiJet"]->Fill(mva.mDiJet, weight);
+      histMapUpperControlRegion["ptJet1"]->Fill(mva.ptJet1, weight);
+      histMapUpperControlRegion["ptJet2"]->Fill(mva.ptJet2, weight);
+      histMapUpperControlRegion["etaJet1"]->Fill(mva.etaJet1, weight);
+      histMapUpperControlRegion["etaJet2"]->Fill(mva.etaJet2, weight);
+      histMapUpperControlRegion["deltaEtaJets"]->Fill(mva.deltaEtaJets, weight);
+      histMapUpperControlRegion["deltaPhiJets"]->Fill(mva.deltaPhiJets, weight);
+      histMapUpperControlRegion["deltaRJets"]->Fill(mva.deltaRJets, weight);
+      histMapUpperControlRegion["nJetsInRapidityGap"]->Fill(mva.nJetsInRapidityGap, weight);
+      histMapUpperControlRegion["htInRapidityGap"]->Fill(mva.htInRapidityGap, weight);
+      histMapUpperControlRegion["nJets"]->Fill(mva.nJets, weight);
+      histMapUpperControlRegion["ht"]->Fill(mva.ht, weight);
+      if(!vbfPreselection)
+      {
+        histMapUpperControlRegion["BDTHistMuonOnly"]->Fill(mva.getMVA("inclusive.cfg","BDT"), weight);
+        histMapUpperControlRegion["likelihoodHistMuonOnly"]->Fill(mva.getMVA("inclusive.cfg","Likelihood"), weight);
+      }
+      else
+      {
+        histMapUpperControlRegion["BDTHistVBF"]->Fill(mva.getMVA("vbf.cfg","BDT"), weight);
+        histMapUpperControlRegion["likelihoodHistVBF"]->Fill(mva.getMVA("vbf.cfg","Likelihood"), weight);
+      }
+    }
+    //Lower Control Region Plots
+    if (recoCandMass<minBlind)
+    {
+      histMapLowerControlRegion["mDiMu"]->Fill(mva.mDiMu, weight);
+      histMapLowerControlRegion["yDiMu"]->Fill(mva.yDiMu, weight);
+      histMapLowerControlRegion["ptDiMu"]->Fill(mva.ptDiMu, weight);
+      histMapLowerControlRegion["ptMu1"]->Fill(mva.ptMu1, weight);
+      histMapLowerControlRegion["ptMu2"]->Fill(mva.ptMu2, weight);
+      histMapLowerControlRegion["etaMu1"]->Fill(mva.etaMu1, weight);
+      histMapLowerControlRegion["etaMu2"]->Fill(mva.etaMu2, weight);
+      histMapLowerControlRegion["cosThetaStar"]->Fill(mva.cosThetaStar, weight);
+      histMapLowerControlRegion["cosThetaStarCS"]->Fill(mva.cosThetaStarCS, weight);
+      histMapLowerControlRegion["deltaPhiMuons"]->Fill(mva.deltaPhiMuons, weight);
+      histMapLowerControlRegion["deltaEtaMuons"]->Fill(mva.deltaEtaMuons, weight);
+      histMapLowerControlRegion["deltaRMuons"]->Fill(mva.deltaRMuons, weight);
+      histMapLowerControlRegion["relIsoMu1"]->Fill(mva.relIsoMu1, weight);
+      histMapLowerControlRegion["relIsoMu2"]->Fill(mva.relIsoMu2, weight);
+      histMapLowerControlRegion["nPU"]->Fill(nPU, weight);
+      histMapLowerControlRegion["nVtx"]->Fill(nVtx, weight);
+      histMapLowerControlRegion["met"]->Fill(met.pt, weight);
+
+      histMapLowerControlRegion["mDiJet"]->Fill(mva.mDiJet, weight);
+      histMapLowerControlRegion["ptJet1"]->Fill(mva.ptJet1, weight);
+      histMapLowerControlRegion["ptJet2"]->Fill(mva.ptJet2, weight);
+      histMapLowerControlRegion["etaJet1"]->Fill(mva.etaJet1, weight);
+      histMapLowerControlRegion["etaJet2"]->Fill(mva.etaJet2, weight);
+      histMapLowerControlRegion["deltaEtaJets"]->Fill(mva.deltaEtaJets, weight);
+      histMapLowerControlRegion["deltaPhiJets"]->Fill(mva.deltaPhiJets, weight);
+      histMapLowerControlRegion["deltaRJets"]->Fill(mva.deltaRJets, weight);
+      histMapLowerControlRegion["nJetsInRapidityGap"]->Fill(mva.nJetsInRapidityGap, weight);
+      histMapLowerControlRegion["htInRapidityGap"]->Fill(mva.htInRapidityGap, weight);
+      histMapLowerControlRegion["nJets"]->Fill(mva.nJets, weight);
+      histMapLowerControlRegion["ht"]->Fill(mva.ht, weight);
+      if(!vbfPreselection)
+      {
+        histMapLowerControlRegion["BDTHistMuonOnly"]->Fill(mva.getMVA("inclusive.cfg","BDT"), weight);
+        histMapLowerControlRegion["likelihoodHistMuonOnly"]->Fill(mva.getMVA("inclusive.cfg","Likelihood"), weight);
+      }
+      else
+      {
+        histMapLowerControlRegion["BDTHistVBF"]->Fill(mva.getMVA("vbf.cfg","BDT"), weight);
+        histMapLowerControlRegion["likelihoodHistVBF"]->Fill(mva.getMVA("vbf.cfg","Likelihood"), weight);
+      }
+    }
+
   }// end event loop
 
 //////////////////////////////////////////////////////////////////////
@@ -949,6 +1044,20 @@ int main(int argc, char *argv[])
   TDirectory* dirNotBlindWindow = outFile->mkdir("NotBlindWindow");
   dirNotBlindWindow->cd();
   for(histMapIter = histMapNotBlindWindow.begin(); histMapIter != histMapNotBlindWindow.end(); histMapIter++)
+  {
+    histMapIter->second->Write();
+  }
+
+  TDirectory* dirUpperControlRegion = outFile->mkdir("UpperControlRegion");
+  dirUpperControlRegion->cd();
+  for(histMapIter = histMapUpperControlRegion.begin(); histMapIter != histMapUpperControlRegion.end(); histMapIter++)
+  {
+    histMapIter->second->Write();
+  }
+
+  TDirectory* dirLowerControlRegion = outFile->mkdir("LowerControlRegion");
+  dirLowerControlRegion->cd();
+  for(histMapIter = histMapLowerControlRegion.begin(); histMapIter != histMapLowerControlRegion.end(); histMapIter++)
   {
     histMapIter->second->Write();
   }
