@@ -525,8 +525,6 @@ int main(int argc, char *argv[])
     //  if(vertexInfo.isValid[i])
     //    nVtx++;
     //}
-    std::cout << "vertexInfo: "
-        << "\n  nVertices: " << vertexInfo.nVertices << std::endl;
 
     //////////////////////////////////////////
     // Filling Hists
