@@ -99,9 +99,11 @@ int main(int argc, char *argv[])
 
   float minMmm = 70.0;
   float maxMmm = 200.0;
+  //float minMmm = 110.0;
+  //float maxMmm = 150.0;
 
-  float minBlind = 105;
-  float maxBlind = 145;
+  float minBlind = 115;
+  float maxBlind = 135;
 
   // Check to see if it is data
   bool isData = false;
