@@ -28,6 +28,7 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
     outTree_->Branch("etaJet1",&etaJet1,"etaJet1/F");
     outTree_->Branch("etaJet2",&etaJet2,"etaJet2/F");
     outTree_->Branch("cosThetaStar",&cosThetaStar,"cosThetaStar/F");
+    outTree_->Branch("cosThetaStarCS",&cosThetaStarCS,"cosThetaStarCS/F");
     outTree_->Branch("deltaEtaJets",&deltaEtaJets,"deltaEtaJets/F");
     outTree_->Branch("productEtaJets",&productEtaJets,"productEtaJets/F");
     outTree_->Branch("nJetsInRapidityGap",&nJetsInRapidityGap,"nJetsInRapidityGap/F");
@@ -79,6 +80,7 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
           ("etaJet1",program_options::value<int>(),"")
           ("etaJet2",program_options::value<int>(),"")
           ("cosThetaStar",program_options::value<int>(),"")
+          ("cosThetaStarCS",program_options::value<int>(),"")
           ("deltaEtaJets",program_options::value<int>(),"")
           ("productEtaJets",program_options::value<int>(),"")
           ("nJetsInRapidityGap",program_options::value<int>(),"")
@@ -187,6 +189,11 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
         reader->AddVariable("cosThetaStar",&cosThetaStar);
       else
         reader->AddSpectator("cosThetaStar",&cosThetaStar);
+  
+      if (optionMap.count("cosThetaStarCS") && optionMap["cosThetaStarCS"].as<int>() == 1)
+        reader->AddVariable("cosThetaStarCS",&cosThetaStarCS);
+      else
+        reader->AddSpectator("cosThetaStarCS",&cosThetaStarCS);
   
       if (optionMap.count("deltaEtaJets") && optionMap["deltaEtaJets"].as<int>() == 1)
         reader->AddVariable("deltaEtaJets",&deltaEtaJets);
@@ -320,6 +327,7 @@ MVA::resetValues()
   etaJet1=-10.0;
   etaJet2=-10.0;
   cosThetaStar=-10.0;
+  cosThetaStarCS=-10.0;
   deltaEtaJets=-10.0;
   productEtaJets=0.0;
   nJetsInRapidityGap=0.0;

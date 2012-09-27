@@ -56,6 +56,7 @@ class MVA
   float etaJet1;
   float etaJet2;
   float cosThetaStar;
+  float cosThetaStarCS;
   float deltaEtaJets;
   float productEtaJets;
   float nJetsInRapidityGap;

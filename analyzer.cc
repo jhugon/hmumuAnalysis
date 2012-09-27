@@ -270,6 +270,8 @@ int main(int argc, char *argv[])
 
   TH1F* cosThetaStarHist = new TH1F("cosThetaStar","cos(#theta^{*})",50,-1.,1.);
   histMap.insert(make_pair("cosThetaStar",cosThetaStarHist));
+  TH1F* cosThetaStarCSHist = new TH1F("cosThetaStarCS","cos(#theta^{*}_{CS})",50,-1.,1.);
+  histMap.insert(make_pair("cosThetaStarCS",cosThetaStarCSHist));
 
   TH1F* puJetIDSimpleDiscJet1Hist = new TH1F("puJetIDSimpleDiscJet1","PU Jet ID--Simple Discriminator Leading Jet",50,-1.,1.);
   histMap.insert(make_pair("puJetIDSimpleDiscJet1",puJetIDSimpleDiscJet1Hist));
@@ -378,6 +380,8 @@ int main(int argc, char *argv[])
   reweight::LumiReWeighting lumiWeights("pileupDists/PileUpHistMC2012Summer50nsPoissonOOTPU.root","pileupDists/PileUpHist2012AB.root","pileup","pileup");
 #endif
 
+  const double SQRT2 = sqrt(2);
+
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -465,7 +469,8 @@ int main(int argc, char *argv[])
     starMuon2.Boost(-boost);
 
     //if (muon1.charge>0)
-    if ((int) (1000 * muon1.pt) % 2 == 0)
+    //std::cout << "Run: " << eventInfo.run << " lumi: " << eventInfo.lumi << " event: " << eventInfo.event << std::endl;
+    if ((int) (eventInfo.event) % 2 == 0)
     {
         TVector3 directionOfBoost = starMuon1.BoostVector();
         mva.cosThetaStar = directionOfBoost.Dot(diMuon.BoostVector()) / (directionOfBoost.Mag()*diMuon.BoostVector().Mag());
@@ -474,6 +479,37 @@ int main(int argc, char *argv[])
     {
         TVector3 directionOfBoost = starMuon2.BoostVector();
         mva.cosThetaStar = directionOfBoost.Dot(diMuon.BoostVector()) / (directionOfBoost.Mag()*diMuon.BoostVector().Mag());
+    }
+
+    //////////////////////////////////////////
+    //Computing CosTheta* Collins-Soper
+
+    //std::cout << "muon1 charge: " << muon1.charge << "muon2 charge: "<<muon2.charge << std::endl;
+    if (muon1.charge != muon2.charge)
+    {
+      // p1 is lepton
+      // p2 is anti-lepton
+      float p1Plus=-1e15;
+      float p2Plus=-1e15;
+      float p1Minus=-1e15;
+      float p2Minus=-1e15;
+      if (muon1.charge < 0)
+      {
+        p1Plus  = (pMuon1.E()+pMuon1.Pz())/SQRT2;
+        p1Minus = (pMuon1.E()-pMuon1.Pz())/SQRT2;
+        p2Plus  = (pMuon2.E()+pMuon2.Pz())/SQRT2;
+        p2Minus = (pMuon2.E()-pMuon2.Pz())/SQRT2;
+      }
+      else
+      {
+        p1Plus  = (pMuon2.E()+pMuon2.Pz())/SQRT2;
+        p1Minus = (pMuon2.E()-pMuon2.Pz())/SQRT2;
+        p2Plus  = (pMuon1.E()+pMuon1.Pz())/SQRT2;
+        p2Minus = (pMuon1.E()-pMuon1.Pz())/SQRT2;
+      }
+      mva.cosThetaStarCS = diMuon.Pz()/fabs(diMuon.Pz()) * 
+                               2*(p1Plus*p2Minus-p1Minus*p2Plus) / 
+                               (diMuon.Mag()*sqrt(diMuon.Mag2()+diMuon.Pt()*diMuon.Pt()));
     }
 
     // Computing nVtx Valid
@@ -499,6 +535,7 @@ int main(int argc, char *argv[])
     etaMu1->Fill(mva.etaMu1, weight);
     etaMu2->Fill(mva.etaMu2, weight);
     cosThetaStarHist->Fill(mva.cosThetaStar, weight);
+    cosThetaStarCSHist->Fill(mva.cosThetaStarCS, weight);
 
     deltaPhiMuonsHist->Fill(mva.deltaPhiMuons, weight);
     deltaEtaMuonsHist->Fill(mva.deltaEtaMuons, weight);
@@ -649,6 +686,7 @@ int main(int argc, char *argv[])
       histMap4GeVWindow["etaMu1"]->Fill(mva.etaMu1, weight);
       histMap4GeVWindow["etaMu2"]->Fill(mva.etaMu2, weight);
       histMap4GeVWindow["cosThetaStar"]->Fill(mva.cosThetaStar, weight);
+      histMap4GeVWindow["cosThetaStarCS"]->Fill(mva.cosThetaStarCS, weight);
       histMap4GeVWindow["deltaPhiMuons"]->Fill(mva.deltaPhiMuons, weight);
       histMap4GeVWindow["deltaEtaMuons"]->Fill(mva.deltaEtaMuons, weight);
       histMap4GeVWindow["deltaRMuons"]->Fill(mva.deltaRMuons, weight);
@@ -693,6 +731,7 @@ int main(int argc, char *argv[])
       histMapPtDiMu100["etaMu1"]->Fill(mva.etaMu1, weight);
       histMapPtDiMu100["etaMu2"]->Fill(mva.etaMu2, weight);
       histMapPtDiMu100["cosThetaStar"]->Fill(mva.cosThetaStar, weight);
+      histMapPtDiMu100["cosThetaStarCS"]->Fill(mva.cosThetaStarCS, weight);
       histMapPtDiMu100["deltaPhiMuons"]->Fill(mva.deltaPhiMuons, weight);
       histMapPtDiMu100["deltaEtaMuons"]->Fill(mva.deltaEtaMuons, weight);
       histMapPtDiMu100["deltaRMuons"]->Fill(mva.deltaRMuons, weight);
@@ -737,6 +776,7 @@ int main(int argc, char *argv[])
       histMapVBFPresel["etaMu1"]->Fill(mva.etaMu1, weight);
       histMapVBFPresel["etaMu2"]->Fill(mva.etaMu2, weight);
       histMapVBFPresel["cosThetaStar"]->Fill(mva.cosThetaStar, weight);
+      histMapVBFPresel["cosThetaStarCS"]->Fill(mva.cosThetaStarCS, weight);
       histMapVBFPresel["deltaPhiMuons"]->Fill(mva.deltaPhiMuons, weight);
       histMapVBFPresel["deltaEtaMuons"]->Fill(mva.deltaEtaMuons, weight);
       histMapVBFPresel["deltaRMuons"]->Fill(mva.deltaRMuons, weight);
@@ -781,6 +821,7 @@ int main(int argc, char *argv[])
       histMapIncPresel["etaMu1"]->Fill(mva.etaMu1, weight);
       histMapIncPresel["etaMu2"]->Fill(mva.etaMu2, weight);
       histMapIncPresel["cosThetaStar"]->Fill(mva.cosThetaStar, weight);
+      histMapIncPresel["cosThetaStarCS"]->Fill(mva.cosThetaStarCS, weight);
       histMapIncPresel["deltaPhiMuons"]->Fill(mva.deltaPhiMuons, weight);
       histMapIncPresel["deltaEtaMuons"]->Fill(mva.deltaEtaMuons, weight);
       histMapIncPresel["deltaRMuons"]->Fill(mva.deltaRMuons, weight);
@@ -825,6 +866,7 @@ int main(int argc, char *argv[])
       histMapNotBlindWindow["etaMu1"]->Fill(mva.etaMu1, weight);
       histMapNotBlindWindow["etaMu2"]->Fill(mva.etaMu2, weight);
       histMapNotBlindWindow["cosThetaStar"]->Fill(mva.cosThetaStar, weight);
+      histMapNotBlindWindow["cosThetaStarCS"]->Fill(mva.cosThetaStarCS, weight);
       histMapNotBlindWindow["deltaPhiMuons"]->Fill(mva.deltaPhiMuons, weight);
       histMapNotBlindWindow["deltaEtaMuons"]->Fill(mva.deltaEtaMuons, weight);
       histMapNotBlindWindow["deltaRMuons"]->Fill(mva.deltaRMuons, weight);
