@@ -75,3 +75,5 @@ env.Library(targer="src/mva",source=["src/mva.cc"])
 env.Library(targer="src/helpers",source=["src/helpers.cc"])
 env.Program(target="analyzer", source=["analyzer.cc","src/libmva.a","src/libhelpers.a"])
 env.Program(target="mvaTrain", source=["mvaTrain.cc"])
+
+env.Program(target="testVertex", source=["testVertex.cc","src/libmva.a","src/libhelpers.a"])
