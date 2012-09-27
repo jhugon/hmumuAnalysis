@@ -50,52 +50,11 @@ int main(int argc, char *argv[])
 
   //////////////////////////
   // Tree Branches
-
-  _MuonInfo reco1, reco2;
-
-  tree->SetBranchAddress("reco1", &reco1);
-  tree->SetBranchAddress("reco2", &reco2);
-
-  float recoCandMass, recoCandPt, recoCandY, recoCandPhi;
-
-  tree->SetBranchAddress("recoCandMass", &recoCandMass);
-  tree->SetBranchAddress("recoCandPt"  , &recoCandPt );
-  tree->SetBranchAddress("recoCandY"  , &recoCandY );
-  tree->SetBranchAddress("recoCandPhi"  , &recoCandPhi );
-
   _PFJetInfo jets;
-  tree->SetBranchAddress("pfJets",&jets);
+  //tree->SetBranchAddress("pfJets",&jets);
 
-#ifdef JETPUID
-  float puJetFullDisc[10];
-  float puJetSimpleDisc[10];
-  float puJetCutDisc[10];
-
-  tree->SetBranchAddress("puJetFullDisc",&puJetFullDisc);
-  tree->SetBranchAddress("puJetSimpleDisc",&puJetSimpleDisc);
-  tree->SetBranchAddress("puJetCutDisc",&puJetCutDisc);
-
-  int puJetFullId[10];
-  int puJetSimpleId[10];
-  int puJetCutId[10];
-
-  tree->SetBranchAddress("puJetFullId",&puJetFullId);
-  tree->SetBranchAddress("puJetSimpleId",&puJetSimpleId);
-  tree->SetBranchAddress("puJetCutId",&puJetCutId);
-#endif
-
-#ifdef PUREWEIGHT
-  int nPU;
-  tree->SetBranchAddress("nPU",&nPU);
-#else
-  int nPU=0;
-#endif
   _VertexInfo vertexInfo;
   tree->SetBranchAddress("vertexInfo",&vertexInfo);
-  _EventInfo eventInfo;
-  tree->SetBranchAddress("eventInfo",&eventInfo);
-  _MetInfo met;
-  tree->SetBranchAddress("met",&met);
 
 
 //////////////////////////////////////////////////////////////////////
@@ -116,14 +75,6 @@ int main(int argc, char *argv[])
     tree->GetEvent(i);
     if (i % reportEach == 0) cout << "Event: " << i << endl;
 
-
-    // Computing nVtx Valid
-    unsigned nVtx = 0;
-    //for(unsigned iVtx=0;iVtx<vertexInfo.nVertices;iVtx++)
-    //{
-    //  if(vertexInfo.isValid[i])
-    //    nVtx++;
-    //}
     std::cout << "vertexInfo: "
         << "\n  nVertices: " << vertexInfo.nVertices << std::endl;
 
