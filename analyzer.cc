@@ -521,9 +521,12 @@ int main(int argc, char *argv[])
     // Computing nVtx Valid
     //for(unsigned iVtx=0;iVtx<vertexInfo.nVertices;iVtx++)
     //{
-    //  if(vertexInfo.isValid[i])
+    //  if(vertexInfo.isValid[iVtx])
+    //  {
     //    mva.nVtx++;
+    //  }
     //}
+    mva.nVtx = vertexInfo.nVertices;
 
     //////////////////////////////////////////
     // Filling Hists
@@ -555,62 +558,62 @@ int main(int argc, char *argv[])
     weightHist->Fill(weight);
 
     // Jet Part
-    for(unsigned iJet=0; (iJet < jets.nPFjets && iJet < 10);iJet++)
+    for(unsigned iJet=0; (iJet < jets.nJets && iJet < 10);iJet++)
     {
-        if(jets.pfJetPt[iJet] > 30.0)
+        if(jets.pt[iJet] > 30.0)
         {
           mva.nJets++;
-          mva.ht += jets.pfJetPt[iJet];
+          mva.ht += jets.pt[iJet];
         }
     }
 
     bool goodJets = false;
-    if(jets.nPFjets>=2 && jets.pfJetPt[0]>30.0 && jets.pfJetPt[1]>30.0)
+    if(jets.nJets>=2 && jets.pt[0]>30.0 && jets.pt[1]>30.0)
         goodJets = true;
 
     if(goodJets)
     {
       TLorentzVector pJet1;
       TLorentzVector pJet2;
-      pJet1.SetXYZM(jets.pfJetPx[0],jets.pfJetPy[0],jets.pfJetPz[0],jets.pfJetM[0]);
-      pJet2.SetXYZM(jets.pfJetPx[1],jets.pfJetPy[1],jets.pfJetPz[1],jets.pfJetM[1]);
+      pJet1.SetXYZM(jets.px[0],jets.py[0],jets.pz[0],jets.mass[0]);
+      pJet2.SetXYZM(jets.px[1],jets.py[1],jets.pz[1],jets.mass[1]);
       TLorentzVector diJet = pJet1+pJet2;
 
-      double dEtaJets = fabs(jets.pfJetEta[0]-jets.pfJetEta[1]);
-      double etaJetProduct = jets.pfJetEta[0]*jets.pfJetEta[1];
+      double dEtaJets = fabs(jets.eta[0]-jets.eta[1]);
+      double etaJetProduct = jets.eta[0]*jets.eta[1];
       mva.deltaPhiJets = pJet1.DeltaPhi(pJet2);
       mva.deltaRJets = pJet1.DeltaR(pJet2);
 
       // Seeing if there are jets in the rapidity gap
-      float etaMax = jets.pfJetEta[0];
+      float etaMax = jets.eta[0];
       float etaMin = 9999999.0;
-      if(etaMax < jets.pfJetEta[1])
+      if(etaMax < jets.eta[1])
       {
-          etaMax = jets.pfJetEta[1];
-          etaMin = jets.pfJetEta[0];
+          etaMax = jets.eta[1];
+          etaMin = jets.eta[0];
       }
       else
       {
-          etaMin = jets.pfJetEta[1];
+          etaMin = jets.eta[1];
       }
       bool jetInRapidityGap=false;
-      for(unsigned iJet=2; (iJet < jets.nPFjets && iJet < 10);iJet++)
+      for(unsigned iJet=2; (iJet < jets.nJets && iJet < 10);iJet++)
       {
-        if(jets.pfJetPt[iJet] > 30.0)
+        if(jets.pt[iJet] > 30.0)
         {
-          if(jets.pfJetEta[iJet] < etaMax && jets.pfJetEta[iJet] > etaMin)
+          if(jets.eta[iJet] < etaMax && jets.eta[iJet] > etaMin)
           {
             jetInRapidityGap = true;
             mva.nJetsInRapidityGap++;
-            mva.htInRapidityGap += jets.pfJetPt[iJet];
+            mva.htInRapidityGap += jets.pt[iJet];
           }
         }
       }
 
 #ifdef JETPUID
-      for(unsigned iJet=0; (iJet < jets.nPFjets && iJet < 10);iJet++)
+      for(unsigned iJet=0; (iJet < jets.nJets && iJet < 10);iJet++)
       {
-        if(jets.pfJetPt[iJet]>30.0)
+        if(jets.pt[iJet]>30.0)
         {
           if (iJet==0)
             puJetIDSimpleDiscJet1Hist->Fill(puJetSimpleDisc[iJet], weight);
