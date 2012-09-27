@@ -73,6 +73,8 @@ class MVA
   float nJets;
   float htInRapidityGap;
 
+  float nVtx;
+
   float weight;
 
   //////////////////////

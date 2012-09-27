@@ -519,11 +519,10 @@ int main(int argc, char *argv[])
     }
 
     // Computing nVtx Valid
-    unsigned nVtx = 0;
     //for(unsigned iVtx=0;iVtx<vertexInfo.nVertices;iVtx++)
     //{
     //  if(vertexInfo.isValid[i])
-    //    nVtx++;
+    //    mva.nVtx++;
     //}
 
     //////////////////////////////////////////
@@ -551,7 +550,7 @@ int main(int argc, char *argv[])
     relIsoMu2Hist->Fill(mva.relIsoMu2, weight);
 
     nPUHist->Fill(nPU, weight);
-    nVtxHist->Fill(nVtx, weight);
+    nVtxHist->Fill(mva.nVtx, weight);
     metHist->Fill(met.pt, weight);
     weightHist->Fill(weight);
 
@@ -699,7 +698,7 @@ int main(int argc, char *argv[])
       histMap4GeVWindow["relIsoMu1"]->Fill(mva.relIsoMu1, weight);
       histMap4GeVWindow["relIsoMu2"]->Fill(mva.relIsoMu2, weight);
       histMap4GeVWindow["nPU"]->Fill(nPU, weight);
-      histMap4GeVWindow["nVtx"]->Fill(nVtx, weight);
+      histMap4GeVWindow["nVtx"]->Fill(mva.nVtx, weight);
       histMap4GeVWindow["met"]->Fill(met.pt, weight);
 
       histMap4GeVWindow["mDiJet"]->Fill(mva.mDiJet, weight);
@@ -744,7 +743,7 @@ int main(int argc, char *argv[])
       histMapPtDiMu100["relIsoMu1"]->Fill(mva.relIsoMu1, weight);
       histMapPtDiMu100["relIsoMu2"]->Fill(mva.relIsoMu2, weight);
       histMapPtDiMu100["nPU"]->Fill(nPU, weight);
-      histMapPtDiMu100["nVtx"]->Fill(nVtx, weight);
+      histMapPtDiMu100["nVtx"]->Fill(mva.nVtx, weight);
       histMapPtDiMu100["met"]->Fill(met.pt, weight);
 
       histMapPtDiMu100["mDiJet"]->Fill(mva.mDiJet, weight);
@@ -789,7 +788,7 @@ int main(int argc, char *argv[])
       histMapVBFPresel["relIsoMu1"]->Fill(mva.relIsoMu1, weight);
       histMapVBFPresel["relIsoMu2"]->Fill(mva.relIsoMu2, weight);
       histMapVBFPresel["nPU"]->Fill(nPU, weight);
-      histMapVBFPresel["nVtx"]->Fill(nVtx, weight);
+      histMapVBFPresel["nVtx"]->Fill(mva.nVtx, weight);
       histMapVBFPresel["met"]->Fill(met.pt, weight);
 
       histMapVBFPresel["mDiJet"]->Fill(mva.mDiJet, weight);
@@ -834,7 +833,7 @@ int main(int argc, char *argv[])
       histMapIncPresel["relIsoMu1"]->Fill(mva.relIsoMu1, weight);
       histMapIncPresel["relIsoMu2"]->Fill(mva.relIsoMu2, weight);
       histMapIncPresel["nPU"]->Fill(nPU, weight);
-      histMapIncPresel["nVtx"]->Fill(nVtx, weight);
+      histMapIncPresel["nVtx"]->Fill(mva.nVtx, weight);
       histMapIncPresel["met"]->Fill(met.pt, weight);
 
       histMapIncPresel["mDiJet"]->Fill(mva.mDiJet, weight);
@@ -879,7 +878,7 @@ int main(int argc, char *argv[])
       histMapNotBlindWindow["relIsoMu1"]->Fill(mva.relIsoMu1, weight);
       histMapNotBlindWindow["relIsoMu2"]->Fill(mva.relIsoMu2, weight);
       histMapNotBlindWindow["nPU"]->Fill(nPU, weight);
-      histMapNotBlindWindow["nVtx"]->Fill(nVtx, weight);
+      histMapNotBlindWindow["nVtx"]->Fill(mva.nVtx, weight);
       histMapNotBlindWindow["met"]->Fill(met.pt, weight);
 
       histMapNotBlindWindow["mDiJet"]->Fill(mva.mDiJet, weight);
@@ -924,7 +923,7 @@ int main(int argc, char *argv[])
       histMapUpperControlRegion["relIsoMu1"]->Fill(mva.relIsoMu1, weight);
       histMapUpperControlRegion["relIsoMu2"]->Fill(mva.relIsoMu2, weight);
       histMapUpperControlRegion["nPU"]->Fill(nPU, weight);
-      histMapUpperControlRegion["nVtx"]->Fill(nVtx, weight);
+      histMapUpperControlRegion["nVtx"]->Fill(mva.nVtx, weight);
       histMapUpperControlRegion["met"]->Fill(met.pt, weight);
 
       histMapUpperControlRegion["mDiJet"]->Fill(mva.mDiJet, weight);
@@ -968,7 +967,7 @@ int main(int argc, char *argv[])
       histMapLowerControlRegion["relIsoMu1"]->Fill(mva.relIsoMu1, weight);
       histMapLowerControlRegion["relIsoMu2"]->Fill(mva.relIsoMu2, weight);
       histMapLowerControlRegion["nPU"]->Fill(nPU, weight);
-      histMapLowerControlRegion["nVtx"]->Fill(nVtx, weight);
+      histMapLowerControlRegion["nVtx"]->Fill(mva.nVtx, weight);
       histMapLowerControlRegion["met"]->Fill(met.pt, weight);
 
       histMapLowerControlRegion["mDiJet"]->Fill(mva.mDiJet, weight);

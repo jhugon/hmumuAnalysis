@@ -45,6 +45,8 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
     outTree_->Branch("nJets",&nJets,"nJets/F");
     outTree_->Branch("htInRapidityGap",&htInRapidityGap,"htInRapidityGap/F");
 
+    outTree_->Branch("nVtx",&nVtx,"nVtx/F");
+
     outTree_->Branch("weight",&weight,"weight/F");
   }
 
@@ -98,6 +100,8 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
           ("htInRapidityGap",program_options::value<int>(),"")
           ("weightsDirName",program_options::value<std::string>(),"")
           ("vbfSelection",program_options::value<int>(),"")
+
+          ("nVtx",program_options::value<int>(),"")
   
           ("sigFile",program_options::value<std::vector<std::string> >(),"")
           ("bakFile",program_options::value<std::vector<std::string> >(),"")
@@ -254,6 +258,11 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
         reader->AddVariable("nJets",&nJets);
       else
         reader->AddSpectator("nJets",&nJets);
+
+      if (optionMap.count("nVtx") && optionMap["nVtx"].as<int>() == 1)
+        reader->AddVariable("nVtx",&nVtx);
+      else
+        reader->AddSpectator("nVtx",&nVtx);
   
       if (optionMap.count("htInRapidityGap") && optionMap["htInRapidityGap"].as<int>() == 1)
         reader->AddVariable("htInRapidityGap",&htInRapidityGap);
@@ -343,6 +352,8 @@ MVA::resetValues()
   ht=0.0;
   nJets=0.0;
   htInRapidityGap=0.0;
+
+  nVtx=0.0;
 
   weight=1.0;
 }
