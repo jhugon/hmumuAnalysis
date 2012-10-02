@@ -30,7 +30,7 @@
 #include <limits.h>
 
 #define JETPUID
-//#define PUREWEIGHT
+#define PUREWEIGHT
 
 using namespace std;
 using namespace boost;
