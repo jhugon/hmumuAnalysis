@@ -13,6 +13,7 @@
 #include <TStyle.h>
 #include <TLegend.h>
 #include <TF1.h>
+#include <TRandom3.h>
 
 #include "TMVA/Tools.h"
 #include "TMVA/Reader.h"
@@ -105,6 +106,11 @@ int main(int argc, char *argv[])
   float minBlind = 115;
   float maxBlind = 135;
 
+  float calib = -0.1;
+  float calibSysSmear = 0.2;
+  float resSmear = 1.169; // should all be around 1; a ratio of resolutions
+  float resSysSmear = 0.2; // Error on that ratio
+
   // Check to see if it is data
   bool isData = false;
   std::vector<std::string> dataWords;
@@ -163,6 +169,10 @@ int main(int argc, char *argv[])
   tree->SetBranchAddress("recoCandPt"  , &recoCandPt );
   tree->SetBranchAddress("recoCandY"  , &recoCandY );
   tree->SetBranchAddress("recoCandPhi"  , &recoCandPhi );
+
+  float trueMass=-99999.0;
+  if(!isData && tree->GetBranchStatus("trueMass"))
+    tree->SetBranchAddress("trueMass", &trueMass);
 
   _PFJetInfo jets;
   tree->SetBranchAddress("pfJets",&jets);
@@ -371,6 +381,24 @@ int main(int argc, char *argv[])
     histMapLowerControlRegion.insert(make_pair(histMapIter->first,tmp));
   }
 
+  std::map<std::string,TH2F*> histMap2DCalibUp;
+  std::map<std::string,TH2F*> histMap2DCalibDown;
+  std::map<std::string,TH2F*> histMap2DResUp;
+  std::map<std::string,TH2F*> histMap2DResDown;
+  for(histMap2DIter = histMap2D.begin(); histMap2DIter != histMap2D.end(); histMap2DIter++)
+  {
+    TH2F* tmp;
+    tmp = (TH2F*) histMap2DIter->second->Clone();
+    histMap2DCalibUp.insert(make_pair(histMap2DIter->first,tmp));
+    tmp = (TH2F*) histMap2DIter->second->Clone();
+    histMap2DCalibDown.insert(make_pair(histMap2DIter->first,tmp));
+
+    tmp = (TH2F*) histMap2DIter->second->Clone();
+    histMap2DResUp.insert(make_pair(histMap2DIter->first,tmp));
+    tmp = (TH2F*) histMap2DIter->second->Clone();
+    histMap2DResDown.insert(make_pair(histMap2DIter->first,tmp));
+  }
+
   //////////////////////////
   //for MVA
 
@@ -378,6 +406,8 @@ int main(int argc, char *argv[])
   mvaConfigNames.push_back("inclusive.cfg");
   mvaConfigNames.push_back("vbf.cfg");
   MVA mva(mvaConfigNames,trainingTreeFileName);
+
+  TRandom3 random(1457);
 
   //////////////////////////
   //for PU reweighting
@@ -406,7 +436,14 @@ int main(int argc, char *argv[])
     tree->GetEvent(i);
     if (i % reportEach == 0) cout << "Event: " << i << endl;
 
-    bool inBlindWindow = recoCandMass < maxBlind && recoCandMass > minBlind;
+    mva.resetValues();
+    if(isData)
+      mva.mDiMu = recoCandMass;
+    else
+    {
+      mva.mDiMu = smearMC(trueMass,recoCandMass,calib,resSmear,random);
+    }
+    bool inBlindWindow = mva.mDiMu < maxBlind && mva.mDiMu > minBlind;
 #ifdef BLIND
     if (inBlindWindow && isData)
         continue;
@@ -423,7 +460,7 @@ int main(int argc, char *argv[])
     if (!isKinTight_2012(reco1) || !isKinTight_2012(reco2))
         continue;
 
-    if (recoCandMass < minMmm || recoCandMass > maxMmm)
+    if (mva.mDiMu < minMmm || mva.mDiMu > maxMmm)
         continue;
 
     countsHist->Fill(1.0, weight);
@@ -440,7 +477,6 @@ int main(int argc, char *argv[])
         muon1 = reco2;
         muon2 = reco1;
     }
-    mva.resetValues();
 
     mva.weight = weight;
 
@@ -452,9 +488,14 @@ int main(int argc, char *argv[])
     mva.relIsoMu1 = getRelIso(muon1);
     mva.relIsoMu2 = getRelIso(muon2);
 
-    mva.mDiMu = recoCandMass;
     mva.ptDiMu = recoCandPt;
     mva.yDiMu = recoCandY;
+
+    float mDiMuCalibUp = mva.mDiMu+calibSysSmear;
+    float mDiMuCalibDown = mva.mDiMu-calibSysSmear;
+
+    float mDiMuResUp = smearMC(trueMass,recoCandMass,calib,resSmear+resSysSmear,random);
+    float mDiMuResDown = smearMC(trueMass,recoCandMass,calib,resSmear-resSysSmear,random);
 
     //////////////////////////////////////////
     //Computing CosTheta*
@@ -672,15 +713,33 @@ int main(int argc, char *argv[])
     {
       BDTHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","BDT"), weight);
       likelihoodHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","Likelihood"), weight);
-      BDTHistMuonOnlyVMass->Fill(recoCandMass, mva.getMVA("inclusive.cfg","BDT"), weight);
-      likelihoodHistMuonOnlyVMass->Fill(recoCandMass, mva.getMVA("inclusive.cfg","Likelihood"), weight);
+      BDTHistMuonOnlyVMass->Fill(mva.mDiMu, mva.getMVA("inclusive.cfg","BDT"), weight);
+      likelihoodHistMuonOnlyVMass->Fill(mva.mDiMu, mva.getMVA("inclusive.cfg","Likelihood"), weight);
+
+      histMap2DCalibUp["BDTHistMuonOnlyVMass"]->Fill(mDiMuCalibUp, mva.getMVA("inclusive.cfg","BDT"), weight);
+      histMap2DCalibDown["BDTHistMuonOnlyVMass"]->Fill(mDiMuCalibDown, mva.getMVA("inclusive.cfg","BDT"), weight);
+      histMap2DResUp["BDTHistMuonOnlyVMass"]->Fill(mDiMuResUp, mva.getMVA("inclusive.cfg","BDT"), weight);
+      histMap2DResDown["BDTHistMuonOnlyVMass"]->Fill(mDiMuResDown, mva.getMVA("inclusive.cfg","BDT"), weight);
+      histMap2DCalibUp["likelihoodHistMuonOnlyVMass"]->Fill(mDiMuCalibUp, mva.getMVA("inclusive.cfg","Likelihood"), weight);
+      histMap2DCalibDown["likelihoodHistMuonOnlyVMass"]->Fill(mDiMuCalibDown, mva.getMVA("inclusive.cfg","Likelihood"), weight);
+      histMap2DResUp["likelihoodHistMuonOnlyVMass"]->Fill(mDiMuResUp, mva.getMVA("inclusive.cfg","Likelihood"), weight);
+      histMap2DResDown["likelihoodHistMuonOnlyVMass"]->Fill(mDiMuResDown, mva.getMVA("inclusive.cfg","Likelihood"), weight);
     }
     else
     {
-      BDTHistVBFVMass->Fill(recoCandMass, mva.getMVA("vbf.cfg","BDT"), weight);
-      likelihoodHistVBFVMass->Fill(recoCandMass, mva.getMVA("vbf.cfg","Likelihood"), weight);
+      BDTHistVBFVMass->Fill(mva.mDiMu, mva.getMVA("vbf.cfg","BDT"), weight);
+      likelihoodHistVBFVMass->Fill(mva.mDiMu, mva.getMVA("vbf.cfg","Likelihood"), weight);
       BDTHistVBF->Fill(mva.getMVA("vbf.cfg","BDT"), weight);
       likelihoodHistVBF->Fill(mva.getMVA("vbf.cfg","Likelihood"), weight);
+
+      histMap2DCalibUp["BDTHistVBFVMass"]->Fill(mDiMuCalibUp, mva.getMVA("inclusive.cfg","BDT"), weight);
+      histMap2DCalibDown["BDTHistVBFVMass"]->Fill(mDiMuCalibDown, mva.getMVA("inclusive.cfg","BDT"), weight);
+      histMap2DResUp["BDTHistVBFVMass"]->Fill(mDiMuResUp, mva.getMVA("inclusive.cfg","BDT"), weight);
+      histMap2DResDown["BDTHistVBFVMass"]->Fill(mDiMuResDown, mva.getMVA("inclusive.cfg","BDT"), weight);
+      histMap2DCalibUp["likelihoodHistVBFVMass"]->Fill(mDiMuCalibUp, mva.getMVA("inclusive.cfg","Likelihood"), weight);
+      histMap2DCalibDown["likelihoodHistVBFVMass"]->Fill(mDiMuCalibDown, mva.getMVA("inclusive.cfg","Likelihood"), weight);
+      histMap2DResUp["likelihoodHistVBFVMass"]->Fill(mDiMuResUp, mva.getMVA("inclusive.cfg","Likelihood"), weight);
+      histMap2DResDown["likelihoodHistVBFVMass"]->Fill(mDiMuResDown, mva.getMVA("inclusive.cfg","Likelihood"), weight);
     }
 
     //4 GeV Window Plots
@@ -909,7 +968,7 @@ int main(int argc, char *argv[])
     }
 
     //Upper Control Region Plots
-    if (recoCandMass>maxBlind)
+    if (mva.mDiMu>maxBlind)
     {
       histMapUpperControlRegion["mDiMu"]->Fill(mva.mDiMu, weight);
       histMapUpperControlRegion["yDiMu"]->Fill(mva.yDiMu, weight);
@@ -953,7 +1012,7 @@ int main(int argc, char *argv[])
       }
     }
     //Lower Control Region Plots
-    if (recoCandMass<minBlind)
+    if (mva.mDiMu<minBlind)
     {
       histMapLowerControlRegion["mDiMu"]->Fill(mva.mDiMu, weight);
       histMapLowerControlRegion["yDiMu"]->Fill(mva.yDiMu, weight);
@@ -1011,6 +1070,34 @@ int main(int argc, char *argv[])
   }
 
   for(histMap2DIter = histMap2D.begin(); histMap2DIter != histMap2D.end(); histMap2DIter++)
+  {
+    histMap2DIter->second->Write();
+  }
+
+  TDirectory* dirCalibUp = outFile->mkdir("CalibUp");
+  dirCalibUp->cd();
+  for(histMap2DIter = histMap2DCalibUp.begin(); histMap2DIter != histMap2DCalibUp.end(); histMap2DIter++)
+  {
+    histMap2DIter->second->Write();
+  }
+
+  TDirectory* dirCalibDown = outFile->mkdir("CalibDown");
+  dirCalibDown->cd();
+  for(histMap2DIter = histMap2DCalibDown.begin(); histMap2DIter != histMap2DCalibDown.end(); histMap2DIter++)
+  {
+    histMap2DIter->second->Write();
+  }
+
+  TDirectory* dirResUp = outFile->mkdir("ResUp");
+  dirResUp->cd();
+  for(histMap2DIter = histMap2DResUp.begin(); histMap2DIter != histMap2DResUp.end(); histMap2DIter++)
+  {
+    histMap2DIter->second->Write();
+  }
+
+  TDirectory* dirResDown = outFile->mkdir("ResDown");
+  dirResDown->cd();
+  for(histMap2DIter = histMap2DResDown.begin(); histMap2DIter != histMap2DResDown.end(); histMap2DIter++)
   {
     histMap2DIter->second->Write();
   }

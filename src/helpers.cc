@@ -1,5 +1,6 @@
 #include "helpers.h"
 #include <cmath>
+#include <iostream>
 
 float getRelIso(_MuonInfo& muon)
 {
@@ -48,3 +49,20 @@ bool passPUJetID(int flag, PUJetID desiredLevel)
  return ( flag & (1 << desiredLevel) ) != 0;
 }
 
+float smearMC(float trueVal, float recoVal, float calib, float smearRatio,TRandom random, bool debug)
+{
+  if (trueVal > 0.0)
+  {
+    float uncalibratedReco = recoVal+calib;
+    float dif = uncalibratedReco-trueVal;
+    dif *= smearRatio;
+    float result = trueVal+dif;
+    if (debug)
+      std::cout << "true: " << trueVal << " \t\tuncalReco: " << uncalibratedReco << " \t\trecoCand: " << recoVal << " \t\tfinal: " << result << std::endl;
+    return result;
+  }
+  else
+  {
+    return recoVal+calib;
+  }
+}

@@ -192,6 +192,7 @@ int main(int argc, char *argv[])
         ("etaJet1",program_options::value<int>(),"")
         ("etaJet2",program_options::value<int>(),"")
         ("cosThetaStar",program_options::value<int>(),"")
+        ("cosThetaStarCS",program_options::value<int>(),"")
         ("deltaEtaJets",program_options::value<int>(),"")
         ("productEtaJets",program_options::value<int>(),"")
         ("nJetsInRapidityGap",program_options::value<int>(),"")
@@ -209,6 +210,9 @@ int main(int argc, char *argv[])
         ("htInRapidityGap",program_options::value<int>(),"")
         ("weightsDirName",program_options::value<std::string>(),"")
         ("vbfSelection",program_options::value<int>(),"")
+
+        ("nVtx",program_options::value<int>(),"")
+  
         ("sigFile",program_options::value<std::vector<std::string> >(),"")
         ("bakFile",program_options::value<std::vector<std::string> >(),"")
         ("sigWeight",program_options::value<std::vector<float> >(),"")
@@ -297,6 +301,11 @@ int main(int argc, char *argv[])
     else
       factory->AddSpectator("cosThetaStar","","",'F');
 
+    if (optionMap.count("cosThetaStarCS") && optionMap["cosThetaStarCS"].as<int>() == 1)
+      factory->AddVariable("cosThetaStarCS","","",'F');
+    else
+      factory->AddSpectator("cosThetaStarCS","","",'F');
+
     if (optionMap.count("deltaEtaJets") && optionMap["deltaEtaJets"].as<int>() == 1)
       factory->AddVariable("deltaEtaJets","","",'F');
     else
@@ -356,6 +365,11 @@ int main(int argc, char *argv[])
       factory->AddVariable("nJets","","",'F');
     else
       factory->AddSpectator("nJets","","",'F');
+
+    if (optionMap.count("nVtx") && optionMap["nVtx"].as<int>() == 1)
+      factory->AddVariable("nVtx","","",'F');
+    else
+      factory->AddSpectator("nVtx","","",'F');
 
     if (optionMap.count("htInRapidityGap") && optionMap["htInRapidityGap"].as<int>() == 1)
       factory->AddVariable("htInRapidityGap","","",'F');
