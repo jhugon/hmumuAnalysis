@@ -2,8 +2,8 @@
 
 nice scons -j4
 
-TRAININGTREES="true"
-TRAIN="true"
+#TRAININGTREES="true"
+#TRAIN="true"
 
 echo "#######################"
 echo "   Running Analyzer"

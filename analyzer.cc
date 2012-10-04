@@ -195,11 +195,12 @@ int main(int argc, char *argv[])
   tree->SetBranchAddress("puJetCutId",&puJetCutId);
 #endif
 
-#ifdef PUREWEIGHT
-  int nPU;
-  tree->SetBranchAddress("nPU",&nPU);
-#else
   int nPU=0;
+#ifdef PUREWEIGHT
+  if (!isData)
+  {
+    tree->SetBranchAddress("nPU",&nPU);
+  }
 #endif
   _VertexInfo vertexInfo;
   tree->SetBranchAddress("vertexInfo",&vertexInfo);
@@ -449,10 +450,12 @@ int main(int argc, char *argv[])
         continue;
 #endif
 
-#ifdef PUREWEIGHT
-    double weight = lumiWeights.weight(nPU);
-#else
     double weight = 1.0;
+#ifdef PUREWEIGHT
+    if (!isData)
+    {
+      weight = lumiWeights.weight(nPU);
+    }
 #endif
 
     countsHist->Fill(0.0, weight);
