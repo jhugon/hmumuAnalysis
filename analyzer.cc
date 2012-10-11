@@ -414,7 +414,7 @@ int main(int argc, char *argv[])
   //for PU reweighting
 
 #ifdef PUREWEIGHT
-  reweight::LumiReWeighting lumiWeights("pileupDists/PileUpHistMC2012Summer50nsPoissonOOTPU.root","pileupDists/PileUpHist2012AB.root","pileup","pileup");
+  reweight::LumiReWeighting lumiWeights("pileupDists/PileUpHistMC2012Summer50nsPoissonOOTPU.root","pileupDists/PileUpHist2012A.root","pileup","pileup");
 #endif
 
   const double SQRT2 = sqrt(2);
