@@ -463,6 +463,9 @@ int main(int argc, char *argv[])
     if (!isKinTight_2012(reco1) || !isKinTight_2012(reco2))
         continue;
 
+    if (reco1.charge*reco2.charge != -1)
+        continue;
+
     if (mva.mDiMu < minMmm || mva.mDiMu > maxMmm)
         continue;
 

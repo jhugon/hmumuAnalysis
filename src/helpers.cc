@@ -22,7 +22,7 @@ bool isKinTight_2012(_MuonInfo& muon)
   if (!muon.isPFMuon) return isKinTight_2012;
 
   // acceptance cuts
-  if (muon.pt < 20)         return isKinTight_2012; // pt cut
+  if (muon.pt < 25)         return isKinTight_2012; // pt cut
   if (fabs(muon.eta) > 2.1) return isKinTight_2012; // eta cut
 
   // kinematic cuts
