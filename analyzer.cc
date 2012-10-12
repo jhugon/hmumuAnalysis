@@ -111,6 +111,10 @@ int main(int argc, char *argv[])
   float resSmear = 1.169; // should all be around 1; a ratio of resolutions
   float resSysSmear = 0.2; // Error on that ratio
 
+  std::vector<int> allowedHLTPaths;
+  allowedHLTPaths.push_back(0); //IsoMu24_v11
+  allowedHLTPaths.push_back(2); //IsoMu24_v12
+
   // Check to see if it is data
   bool isData = false;
   std::vector<std::string> dataWords;
@@ -457,6 +461,9 @@ int main(int argc, char *argv[])
     countsHist->Fill(0.0, weight);
 
     if (!isKinTight_2012(reco1) || !isKinTight_2012(reco2))
+        continue;
+
+    if (!isHltMatched(reco1,reco2,allowedHLTPaths))
         continue;
 
     if (reco1.charge*reco2.charge != -1)

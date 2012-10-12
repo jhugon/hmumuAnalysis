@@ -19,4 +19,6 @@ bool passPUJetID(int flag, PUJetID desiredLevel);
 
 float smearMC(float trueVal, float recoVal, float calib, float smearRatio,TRandom random, bool debug=false);
 
+bool isHltMatched(_MuonInfo& muon1, _MuonInfo& muon2, std::vector<int> allowedPaths);
+
 #endif

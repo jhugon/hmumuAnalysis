@@ -25,8 +25,8 @@ nice ./analyzer WW.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/V
 nice ./analyzer WZ.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/V00-00-03/NtuplesMCWZ_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1/*.root --trainingTree backgroundTreeWZ.root
 nice ./analyzer ZZ.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/V00-00-03/NtuplesMCZZ_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1/*.root --trainingTree backgroundTreeZZ.root
 nice ./analyzer ttbar.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/V00-00-03/NtuplesMCTTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola_Summer12_DR53X-PU_S10_START53_V7A-v3/*.root --trainingTree backgroundTreeTT.root
-nice ./analyzer WJetsToLNu.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/V00-00-03/NtuplesMCWJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v2/*.root --trainingTree backgroundTreeWJetsToLNu.root
-nice ./analyzer QCD.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/V00-00-03/NtuplesMCQCD_Pt_20_MuEnrichedPt_15_TuneZ2star_8TeV_pythia6_Summer12_DR53X-PU_S10_START53_V7A-v3/*.root --trainingTree backgroundTreeQCD.root
+#nice ./analyzer WJetsToLNu.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/V00-00-03/NtuplesMCWJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v2/*.root --trainingTree backgroundTreeWJetsToLNu.root
+#nice ./analyzer QCD.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/V00-00-03/NtuplesMCQCD_Pt_20_MuEnrichedPt_15_TuneZ2star_8TeV_pythia6_Summer12_DR53X-PU_S10_START53_V7A-v3/*.root --trainingTree backgroundTreeQCD.root
 
 echo "#######################"
 echo "#######################"
@@ -57,7 +57,7 @@ nice ./analyzer WW.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/V
 nice ./analyzer WZ.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/V00-00-03/NtuplesMCWZ_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1/*.root 
 nice ./analyzer ZZ.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/V00-00-03/NtuplesMCZZ_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1/*.root 
 nice ./analyzer ttbar.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/V00-00-03/NtuplesMCTTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola_Summer12_DR53X-PU_S10_START53_V7A-v3/*.root 
-nice ./analyzer WJetsToLNu.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/V00-00-03/NtuplesMCWJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v2/*.root 
+#nice ./analyzer WJetsToLNu.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/V00-00-03/NtuplesMCWJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v2/*.root 
 nice ./analyzer QCD.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/V00-00-03/NtuplesMCQCD_Pt_20_MuEnrichedPt_15_TuneZ2star_8TeV_pythia6_Summer12_DR53X-PU_S10_START53_V7A-v3/*.root 
 
 nice ./analyzer SingleMuRun2012Av1IsoMu.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/V00-00-03/NtuplesDataSingleMuRun2012A-13Jul2012-v1_IsoMu24_eta2p1/*.root
