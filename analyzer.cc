@@ -98,10 +98,10 @@ int main(int argc, char *argv[])
   //////////// Setup //////////
   /////////////////////////////
 
-  float minMmm = 70.0;
-  float maxMmm = 200.0;
-  //float minMmm = 110.0;
-  //float maxMmm = 150.0;
+  //float minMmm = 70.0;
+  //float maxMmm = 200.0;
+  float minMmm = 110.0;
+  float maxMmm = 150.0;
 
   float minBlind = 115;
   float maxBlind = 135;
@@ -463,7 +463,7 @@ int main(int argc, char *argv[])
     if (!isKinTight_2012(reco1) || !isKinTight_2012(reco2))
         continue;
 
-    if (!isHltMatched(reco1,reco2,allowedHLTPaths))
+    if (!(isHltMatched(reco1,reco2,allowedHLTPaths) && isData))
         continue;
 
     if (reco1.charge*reco2.charge != -1)
