@@ -27,10 +27,15 @@
 #include "boost/program_options.hpp"
 #include "boost/regex.hpp"
 
+#include <boost/lexical_cast.hpp>
+//Defines method of std::string that appends any type :-)
+#define appendAny(a) append(boost::lexical_cast<std::string>(a))
+
 #include <limits.h>
 
 #define JETPUID
 #define PUREWEIGHT
+//#define SMEARING
 
 using namespace std;
 using namespace boost;
@@ -433,6 +438,9 @@ int main(int argc, char *argv[])
   unsigned reportEach=1000;
   if (nEvents/1000>reportEach)
     reportEach = nEvents/1000;
+
+  unsigned testCounter = 0;
+  string testString;
   
   for(unsigned i=0; i<nEvents;i++)
   {
@@ -442,12 +450,13 @@ int main(int argc, char *argv[])
     if (i % reportEach == 0) cout << "Event: " << i << endl;
 
     mva.resetValues();
-    if(isData)
-      mva.mDiMu = recoCandMass;
-    else
+    mva.mDiMu = recoCandMass;
+#ifdef SMEARING
+    if(!isData)
     {
       mva.mDiMu = smearMC(trueMass,recoCandMass,calib,resSmear,random);
     }
+#endif
     bool inBlindWindow = mva.mDiMu < maxBlind && mva.mDiMu > minBlind;
 
     double weight = 1.0;
@@ -471,6 +480,17 @@ int main(int argc, char *argv[])
 
     if (mva.mDiMu < minMmm || mva.mDiMu > maxMmm)
         continue;
+
+    if (mva.mDiMu > 140. && mva.mDiMu < 150.)
+    {
+        testCounter++;
+        std::cout << "run:event = "<<eventInfo.run <<":"<<eventInfo.event << std::endl;
+        testString.append(" -e ");
+        testString.appendAny(eventInfo.run);
+        testString.append(":");
+        testString.appendAny(eventInfo.event);
+        //testString.append("\n");
+    }
 
     countsHist->Fill(1.0, weight);
 
@@ -1203,6 +1223,8 @@ int main(int argc, char *argv[])
     histMapIter->second->Write();
   }
 
+  cout <<"#######################\n"<< testString <<"#######################\n" << endl;
+  cout << "testCounter: "<< testCounter << endl;
   cout << "analyzer done." << endl << endl;
   return 0;
 }

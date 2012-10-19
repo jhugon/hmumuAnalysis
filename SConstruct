@@ -57,6 +57,9 @@ if not env.GetOption("clean"):
   if not conf.CheckCXXHeader("boost/lexical_cast.hpp"):
     print("Error: boost/lexical_cast.hpp header not installed!")
     Exit(1)
+  if not conf.CheckCXXHeader("boost/algorithm/string.hpp"):
+    print("Error: boost/algorithm/string.hpp header not installed!")
+    Exit(1)
   if not conf.CheckCXXHeader("boost/program_options.hpp"):
     print("Error: boost/program_options.hpp header not installed!")
     Exit(1)
@@ -77,3 +80,4 @@ env.Program(target="analyzer", source=["analyzer.cc","src/libmva.a","src/libhelp
 env.Program(target="mvaTrain", source=["mvaTrain.cc"])
 
 env.Program(target="testVertex", source=["testVertex.cc","src/libmva.a","src/libhelpers.a"])
+env.Program(target="eventPrinter", source=["eventPrinter.cc","src/libmva.a","src/libhelpers.a"])
