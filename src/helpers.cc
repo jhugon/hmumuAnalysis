@@ -31,9 +31,8 @@ bool isKinTight_2012(_MuonInfo& muon)
   if(getRelIso(muon) > 0.12)
       return isKinTight_2012;
 
-  // beam spot cut
-  if (fabs(muon.d0) > 0.2) return isKinTight_2012;
-  // Will need dz cut when we have ntuplizer correct!!!
+  if (fabs(muon.d0_PV) > 0.2) return isKinTight_2012;
+  if (fabs(muon.dz_PV) > 0.5) return isKinTight_2012;
 
   if ( muon.numValidMuonHits  < 1 ) return isKinTight_2012;
   if ( muon.numValidPixelHits < 1 ) return isKinTight_2012;
@@ -78,6 +77,19 @@ bool isHltMatched(_MuonInfo& muon1, _MuonInfo& muon2, std::vector<int> allowedPa
     if(muon1.isHltMatched[*path]==1)
         return true;
     if(muon2.isHltMatched[*path]==1)
+        return true;
+  }
+  return false;
+}
+
+bool isHltMatched(_MuonInfo& muon1, std::vector<int> allowedPaths)
+{
+  std::vector<int>::const_iterator path = allowedPaths.begin();
+  std::vector<int>::const_iterator endPath = allowedPaths.end();
+  for(;path != endPath;path++)
+  {
+    //std::cout << "muon1 index "<<*path<<": "<<muon1.isHltMatched[*path]<<std::endl;
+    if(muon1.isHltMatched[*path]==1)
         return true;
   }
   return false;

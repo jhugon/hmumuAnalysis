@@ -15,12 +15,12 @@ typedef struct {
 typedef struct{
   int nVertices;
   int isValid[20];
-  float x[20];	
-  float y[20];	
-  float z[20];	
-  float xErr[20];	
-  float yErr[20];	
-  float zErr[20];	
+  float x[20];  
+  float y[20];  
+  float z[20];  
+  float xErr[20];   
+  float yErr[20];   
+  float zErr[20];   
   float chi2[20];
   int ndf[20];
   float normChi2[20];
@@ -56,8 +56,11 @@ typedef struct {
   float trkPhi;
   
   float normChiSquare;
-  float d0;
-  float dz;
+  float d0_BS;
+  float dz_BS;
+
+  float d0_PV;
+  float dz_PV;
   
   int numPixelLayers;   //number of pixel layers with valid hits
   int numTrackerLayers; //number of tracker layers with valid hits 
@@ -112,6 +115,7 @@ typedef struct {
   float phi;
   float sumEt;
 } _MetInfo;
+
 
 // pf Jets
 typedef struct {
@@ -184,15 +188,16 @@ typedef struct {
 
 // generator level jets
 typedef struct {
-  int nGenJets;
-  float genJetPx[10];
-  float genJetPy[10];
-  float genJetPz[10];
-  float genJetPt[10];
-  float genJetEta[10];
-  float genJetPhi[10];
-  float genJetM[10];
-  int   genJetCharge[10];
+  int nJets;
+  float px[10];
+  float py[10];
+  float pz[10];
+  float pt[10];
+  float eta[10];
+  float phi[10];
+  float mass[10];
+  int   charge[10];
 } _GenJetInfo;
+
 
 #endif

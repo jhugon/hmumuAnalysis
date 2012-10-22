@@ -33,6 +33,7 @@
 
 #define JETPUID
 #define PUREWEIGHT
+//#define VERBOSE
 
 using namespace std;
 using namespace boost;
@@ -49,6 +50,7 @@ int main(int argc, char *argv[])
       ("help,h", "Produce Help Message")
       ("filenames",program_options::value<vector<string> >(), "Input & Output File Names, put output name first followed by all input file names")
       ("eventStr,e",program_options::value<vector<string> >(), "Run:Event Strings")
+      ("eventFile,f",program_options::value<string>(), "File with one run:event per line")
   ;
   
   program_options::positional_options_description optionPos;
@@ -93,6 +95,25 @@ int main(int argc, char *argv[])
        return 1;
      }
   }
+  else if(optionMap.count("eventFile"))
+  {
+     string eventFn = optionMap["eventFile"].as<string>();
+     ifstream eventF(eventFn.c_str());
+     string tmpLine;
+     while(eventF.good())
+     {
+      using namespace boost;
+      getline(eventF,tmpLine);
+      trim_left_if(tmpLine,is_any_of(" \t\r\n"));
+      trim_right_if(tmpLine,is_any_of(" \t\r\n"));
+      if (tmpLine.size() <1)
+        continue;
+      if (tmpLine[0] =='#')
+        continue;
+      eventStrs.push_back(tmpLine);
+     }
+     eventF.close();
+  }
   else
   {
      cout << "Error: No Wanted events found, use -e <run>:<event> option." << endl;
@@ -117,9 +138,16 @@ int main(int argc, char *argv[])
   }
   nEventsDesired -= tmpMissed;
 
+  ofstream outTxt;
+  outTxt.open("testEventPrints.txt");
+
   /////////////////////////////
   //////////// Setup //////////
   /////////////////////////////
+
+  std::vector<int> allowedHLTPaths;
+  allowedHLTPaths.push_back(0); //IsoMu24_v11
+  allowedHLTPaths.push_back(2); //IsoMu24_v12
 
   ////////////
   
@@ -236,12 +264,55 @@ cout.precision(5);
       nJets++;
     }
 
-    cout << "Run:Event (Lumi) = "<<eventInfo.run<<":"<<eventInfo.event<<" ("<<eventInfo.lumi<<")\n";
-    cout << "  Dimuon M = "<<recoCandMass<<" \t Pt = "<<recoCandPt << " \t Y = "<<recoCandY <<"\n";
-    cout << "   Lead Mu Pt = "<< muon1.pt << " \t Eta = "<<muon1.eta << " \t Phi = "<<muon1.phi << " \t Q = "<<muon1.charge <<"\n";
-    cout << "   2nd Mu Pt  = "<< muon2.pt << " \t Eta = "<<muon2.eta << " \t Phi = "<<muon2.phi << " \t Q = "<<muon2.charge <<"\n";
-    cout << "     Nvtx = "<< vertexInfo.nVertices <<" \t nJets = "<<nJets<<"\n";
-    cout << endl;
+    cout << "Run:Event (Lumi) = "<<eventInfo.run<<":"<<eventInfo.event<<" ("<<eventInfo.lumi<<")\n"
+         << "  Dimuon M = "<<recoCandMass<<" \t Pt = "<<recoCandPt << " \t Y = "<<recoCandY <<"\n"
+         << "   Lead Mu Pt = "<< muon1.pt << " \t Eta = "<<muon1.eta << " \t Phi = "<<muon1.phi << " \t Q = "<<muon1.charge <<"\n"
+         << "   2nd Mu Pt  = "<< muon2.pt << " \t Eta = "<<muon2.eta << " \t Phi = "<<muon2.phi << " \t Q = "<<muon2.charge <<"\n"
+         << "     Nvtx = "<< vertexInfo.nVertices <<" \t nJets = "<<nJets<<"\n"
+#ifdef VERBOSE
+         << "   Lead Mu Trg = "<< isHltMatched(muon1,allowedHLTPaths) << " \t 2nd Mu Trg = "<< isHltMatched(muon2,allowedHLTPaths) <<"\n"
+         << "   Lead Mu ID = "<< isKinTight_2012(muon1) << "\n"
+         << "     isGlobal = "<< muon1.isGlobal << " \t isPFMuon = "<<muon1.isPFMuon <<"\n"
+         << "     numTrackerLayers = "<< muon1.numTrackerLayers << "\n"
+         << "     Iso = "<< getRelIso(muon1) << "\n"
+         << "     |d0| = "<< fabs(muon1.d0_PV) << " \t |dz| = " << fabs(muon1.dz_PV) << "\n"
+         << "     MuHits = "<< muon1.numValidMuonHits << " \t PixHits = "<<muon1.numValidPixelHits<<"\n"
+         << "     Stations = "<< muon1.numOfMatchedStations << " \t chi^2/ndf = "<<muon1.normChiSquare<<"\n"
+         << "   2nd Mu ID  = "<< isKinTight_2012(muon2) << "\n"
+         << "     isGlobal = "<< muon2.isGlobal << " \t isPFMuon = "<<muon2.isPFMuon <<"\n"
+         << "     numTrackerLayers = "<< muon2.numTrackerLayers << "\n"
+         << "     Iso = "<< getRelIso(muon2) << "\n"
+         << "     |d0| = "<< fabs(muon2.d0_PV) << " \t |dz| = " << fabs(muon2.dz_PV) << "\n"
+         << "     MuHits = "<< muon2.numValidMuonHits << " \t PixHits = "<<muon2.numValidPixelHits<<"\n"
+         << "     Stations = "<< muon2.numOfMatchedStations << " \t chi^2/ndf = "<<muon2.normChiSquare<<"\n"
+         << "   Lead Mu Iso = "<< getRelIso(muon1) << " \t 2nd Mu Iso = "<< getRelIso(muon2) <<"\n"
+#endif
+         << endl;
+
+  outTxt << "Run:Event (Lumi) = "<<eventInfo.run<<":"<<eventInfo.event<<" ("<<eventInfo.lumi<<")\n"
+         << "  Dimuon M = "<<recoCandMass<<" \t Pt = "<<recoCandPt << " \t Y = "<<recoCandY <<"\n"
+         << "   Lead Mu Pt = "<< muon1.pt << " \t Eta = "<<muon1.eta << " \t Phi = "<<muon1.phi << " \t Q = "<<muon1.charge <<"\n"
+         << "   2nd Mu Pt  = "<< muon2.pt << " \t Eta = "<<muon2.eta << " \t Phi = "<<muon2.phi << " \t Q = "<<muon2.charge <<"\n"
+         << "     Nvtx = "<< vertexInfo.nVertices <<" \t nJets = "<<nJets<<"\n"
+#ifdef VERBOSE
+         << "   Lead Mu Trg = "<< isHltMatched(muon1,allowedHLTPaths) << " \t 2nd Mu Trg = "<< isHltMatched(muon2,allowedHLTPaths) <<"\n"
+         << "   Lead Mu ID = "<< isKinTight_2012(muon1) << "\n"
+         << "     isGlobal = "<< muon1.isGlobal << " \t isPFMuon = "<<muon1.isPFMuon <<"\n"
+         << "     numTrackerLayers = "<< muon1.numTrackerLayers << "\n"
+         << "     Iso = "<< getRelIso(muon1) << "\n"
+         << "     |d0| = "<< fabs(muon1.d0_PV) << " \t |dz| = " << fabs(muon1.dz_PV) << "\n"
+         << "     MuHits = "<< muon1.numValidMuonHits << " \t PixHits = "<<muon1.numValidPixelHits<<"\n"
+         << "     Stations = "<< muon1.numOfMatchedStations << " \t chi^2/ndf = "<<muon1.normChiSquare<<"\n"
+         << "   2nd Mu ID  = "<< isKinTight_2012(muon2) << "\n"
+         << "     isGlobal = "<< muon2.isGlobal << " \t isPFMuon = "<<muon2.isPFMuon <<"\n"
+         << "     numTrackerLayers = "<< muon2.numTrackerLayers << "\n"
+         << "     Iso = "<< getRelIso(muon2) << "\n"
+         << "     |d0| = "<< fabs(muon2.d0_PV) << " \t |dz| = " << fabs(muon2.dz_PV) << "\n"
+         << "     MuHits = "<< muon2.numValidMuonHits << " \t PixHits = "<<muon2.numValidPixelHits<<"\n"
+         << "     Stations = "<< muon2.numOfMatchedStations << " \t chi^2/ndf = "<<muon2.normChiSquare<<"\n"
+         << "   Lead Mu Iso = "<< getRelIso(muon1) << " \t 2nd Mu Iso = "<< getRelIso(muon2) <<"\n"
+#endif
+         << endl;
 
     foundCounter++;
     if(foundCounter >= nEventsDesired)
@@ -252,6 +323,7 @@ cout.precision(5);
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
+  outTxt.close();
   cout << "Found "<<foundCounter<<"/"<<nEventsDesired << endl;
   cout << "done." << endl << endl;
   return 0;

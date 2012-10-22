@@ -484,12 +484,11 @@ int main(int argc, char *argv[])
     if (mva.mDiMu > 140. && mva.mDiMu < 150.)
     {
         testCounter++;
-        std::cout << "run:event = "<<eventInfo.run <<":"<<eventInfo.event << std::endl;
-        testString.append(" -e ");
+        std::cout <<eventInfo.run <<":"<<eventInfo.event <<"\n"<< std::endl;
         testString.appendAny(eventInfo.run);
         testString.append(":");
         testString.appendAny(eventInfo.event);
-        //testString.append("\n");
+        testString.append("\n");
     }
 
     countsHist->Fill(1.0, weight);
@@ -1223,6 +1222,10 @@ int main(int argc, char *argv[])
     histMapIter->second->Write();
   }
 
+  ofstream testOutFile;
+  testOutFile.open("testEventNums.txt");
+  testOutFile << testString;
+  testOutFile.close();
   cout <<"#######################\n"<< testString <<"#######################\n" << endl;
   cout << "testCounter: "<< testCounter << endl;
   cout << "analyzer done." << endl << endl;
