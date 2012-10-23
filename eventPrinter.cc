@@ -287,6 +287,9 @@ cout.precision(5);
          << "     Stations = "<< muon2.numOfMatchedStations << " \t chi^2/ndf = "<<muon2.normChiSquare<<"\n"
          << "   Lead Mu Iso = "<< getRelIso(muon1) << " \t 2nd Mu Iso = "<< getRelIso(muon2) <<"\n"
 #endif
+         << "   Lead Jet Pt = "<< jets.pt[0] << " \t Eta = "<<jets.eta[0] << " \t Phi = "<<jets.phi[0] << " \t CSV = "<<-999 <<"\n"
+         << "   2nd Jet Pt  = "<< jets.pt[1] << " \t Eta = "<<jets.eta[1] << " \t Phi = "<<jets.phi[1] << " \t CSV = "<<-999 <<"\n"
+         << "   MET  = "<< met.pt << " \t MET Phi = "<<met.phi <<"\n"
          << endl;
 
   outTxt << "Run:Event (Lumi) = "<<eventInfo.run<<":"<<eventInfo.event<<" ("<<eventInfo.lumi<<")\n"
@@ -312,6 +315,9 @@ cout.precision(5);
          << "     Stations = "<< muon2.numOfMatchedStations << " \t chi^2/ndf = "<<muon2.normChiSquare<<"\n"
          << "   Lead Mu Iso = "<< getRelIso(muon1) << " \t 2nd Mu Iso = "<< getRelIso(muon2) <<"\n"
 #endif
+         << "   Lead Jet Pt = "<< jets.pt[0] << " \t Eta = "<<jets.eta[0] << " \t Phi = "<<jets.phi[0] << " \t CSV = "<<-999 <<"\n"
+         << "   2nd Jet Pt  = "<< jets.pt[1] << " \t Eta = "<<jets.eta[1] << " \t Phi = "<<jets.phi[1] << " \t CSV = "<<-999 <<"\n"
+         << "   MET  = "<< met.pt << " \t MET Phi = "<<met.phi<<"\n"
          << endl;
 
     foundCounter++;

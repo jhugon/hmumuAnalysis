@@ -481,16 +481,6 @@ int main(int argc, char *argv[])
     if (mva.mDiMu < minMmm || mva.mDiMu > maxMmm)
         continue;
 
-    if (mva.mDiMu > 140. && mva.mDiMu < 150.)
-    {
-        testCounter++;
-        std::cout <<eventInfo.run <<":"<<eventInfo.event <<"\n"<< std::endl;
-        testString.appendAny(eventInfo.run);
-        testString.append(":");
-        testString.appendAny(eventInfo.event);
-        testString.append("\n");
-    }
-
     countsHist->Fill(1.0, weight);
 
     _MuonInfo muon1;
@@ -647,6 +637,17 @@ int main(int argc, char *argv[])
     bool goodJets = false;
     if(jets.nJets>=2 && jets.pt[0]>30.0 && jets.pt[1]>30.0)
         goodJets = true;
+
+    if (mva.mDiMu > 140. && mva.mDiMu < 150. && goodJets)
+    {
+        testCounter++;
+        //std::cout <<eventInfo.run <<":"<<eventInfo.event <<"\n"<< std::endl;
+        testString.appendAny(eventInfo.run);
+        testString.append(":");
+        testString.appendAny(eventInfo.event);
+        testString.append("\n");
+    }
+
 
     if(goodJets)
     {
