@@ -372,6 +372,15 @@ int main(int argc, char *argv[])
   std::map<std::string,TH1F*> histMapNotBlindWindow;
   std::map<std::string,TH1F*> histMapUpperControlRegion;
   std::map<std::string,TH1F*> histMapLowerControlRegion;
+  std::map<std::string,TH1F*> histMapVBFLoose;
+  std::map<std::string,TH1F*> histMapVBFMedium;
+  std::map<std::string,TH1F*> histMapVBFTight;
+  std::map<std::string,TH1F*> histMapVBFVeryTight;
+  std::map<std::string,TH1F*> histMapPt0to30;
+  std::map<std::string,TH1F*> histMapPt30to50;
+  std::map<std::string,TH1F*> histMapPt50to125;
+  std::map<std::string,TH1F*> histMapPt125to250;
+  std::map<std::string,TH1F*> histMapPt250;
   for(histMapIter = histMap.begin(); histMapIter != histMap.end(); histMapIter++)
   {
     TH1F* tmp;
@@ -389,6 +398,26 @@ int main(int argc, char *argv[])
     histMapUpperControlRegion.insert(make_pair(histMapIter->first,tmp));
     tmp = (TH1F*) histMapIter->second->Clone();
     histMapLowerControlRegion.insert(make_pair(histMapIter->first,tmp));
+
+    tmp = (TH1F*) histMapIter->second->Clone();
+    histMapVBFLoose.insert(make_pair(histMapIter->first,tmp));
+    tmp = (TH1F*) histMapIter->second->Clone();
+    histMapVBFMedium.insert(make_pair(histMapIter->first,tmp));
+    tmp = (TH1F*) histMapIter->second->Clone();
+    histMapVBFTight.insert(make_pair(histMapIter->first,tmp));
+    tmp = (TH1F*) histMapIter->second->Clone();
+    histMapVBFVeryTight.insert(make_pair(histMapIter->first,tmp));
+
+    tmp = (TH1F*) histMapIter->second->Clone();
+    histMapPt0to30.insert(make_pair(histMapIter->first,tmp));
+    tmp = (TH1F*) histMapIter->second->Clone();
+    histMapPt30to50.insert(make_pair(histMapIter->first,tmp));
+    tmp = (TH1F*) histMapIter->second->Clone();
+    histMapPt50to125.insert(make_pair(histMapIter->first,tmp));
+    tmp = (TH1F*) histMapIter->second->Clone();
+    histMapPt125to250.insert(make_pair(histMapIter->first,tmp));
+    tmp = (TH1F*) histMapIter->second->Clone();
+    histMapPt250.insert(make_pair(histMapIter->first,tmp));
   }
 
   std::map<std::string,TH2F*> histMap2DCalibUp;
@@ -745,6 +774,33 @@ int main(int argc, char *argv[])
     bool vbfPreselection = mva.mDiJet>300.0 && mva.deltaEtaJets>3.0 && mva.productEtaJets<0.0 && mva.nJetsInRapidityGap == 0;
     //if(vbfPreselection)
     //  std::cout << "VBF Preselected!!";
+
+    bool vbfVeryTight = false;
+    bool vbfTight = false;
+    bool vbfMedium = false;
+    bool vbfLoose = false;
+    if(vbfPreselection && mva.mDiJet>700.0 && mva.deltaEtaJets>5.)
+    {
+        vbfVeryTight=true;
+    }
+    else if(vbfPreselection && mva.mDiJet>400.0 && mva.deltaEtaJets>5.)
+    {
+        vbfTight=true;
+    }
+    else if(vbfPreselection && mva.mDiJet>400.0 && mva.deltaEtaJets>4.)
+    {
+        vbfMedium=true;
+    }
+    else if(vbfPreselection && mva.mDiJet>300.0 && mva.deltaEtaJets>3.)
+    {
+        vbfLoose=true;
+    }
+
+    bool pt0to30 = !vbfPreselection  && mva.ptDiMu <30.;
+    bool pt30to50 = !vbfPreselection && mva.ptDiMu> 30. && mva.ptDiMu <50.;
+    bool pt50to125 = !vbfPreselection && mva.ptDiMu> 50.  && mva.ptDiMu <125.;
+    bool pt125to250 = !vbfPreselection && mva.ptDiMu> 125.  && mva.ptDiMu <250.;
+    bool pt250 = !vbfPreselection && mva.ptDiMu >250.;
 
 #ifdef BLIND
     if (!(inBlindWindow && isData))
@@ -1128,6 +1184,330 @@ int main(int argc, char *argv[])
       }
     }
 
+    if (vbfLoose)
+    {
+      histMapVBFLoose["mDiMu"]->Fill(mva.mDiMu, weight);
+      histMapVBFLoose["yDiMu"]->Fill(mva.yDiMu, weight);
+      histMapVBFLoose["ptDiMu"]->Fill(mva.ptDiMu, weight);
+      histMapVBFLoose["ptMu1"]->Fill(mva.ptMu1, weight);
+      histMapVBFLoose["ptMu2"]->Fill(mva.ptMu2, weight);
+      histMapVBFLoose["etaMu1"]->Fill(mva.etaMu1, weight);
+      histMapVBFLoose["etaMu2"]->Fill(mva.etaMu2, weight);
+      histMapVBFLoose["cosThetaStar"]->Fill(mva.cosThetaStar, weight);
+      histMapVBFLoose["cosThetaStarCS"]->Fill(mva.cosThetaStarCS, weight);
+      histMapVBFLoose["deltaPhiMuons"]->Fill(mva.deltaPhiMuons, weight);
+      histMapVBFLoose["deltaEtaMuons"]->Fill(mva.deltaEtaMuons, weight);
+      histMapVBFLoose["deltaRMuons"]->Fill(mva.deltaRMuons, weight);
+      histMapVBFLoose["relIsoMu1"]->Fill(mva.relIsoMu1, weight);
+      histMapVBFLoose["relIsoMu2"]->Fill(mva.relIsoMu2, weight);
+      histMapVBFLoose["nPU"]->Fill(nPU, weight);
+      histMapVBFLoose["nVtx"]->Fill(mva.nVtx, weight);
+      histMapVBFLoose["met"]->Fill(met.pt, weight);
+
+      histMapVBFLoose["mDiJet"]->Fill(mva.mDiJet, weight);
+      histMapVBFLoose["ptJet1"]->Fill(mva.ptJet1, weight);
+      histMapVBFLoose["ptJet2"]->Fill(mva.ptJet2, weight);
+      histMapVBFLoose["etaJet1"]->Fill(mva.etaJet1, weight);
+      histMapVBFLoose["etaJet2"]->Fill(mva.etaJet2, weight);
+      histMapVBFLoose["deltaEtaJets"]->Fill(mva.deltaEtaJets, weight);
+      histMapVBFLoose["deltaPhiJets"]->Fill(mva.deltaPhiJets, weight);
+      histMapVBFLoose["deltaRJets"]->Fill(mva.deltaRJets, weight);
+      histMapVBFLoose["nJetsInRapidityGap"]->Fill(mva.nJetsInRapidityGap, weight);
+      histMapVBFLoose["htInRapidityGap"]->Fill(mva.htInRapidityGap, weight);
+      histMapVBFLoose["nJets"]->Fill(mva.nJets, weight);
+      histMapVBFLoose["ht"]->Fill(mva.ht, weight);
+      histMapVBFLoose["BDTHistVBF"]->Fill(mva.getMVA("vbf.cfg","BDT"), weight);
+      histMapVBFLoose["likelihoodHistVBF"]->Fill(mva.getMVA("vbf.cfg","Likelihood"), weight);
+    }
+
+    if (vbfMedium)
+    {
+      histMapVBFMedium["mDiMu"]->Fill(mva.mDiMu, weight);
+      histMapVBFMedium["yDiMu"]->Fill(mva.yDiMu, weight);
+      histMapVBFMedium["ptDiMu"]->Fill(mva.ptDiMu, weight);
+      histMapVBFMedium["ptMu1"]->Fill(mva.ptMu1, weight);
+      histMapVBFMedium["ptMu2"]->Fill(mva.ptMu2, weight);
+      histMapVBFMedium["etaMu1"]->Fill(mva.etaMu1, weight);
+      histMapVBFMedium["etaMu2"]->Fill(mva.etaMu2, weight);
+      histMapVBFMedium["cosThetaStar"]->Fill(mva.cosThetaStar, weight);
+      histMapVBFMedium["cosThetaStarCS"]->Fill(mva.cosThetaStarCS, weight);
+      histMapVBFMedium["deltaPhiMuons"]->Fill(mva.deltaPhiMuons, weight);
+      histMapVBFMedium["deltaEtaMuons"]->Fill(mva.deltaEtaMuons, weight);
+      histMapVBFMedium["deltaRMuons"]->Fill(mva.deltaRMuons, weight);
+      histMapVBFMedium["relIsoMu1"]->Fill(mva.relIsoMu1, weight);
+      histMapVBFMedium["relIsoMu2"]->Fill(mva.relIsoMu2, weight);
+      histMapVBFMedium["nPU"]->Fill(nPU, weight);
+      histMapVBFMedium["nVtx"]->Fill(mva.nVtx, weight);
+      histMapVBFMedium["met"]->Fill(met.pt, weight);
+
+      histMapVBFMedium["mDiJet"]->Fill(mva.mDiJet, weight);
+      histMapVBFMedium["ptJet1"]->Fill(mva.ptJet1, weight);
+      histMapVBFMedium["ptJet2"]->Fill(mva.ptJet2, weight);
+      histMapVBFMedium["etaJet1"]->Fill(mva.etaJet1, weight);
+      histMapVBFMedium["etaJet2"]->Fill(mva.etaJet2, weight);
+      histMapVBFMedium["deltaEtaJets"]->Fill(mva.deltaEtaJets, weight);
+      histMapVBFMedium["deltaPhiJets"]->Fill(mva.deltaPhiJets, weight);
+      histMapVBFMedium["deltaRJets"]->Fill(mva.deltaRJets, weight);
+      histMapVBFMedium["nJetsInRapidityGap"]->Fill(mva.nJetsInRapidityGap, weight);
+      histMapVBFMedium["htInRapidityGap"]->Fill(mva.htInRapidityGap, weight);
+      histMapVBFMedium["nJets"]->Fill(mva.nJets, weight);
+      histMapVBFMedium["ht"]->Fill(mva.ht, weight);
+      histMapVBFMedium["BDTHistVBF"]->Fill(mva.getMVA("vbf.cfg","BDT"), weight);
+      histMapVBFMedium["likelihoodHistVBF"]->Fill(mva.getMVA("vbf.cfg","Likelihood"), weight);
+    }
+
+    if (vbfTight)
+    {
+      histMapVBFTight["mDiMu"]->Fill(mva.mDiMu, weight);
+      histMapVBFTight["yDiMu"]->Fill(mva.yDiMu, weight);
+      histMapVBFTight["ptDiMu"]->Fill(mva.ptDiMu, weight);
+      histMapVBFTight["ptMu1"]->Fill(mva.ptMu1, weight);
+      histMapVBFTight["ptMu2"]->Fill(mva.ptMu2, weight);
+      histMapVBFTight["etaMu1"]->Fill(mva.etaMu1, weight);
+      histMapVBFTight["etaMu2"]->Fill(mva.etaMu2, weight);
+      histMapVBFTight["cosThetaStar"]->Fill(mva.cosThetaStar, weight);
+      histMapVBFTight["cosThetaStarCS"]->Fill(mva.cosThetaStarCS, weight);
+      histMapVBFTight["deltaPhiMuons"]->Fill(mva.deltaPhiMuons, weight);
+      histMapVBFTight["deltaEtaMuons"]->Fill(mva.deltaEtaMuons, weight);
+      histMapVBFTight["deltaRMuons"]->Fill(mva.deltaRMuons, weight);
+      histMapVBFTight["relIsoMu1"]->Fill(mva.relIsoMu1, weight);
+      histMapVBFTight["relIsoMu2"]->Fill(mva.relIsoMu2, weight);
+      histMapVBFTight["nPU"]->Fill(nPU, weight);
+      histMapVBFTight["nVtx"]->Fill(mva.nVtx, weight);
+      histMapVBFTight["met"]->Fill(met.pt, weight);
+
+      histMapVBFTight["mDiJet"]->Fill(mva.mDiJet, weight);
+      histMapVBFTight["ptJet1"]->Fill(mva.ptJet1, weight);
+      histMapVBFTight["ptJet2"]->Fill(mva.ptJet2, weight);
+      histMapVBFTight["etaJet1"]->Fill(mva.etaJet1, weight);
+      histMapVBFTight["etaJet2"]->Fill(mva.etaJet2, weight);
+      histMapVBFTight["deltaEtaJets"]->Fill(mva.deltaEtaJets, weight);
+      histMapVBFTight["deltaPhiJets"]->Fill(mva.deltaPhiJets, weight);
+      histMapVBFTight["deltaRJets"]->Fill(mva.deltaRJets, weight);
+      histMapVBFTight["nJetsInRapidityGap"]->Fill(mva.nJetsInRapidityGap, weight);
+      histMapVBFTight["htInRapidityGap"]->Fill(mva.htInRapidityGap, weight);
+      histMapVBFTight["nJets"]->Fill(mva.nJets, weight);
+      histMapVBFTight["ht"]->Fill(mva.ht, weight);
+      histMapVBFTight["BDTHistVBF"]->Fill(mva.getMVA("vbf.cfg","BDT"), weight);
+      histMapVBFTight["likelihoodHistVBF"]->Fill(mva.getMVA("vbf.cfg","Likelihood"), weight);
+    }
+
+    if (vbfVeryTight)
+    {
+      histMapVBFVeryTight["mDiMu"]->Fill(mva.mDiMu, weight);
+      histMapVBFVeryTight["yDiMu"]->Fill(mva.yDiMu, weight);
+      histMapVBFVeryTight["ptDiMu"]->Fill(mva.ptDiMu, weight);
+      histMapVBFVeryTight["ptMu1"]->Fill(mva.ptMu1, weight);
+      histMapVBFVeryTight["ptMu2"]->Fill(mva.ptMu2, weight);
+      histMapVBFVeryTight["etaMu1"]->Fill(mva.etaMu1, weight);
+      histMapVBFVeryTight["etaMu2"]->Fill(mva.etaMu2, weight);
+      histMapVBFVeryTight["cosThetaStar"]->Fill(mva.cosThetaStar, weight);
+      histMapVBFVeryTight["cosThetaStarCS"]->Fill(mva.cosThetaStarCS, weight);
+      histMapVBFVeryTight["deltaPhiMuons"]->Fill(mva.deltaPhiMuons, weight);
+      histMapVBFVeryTight["deltaEtaMuons"]->Fill(mva.deltaEtaMuons, weight);
+      histMapVBFVeryTight["deltaRMuons"]->Fill(mva.deltaRMuons, weight);
+      histMapVBFVeryTight["relIsoMu1"]->Fill(mva.relIsoMu1, weight);
+      histMapVBFVeryTight["relIsoMu2"]->Fill(mva.relIsoMu2, weight);
+      histMapVBFVeryTight["nPU"]->Fill(nPU, weight);
+      histMapVBFVeryTight["nVtx"]->Fill(mva.nVtx, weight);
+      histMapVBFVeryTight["met"]->Fill(met.pt, weight);
+
+      histMapVBFVeryTight["mDiJet"]->Fill(mva.mDiJet, weight);
+      histMapVBFVeryTight["ptJet1"]->Fill(mva.ptJet1, weight);
+      histMapVBFVeryTight["ptJet2"]->Fill(mva.ptJet2, weight);
+      histMapVBFVeryTight["etaJet1"]->Fill(mva.etaJet1, weight);
+      histMapVBFVeryTight["etaJet2"]->Fill(mva.etaJet2, weight);
+      histMapVBFVeryTight["deltaEtaJets"]->Fill(mva.deltaEtaJets, weight);
+      histMapVBFVeryTight["deltaPhiJets"]->Fill(mva.deltaPhiJets, weight);
+      histMapVBFVeryTight["deltaRJets"]->Fill(mva.deltaRJets, weight);
+      histMapVBFVeryTight["nJetsInRapidityGap"]->Fill(mva.nJetsInRapidityGap, weight);
+      histMapVBFVeryTight["htInRapidityGap"]->Fill(mva.htInRapidityGap, weight);
+      histMapVBFVeryTight["nJets"]->Fill(mva.nJets, weight);
+      histMapVBFVeryTight["ht"]->Fill(mva.ht, weight);
+      histMapVBFVeryTight["BDTHistVBF"]->Fill(mva.getMVA("vbf.cfg","BDT"), weight);
+      histMapVBFVeryTight["likelihoodHistVBF"]->Fill(mva.getMVA("vbf.cfg","Likelihood"), weight);
+    }
+
+    if (pt0to30)
+    {
+      histMapPt0to30["mDiMu"]->Fill(mva.mDiMu, weight);
+      histMapPt0to30["yDiMu"]->Fill(mva.yDiMu, weight);
+      histMapPt0to30["ptDiMu"]->Fill(mva.ptDiMu, weight);
+      histMapPt0to30["ptMu1"]->Fill(mva.ptMu1, weight);
+      histMapPt0to30["ptMu2"]->Fill(mva.ptMu2, weight);
+      histMapPt0to30["etaMu1"]->Fill(mva.etaMu1, weight);
+      histMapPt0to30["etaMu2"]->Fill(mva.etaMu2, weight);
+      histMapPt0to30["cosThetaStar"]->Fill(mva.cosThetaStar, weight);
+      histMapPt0to30["cosThetaStarCS"]->Fill(mva.cosThetaStarCS, weight);
+      histMapPt0to30["deltaPhiMuons"]->Fill(mva.deltaPhiMuons, weight);
+      histMapPt0to30["deltaEtaMuons"]->Fill(mva.deltaEtaMuons, weight);
+      histMapPt0to30["deltaRMuons"]->Fill(mva.deltaRMuons, weight);
+      histMapPt0to30["relIsoMu1"]->Fill(mva.relIsoMu1, weight);
+      histMapPt0to30["relIsoMu2"]->Fill(mva.relIsoMu2, weight);
+      histMapPt0to30["nPU"]->Fill(nPU, weight);
+      histMapPt0to30["nVtx"]->Fill(mva.nVtx, weight);
+      histMapPt0to30["met"]->Fill(met.pt, weight);
+
+      histMapPt0to30["mDiJet"]->Fill(mva.mDiJet, weight);
+      histMapPt0to30["ptJet1"]->Fill(mva.ptJet1, weight);
+      histMapPt0to30["ptJet2"]->Fill(mva.ptJet2, weight);
+      histMapPt0to30["etaJet1"]->Fill(mva.etaJet1, weight);
+      histMapPt0to30["etaJet2"]->Fill(mva.etaJet2, weight);
+      histMapPt0to30["deltaEtaJets"]->Fill(mva.deltaEtaJets, weight);
+      histMapPt0to30["deltaPhiJets"]->Fill(mva.deltaPhiJets, weight);
+      histMapPt0to30["deltaRJets"]->Fill(mva.deltaRJets, weight);
+      histMapPt0to30["nJetsInRapidityGap"]->Fill(mva.nJetsInRapidityGap, weight);
+      histMapPt0to30["htInRapidityGap"]->Fill(mva.htInRapidityGap, weight);
+      histMapPt0to30["nJets"]->Fill(mva.nJets, weight);
+      histMapPt0to30["ht"]->Fill(mva.ht, weight);
+      histMapPt0to30["BDTHistMuonOnly"]->Fill(mva.getMVA("inclusive.cfg","BDT"), weight);
+      histMapPt0to30["likelihoodHistMuonOnly"]->Fill(mva.getMVA("inclusive.cfg","Likelihood"), weight);
+    }
+
+    if (pt30to50)
+    {
+      histMapPt30to50["mDiMu"]->Fill(mva.mDiMu, weight);
+      histMapPt30to50["yDiMu"]->Fill(mva.yDiMu, weight);
+      histMapPt30to50["ptDiMu"]->Fill(mva.ptDiMu, weight);
+      histMapPt30to50["ptMu1"]->Fill(mva.ptMu1, weight);
+      histMapPt30to50["ptMu2"]->Fill(mva.ptMu2, weight);
+      histMapPt30to50["etaMu1"]->Fill(mva.etaMu1, weight);
+      histMapPt30to50["etaMu2"]->Fill(mva.etaMu2, weight);
+      histMapPt30to50["cosThetaStar"]->Fill(mva.cosThetaStar, weight);
+      histMapPt30to50["cosThetaStarCS"]->Fill(mva.cosThetaStarCS, weight);
+      histMapPt30to50["deltaPhiMuons"]->Fill(mva.deltaPhiMuons, weight);
+      histMapPt30to50["deltaEtaMuons"]->Fill(mva.deltaEtaMuons, weight);
+      histMapPt30to50["deltaRMuons"]->Fill(mva.deltaRMuons, weight);
+      histMapPt30to50["relIsoMu1"]->Fill(mva.relIsoMu1, weight);
+      histMapPt30to50["relIsoMu2"]->Fill(mva.relIsoMu2, weight);
+      histMapPt30to50["nPU"]->Fill(nPU, weight);
+      histMapPt30to50["nVtx"]->Fill(mva.nVtx, weight);
+      histMapPt30to50["met"]->Fill(met.pt, weight);
+
+      histMapPt30to50["mDiJet"]->Fill(mva.mDiJet, weight);
+      histMapPt30to50["ptJet1"]->Fill(mva.ptJet1, weight);
+      histMapPt30to50["ptJet2"]->Fill(mva.ptJet2, weight);
+      histMapPt30to50["etaJet1"]->Fill(mva.etaJet1, weight);
+      histMapPt30to50["etaJet2"]->Fill(mva.etaJet2, weight);
+      histMapPt30to50["deltaEtaJets"]->Fill(mva.deltaEtaJets, weight);
+      histMapPt30to50["deltaPhiJets"]->Fill(mva.deltaPhiJets, weight);
+      histMapPt30to50["deltaRJets"]->Fill(mva.deltaRJets, weight);
+      histMapPt30to50["nJetsInRapidityGap"]->Fill(mva.nJetsInRapidityGap, weight);
+      histMapPt30to50["htInRapidityGap"]->Fill(mva.htInRapidityGap, weight);
+      histMapPt30to50["nJets"]->Fill(mva.nJets, weight);
+      histMapPt30to50["ht"]->Fill(mva.ht, weight);
+      histMapPt30to50["BDTHistMuonOnly"]->Fill(mva.getMVA("inclusive.cfg","BDT"), weight);
+      histMapPt30to50["likelihoodHistMuonOnly"]->Fill(mva.getMVA("inclusive.cfg","Likelihood"), weight);
+    }
+
+    if (pt50to125)
+    {
+      histMapPt50to125["mDiMu"]->Fill(mva.mDiMu, weight);
+      histMapPt50to125["yDiMu"]->Fill(mva.yDiMu, weight);
+      histMapPt50to125["ptDiMu"]->Fill(mva.ptDiMu, weight);
+      histMapPt50to125["ptMu1"]->Fill(mva.ptMu1, weight);
+      histMapPt50to125["ptMu2"]->Fill(mva.ptMu2, weight);
+      histMapPt50to125["etaMu1"]->Fill(mva.etaMu1, weight);
+      histMapPt50to125["etaMu2"]->Fill(mva.etaMu2, weight);
+      histMapPt50to125["cosThetaStar"]->Fill(mva.cosThetaStar, weight);
+      histMapPt50to125["cosThetaStarCS"]->Fill(mva.cosThetaStarCS, weight);
+      histMapPt50to125["deltaPhiMuons"]->Fill(mva.deltaPhiMuons, weight);
+      histMapPt50to125["deltaEtaMuons"]->Fill(mva.deltaEtaMuons, weight);
+      histMapPt50to125["deltaRMuons"]->Fill(mva.deltaRMuons, weight);
+      histMapPt50to125["relIsoMu1"]->Fill(mva.relIsoMu1, weight);
+      histMapPt50to125["relIsoMu2"]->Fill(mva.relIsoMu2, weight);
+      histMapPt50to125["nPU"]->Fill(nPU, weight);
+      histMapPt50to125["nVtx"]->Fill(mva.nVtx, weight);
+      histMapPt50to125["met"]->Fill(met.pt, weight);
+
+      histMapPt50to125["mDiJet"]->Fill(mva.mDiJet, weight);
+      histMapPt50to125["ptJet1"]->Fill(mva.ptJet1, weight);
+      histMapPt50to125["ptJet2"]->Fill(mva.ptJet2, weight);
+      histMapPt50to125["etaJet1"]->Fill(mva.etaJet1, weight);
+      histMapPt50to125["etaJet2"]->Fill(mva.etaJet2, weight);
+      histMapPt50to125["deltaEtaJets"]->Fill(mva.deltaEtaJets, weight);
+      histMapPt50to125["deltaPhiJets"]->Fill(mva.deltaPhiJets, weight);
+      histMapPt50to125["deltaRJets"]->Fill(mva.deltaRJets, weight);
+      histMapPt50to125["nJetsInRapidityGap"]->Fill(mva.nJetsInRapidityGap, weight);
+      histMapPt50to125["htInRapidityGap"]->Fill(mva.htInRapidityGap, weight);
+      histMapPt50to125["nJets"]->Fill(mva.nJets, weight);
+      histMapPt50to125["ht"]->Fill(mva.ht, weight);
+      histMapPt50to125["BDTHistMuonOnly"]->Fill(mva.getMVA("inclusive.cfg","BDT"), weight);
+      histMapPt50to125["likelihoodHistMuonOnly"]->Fill(mva.getMVA("inclusive.cfg","Likelihood"), weight);
+    }
+
+    if (pt125to250)
+    {
+      histMapPt125to250["mDiMu"]->Fill(mva.mDiMu, weight);
+      histMapPt125to250["yDiMu"]->Fill(mva.yDiMu, weight);
+      histMapPt125to250["ptDiMu"]->Fill(mva.ptDiMu, weight);
+      histMapPt125to250["ptMu1"]->Fill(mva.ptMu1, weight);
+      histMapPt125to250["ptMu2"]->Fill(mva.ptMu2, weight);
+      histMapPt125to250["etaMu1"]->Fill(mva.etaMu1, weight);
+      histMapPt125to250["etaMu2"]->Fill(mva.etaMu2, weight);
+      histMapPt125to250["cosThetaStar"]->Fill(mva.cosThetaStar, weight);
+      histMapPt125to250["cosThetaStarCS"]->Fill(mva.cosThetaStarCS, weight);
+      histMapPt125to250["deltaPhiMuons"]->Fill(mva.deltaPhiMuons, weight);
+      histMapPt125to250["deltaEtaMuons"]->Fill(mva.deltaEtaMuons, weight);
+      histMapPt125to250["deltaRMuons"]->Fill(mva.deltaRMuons, weight);
+      histMapPt125to250["relIsoMu1"]->Fill(mva.relIsoMu1, weight);
+      histMapPt125to250["relIsoMu2"]->Fill(mva.relIsoMu2, weight);
+      histMapPt125to250["nPU"]->Fill(nPU, weight);
+      histMapPt125to250["nVtx"]->Fill(mva.nVtx, weight);
+      histMapPt125to250["met"]->Fill(met.pt, weight);
+
+      histMapPt125to250["mDiJet"]->Fill(mva.mDiJet, weight);
+      histMapPt125to250["ptJet1"]->Fill(mva.ptJet1, weight);
+      histMapPt125to250["ptJet2"]->Fill(mva.ptJet2, weight);
+      histMapPt125to250["etaJet1"]->Fill(mva.etaJet1, weight);
+      histMapPt125to250["etaJet2"]->Fill(mva.etaJet2, weight);
+      histMapPt125to250["deltaEtaJets"]->Fill(mva.deltaEtaJets, weight);
+      histMapPt125to250["deltaPhiJets"]->Fill(mva.deltaPhiJets, weight);
+      histMapPt125to250["deltaRJets"]->Fill(mva.deltaRJets, weight);
+      histMapPt125to250["nJetsInRapidityGap"]->Fill(mva.nJetsInRapidityGap, weight);
+      histMapPt125to250["htInRapidityGap"]->Fill(mva.htInRapidityGap, weight);
+      histMapPt125to250["nJets"]->Fill(mva.nJets, weight);
+      histMapPt125to250["ht"]->Fill(mva.ht, weight);
+      histMapPt125to250["BDTHistMuonOnly"]->Fill(mva.getMVA("inclusive.cfg","BDT"), weight);
+      histMapPt125to250["likelihoodHistMuonOnly"]->Fill(mva.getMVA("inclusive.cfg","Likelihood"), weight);
+    }
+
+    if (pt250)
+    {
+      histMapPt250["mDiMu"]->Fill(mva.mDiMu, weight);
+      histMapPt250["yDiMu"]->Fill(mva.yDiMu, weight);
+      histMapPt250["ptDiMu"]->Fill(mva.ptDiMu, weight);
+      histMapPt250["ptMu1"]->Fill(mva.ptMu1, weight);
+      histMapPt250["ptMu2"]->Fill(mva.ptMu2, weight);
+      histMapPt250["etaMu1"]->Fill(mva.etaMu1, weight);
+      histMapPt250["etaMu2"]->Fill(mva.etaMu2, weight);
+      histMapPt250["cosThetaStar"]->Fill(mva.cosThetaStar, weight);
+      histMapPt250["cosThetaStarCS"]->Fill(mva.cosThetaStarCS, weight);
+      histMapPt250["deltaPhiMuons"]->Fill(mva.deltaPhiMuons, weight);
+      histMapPt250["deltaEtaMuons"]->Fill(mva.deltaEtaMuons, weight);
+      histMapPt250["deltaRMuons"]->Fill(mva.deltaRMuons, weight);
+      histMapPt250["relIsoMu1"]->Fill(mva.relIsoMu1, weight);
+      histMapPt250["relIsoMu2"]->Fill(mva.relIsoMu2, weight);
+      histMapPt250["nPU"]->Fill(nPU, weight);
+      histMapPt250["nVtx"]->Fill(mva.nVtx, weight);
+      histMapPt250["met"]->Fill(met.pt, weight);
+
+      histMapPt250["mDiJet"]->Fill(mva.mDiJet, weight);
+      histMapPt250["ptJet1"]->Fill(mva.ptJet1, weight);
+      histMapPt250["ptJet2"]->Fill(mva.ptJet2, weight);
+      histMapPt250["etaJet1"]->Fill(mva.etaJet1, weight);
+      histMapPt250["etaJet2"]->Fill(mva.etaJet2, weight);
+      histMapPt250["deltaEtaJets"]->Fill(mva.deltaEtaJets, weight);
+      histMapPt250["deltaPhiJets"]->Fill(mva.deltaPhiJets, weight);
+      histMapPt250["deltaRJets"]->Fill(mva.deltaRJets, weight);
+      histMapPt250["nJetsInRapidityGap"]->Fill(mva.nJetsInRapidityGap, weight);
+      histMapPt250["htInRapidityGap"]->Fill(mva.htInRapidityGap, weight);
+      histMapPt250["nJets"]->Fill(mva.nJets, weight);
+      histMapPt250["ht"]->Fill(mva.ht, weight);
+      histMapPt250["BDTHistMuonOnly"]->Fill(mva.getMVA("inclusive.cfg","BDT"), weight);
+      histMapPt250["likelihoodHistMuonOnly"]->Fill(mva.getMVA("inclusive.cfg","Likelihood"), weight);
+    }
+
   }// end event loop
 
 //////////////////////////////////////////////////////////////////////
@@ -1219,6 +1599,69 @@ int main(int argc, char *argv[])
   TDirectory* dirLowerControlRegion = outFile->mkdir("LowerControlRegion");
   dirLowerControlRegion->cd();
   for(histMapIter = histMapLowerControlRegion.begin(); histMapIter != histMapLowerControlRegion.end(); histMapIter++)
+  {
+    histMapIter->second->Write();
+  }
+
+  TDirectory* dirVBFLoose = outFile->mkdir("VBFLoose");
+  dirVBFLoose->cd();
+  for(histMapIter = histMapVBFLoose.begin(); histMapIter != histMapVBFLoose.end(); histMapIter++)
+  {
+    histMapIter->second->Write();
+  }
+
+  TDirectory* dirVBFMedium = outFile->mkdir("VBFMedium");
+  dirVBFMedium->cd();
+  for(histMapIter = histMapVBFMedium.begin(); histMapIter != histMapVBFMedium.end(); histMapIter++)
+  {
+    histMapIter->second->Write();
+  }
+
+  TDirectory* dirVBFTight = outFile->mkdir("VBFTight");
+  dirVBFTight->cd();
+  for(histMapIter = histMapVBFTight.begin(); histMapIter != histMapVBFTight.end(); histMapIter++)
+  {
+    histMapIter->second->Write();
+  }
+
+  TDirectory* dirVBFVeryTight = outFile->mkdir("VBFVeryTight");
+  dirVBFVeryTight->cd();
+  for(histMapIter = histMapVBFVeryTight.begin(); histMapIter != histMapVBFVeryTight.end(); histMapIter++)
+  {
+    histMapIter->second->Write();
+  }
+
+  TDirectory* dirPt0to30 = outFile->mkdir("Pt0to30");
+  dirPt0to30->cd();
+  for(histMapIter = histMapPt0to30.begin(); histMapIter != histMapPt0to30.end(); histMapIter++)
+  {
+    histMapIter->second->Write();
+  }
+
+  TDirectory* dirPt30to50 = outFile->mkdir("Pt30to50");
+  dirPt30to50->cd();
+  for(histMapIter = histMapPt30to50.begin(); histMapIter != histMapPt30to50.end(); histMapIter++)
+  {
+    histMapIter->second->Write();
+  }
+
+  TDirectory* dirPt50to125 = outFile->mkdir("Pt50to125");
+  dirPt50to125->cd();
+  for(histMapIter = histMapPt50to125.begin(); histMapIter != histMapPt50to125.end(); histMapIter++)
+  {
+    histMapIter->second->Write();
+  }
+
+  TDirectory* dirPt125to250 = outFile->mkdir("Pt125to250");
+  dirPt125to250->cd();
+  for(histMapIter = histMapPt125to250.begin(); histMapIter != histMapPt125to250.end(); histMapIter++)
+  {
+    histMapIter->second->Write();
+  }
+
+  TDirectory* dirPt250 = outFile->mkdir("Pt250");
+  dirPt250->cd();
+  for(histMapIter = histMapPt250.begin(); histMapIter != histMapPt250.end(); histMapIter++)
   {
     histMapIter->second->Write();
   }
