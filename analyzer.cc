@@ -108,8 +108,8 @@ int main(int argc, char *argv[])
   float minMmm = 110.0;
   float maxMmm = 150.0;
 
-  float minBlind = 115;
-  float maxBlind = 135;
+  float minBlind = 120;
+  float maxBlind = 130;
 
   float calib = -0.1;
   float calibSysSmear = 0.2;
