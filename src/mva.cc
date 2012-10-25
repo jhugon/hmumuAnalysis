@@ -1,5 +1,6 @@
 #include "mva.h"
 #include "boost/program_options.hpp"
+#include <boost/algorithm/string.hpp>
 #include <fstream>
 
 MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFileName)
@@ -110,6 +111,8 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
 
           ("nTrees",program_options::value<unsigned>(),"")
           ("nEventsMin",program_options::value<unsigned>(),"")
+
+          ("mvaSignalEff",program_options::value<float>(),"")
       ;
     
       program_options::variables_map optionMap;
@@ -278,6 +281,16 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
               << " does not have option 'weightsDirName', it is required, exiting." << std::endl;
         throw;
       }
+
+      if (optionMap.count("mvaSignalEff"))
+      {
+         float tmp = optionMap["mvaSignalEff"].as<float>();
+         mvaCuts_.insert(make_pair(*configFileName,getSigEffCut(*configFileName,tmp)));
+      }
+      else
+      {
+         mvaCuts_.insert(make_pair(*configFileName,-999.0));
+      }
   
       reader->BookMVA("BDT",std::string(weightsDirName).append("/TMVAClassification_BDT.weights.xml").c_str());
       reader->BookMVA("Likelihood",std::string(weightsDirName).append("/TMVAClassification_Likelihood.weights.xml").c_str());
@@ -356,4 +369,40 @@ MVA::resetValues()
   nVtx=0.0;
 
   weight=1.0;
+}
+
+float
+MVA::getSigEffCut(const std::string configFileName, float eff)
+{
+  float result=-999.;
+  // example names:
+  //inclusive.cfg
+  //TMVA_inclusive.root
+  std::string rootFileName = configFileName;
+  boost::algorithm::replace_last<std::string>(rootFileName,".cfg",".root");
+  rootFileName.insert(0,"TMVA_");
+  std::cout << "MVA Root Filename is: " << rootFileName << std::endl;
+
+  TFile* rootFile = new TFile(rootFileName.c_str());
+  TH1F* sigEffHist = (TH1F*) rootFile->Get("Method_BDT/BDT/MVA_BDT_effS");
+  unsigned nBinsX = sigEffHist->GetNbinsX();
+  for(unsigned i=1;i<nBinsX+1;i++)
+  {
+    if(sigEffHist->GetBinContent(i) <= eff)
+    {
+      result = sigEffHist->GetXaxis()->GetBinCenter(i);
+      break;
+    }
+  }
+  std::cout << "MVA Cut for " << eff << " is: " << result << std::endl;
+  return result;
+}
+
+bool 
+MVA::getMVAPassBDTCut(const std::string configFileName)
+{
+  if(getMVA(configFileName,"BDT") > mvaCuts_[configFileName])
+     return true;
+  else
+     return false;
 }

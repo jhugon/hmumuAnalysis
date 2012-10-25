@@ -103,10 +103,10 @@ int main(int argc, char *argv[])
   //////////// Setup //////////
   /////////////////////////////
 
-  //float minMmm = 70.0;
-  //float maxMmm = 200.0;
-  float minMmm = 110.0;
-  float maxMmm = 150.0;
+  float minMmm = 70.0;
+  float maxMmm = 200.0;
+  //float minMmm = 110.0;
+  //float maxMmm = 150.0;
 
   float minBlind = 120;
   float maxBlind = 130;
@@ -381,6 +381,8 @@ int main(int argc, char *argv[])
   std::map<std::string,TH1F*> histMapPt50to125;
   std::map<std::string,TH1F*> histMapPt125to250;
   std::map<std::string,TH1F*> histMapPt250;
+  std::map<std::string,TH1F*> histMapIncBDTSig80;
+  std::map<std::string,TH1F*> histMapVBFBDTSig80;
   for(histMapIter = histMap.begin(); histMapIter != histMap.end(); histMapIter++)
   {
     TH1F* tmp;
@@ -418,6 +420,11 @@ int main(int argc, char *argv[])
     histMapPt125to250.insert(make_pair(histMapIter->first,tmp));
     tmp = (TH1F*) histMapIter->second->Clone();
     histMapPt250.insert(make_pair(histMapIter->first,tmp));
+
+    tmp = (TH1F*) histMapIter->second->Clone();
+    histMapIncBDTSig80.insert(make_pair(histMapIter->first,tmp));
+    tmp = (TH1F*) histMapIter->second->Clone();
+    histMapVBFBDTSig80.insert(make_pair(histMapIter->first,tmp));
   }
 
   std::map<std::string,TH2F*> histMap2DCalibUp;
@@ -1508,6 +1515,76 @@ int main(int argc, char *argv[])
       histMapPt250["likelihoodHistMuonOnly"]->Fill(mva.getMVA("inclusive.cfg","Likelihood"), weight);
     }
 
+    if (!vbfPreselection && mva.getMVAPassBDTCut("inclusive.cfg"))
+    {
+      histMapIncBDTSig80["mDiMu"]->Fill(mva.mDiMu, weight);
+      histMapIncBDTSig80["yDiMu"]->Fill(mva.yDiMu, weight);
+      histMapIncBDTSig80["ptDiMu"]->Fill(mva.ptDiMu, weight);
+      histMapIncBDTSig80["ptMu1"]->Fill(mva.ptMu1, weight);
+      histMapIncBDTSig80["ptMu2"]->Fill(mva.ptMu2, weight);
+      histMapIncBDTSig80["etaMu1"]->Fill(mva.etaMu1, weight);
+      histMapIncBDTSig80["etaMu2"]->Fill(mva.etaMu2, weight);
+      histMapIncBDTSig80["cosThetaStar"]->Fill(mva.cosThetaStar, weight);
+      histMapIncBDTSig80["cosThetaStarCS"]->Fill(mva.cosThetaStarCS, weight);
+      histMapIncBDTSig80["deltaPhiMuons"]->Fill(mva.deltaPhiMuons, weight);
+      histMapIncBDTSig80["deltaEtaMuons"]->Fill(mva.deltaEtaMuons, weight);
+      histMapIncBDTSig80["deltaRMuons"]->Fill(mva.deltaRMuons, weight);
+      histMapIncBDTSig80["relIsoMu1"]->Fill(mva.relIsoMu1, weight);
+      histMapIncBDTSig80["relIsoMu2"]->Fill(mva.relIsoMu2, weight);
+      histMapIncBDTSig80["nPU"]->Fill(nPU, weight);
+      histMapIncBDTSig80["nVtx"]->Fill(mva.nVtx, weight);
+      histMapIncBDTSig80["met"]->Fill(met.pt, weight);
+
+      histMapIncBDTSig80["mDiJet"]->Fill(mva.mDiJet, weight);
+      histMapIncBDTSig80["ptJet1"]->Fill(mva.ptJet1, weight);
+      histMapIncBDTSig80["ptJet2"]->Fill(mva.ptJet2, weight);
+      histMapIncBDTSig80["etaJet1"]->Fill(mva.etaJet1, weight);
+      histMapIncBDTSig80["etaJet2"]->Fill(mva.etaJet2, weight);
+      histMapIncBDTSig80["deltaEtaJets"]->Fill(mva.deltaEtaJets, weight);
+      histMapIncBDTSig80["deltaPhiJets"]->Fill(mva.deltaPhiJets, weight);
+      histMapIncBDTSig80["deltaRJets"]->Fill(mva.deltaRJets, weight);
+      histMapIncBDTSig80["nJetsInRapidityGap"]->Fill(mva.nJetsInRapidityGap, weight);
+      histMapIncBDTSig80["htInRapidityGap"]->Fill(mva.htInRapidityGap, weight);
+      histMapIncBDTSig80["nJets"]->Fill(mva.nJets, weight);
+      histMapIncBDTSig80["ht"]->Fill(mva.ht, weight);
+      histMapIncBDTSig80["BDTHistMuonOnly"]->Fill(mva.getMVA("inclusive.cfg","BDT"), weight);
+    }
+
+    if (vbfPreselection && mva.getMVAPassBDTCut("vbf.cfg"))
+    {
+      histMapVBFBDTSig80["mDiMu"]->Fill(mva.mDiMu, weight);
+      histMapVBFBDTSig80["yDiMu"]->Fill(mva.yDiMu, weight);
+      histMapVBFBDTSig80["ptDiMu"]->Fill(mva.ptDiMu, weight);
+      histMapVBFBDTSig80["ptMu1"]->Fill(mva.ptMu1, weight);
+      histMapVBFBDTSig80["ptMu2"]->Fill(mva.ptMu2, weight);
+      histMapVBFBDTSig80["etaMu1"]->Fill(mva.etaMu1, weight);
+      histMapVBFBDTSig80["etaMu2"]->Fill(mva.etaMu2, weight);
+      histMapVBFBDTSig80["cosThetaStar"]->Fill(mva.cosThetaStar, weight);
+      histMapVBFBDTSig80["cosThetaStarCS"]->Fill(mva.cosThetaStarCS, weight);
+      histMapVBFBDTSig80["deltaPhiMuons"]->Fill(mva.deltaPhiMuons, weight);
+      histMapVBFBDTSig80["deltaEtaMuons"]->Fill(mva.deltaEtaMuons, weight);
+      histMapVBFBDTSig80["deltaRMuons"]->Fill(mva.deltaRMuons, weight);
+      histMapVBFBDTSig80["relIsoMu1"]->Fill(mva.relIsoMu1, weight);
+      histMapVBFBDTSig80["relIsoMu2"]->Fill(mva.relIsoMu2, weight);
+      histMapVBFBDTSig80["nPU"]->Fill(nPU, weight);
+      histMapVBFBDTSig80["nVtx"]->Fill(mva.nVtx, weight);
+      histMapVBFBDTSig80["met"]->Fill(met.pt, weight);
+
+      histMapVBFBDTSig80["mDiJet"]->Fill(mva.mDiJet, weight);
+      histMapVBFBDTSig80["ptJet1"]->Fill(mva.ptJet1, weight);
+      histMapVBFBDTSig80["ptJet2"]->Fill(mva.ptJet2, weight);
+      histMapVBFBDTSig80["etaJet1"]->Fill(mva.etaJet1, weight);
+      histMapVBFBDTSig80["etaJet2"]->Fill(mva.etaJet2, weight);
+      histMapVBFBDTSig80["deltaEtaJets"]->Fill(mva.deltaEtaJets, weight);
+      histMapVBFBDTSig80["deltaPhiJets"]->Fill(mva.deltaPhiJets, weight);
+      histMapVBFBDTSig80["deltaRJets"]->Fill(mva.deltaRJets, weight);
+      histMapVBFBDTSig80["nJetsInRapidityGap"]->Fill(mva.nJetsInRapidityGap, weight);
+      histMapVBFBDTSig80["htInRapidityGap"]->Fill(mva.htInRapidityGap, weight);
+      histMapVBFBDTSig80["nJets"]->Fill(mva.nJets, weight);
+      histMapVBFBDTSig80["ht"]->Fill(mva.ht, weight);
+      histMapVBFBDTSig80["BDTHistVBF"]->Fill(mva.getMVA("vbf.cfg","BDT"), weight);
+    }
+
   }// end event loop
 
 //////////////////////////////////////////////////////////////////////
@@ -1662,6 +1739,20 @@ int main(int argc, char *argv[])
   TDirectory* dirPt250 = outFile->mkdir("Pt250");
   dirPt250->cd();
   for(histMapIter = histMapPt250.begin(); histMapIter != histMapPt250.end(); histMapIter++)
+  {
+    histMapIter->second->Write();
+  }
+
+  TDirectory* dirIncBDTSig80 = outFile->mkdir("IncBDTSig80");
+  dirIncBDTSig80->cd();
+  for(histMapIter = histMapIncBDTSig80.begin(); histMapIter != histMapIncBDTSig80.end(); histMapIter++)
+  {
+    histMapIter->second->Write();
+  }
+
+  TDirectory* dirVBFBDTSig80 = outFile->mkdir("VBFBDTSig80");
+  dirVBFBDTSig80->cd();
+  for(histMapIter = histMapVBFBDTSig80.begin(); histMapIter != histMapVBFBDTSig80.end(); histMapIter++)
   {
     histMapIter->second->Write();
   }

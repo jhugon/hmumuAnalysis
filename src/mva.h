@@ -37,7 +37,9 @@ class MVA
   MVA(const std::vector<std::string> configFileNames, const std::string outFileName);
   ~MVA();
   float getMVA(const std::string configFileName, const std::string mvaName);
+  bool getMVAPassBDTCut(const std::string configFileName);
   void resetValues();
+  float getSigEffCut(const std::string configFileName, float eff);
 
   /////////////////////
 
@@ -80,6 +82,7 @@ class MVA
   //////////////////////
   
   std::map<std::string,TMVA::Reader*> readers_;
+  std::map<std::string,float> mvaCuts_;
   TFile* outFile_;
   TTree* outTree_;
 
