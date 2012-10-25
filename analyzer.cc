@@ -1193,7 +1193,14 @@ int main(int argc, char *argv[])
 
     if (vbfLoose)
     {
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
       histMapVBFLoose["mDiMu"]->Fill(mva.mDiMu, weight);
+#ifdef BLIND
+      }
+#endif
       histMapVBFLoose["yDiMu"]->Fill(mva.yDiMu, weight);
       histMapVBFLoose["ptDiMu"]->Fill(mva.ptDiMu, weight);
       histMapVBFLoose["ptMu1"]->Fill(mva.ptMu1, weight);
@@ -1229,7 +1236,14 @@ int main(int argc, char *argv[])
 
     if (vbfMedium)
     {
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
       histMapVBFMedium["mDiMu"]->Fill(mva.mDiMu, weight);
+#ifdef BLIND
+      }
+#endif
       histMapVBFMedium["yDiMu"]->Fill(mva.yDiMu, weight);
       histMapVBFMedium["ptDiMu"]->Fill(mva.ptDiMu, weight);
       histMapVBFMedium["ptMu1"]->Fill(mva.ptMu1, weight);
@@ -1265,7 +1279,14 @@ int main(int argc, char *argv[])
 
     if (vbfTight)
     {
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
       histMapVBFTight["mDiMu"]->Fill(mva.mDiMu, weight);
+#ifdef BLIND
+      }
+#endif
       histMapVBFTight["yDiMu"]->Fill(mva.yDiMu, weight);
       histMapVBFTight["ptDiMu"]->Fill(mva.ptDiMu, weight);
       histMapVBFTight["ptMu1"]->Fill(mva.ptMu1, weight);
@@ -1301,7 +1322,14 @@ int main(int argc, char *argv[])
 
     if (vbfVeryTight)
     {
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
       histMapVBFVeryTight["mDiMu"]->Fill(mva.mDiMu, weight);
+#ifdef BLIND
+      }
+#endif
       histMapVBFVeryTight["yDiMu"]->Fill(mva.yDiMu, weight);
       histMapVBFVeryTight["ptDiMu"]->Fill(mva.ptDiMu, weight);
       histMapVBFVeryTight["ptMu1"]->Fill(mva.ptMu1, weight);
@@ -1337,7 +1365,14 @@ int main(int argc, char *argv[])
 
     if (pt0to30)
     {
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
       histMapPt0to30["mDiMu"]->Fill(mva.mDiMu, weight);
+#ifdef BLIND
+      }
+#endif
       histMapPt0to30["yDiMu"]->Fill(mva.yDiMu, weight);
       histMapPt0to30["ptDiMu"]->Fill(mva.ptDiMu, weight);
       histMapPt0to30["ptMu1"]->Fill(mva.ptMu1, weight);
@@ -1373,7 +1408,14 @@ int main(int argc, char *argv[])
 
     if (pt30to50)
     {
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
       histMapPt30to50["mDiMu"]->Fill(mva.mDiMu, weight);
+#ifdef BLIND
+      }
+#endif
       histMapPt30to50["yDiMu"]->Fill(mva.yDiMu, weight);
       histMapPt30to50["ptDiMu"]->Fill(mva.ptDiMu, weight);
       histMapPt30to50["ptMu1"]->Fill(mva.ptMu1, weight);
@@ -1409,7 +1451,14 @@ int main(int argc, char *argv[])
 
     if (pt50to125)
     {
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
       histMapPt50to125["mDiMu"]->Fill(mva.mDiMu, weight);
+#ifdef BLIND
+      }
+#endif
       histMapPt50to125["yDiMu"]->Fill(mva.yDiMu, weight);
       histMapPt50to125["ptDiMu"]->Fill(mva.ptDiMu, weight);
       histMapPt50to125["ptMu1"]->Fill(mva.ptMu1, weight);
@@ -1445,7 +1494,14 @@ int main(int argc, char *argv[])
 
     if (pt125to250)
     {
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
       histMapPt125to250["mDiMu"]->Fill(mva.mDiMu, weight);
+#ifdef BLIND
+      }
+#endif
       histMapPt125to250["yDiMu"]->Fill(mva.yDiMu, weight);
       histMapPt125to250["ptDiMu"]->Fill(mva.ptDiMu, weight);
       histMapPt125to250["ptMu1"]->Fill(mva.ptMu1, weight);
@@ -1481,7 +1537,14 @@ int main(int argc, char *argv[])
 
     if (pt250)
     {
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
       histMapPt250["mDiMu"]->Fill(mva.mDiMu, weight);
+#ifdef BLIND
+      }
+#endif
       histMapPt250["yDiMu"]->Fill(mva.yDiMu, weight);
       histMapPt250["ptDiMu"]->Fill(mva.ptDiMu, weight);
       histMapPt250["ptMu1"]->Fill(mva.ptMu1, weight);
@@ -1517,7 +1580,14 @@ int main(int argc, char *argv[])
 
     if (!vbfPreselection && mva.getMVAPassBDTCut("inclusive.cfg"))
     {
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
       histMapIncBDTSig80["mDiMu"]->Fill(mva.mDiMu, weight);
+#ifdef BLIND
+      }
+#endif
       histMapIncBDTSig80["yDiMu"]->Fill(mva.yDiMu, weight);
       histMapIncBDTSig80["ptDiMu"]->Fill(mva.ptDiMu, weight);
       histMapIncBDTSig80["ptMu1"]->Fill(mva.ptMu1, weight);
@@ -1552,7 +1622,14 @@ int main(int argc, char *argv[])
 
     if (vbfPreselection && mva.getMVAPassBDTCut("vbf.cfg"))
     {
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
       histMapVBFBDTSig80["mDiMu"]->Fill(mva.mDiMu, weight);
+#ifdef BLIND
+      }
+#endif
       histMapVBFBDTSig80["yDiMu"]->Fill(mva.yDiMu, weight);
       histMapVBFBDTSig80["ptDiMu"]->Fill(mva.ptDiMu, weight);
       histMapVBFBDTSig80["ptMu1"]->Fill(mva.ptMu1, weight);
