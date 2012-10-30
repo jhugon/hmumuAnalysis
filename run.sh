@@ -56,10 +56,10 @@ fi
 nice ./analyzer DYJetsToLL.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/V00-00-03/NtuplesMCDYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v1/*.root >& log2 &
 nice ./analyzer ttbar.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/V00-00-03/NtuplesMCTTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola_Summer12_DR53X-PU_S10_START53_V7A-v3/*.root >& log2 &
 
-nice ./analyzer ggHmumu125.root /data/uftrig01b/jhugon/hmumu/privateSignalV2/ggHmumu125.root
-nice ./analyzer vbfHmumu125.root /data/uftrig01b/jhugon/hmumu/privateSignalV2/vbfHmumu125.root
-nice ./analyzer zHmumu125.root /data/uftrig01b/jhugon/hmumu/privateSignalV2/zHmumu125.root
-nice ./analyzer wHmumu125.root /data/uftrig01b/jhugon/hmumu/privateSignalV2/wHmumu125.root
+nice ./analyzer ggHmumu125.root /data/uftrig01b/jhugon/hmumu/privateSignalV3/ggHmumu125.root
+nice ./analyzer vbfHmumu125.root /data/uftrig01b/jhugon/hmumu/privateSignalV3/vbfHmumu125.root
+nice ./analyzer zHmumu125.root /data/uftrig01b/jhugon/hmumu/privateSignalV3/zHmumu125.root
+nice ./analyzer wHmumu125.root /data/uftrig01b/jhugon/hmumu/privateSignalV3/wHmumu125.root
 
 #nice ./analyzer DYToTauTau.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/V00-00-03/NtuplesMCDYToTauTau_M-20_CT10_TuneZ2star_8TeV-powheg-pythia6_Summer12_DR53X-PU_S10_START53_V7A-v1/*.root 
 nice ./analyzer WW.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/V00-00-03/NtuplesMCWW_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1/*.root

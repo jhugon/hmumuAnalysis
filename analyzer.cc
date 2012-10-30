@@ -40,6 +40,9 @@
 using namespace std;
 using namespace boost;
 
+void fillMuonHist(TH1F* hist, _MuonInfo& mu1, _MuonInfo& mu2);
+void printStationMiss(_MuonInfo& mu1, _MuonInfo& mu2, _EventInfo& eventInfo, std::string & testString, unsigned & testCounter);
+
 int main(int argc, char *argv[])
 {
   /////////////////////////////////////////////
@@ -279,14 +282,30 @@ int main(int argc, char *argv[])
 
   TH1F* countsHist = new TH1F("countsHist","Event Counts",10,0.0,10.0);
   countsHist->GetXaxis()->SetBinLabel(1,"total");
-  countsHist->GetXaxis()->SetBinLabel(2,">=2#mu");
-  countsHist->GetXaxis()->SetBinLabel(3,"VBFL");
-  countsHist->GetXaxis()->SetBinLabel(4,"VBF");
-  countsHist->GetXaxis()->SetBinLabel(5,"VBFT");
-  countsHist->GetXaxis()->SetBinLabel(6,"Pt30");
-  countsHist->GetXaxis()->SetBinLabel(7,"Pt50");
-  countsHist->GetXaxis()->SetBinLabel(8,"Pt75");
+  countsHist->GetXaxis()->SetBinLabel(2,"2#mu ID");
+  countsHist->GetXaxis()->SetBinLabel(3,"HLT");
+  countsHist->GetXaxis()->SetBinLabel(4,"Charge");
+  countsHist->GetXaxis()->SetBinLabel(5,"m_{#mu#mu}");
+  countsHist->GetXaxis()->SetBinLabel(6,"Inc Pre");
+  countsHist->GetXaxis()->SetBinLabel(7,"VBF Pre");
   histMap.insert(make_pair("countsHist",countsHist));
+
+  TH1F* countsHist2 = new TH1F("countsHist2","Event Counts",14,0.0,14.0);
+  countsHist2->GetXaxis()->SetBinLabel(1,"total");
+  countsHist2->GetXaxis()->SetBinLabel(2,"total");
+  countsHist2->GetXaxis()->SetBinLabel(3,"global");
+  countsHist2->GetXaxis()->SetBinLabel(4,"PF");
+  countsHist2->GetXaxis()->SetBinLabel(5,"pt");
+  countsHist2->GetXaxis()->SetBinLabel(6,"eta");
+  countsHist2->GetXaxis()->SetBinLabel(7,"tracker");
+  countsHist2->GetXaxis()->SetBinLabel(8,"iso");
+  countsHist2->GetXaxis()->SetBinLabel(9,"d0");
+  countsHist2->GetXaxis()->SetBinLabel(10,"dz");
+  countsHist2->GetXaxis()->SetBinLabel(11,"#mu hits");
+  countsHist2->GetXaxis()->SetBinLabel(12,"pixel");
+  countsHist2->GetXaxis()->SetBinLabel(13,"stations");
+  countsHist2->GetXaxis()->SetBinLabel(14,"#chi^2");
+  histMap.insert(make_pair("countsHist2",countsHist2));
 
   TH1F* cosThetaStarHist = new TH1F("cosThetaStar","cos(#theta^{*})",50,-1.,1.);
   histMap.insert(make_pair("cosThetaStar",cosThetaStarHist));
@@ -485,6 +504,9 @@ int main(int argc, char *argv[])
     tree->GetEvent(i);
     if (i % reportEach == 0) cout << "Event: " << i << endl;
 
+    fillMuonHist(countsHist2, reco1, reco2);
+    //printStationMiss(reco1,reco2,eventInfo,testString,testCounter);
+
     mva.resetValues();
     mva.mDiMu = recoCandMass;
 #ifdef SMEARING
@@ -508,16 +530,22 @@ int main(int argc, char *argv[])
     if (!isKinTight_2012(reco1) || !isKinTight_2012(reco2))
         continue;
 
+    countsHist->Fill(1.0, weight);
+
     if (!isHltMatched(reco1,reco2,allowedHLTPaths) && isData)
         continue;
+
+    countsHist->Fill(2.0, weight);
 
     if (reco1.charge*reco2.charge != -1)
         continue;
 
+    countsHist->Fill(3.0, weight);
+
     if (mva.mDiMu < minMmm || mva.mDiMu > maxMmm)
         continue;
 
-    countsHist->Fill(1.0, weight);
+    countsHist->Fill(4.0, weight);
 
     _MuonInfo muon1;
     _MuonInfo muon2;
@@ -674,15 +702,15 @@ int main(int argc, char *argv[])
     if(jets.nJets>=2 && jets.pt[0]>30.0 && jets.pt[1]>30.0)
         goodJets = true;
 
-    if (mva.mDiMu > 140. && mva.mDiMu < 150. && goodJets)
-    {
-        testCounter++;
-        //std::cout <<eventInfo.run <<":"<<eventInfo.event <<"\n"<< std::endl;
-        testString.appendAny(eventInfo.run);
-        testString.append(":");
-        testString.appendAny(eventInfo.event);
-        testString.append("\n");
-    }
+//    if (mva.mDiMu > 140. && mva.mDiMu < 150. && goodJets)
+//    {
+//        testCounter++;
+//        //std::cout <<eventInfo.run <<":"<<eventInfo.event <<"\n"<< std::endl;
+//        testString.appendAny(eventInfo.run);
+//        testString.append(":");
+//        testString.appendAny(eventInfo.event);
+//        testString.append("\n");
+//    }
 
 
     if(goodJets)
@@ -781,6 +809,12 @@ int main(int argc, char *argv[])
     bool vbfPreselection = mva.mDiJet>300.0 && mva.deltaEtaJets>3.0 && mva.productEtaJets<0.0 && mva.nJetsInRapidityGap == 0;
     //if(vbfPreselection)
     //  std::cout << "VBF Preselected!!";
+
+    if(vbfPreselection)
+        countsHist->Fill(6);
+    else
+        countsHist->Fill(5);
+    
 
     bool vbfVeryTight = false;
     bool vbfTight = false;
@@ -1842,4 +1876,95 @@ int main(int argc, char *argv[])
   cout << "testCounter: "<< testCounter << endl;
   cout << "analyzer done." << endl << endl;
   return 0;
+}
+
+void
+fillMuonHist(TH1F* hist, _MuonInfo& mu1, _MuonInfo& mu2)
+{
+
+  hist->Fill(1.0);
+  if (!mu1.isGlobal || !mu2.isGlobal)  return;
+  hist->Fill(2.0);
+  if (!mu1.isPFMuon || !mu2.isPFMuon) return;
+  hist->Fill(3.0);
+
+  // acceptance cuts
+  if (mu1.pt < 25 || mu2.pt < 25)         return; // pt cut
+  hist->Fill(4.0);
+  if (fabs(mu1.eta) > 2.1 || fabs(mu2.eta) > 2.1) return; // eta cut
+  hist->Fill(5.0);
+
+  // kinematic cuts
+  if (mu1.numTrackerLayers < 6 || mu2.numTrackerLayers < 6) return; // # hits in tracker
+  hist->Fill(6.0);
+
+  if(getRelIso(mu1) > 0.12 || getRelIso(mu2) > 0.12)
+  {
+      //cout << "Iso 1: "<< getRelIso(mu1) << "    Iso 2: " << getRelIso(mu2) << endl;
+      return;
+  }
+  hist->Fill(7.0);
+
+  if (fabs(mu1.d0_PV) > 0.2 || fabs(mu2.d0_PV) > 0.2) return;
+  hist->Fill(8.0);
+  if (fabs(mu1.dz_PV) > 0.5 || fabs(mu2.dz_PV) > 0.5) return;
+  hist->Fill(9.0);
+
+  if ( mu1.numValidMuonHits  < 1  || mu2.numValidMuonHits  < 1) return;
+  hist->Fill(10.0);
+  if ( mu1.numValidPixelHits < 1  || mu2.numValidPixelHits < 1) return;
+  hist->Fill(11.0);
+  if ( mu1.numOfMatchedStations < 2  || mu2.numOfMatchedStations < 2)
+  {
+      //cout << "Sta 1: "<<mu1.numOfMatchedStations << "    Sta 2: " << mu2.numOfMatchedStations << endl;
+      return;
+  }
+  hist->Fill(12.0);
+  if ( mu1.normChiSquare > 10 || mu2.normChiSquare > 10)     return;
+  hist->Fill(13.0);
+
+}
+
+void
+printStationMiss(_MuonInfo& mu1, _MuonInfo& mu2, _EventInfo& eventInfo, std::string & testString, unsigned & testCounter)
+{
+
+  if (!mu1.isGlobal || !mu2.isGlobal)  return;
+  if (!mu1.isPFMuon || !mu2.isPFMuon) return;
+
+  // acceptance cuts
+  if (mu1.pt < 25 || mu2.pt < 25)         return; // pt cut
+  if (fabs(mu1.eta) > 2.1 || fabs(mu2.eta) > 2.1) return; // eta cut
+
+  // kinematic cuts
+  if (mu1.numTrackerLayers < 6 || mu2.numTrackerLayers < 6) return; // # hits in tracker
+
+  if(getRelIso(mu1) > 0.12 || getRelIso(mu2) > 0.12)
+  {
+      //cout << "Iso 1: "<< getRelIso(mu1) << "    Iso 2: " << getRelIso(mu2) << endl;
+      return;
+  }
+
+  if (fabs(mu1.d0_PV) > 0.2 || fabs(mu2.d0_PV) > 0.2) return;
+  if (fabs(mu1.dz_PV) > 0.5 || fabs(mu2.dz_PV) > 0.5) return;
+
+  if ( mu1.numValidMuonHits  < 1  || mu2.numValidMuonHits  < 1) return;
+  if ( mu1.numValidPixelHits < 1  || mu2.numValidPixelHits < 1) return;
+  if ( mu1.numOfMatchedStations < 2  || mu2.numOfMatchedStations < 2)
+  {
+        testCounter++;
+        //std::cout <<eventInfo.run <<":"<<eventInfo.event <<"\n"<< std::endl;
+        testString.appendAny(eventInfo.run);
+        testString.append(":");
+        testString.appendAny(eventInfo.event);
+        //testString.append("  #  ");
+        //testString.appendAny(mu1.numOfMatchedStations);
+        //testString.append("  ");
+        //testString.appendAny(mu2.numOfMatchedStations);
+        testString.append("\n");
+      
+      return;
+  }
+  if ( mu1.normChiSquare > 10 || mu2.normChiSquare > 10)     return;
+
 }

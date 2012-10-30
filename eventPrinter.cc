@@ -33,7 +33,7 @@
 
 #define JETPUID
 #define PUREWEIGHT
-//#define VERBOSE
+#define VERBOSE
 
 using namespace std;
 using namespace boost;
@@ -51,6 +51,7 @@ int main(int argc, char *argv[])
       ("filenames",program_options::value<vector<string> >(), "Input & Output File Names, put output name first followed by all input file names")
       ("eventStr,e",program_options::value<vector<string> >(), "Run:Event Strings")
       ("eventFile,f",program_options::value<string>(), "File with one run:event per line")
+      ("maxEvents,m",program_options::value<unsigned>(), "Max Events to Print")
   ;
   
   program_options::positional_options_description optionPos;
@@ -68,22 +69,22 @@ int main(int argc, char *argv[])
 
   vector<std::string> filenames;
   vector<string>::const_iterator filename;
-  std::string outputFileName;
   if (optionMap.count("filenames")>0)
   {
      filenames = optionMap["filenames"].as<vector<string> >();
-     if(filenames.size()<2)
+     if(filenames.size()<1)
      {
-       cout << "Error: Need both input file and output file names, exiting." << endl;
+       cout << "Error: Need input file names, exiting." << endl;
        return 1;
      }
   }
   else
   {
-     cout << "Error: Input file name  and ouput file name arguments required, exiting." << endl;
+     cout << "Error: Input file name arguments required, exiting." << endl;
      return 1;
   }
 
+  unsigned nEventsDesired = 0;
   vector<std::string> eventStrs;
   vector<string>::const_iterator eventStr;
   if (optionMap.count("eventStr")>0)
@@ -114,29 +115,38 @@ int main(int argc, char *argv[])
      }
      eventF.close();
   }
+  else if(optionMap.count("maxEvents"))
+  {
+     nEventsDesired = optionMap["maxEvents"].as<unsigned>();
+  }
   else
   {
      cout << "Error: No Wanted events found, use -e <run>:<event> option." << endl;
      return 1;
   }
 
-  unsigned nEventsDesired = eventStrs.size();
-  vector<unsigned> runs(eventStrs.size());
-  vector<unsigned> events(eventStrs.size());
-  unsigned tmpMissed = 0;
-  for (unsigned i=0;i<nEventsDesired;i++)
+  vector<unsigned> runs;
+  vector<unsigned> events;
+  if (nEventsDesired==0)
   {
-    std::vector<std::string> splitStrings;
-    boost::split(splitStrings, eventStrs[i], boost::is_any_of(":"));
-    if(splitStrings.size() != 2)
+    nEventsDesired = eventStrs.size();
+    runs = vector<unsigned>(eventStrs.size());
+    events = vector<unsigned>(eventStrs.size());
+    unsigned tmpMissed = 0;
+    for (unsigned i=0;i<nEventsDesired;i++)
     {
-      tmpMissed++;
-      cerr << "Error: Didn't Correctly Parse Event String: "<< eventStrs[i] << endl;
+      std::vector<std::string> splitStrings;
+      boost::split(splitStrings, eventStrs[i], boost::is_any_of(":"));
+      if(splitStrings.size() != 2)
+      {
+        tmpMissed++;
+        cerr << "Error: Didn't Correctly Parse Event String: "<< eventStrs[i] << endl;
+      }
+      runs[i] = boost::lexical_cast<unsigned>(splitStrings[0]);
+      events[i] = boost::lexical_cast<unsigned>(splitStrings[1]);
     }
-    runs[i] = boost::lexical_cast<unsigned>(splitStrings[0]);
-    events[i] = boost::lexical_cast<unsigned>(splitStrings[1]);
+    nEventsDesired -= tmpMissed;
   }
-  nEventsDesired -= tmpMissed;
 
   ofstream outTxt;
   outTxt.open("testEventPrints.txt");
@@ -232,19 +242,20 @@ cout.precision(5);
   for(unsigned i=0; i<nEvents;i++)
   {
     tree->GetEvent(i);
-    //eventInfoBranch->GetEvent(i);
-    bool wantedEvent = false;
-    for(unsigned j=0;j<nEventsDesired;j++)
+    if(events.size()!=0)
     {
-      if (eventInfo.run==runs[j] && eventInfo.event==events[j])
+      bool wantedEvent = false;
+      for(unsigned j=0;j<nEventsDesired;j++)
       {
-        wantedEvent=true;
-        break;
+        if (eventInfo.run==runs[j] && eventInfo.event==events[j])
+        {
+          wantedEvent=true;
+          break;
+        }
       }
+      if(!wantedEvent)
+        continue;
     }
-    if(!wantedEvent)
-      continue;
-    //tree->GetEvent(i);
 
     _MuonInfo muon1=reco1;
     _MuonInfo muon2=reco2;
