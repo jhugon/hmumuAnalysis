@@ -36,7 +36,6 @@ typedef struct {
   float phi;
 } _TrackInfo;
 
-
 // muon info
 typedef struct {
 
@@ -166,6 +165,8 @@ typedef struct {
   float jecFactor[10];
   // Jet Energy Correction Uncertainty
   float jecUnc[10];
+  // b-Tag
+  float csv[10];
   // Gen Jet Values
   bool genMatched[10];
   float genPx[10];
@@ -198,6 +199,15 @@ typedef struct {
   float mass[10];
   int   charge[10];
 } _GenJetInfo;
+
+// generator level composite Candidate
+typedef struct {
+  float mass;
+  float pt;
+  float eta;  // pseudo rapidity
+  float y;    // rapidity
+  float phi;  // phi
+} _genPartInfo;
 
 
 #endif

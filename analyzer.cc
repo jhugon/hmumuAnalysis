@@ -120,8 +120,7 @@ int main(int argc, char *argv[])
   float resSysSmear = 0.2; // Error on that ratio
 
   std::vector<int> allowedHLTPaths;
-  allowedHLTPaths.push_back(0); //IsoMu24_v11
-  allowedHLTPaths.push_back(2); //IsoMu24_v12
+  allowedHLTPaths.push_back(0); //IsoMu24
 
   // Check to see if it is data
   bool isData = false;
