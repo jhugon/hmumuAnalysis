@@ -220,6 +220,8 @@ int main(int argc, char *argv[])
 
         ("nTrees",program_options::value<unsigned>(),"")
         ("nEventsMin",program_options::value<unsigned>(),"")
+
+        ("mvaSignalEff",program_options::value<float>(),"")
     ;
 
     program_options::variables_map optionMap;

@@ -2,8 +2,8 @@
 
 nice scons -j4
 
-TRAININGTREES="true"
-TRAIN="true"
+#TRAININGTREES="true"
+#TRAIN="true"
 
 DIR=/data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/V00-01-01/
 
@@ -45,9 +45,9 @@ echo "#######################" >& log2
 echo "    Training MVAs" >& log2
 echo "#######################" >& log2
 echo "training Inclusive..."
-./mvaTrain inclusive.cfg >& logMVAInc
+nice ./mvaTrain inclusive.cfg >& logMVAInc
 echo "training VBF..."
-./mvaTrain vbf.cfg >& logMVAVBF
+nice ./mvaTrain vbf.cfg >& logMVAVBF
 echo "done training."
 echo "#######################"
 echo "#######################"
