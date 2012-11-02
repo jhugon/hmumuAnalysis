@@ -25,11 +25,11 @@ nice ./analyzer vbfHmumu125.root $DIR/NtuplesMCPrivateSignal/vbfHmumu8TeV125.roo
 nice ./analyzer zHmumu125.root $DIR/NtuplesMCPrivateSignal/zHmumu8TeV125.root --trainingTree signalTreeZH.root
 nice ./analyzer wHmumu125.root $DIR/NtuplesMCPrivateSignal/wHmumu8TeV125.root --trainingTree signalTreeWH.root
 
-nice ./analyzer WW.root $DIR/NtuplesMCWW_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1/*.root --trainingTree backgroundTreeWW.root
-nice ./analyzer WZ.root $DIR/NtuplesMCWZ_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1/*.root --trainingTree backgroundTreeWZ.root
-nice ./analyzer ZZ.root $DIR/NtuplesMCZZ_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1/*.root --trainingTree backgroundTreeZZ.root
+nice ./analyzer WW.root $DIR/NtuplesMCWW_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/*.root --trainingTree backgroundTreeWW.root
+nice ./analyzer WZ.root $DIR/NtuplesMCWZ_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/*.root --trainingTree backgroundTreeWZ.root
+nice ./analyzer ZZ.root $DIR/NtuplesMCZZ_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/*.root --trainingTree backgroundTreeZZ.root
 
-#nice ./analyzer DYToTauTau.root $DIR/NtuplesMCDYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v1/*.root --trainingTree backgroundTreeDYToTauTau.root
+#nice ./analyzer DYToTauTau.root $DIR/NtuplesMCDYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/*.root --trainingTree backgroundTreeDYToTauTau.root
 
 wait
 
@@ -62,22 +62,16 @@ nice ./analyzer vbfHmumu125.root $DIR/NtuplesMCPrivateSignal/vbfHmumu8TeV125.roo
 nice ./analyzer zHmumu125.root $DIR/NtuplesMCPrivateSignal/zHmumu8TeV125.root
 nice ./analyzer wHmumu125.root $DIR/NtuplesMCPrivateSignal/wHmumu8TeV125.root
 
-nice ./analyzer DYToTauTau.root $DIR/NtuplesMCDYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v1/*.root
-nice ./analyzer WW.root $DIR/NtuplesMCWW_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1/*.root
-nice ./analyzer WZ.root $DIR/NtuplesMCWZ_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1/*.root 
-nice ./analyzer ZZ.root $DIR/NtuplesMCZZ_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1/*.root 
+nice ./analyzer DYToTauTau.root $DIR/NtuplesMCDYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/*.root
+nice ./analyzer WW.root $DIR/NtuplesMCWW_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/WW_minimal.root
+nice ./analyzer WZ.root $DIR/NtuplesMCWZ_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/WZ_minimal.root 
+nice ./analyzer ZZ.root $DIR/NtuplesMCZZ_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/ZZ_minimal.root 
 #nice ./analyzer WJetsToLNu.root $DIR/NtuplesMCWJetsToLNu_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v2/*.root >& log2 &
-#nice ./analyzer QCD.root $DIR/NtuplesMCQCD_Pt_20_MuEnrichedPt_15_TuneZ2star_8TeV_pythia6_Summer12_DR53X-PU_S10_START53_V7A-v3/*.root >& log2 &
+#nice ./analyzer QCD.root $DIR/NtuplesMCQCD_Pt_20_MuEnrichedPt_15_TuneZ2star_8TeV_pythia6_Summer12_DR53X-PU_S10_START53_V7A-v3/minimal/*.root >& log2 &
 
 nice ./analyzer SingleMuRun2012Av1.root $DIR/NtuplesDataSingleMuRun2012A-13Jul2012-v1/minimal/SingleMuRun2012A-13Jul2012-v1_minimal.root
-#nice ./analyzer SingleMuRun2012Bv1.root $DIR/NtuplesDataSingleMuRun2012B-13Jul2012-v1/*.root
-#nice ./analyzer SingleMuRun2012Cv1.root $DIR/NtuplesDataSingleMuRun2012C-PromptReco-v1/*.root
-#nice ./analyzer SingleMuRun2012Cv2.root $DIR/NtuplesDataSingleMuRun2012C-PromptReco-v2/*.root
-
-#nice ./analyzer DoubleMuRun2012Av1.root $DIR/NtuplesDataDoubleMuRun2012A-13Jul2012-v1/*.root
-#nice ./analyzer DoubleMuRun2012Bv1.root $DIR/NtuplesDataDoubleMuRun2012B-13Jul2012-v4/*.root
-#nice ./analyzer DoubleMuRun2012Cv1.root $DIR/NtuplesDataDoubleMuRun2012C-PromptReco-v1/*.root
-#nice ./analyzer DoubleMuRun2012Cv2.root $DIR/NtuplesDataDoubleMuRun2012C-PromptReco-v2/*.root
+nice ./analyzer SingleMuRun2012Bv1.root $DIR/NtuplesDataSingleMuRun2012B-13Jul2012-v1/minimal/SingleMuRun2012B-13Jul2012-v1_minimal.root
+nice ./analyzer SingleMuRun2012Cv1.root $DIR/NtuplesDataSingleMuRun2012C-24Aug2012-v1/minimal/SingleMuRun2012C-24Aug2012-v1_minimal.root
 
 wait
 

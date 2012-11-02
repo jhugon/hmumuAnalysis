@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
   /////////////////////////////
 
   float minMmm = 70.0;
-  float maxMmm = 200.0;
+  float maxMmm = 400.0;
   //float minMmm = 110.0;
   //float maxMmm = 150.0;
 
@@ -477,7 +477,7 @@ int main(int argc, char *argv[])
   //for PU reweighting
 
 #ifdef PUREWEIGHT
-  reweight::LumiReWeighting lumiWeights("pileupDists/PileUpHistMC2012Summer50nsPoissonOOTPU.root","pileupDists/PileUpHist2012A.root","pileup","pileup");
+  reweight::LumiReWeighting lumiWeights("pileupDists/PileUpHistMC2012Summer50nsPoissonOOTPU.root","pileupDists/PileUpHist2012ABCv1.root","pileup","pileup");
 #endif
 
   const double SQRT2 = sqrt(2);
