@@ -357,12 +357,19 @@ int main(int argc, char *argv[])
   unsigned testCounter = 0;
   string testString;
   
+  float timeReading = 0.;
+  float timeReadingAll = 0.;
+  float timeProcessing = 0.;
+  float timeFilling = 0.;
   time_t timeStartEventLoop = time(NULL);
   for(unsigned i=0; i<nEvents;i++)
   {
     if(i >= maxEvents)
       continue;
+    time_t timeStartReading = time(NULL);
     tree->GetEvent(i);
+    time_t timeStopReading = time(NULL);
+    timeReadingAll += difftime(timeStopReading,timeStartReading);
     if (i % reportEach == 0) cout << "Event: " << i << endl;
 
     fillMuonHist(hists.countsHist2, reco1, reco2);
@@ -703,6 +710,8 @@ int main(int argc, char *argv[])
     bool pt50to125 = !vbfPreselection && mva.ptDiMu> 50.  && mva.ptDiMu <125.;
     bool pt125to250 = !vbfPreselection && mva.ptDiMu> 125.  && mva.ptDiMu <250.;
     bool pt250 = !vbfPreselection && mva.ptDiMu >250.;
+
+    time_t timeStartFilling = time(NULL);
 
 #ifdef BLIND
     if (!(inBlindWindow && isData))
@@ -1557,6 +1566,9 @@ int main(int argc, char *argv[])
       histsVBFBDTSig80.BDTHistVBF->Fill(mva.getMVA("vbf.cfg","BDT"), weight);
     }
 
+    timeReading += difftime(timeStopReading,timeStartReading);
+    timeProcessing += difftime(timeStartFilling,timeStopReading);
+    timeFilling += difftime(time(NULL),timeStartFilling);
   }// end event loop
   time_t timeEndEventLoop = time(NULL);
 
@@ -1664,7 +1676,13 @@ int main(int argc, char *argv[])
   cout << "testCounter: "<< testCounter << endl;
   cout << "Total Time: "<<std::setprecision(3) << difftime(time(NULL),timeStart)<<"\n";
   cout << "Setup Time: "<<std::setprecision(3) <<difftime(timeStartEventLoop,timeStart)<<"\n";
-  cout << "Event Loop Time: "<<std::setprecision(3) <<difftime(timeEndEventLoop,timeStartEventLoop)<< ", "<<std::setprecision(3) <<difftime(timeEndEventLoop,timeStartEventLoop)/(std::min(nEvents,(unsigned) maxEvents)*1000.)<<" s / 1000 events \n";
+  cout << "Event Loop Time: "<<std::setprecision(3) 
+        <<difftime(timeEndEventLoop,timeStartEventLoop)<< ", "<<std::setprecision(3) 
+        <<difftime(timeEndEventLoop,timeStartEventLoop)/(std::min(nEvents,(unsigned) maxEvents))*1000.<<" s / 1000 events \n";
+  cout << "  Read Time: "<<std::setprecision(3) << timeReading << std::endl;
+  cout << "  Proc Time: "<<std::setprecision(3) << timeProcessing << std::endl;
+  cout << "  Fill Time: "<<std::setprecision(3) << timeFilling << std::endl;
+  cout << "  All Read Time: "<<std::setprecision(3) << timeReadingAll << std::endl;
   cout << "Wrapup Time: "<<std::setprecision(3) <<difftime(time(NULL),timeEndEventLoop)<<"\n";
   cout << "analyzer done." << endl << endl;
   return 0;
