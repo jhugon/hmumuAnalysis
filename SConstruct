@@ -9,7 +9,12 @@ libpath = []
 libs = []
 env.MergeFlags('-fPIC -O2 -lm')
 
+# For BLINDING
 env.MergeFlags("-D BLIND")
+
+# For using gprof
+#env.Append(CCFLAGS=["-pg"])
+#env.Append(LINKFLAGS=["-pg"])
 
 includes.append("src/")
 
@@ -81,3 +86,5 @@ env.Program(target="mvaTrain", source=["mvaTrain.cc"])
 
 env.Program(target="testVertex", source=["testVertex.cc","src/libmva.a","src/libhelpers.a"])
 env.Program(target="eventPrinter", source=["eventPrinter.cc","src/libmva.a","src/libhelpers.a"])
+
+#print env.Dump()
