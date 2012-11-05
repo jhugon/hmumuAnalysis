@@ -237,11 +237,13 @@ int main(int argc, char *argv[])
   TFile * outFile = new TFile(outputFileName.c_str(),"RECREATE");
 
   std::string trainingTreeFileName = "";
+  bool trainingTreeRun=false;
   if (optionMap.count("trainingTree")) 
   {
       cout << "Training enabled" << "\n";
       trainingTreeFileName = optionMap["trainingTree"].as<string>();
       cout << "Training Tree File Name: " << trainingTreeFileName << "\n";
+      trainingTreeRun=true;
   }
 
   //////////////////////////
@@ -673,6 +675,9 @@ int main(int argc, char *argv[])
 //jet with pT > 30 GeV/c in the rapidity region between the two jets.
 
     mva.writeEvent();
+
+    if (trainingTreeRun) //Skip Filling of histos when training Tree
+        continue;
 
     bool vbfPreselection = mva.mDiJet>300.0 && mva.deltaEtaJets>3.0 && mva.productEtaJets<0.0 && mva.nJetsInRapidityGap == 0;
     //if(vbfPreselection)
