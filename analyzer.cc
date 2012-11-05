@@ -197,6 +197,9 @@ int main(int argc, char *argv[])
   float resSmear = 1.169; // should all be around 1; a ratio of resolutions
   float resSysSmear = 0.2; // Error on that ratio
 
+  string cfgNameInc = "inclusive.cfg";
+  string cfgNameVBF = "vbf.cfg";
+
   std::vector<int> allowedHLTPaths;
   allowedHLTPaths.push_back(0); //IsoMu24
 
@@ -330,8 +333,8 @@ int main(int argc, char *argv[])
   //for MVA
 
   std::vector<std::string> mvaConfigNames;
-  mvaConfigNames.push_back("inclusive.cfg");
-  mvaConfigNames.push_back("vbf.cfg");
+  mvaConfigNames.push_back(cfgNameInc);
+  mvaConfigNames.push_back(cfgNameVBF);
   MVA mva(mvaConfigNames,trainingTreeFileName);
 
   TRandom3 random(1457);
@@ -716,6 +719,11 @@ int main(int argc, char *argv[])
     bool pt125to250 = !vbfPreselection && mva.ptDiMu> 125.  && mva.ptDiMu <250.;
     bool pt250 = !vbfPreselection && mva.ptDiMu >250.;
 
+    float bdtValInc =  mva.getMVA(cfgNameInc,"BDT");
+    float bdtValVBF =  mva.getMVA(cfgNameVBF,"BDT");
+    float likeValInc =  mva.getMVA(cfgNameInc,"Likelihood");
+    float likeValVBF =  mva.getMVA(cfgNameVBF,"Likelihood");
+
     time_t timeStartFilling = time(NULL);
 
 #ifdef BLIND
@@ -724,35 +732,35 @@ int main(int argc, char *argv[])
 #endif
     if(!vbfPreselection)
     {
-      hists.BDTHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","BDT"), weight);
-      hists.likelihoodHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","Likelihood"), weight);
-      hists.BDTHistMuonOnlyVMass->Fill(mva.mDiMu, mva.getMVA("inclusive.cfg","BDT"), weight);
-      hists.likelihoodHistMuonOnlyVMass->Fill(mva.mDiMu, mva.getMVA("inclusive.cfg","Likelihood"), weight);
+      hists.BDTHistMuonOnly->Fill(bdtValInc, weight);
+      hists.likelihoodHistMuonOnly->Fill(likeValInc, weight);
+      hists.BDTHistMuonOnlyVMass->Fill(mva.mDiMu, bdtValInc, weight);
+      hists.likelihoodHistMuonOnlyVMass->Fill(mva.mDiMu, likeValInc, weight);
 
-      histsCalibUp.BDTHistMuonOnlyVMass->Fill(mDiMuCalibUp, mva.getMVA("inclusive.cfg","BDT"), weight);
-      histsCalibDown.BDTHistMuonOnlyVMass->Fill(mDiMuCalibDown, mva.getMVA("inclusive.cfg","BDT"), weight);
-      histsResUp.BDTHistMuonOnlyVMass->Fill(mDiMuResUp, mva.getMVA("inclusive.cfg","BDT"), weight);
-      histsResDown.BDTHistMuonOnlyVMass->Fill(mDiMuResDown, mva.getMVA("inclusive.cfg","BDT"), weight);
-      histsCalibUp.likelihoodHistMuonOnlyVMass->Fill(mDiMuCalibUp, mva.getMVA("inclusive.cfg","Likelihood"), weight);
-      histsCalibDown.likelihoodHistMuonOnlyVMass->Fill(mDiMuCalibDown, mva.getMVA("inclusive.cfg","Likelihood"), weight);
-      histsResUp.likelihoodHistMuonOnlyVMass->Fill(mDiMuResUp, mva.getMVA("inclusive.cfg","Likelihood"), weight);
-      histsResDown.likelihoodHistMuonOnlyVMass->Fill(mDiMuResDown, mva.getMVA("inclusive.cfg","Likelihood"), weight);
+      histsCalibUp.BDTHistMuonOnlyVMass->Fill(mDiMuCalibUp, bdtValInc, weight);
+      histsCalibDown.BDTHistMuonOnlyVMass->Fill(mDiMuCalibDown, bdtValInc, weight);
+      histsResUp.BDTHistMuonOnlyVMass->Fill(mDiMuResUp, bdtValInc, weight);
+      histsResDown.BDTHistMuonOnlyVMass->Fill(mDiMuResDown, bdtValInc, weight);
+      histsCalibUp.likelihoodHistMuonOnlyVMass->Fill(mDiMuCalibUp, likeValInc, weight);
+      histsCalibDown.likelihoodHistMuonOnlyVMass->Fill(mDiMuCalibDown, likeValInc, weight);
+      histsResUp.likelihoodHistMuonOnlyVMass->Fill(mDiMuResUp, likeValInc, weight);
+      histsResDown.likelihoodHistMuonOnlyVMass->Fill(mDiMuResDown, likeValInc, weight);
     }
     else
     {
-      hists.BDTHistVBFVMass->Fill(mva.mDiMu, mva.getMVA("vbf.cfg","BDT"), weight);
-      hists.likelihoodHistVBFVMass->Fill(mva.mDiMu, mva.getMVA("vbf.cfg","Likelihood"), weight);
-      hists.BDTHistVBF->Fill(mva.getMVA("vbf.cfg","BDT"), weight);
-      hists.likelihoodHistVBF->Fill(mva.getMVA("vbf.cfg","Likelihood"), weight);
+      hists.BDTHistVBFVMass->Fill(mva.mDiMu, bdtValVBF, weight);
+      hists.likelihoodHistVBFVMass->Fill(mva.mDiMu, likeValVBF, weight);
+      hists.BDTHistVBF->Fill(bdtValVBF, weight);
+      hists.likelihoodHistVBF->Fill(likeValVBF, weight);
 
-      histsCalibUp.BDTHistVBFVMass->Fill(mDiMuCalibUp, mva.getMVA("inclusive.cfg","BDT"), weight);
-      histsCalibDown.BDTHistVBFVMass->Fill(mDiMuCalibDown, mva.getMVA("inclusive.cfg","BDT"), weight);
-      histsResUp.BDTHistVBFVMass->Fill(mDiMuResUp, mva.getMVA("inclusive.cfg","BDT"), weight);
-      histsResDown.BDTHistVBFVMass->Fill(mDiMuResDown, mva.getMVA("inclusive.cfg","BDT"), weight);
-      histsCalibUp.likelihoodHistVBFVMass->Fill(mDiMuCalibUp, mva.getMVA("inclusive.cfg","Likelihood"), weight);
-      histsCalibDown.likelihoodHistVBFVMass->Fill(mDiMuCalibDown, mva.getMVA("inclusive.cfg","Likelihood"), weight);
-      histsResUp.likelihoodHistVBFVMass->Fill(mDiMuResUp, mva.getMVA("inclusive.cfg","Likelihood"), weight);
-      histsResDown.likelihoodHistVBFVMass->Fill(mDiMuResDown, mva.getMVA("inclusive.cfg","Likelihood"), weight);
+      histsCalibUp.BDTHistVBFVMass->Fill(mDiMuCalibUp, bdtValInc, weight);
+      histsCalibDown.BDTHistVBFVMass->Fill(mDiMuCalibDown, bdtValInc, weight);
+      histsResUp.BDTHistVBFVMass->Fill(mDiMuResUp, bdtValInc, weight);
+      histsResDown.BDTHistVBFVMass->Fill(mDiMuResDown, bdtValInc, weight);
+      histsCalibUp.likelihoodHistVBFVMass->Fill(mDiMuCalibUp, likeValInc, weight);
+      histsCalibDown.likelihoodHistVBFVMass->Fill(mDiMuCalibDown, likeValInc, weight);
+      histsResUp.likelihoodHistVBFVMass->Fill(mDiMuResUp, likeValInc, weight);
+      histsResDown.likelihoodHistVBFVMass->Fill(mDiMuResDown, likeValInc, weight);
     }
 #ifdef BLIND
     }
@@ -797,13 +805,13 @@ int main(int argc, char *argv[])
       hists4GeVWindow.mDiMu->Fill(mva.mDiMu, weight);
       if(!vbfPreselection)
       {
-        hists4GeVWindow.BDTHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","BDT"), weight);
-        hists4GeVWindow.likelihoodHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","Likelihood"), weight);
+        hists4GeVWindow.BDTHistMuonOnly->Fill(bdtValInc, weight);
+        hists4GeVWindow.likelihoodHistMuonOnly->Fill(likeValInc, weight);
       }
       else
       {
-        hists4GeVWindow.BDTHistVBF->Fill(mva.getMVA("vbf.cfg","BDT"), weight);
-        hists4GeVWindow.likelihoodHistVBF->Fill(mva.getMVA("vbf.cfg","Likelihood"), weight);
+        hists4GeVWindow.BDTHistVBF->Fill(bdtValVBF, weight);
+        hists4GeVWindow.likelihoodHistVBF->Fill(likeValVBF, weight);
       }
     }
 #ifdef BLIND
@@ -849,13 +857,13 @@ int main(int argc, char *argv[])
       histsPtDiMu100.mDiMu->Fill(mva.mDiMu, weight);
       if(!vbfPreselection)
       {
-        histsPtDiMu100.BDTHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","BDT"), weight);
-        histsPtDiMu100.likelihoodHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","Likelihood"), weight);
+        histsPtDiMu100.BDTHistMuonOnly->Fill(bdtValInc, weight);
+        histsPtDiMu100.likelihoodHistMuonOnly->Fill(likeValInc, weight);
       }
       else
       {
-        histsPtDiMu100.BDTHistVBF->Fill(mva.getMVA("vbf.cfg","BDT"), weight);
-        histsPtDiMu100.likelihoodHistVBF->Fill(mva.getMVA("vbf.cfg","Likelihood"), weight);
+        histsPtDiMu100.BDTHistVBF->Fill(bdtValVBF, weight);
+        histsPtDiMu100.likelihoodHistVBF->Fill(likeValVBF, weight);
       }
 #ifdef BLIND
       }
@@ -901,13 +909,13 @@ int main(int argc, char *argv[])
       histsVBFPresel.mDiMu->Fill(mva.mDiMu, weight);
       if(!vbfPreselection)
       {
-        histsVBFPresel.BDTHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","BDT"), weight);
-        histsVBFPresel.likelihoodHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","Likelihood"), weight);
+        histsVBFPresel.BDTHistMuonOnly->Fill(bdtValInc, weight);
+        histsVBFPresel.likelihoodHistMuonOnly->Fill(likeValInc, weight);
       }
       else
       {
-        histsVBFPresel.BDTHistVBF->Fill(mva.getMVA("vbf.cfg","BDT"), weight);
-        histsVBFPresel.likelihoodHistVBF->Fill(mva.getMVA("vbf.cfg","Likelihood"), weight);
+        histsVBFPresel.BDTHistVBF->Fill(bdtValVBF, weight);
+        histsVBFPresel.likelihoodHistVBF->Fill(likeValVBF, weight);
       }
 #ifdef BLIND
       }
@@ -953,13 +961,13 @@ int main(int argc, char *argv[])
       histsIncPresel.mDiMu->Fill(mva.mDiMu, weight);
       if(!vbfPreselection)
       {
-        histsIncPresel.BDTHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","BDT"), weight);
-        histsIncPresel.likelihoodHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","Likelihood"), weight);
+        histsIncPresel.BDTHistMuonOnly->Fill(bdtValInc, weight);
+        histsIncPresel.likelihoodHistMuonOnly->Fill(likeValInc, weight);
       }
       else
       {
-        histsIncPresel.BDTHistVBF->Fill(mva.getMVA("vbf.cfg","BDT"), weight);
-        histsIncPresel.likelihoodHistVBF->Fill(mva.getMVA("vbf.cfg","Likelihood"), weight);
+        histsIncPresel.BDTHistVBF->Fill(bdtValVBF, weight);
+        histsIncPresel.likelihoodHistVBF->Fill(likeValVBF, weight);
       }
 #ifdef BLIND
       }
@@ -1001,13 +1009,13 @@ int main(int argc, char *argv[])
       histsNotBlindWindow.ht->Fill(mva.ht, weight);
       if(!vbfPreselection)
       {
-        histsNotBlindWindow.BDTHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","BDT"), weight);
-        histsNotBlindWindow.likelihoodHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","Likelihood"), weight);
+        histsNotBlindWindow.BDTHistMuonOnly->Fill(bdtValInc, weight);
+        histsNotBlindWindow.likelihoodHistMuonOnly->Fill(likeValInc, weight);
       }
       else
       {
-        histsNotBlindWindow.BDTHistVBF->Fill(mva.getMVA("vbf.cfg","BDT"), weight);
-        histsNotBlindWindow.likelihoodHistVBF->Fill(mva.getMVA("vbf.cfg","Likelihood"), weight);
+        histsNotBlindWindow.BDTHistVBF->Fill(bdtValVBF, weight);
+        histsNotBlindWindow.likelihoodHistVBF->Fill(likeValVBF, weight);
       }
     }
 
@@ -1046,13 +1054,13 @@ int main(int argc, char *argv[])
       histsUpperControlRegion.ht->Fill(mva.ht, weight);
       if(!vbfPreselection)
       {
-        histsUpperControlRegion.BDTHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","BDT"), weight);
-        histsUpperControlRegion.likelihoodHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","Likelihood"), weight);
+        histsUpperControlRegion.BDTHistMuonOnly->Fill(bdtValInc, weight);
+        histsUpperControlRegion.likelihoodHistMuonOnly->Fill(likeValInc, weight);
       }
       else
       {
-        histsUpperControlRegion.BDTHistVBF->Fill(mva.getMVA("vbf.cfg","BDT"), weight);
-        histsUpperControlRegion.likelihoodHistVBF->Fill(mva.getMVA("vbf.cfg","Likelihood"), weight);
+        histsUpperControlRegion.BDTHistVBF->Fill(bdtValVBF, weight);
+        histsUpperControlRegion.likelihoodHistVBF->Fill(likeValVBF, weight);
       }
     }
     //Lower Control Region Plots
@@ -1090,13 +1098,13 @@ int main(int argc, char *argv[])
       histsLowerControlRegion.ht->Fill(mva.ht, weight);
       if(!vbfPreselection)
       {
-        histsLowerControlRegion.BDTHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","BDT"), weight);
-        histsLowerControlRegion.likelihoodHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","Likelihood"), weight);
+        histsLowerControlRegion.BDTHistMuonOnly->Fill(bdtValInc, weight);
+        histsLowerControlRegion.likelihoodHistMuonOnly->Fill(likeValInc, weight);
       }
       else
       {
-        histsLowerControlRegion.BDTHistVBF->Fill(mva.getMVA("vbf.cfg","BDT"), weight);
-        histsLowerControlRegion.likelihoodHistVBF->Fill(mva.getMVA("vbf.cfg","Likelihood"), weight);
+        histsLowerControlRegion.BDTHistVBF->Fill(bdtValVBF, weight);
+        histsLowerControlRegion.likelihoodHistVBF->Fill(likeValVBF, weight);
       }
     }
 
@@ -1139,8 +1147,8 @@ int main(int argc, char *argv[])
       histsVBFLoose.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
       histsVBFLoose.nJets->Fill(mva.nJets, weight);
       histsVBFLoose.ht->Fill(mva.ht, weight);
-      histsVBFLoose.BDTHistVBF->Fill(mva.getMVA("vbf.cfg","BDT"), weight);
-      histsVBFLoose.likelihoodHistVBF->Fill(mva.getMVA("vbf.cfg","Likelihood"), weight);
+      histsVBFLoose.BDTHistVBF->Fill(bdtValVBF, weight);
+      histsVBFLoose.likelihoodHistVBF->Fill(likeValVBF, weight);
     }
 
     if (vbfMedium)
@@ -1182,8 +1190,8 @@ int main(int argc, char *argv[])
       histsVBFMedium.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
       histsVBFMedium.nJets->Fill(mva.nJets, weight);
       histsVBFMedium.ht->Fill(mva.ht, weight);
-      histsVBFMedium.BDTHistVBF->Fill(mva.getMVA("vbf.cfg","BDT"), weight);
-      histsVBFMedium.likelihoodHistVBF->Fill(mva.getMVA("vbf.cfg","Likelihood"), weight);
+      histsVBFMedium.BDTHistVBF->Fill(bdtValVBF, weight);
+      histsVBFMedium.likelihoodHistVBF->Fill(likeValVBF, weight);
     }
 
     if (vbfTight)
@@ -1225,8 +1233,8 @@ int main(int argc, char *argv[])
       histsVBFTight.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
       histsVBFTight.nJets->Fill(mva.nJets, weight);
       histsVBFTight.ht->Fill(mva.ht, weight);
-      histsVBFTight.BDTHistVBF->Fill(mva.getMVA("vbf.cfg","BDT"), weight);
-      histsVBFTight.likelihoodHistVBF->Fill(mva.getMVA("vbf.cfg","Likelihood"), weight);
+      histsVBFTight.BDTHistVBF->Fill(bdtValVBF, weight);
+      histsVBFTight.likelihoodHistVBF->Fill(likeValVBF, weight);
     }
 
     if (vbfVeryTight)
@@ -1268,8 +1276,8 @@ int main(int argc, char *argv[])
       histsVBFVeryTight.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
       histsVBFVeryTight.nJets->Fill(mva.nJets, weight);
       histsVBFVeryTight.ht->Fill(mva.ht, weight);
-      histsVBFVeryTight.BDTHistVBF->Fill(mva.getMVA("vbf.cfg","BDT"), weight);
-      histsVBFVeryTight.likelihoodHistVBF->Fill(mva.getMVA("vbf.cfg","Likelihood"), weight);
+      histsVBFVeryTight.BDTHistVBF->Fill(bdtValVBF, weight);
+      histsVBFVeryTight.likelihoodHistVBF->Fill(likeValVBF, weight);
     }
 
     if (pt0to30)
@@ -1311,8 +1319,8 @@ int main(int argc, char *argv[])
       histsPt0to30.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
       histsPt0to30.nJets->Fill(mva.nJets, weight);
       histsPt0to30.ht->Fill(mva.ht, weight);
-      histsPt0to30.BDTHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","BDT"), weight);
-      histsPt0to30.likelihoodHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","Likelihood"), weight);
+      histsPt0to30.BDTHistMuonOnly->Fill(bdtValInc, weight);
+      histsPt0to30.likelihoodHistMuonOnly->Fill(likeValInc, weight);
     }
 
     if (pt30to50)
@@ -1354,8 +1362,8 @@ int main(int argc, char *argv[])
       histsPt30to50.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
       histsPt30to50.nJets->Fill(mva.nJets, weight);
       histsPt30to50.ht->Fill(mva.ht, weight);
-      histsPt30to50.BDTHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","BDT"), weight);
-      histsPt30to50.likelihoodHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","Likelihood"), weight);
+      histsPt30to50.BDTHistMuonOnly->Fill(bdtValInc, weight);
+      histsPt30to50.likelihoodHistMuonOnly->Fill(likeValInc, weight);
     }
 
     if (pt50to125)
@@ -1397,8 +1405,8 @@ int main(int argc, char *argv[])
       histsPt50to125.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
       histsPt50to125.nJets->Fill(mva.nJets, weight);
       histsPt50to125.ht->Fill(mva.ht, weight);
-      histsPt50to125.BDTHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","BDT"), weight);
-      histsPt50to125.likelihoodHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","Likelihood"), weight);
+      histsPt50to125.BDTHistMuonOnly->Fill(bdtValInc, weight);
+      histsPt50to125.likelihoodHistMuonOnly->Fill(likeValInc, weight);
     }
 
     if (pt125to250)
@@ -1440,8 +1448,8 @@ int main(int argc, char *argv[])
       histsPt125to250.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
       histsPt125to250.nJets->Fill(mva.nJets, weight);
       histsPt125to250.ht->Fill(mva.ht, weight);
-      histsPt125to250.BDTHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","BDT"), weight);
-      histsPt125to250.likelihoodHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","Likelihood"), weight);
+      histsPt125to250.BDTHistMuonOnly->Fill(bdtValInc, weight);
+      histsPt125to250.likelihoodHistMuonOnly->Fill(likeValInc, weight);
     }
 
     if (pt250)
@@ -1483,11 +1491,11 @@ int main(int argc, char *argv[])
       histsPt250.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
       histsPt250.nJets->Fill(mva.nJets, weight);
       histsPt250.ht->Fill(mva.ht, weight);
-      histsPt250.BDTHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","BDT"), weight);
-      histsPt250.likelihoodHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","Likelihood"), weight);
+      histsPt250.BDTHistMuonOnly->Fill(bdtValInc, weight);
+      histsPt250.likelihoodHistMuonOnly->Fill(likeValInc, weight);
     }
 
-    if (!vbfPreselection && mva.getMVAPassBDTCut("inclusive.cfg"))
+    if (!vbfPreselection && mva.getMVAPassBDTCut(cfgNameInc))
     {
 #ifdef BLIND
       if (!(inBlindWindow && isData))
@@ -1526,10 +1534,10 @@ int main(int argc, char *argv[])
       histsIncBDTSig80.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
       histsIncBDTSig80.nJets->Fill(mva.nJets, weight);
       histsIncBDTSig80.ht->Fill(mva.ht, weight);
-      histsIncBDTSig80.BDTHistMuonOnly->Fill(mva.getMVA("inclusive.cfg","BDT"), weight);
+      histsIncBDTSig80.BDTHistMuonOnly->Fill(bdtValInc, weight);
     }
 
-    if (vbfPreselection && mva.getMVAPassBDTCut("vbf.cfg"))
+    if (vbfPreselection && mva.getMVAPassBDTCut(cfgNameVBF))
     {
 #ifdef BLIND
       if (!(inBlindWindow && isData))
@@ -1568,7 +1576,7 @@ int main(int argc, char *argv[])
       histsVBFBDTSig80.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
       histsVBFBDTSig80.nJets->Fill(mva.nJets, weight);
       histsVBFBDTSig80.ht->Fill(mva.ht, weight);
-      histsVBFBDTSig80.BDTHistVBF->Fill(mva.getMVA("vbf.cfg","BDT"), weight);
+      histsVBFBDTSig80.BDTHistVBF->Fill(bdtValVBF, weight);
     }
 
     timeReading += difftime(timeStopReading,timeStartReading);
