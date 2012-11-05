@@ -3,7 +3,7 @@
 nice scons -j4
 
 #TRAININGTREES="true"
-#TRAIN="true"
+TRAIN="true"
 
 DIR=/data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/V00-01-01/
 
@@ -17,7 +17,8 @@ echo "#######################"
 echo "Creating Training Trees"
 echo "#######################"
 
-nice ./analyzer DYJetsToLL.root $DIR/NtuplesMCDYToMuMu_M-20_CT10_TuneZ2star_v2_8TeV-powheg-pythia6_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/DYToMuMu_minimal.root --trainingTree backgroundTreeDY.root >& log2 &
+#nice ./analyzer DYJetsToLL.root $DIR/NtuplesMCDYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/*.root --trainingTree backgroundTreeDY.root >& log2 &
+nice ./analyzer DYToMuMu.root $DIR/NtuplesMCDYToMuMu_M-20_CT10_TuneZ2star_v2_8TeV-powheg-pythia6_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/DYToMuMu_minimal.root --trainingTree backgroundTreeDY.root >& log2 &
 nice ./analyzer ttbar.root $DIR/NtuplesMCTTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/TTJets_minimal.root --trainingTree backgroundTreeTT.root >& log2 &
 
 nice ./analyzer ggHmumu125.root $DIR/NtuplesMCPrivateSignal/ggHmumu8TeV125.root --trainingTree signalTreeGG.root
@@ -54,7 +55,8 @@ echo "#######################"
 fi
 
 # Run with full MVA
-nice ./analyzer DYJetsToLL.root $DIR/NtuplesMCDYToMuMu_M-20_CT10_TuneZ2star_v2_8TeV-powheg-pythia6_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/DYToMuMu_minimal.root >& log2 &
+nice ./analyzer DYJetsToLL.root $DIR/NtuplesMCDYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/*.root >& log2 &
+nice ./analyzer DYToMuMu.root $DIR/NtuplesMCDYToMuMu_M-20_CT10_TuneZ2star_v2_8TeV-powheg-pythia6_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/DYToMuMu_minimal.root >& log2 &
 nice ./analyzer ttbar.root $DIR/NtuplesMCTTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/TTJets_minimal.root >& log2 &
 
 nice ./analyzer ggHmumu125.root $DIR/NtuplesMCPrivateSignal/ggHmumu8TeV125.root
