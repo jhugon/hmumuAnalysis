@@ -185,7 +185,7 @@ int main(int argc, char *argv[])
   /////////////////////////////
 
   float minMmm = 70.0;
-  float maxMmm = 400.0;
+  float maxMmm = 160.0;
   //float minMmm = 110.0;
   //float maxMmm = 150.0;
 
