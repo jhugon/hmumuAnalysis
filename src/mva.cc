@@ -62,7 +62,7 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
       std::ifstream infile(configFileName->c_str());
       if(!infile)
       {
-        std::cout << "Error: Can't open config file...exiting." << std::endl;
+        std::cout << "Error: Can't open config file: "<< *configFileName<<" ...exiting." << std::endl;
         throw;
       }
   

@@ -125,6 +125,7 @@ int main(int argc, char *argv[])
   //////////// Configuration Options //////////
   /////////////////////////////////////////////
 
+  gErrorIgnoreLevel = kError;
   time_t timeStart = time(NULL);
 
   const char* optionIntro = "H->MuMu Analyzer\n\nUsage: ./analyzer [--help] [--train] [--maxEvents N] <outputFileName.root> <inputFileName.root> [<inputFileName2.root>...]\n\nAllowed Options";
@@ -134,6 +135,7 @@ int main(int argc, char *argv[])
       ("trainingTree,t",program_options::value<string>(), "Create Training Tree File with filename")
       ("filenames",program_options::value<vector<string> >(), "Input & Output File Names, put output name first followed by all input file names")
       ("maxEvents,m",program_options::value<int>(), "Maximum Number of Events to Process")
+      ("runPeriod,r",program_options::value<string>(), "Running Perios e.g. 7TeV, 8TeV")
   ;
   
   program_options::positional_options_description optionPos;
@@ -180,6 +182,13 @@ int main(int argc, char *argv[])
   }
   cout << "maxEvents = "<< maxEvents << "\n";
 
+  string runPeriod = "";
+  if (optionMap.count("runPeriod"))
+  {
+    runPeriod = optionMap["runPeriod"].as<string>();
+  }
+  cout << "Run Period: " << runPeriod << endl;
+
   /////////////////////////////
   //////////// Setup //////////
   /////////////////////////////
@@ -197,8 +206,13 @@ int main(int argc, char *argv[])
   float resSmear = 1.169; // should all be around 1; a ratio of resolutions
   float resSysSmear = 0.2; // Error on that ratio
 
-  string cfgNameInc = "inclusive.cfg";
-  string cfgNameVBF = "vbf.cfg";
+  string cfgNameInc = "inclusive_";
+  string cfgNameVBF = "vbf_";
+  cfgNameInc.append(runPeriod);
+  cfgNameVBF.append(runPeriod);
+  cfgNameInc.append(".cfg");
+  cfgNameVBF.append(".cfg");
+  cout << "cfgNames: " << cfgNameInc <<" \t"<< cfgNameVBF << endl;
 
   std::vector<int> allowedHLTPaths;
   allowedHLTPaths.push_back(0); //IsoMu24
