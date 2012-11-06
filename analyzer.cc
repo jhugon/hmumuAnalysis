@@ -187,6 +187,11 @@ int main(int argc, char *argv[])
   {
     runPeriod = optionMap["runPeriod"].as<string>();
   }
+  //else
+  //{
+  //  cout << "Run Period not specified, exiting"<< endl;
+  //  return 1;
+  //}
   cout << "Run Period: " << runPeriod << endl;
 
   /////////////////////////////
@@ -358,6 +363,15 @@ int main(int argc, char *argv[])
 
 #ifdef PUREWEIGHT
   reweight::LumiReWeighting lumiWeights("pileupDists/PileUpHistMC2012Summer50nsPoissonOOTPU.root","pileupDists/PileUpHist2012ABCv1.root","pileup","pileup");
+  if (runPeriod == "7TeV")
+  {
+    cout << "Using 2011B PU reweighting\n";
+    lumiWeights = reweight::LumiReWeighting("pileupDists/PileUpHistMCFall11.root","pileupDists/PileUpHist2011B.root","pileup","pileup");
+  }
+  else
+  {
+    cout << "Using 2012ABCv1 PU reweighting\n";
+  }
 #endif
 
   const double SQRT2 = sqrt(2);
