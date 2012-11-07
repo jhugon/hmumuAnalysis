@@ -244,6 +244,21 @@ int main(int argc, char *argv[])
   else
     std::cout << "This is a MC Sample\n";
 
+  ///////////////////////////////
+  // Which Muon Selection to Use
+
+  bool (*muonIdFuncPtr)(_MuonInfo&);
+  if (runPeriod == "7TeV")
+  {
+    cout << "Using 2011 Tight Muon Selection\n";
+    muonIdFuncPtr = &isKinTight_2011;
+  }
+  else
+  {
+    cout << "Using 2012 Tight Muon Selection\n";
+    muonIdFuncPtr = &isKinTight_2012;
+  }
+
   ////////////
   
   TChain * tree = new TChain("tree");
@@ -428,8 +443,8 @@ int main(int argc, char *argv[])
 
     hists.countsHist->Fill(0.0, weight);
 
-    if (!isKinTight_2012(reco1) || !isKinTight_2012(reco2))
-        continue;
+    if (!((*muonIdFuncPtr)(reco1)) || !((*muonIdFuncPtr)(reco2)))
+          continue;
 
     hists.countsHist->Fill(1.0, weight);
 

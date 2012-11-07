@@ -43,6 +43,36 @@ bool isKinTight_2012(_MuonInfo& muon)
   return isKinTight_2012;
 }
 
+bool isKinTight_2011(_MuonInfo& muon) 
+{
+
+  bool isKinTight_2011=false;
+
+  if (!muon.isGlobal)  return isKinTight_2011;
+  if (!muon.isTracker) return isKinTight_2011;
+
+  // acceptance cuts
+  if (muon.pt < 25)         return isKinTight_2011; // pt cut
+  if (fabs(muon.eta) > 2.1) return isKinTight_2011; // eta cut
+
+  // kinematic cuts
+  if (muon.numTrackerLayers < 9) return isKinTight_2011; // # hits in tracker
+
+  if(getRelIso(muon) > 0.12)
+      return isKinTight_2011;
+
+  if (fabs(muon.d0_PV) > 0.2) return isKinTight_2011;
+  //if (fabs(muon.dz_PV) > 0.5) return isKinTight_2011;
+
+  if ( muon.numValidMuonHits  < 1 ) return isKinTight_2011;
+  if ( muon.numValidPixelHits < 1 ) return isKinTight_2011;
+  if ( muon.numOfMatchedStations < 2 ) return isKinTight_2011;
+  if ( muon.normChiSquare > 10)     return isKinTight_2011;
+
+  isKinTight_2011=true;
+  return isKinTight_2011;
+}
+
 bool passPUJetID(int flag, PUJetID desiredLevel)
 {
  return ( flag & (1 << desiredLevel) ) != 0;
