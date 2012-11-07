@@ -71,7 +71,7 @@ nice ./analyzer ZZ_7TeV.root $DIR/NtuplesMCZZ_TuneZ2_7TeV_pythia6_tauola_Fall11-
 #nice ./analyzer WJetsToLNu_7TeV.root $DIR/NtuplesMCWJetsToLNu_TuneZ2_7TeV-madgraph-tauola_Fall11-PU_S6_START44_V9B-v1/minimal/WJetsToLNu_minimal.root -r 7TeV >& log7TeV2 &
 #nice ./analyzer QCD_7TeV.root $DIR/NtuplesMCQCD_Pt-20_MuEnrichedPt-15_TuneZ2_7TeV-pythia6_Fall11-PU_S6_START44_V9B-v1/minimal/QCD_Pt_20_MuEnrichedPt_15_minimal.root -r 7TeV >& log7TeV2 &
 
-#nice ./analyzer SingleMuRun2011Av1.root $DIR/NtuplesDataSingleMuRun2011A-08Nov2011-v1/minimal/SingleMuRun2011A-08Nov2011-v1_minimal.root -r 7TeV 
+nice ./analyzer SingleMuRun2011Av1.root $DIR/NtuplesDataSingleMuRun2011A-08Nov2011-v1/minimal/SingleMuRun2011A-08Nov2011-v1_minimal.root -r 7TeV 
 nice ./analyzer SingleMuRun2011Bv1.root $DIR/NtuplesDataSingleMuRun2011B-19Nov2011-v1/minimal/SingleMuRun2011B-19Nov2011-v1_minimal.root -r 7TeV 
 
 wait
