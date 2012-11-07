@@ -2,8 +2,8 @@
 
 nice scons -j4
 
-#TRAININGTREES="true"
-#TRAIN="true"
+TRAININGTREES="true"
+TRAIN="true"
 
 DIR=/data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/V00-01-01/
 
@@ -17,8 +17,8 @@ echo "#######################"
 echo "Creating Training Trees"
 echo "#######################"
 
-#nice ./analyzer DYJetsToLL_8TeV.root $DIR/NtuplesMCDYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/DYJetsToLL_minimal.root --trainingTree backgroundTreeDY_8TeV.root -r 8TeV >& log2 &
-nice ./analyzer DYToMuMu_8TeV.root $DIR/NtuplesMCDYToMuMu_M-20_CT10_TuneZ2star_v2_8TeV-powheg-pythia6_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/DYToMuMu_minimal.root --trainingTree backgroundTreeDY_8TeV.root -r 8TeV  >& log2 &
+nice ./analyzer DYJetsToLL_8TeV.root $DIR/NtuplesMCDYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/DYJetsToLL_minimal.root --trainingTree backgroundTreeDY_8TeV.root -r 8TeV >& log2 &
+#nice ./analyzer DYToMuMu_8TeV.root $DIR/NtuplesMCDYToMuMu_M-20_CT10_TuneZ2star_v2_8TeV-powheg-pythia6_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/DYToMuMu_minimal.root --trainingTree backgroundTreeDY_8TeV.root -r 8TeV  >& log2 &
 nice ./analyzer ttbar_8TeV.root $DIR/NtuplesMCTTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/TTJets_minimal.root --trainingTree backgroundTreeTT_8TeV.root -r 8TeV  >& log2 &
 
 nice ./analyzer ggHmumu125_8TeV.root $DIR/NtuplesMCPrivateSignal/ggHmumu8TeV125.root --trainingTree signalTreeGG_8TeV.root -r 8TeV 
@@ -46,9 +46,9 @@ echo "#######################" >& log2
 echo "    Training MVAs" >& log2
 echo "#######################" >& log2
 echo "training Inclusive..."
-nice ./mvaTrain inclusive_8TeV.cfg >& logMVAInc
+nice ./mvaTrain inclusive_8TeV.cfg >& logMVAInc_8TeV
 echo "training VBF..."
-nice ./mvaTrain vbf_8TeV.cfg >& logMVAVBF
+nice ./mvaTrain vbf_8TeV.cfg >& logMVAVBF_8TeV
 echo "done training."
 echo "#######################"
 echo "#######################"

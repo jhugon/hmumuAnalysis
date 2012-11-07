@@ -17,8 +17,8 @@ echo "#######################"
 echo "Creating Training Trees"
 echo "#######################"
 
-#nice ./analyzer DYJetsToLL_7TeV.root $DIR/NtuplesMCDYJetsToLL_TuneZ2_M-50_7TeV-madgraph-tauola_Fall11-PU_S6_START44_V9B-v1/minimal/DYJetsToLL_minimal.root --trainingTree backgroundTreeDY_7TeV.root -r 7TeV >& log7TeV2 &
-nice ./analyzer DYToMuMu_7TeV.root $DIR/NtuplesMCDYToMuMu_M-20_CT10_TuneZ2_7TeV-powheg-pythia_Fall11-PU_S6_START44_V9B-v1/minimal/DYToMuMu_minimal.root --trainingTree backgroundTreeDY_7TeV.root -r 7TeV  >& log7TeV2 &
+nice ./analyzer DYJetsToLL_7TeV.root $DIR/NtuplesMCDYJetsToLL_TuneZ2_M-50_7TeV-madgraph-tauola_Fall11-PU_S6_START44_V9B-v1/minimal/DYJetsToLL_minimal.root --trainingTree backgroundTreeDY_7TeV.root -r 7TeV >& log7TeV2 &
+#nice ./analyzer DYToMuMu_7TeV.root $DIR/NtuplesMCDYToMuMu_M-20_CT10_TuneZ2_7TeV-powheg-pythia_Fall11-PU_S6_START44_V9B-v1/minimal/DYToMuMu_minimal.root --trainingTree backgroundTreeDY_7TeV.root -r 7TeV  >& log7TeV2 &
 nice ./analyzer ttbar_7TeV.root $DIR/NtuplesMCTTJets_TuneZ2_7TeV-madgraph-tauola_Fall11-PU_S6_START44_V9B-v1/minimal/TTJets_minimal.root --trainingTree backgroundTreeTT_7TeV.root -r 7TeV  >& log7TeV2 &
 
 nice ./analyzer ggHmumu125_7TeV.root $DIR/NtuplesMCPrivateSignal/ggHmumu7TeV125.root --trainingTree signalTreeGG_7TeV.root -r 7TeV 
