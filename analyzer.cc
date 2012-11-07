@@ -55,6 +55,7 @@ struct HistStruct
   TH1F* mDiMu;
   TH1F* mDiJet;
   TH1F* ptDiMu;
+  TH1F* ptDiJet;
   TH1F* yDiMu;
 
   TH2F* yVptDiMu;
@@ -701,6 +702,7 @@ int main(int argc, char *argv[])
       mva.deltaEtaJets = dEtaJets;
 
       hists.mDiJet->Fill(mva.mDiJet, weight);
+      hists.ptDiJet->Fill(mva.ptDiJet, weight);
       hists.ptJet1->Fill(mva.ptJet1, weight);
       hists.ptJet2->Fill(mva.ptJet2, weight);
       hists.etaJet1->Fill(mva.etaJet1, weight);
@@ -834,6 +836,7 @@ int main(int argc, char *argv[])
       hists4GeVWindow.met->Fill(met.pt, weight);
 
       hists4GeVWindow.mDiJet->Fill(mva.mDiJet, weight);
+      hists4GeVWindow.ptDiJet->Fill(mva.ptDiJet, weight);
       hists4GeVWindow.ptJet1->Fill(mva.ptJet1, weight);
       hists4GeVWindow.ptJet2->Fill(mva.ptJet2, weight);
       hists4GeVWindow.etaJet1->Fill(mva.etaJet1, weight);
@@ -882,6 +885,7 @@ int main(int argc, char *argv[])
       histsPtDiMu100.met->Fill(met.pt, weight);
 
       histsPtDiMu100.mDiJet->Fill(mva.mDiJet, weight);
+      histsPtDiMu100.ptDiJet->Fill(mva.ptDiJet, weight);
       histsPtDiMu100.ptJet1->Fill(mva.ptJet1, weight);
       histsPtDiMu100.ptJet2->Fill(mva.ptJet2, weight);
       histsPtDiMu100.etaJet1->Fill(mva.etaJet1, weight);
@@ -934,6 +938,7 @@ int main(int argc, char *argv[])
       histsVBFPresel.met->Fill(met.pt, weight);
 
       histsVBFPresel.mDiJet->Fill(mva.mDiJet, weight);
+      histsVBFPresel.ptDiJet->Fill(mva.ptDiJet, weight);
       histsVBFPresel.ptJet1->Fill(mva.ptJet1, weight);
       histsVBFPresel.ptJet2->Fill(mva.ptJet2, weight);
       histsVBFPresel.etaJet1->Fill(mva.etaJet1, weight);
@@ -986,6 +991,7 @@ int main(int argc, char *argv[])
       histsIncPresel.met->Fill(met.pt, weight);
 
       histsIncPresel.mDiJet->Fill(mva.mDiJet, weight);
+      histsIncPresel.ptDiJet->Fill(mva.ptDiJet, weight);
       histsIncPresel.ptJet1->Fill(mva.ptJet1, weight);
       histsIncPresel.ptJet2->Fill(mva.ptJet2, weight);
       histsIncPresel.etaJet1->Fill(mva.etaJet1, weight);
@@ -1039,6 +1045,7 @@ int main(int argc, char *argv[])
       histsNotBlindWindow.met->Fill(met.pt, weight);
 
       histsNotBlindWindow.mDiJet->Fill(mva.mDiJet, weight);
+      histsNotBlindWindow.ptDiJet->Fill(mva.ptDiJet, weight);
       histsNotBlindWindow.ptJet1->Fill(mva.ptJet1, weight);
       histsNotBlindWindow.ptJet2->Fill(mva.ptJet2, weight);
       histsNotBlindWindow.etaJet1->Fill(mva.etaJet1, weight);
@@ -1084,6 +1091,7 @@ int main(int argc, char *argv[])
       histsUpperControlRegion.met->Fill(met.pt, weight);
 
       histsUpperControlRegion.mDiJet->Fill(mva.mDiJet, weight);
+      histsUpperControlRegion.ptDiJet->Fill(mva.ptDiJet, weight);
       histsUpperControlRegion.ptJet1->Fill(mva.ptJet1, weight);
       histsUpperControlRegion.ptJet2->Fill(mva.ptJet2, weight);
       histsUpperControlRegion.etaJet1->Fill(mva.etaJet1, weight);
@@ -1128,6 +1136,7 @@ int main(int argc, char *argv[])
       histsLowerControlRegion.met->Fill(met.pt, weight);
 
       histsLowerControlRegion.mDiJet->Fill(mva.mDiJet, weight);
+      histsLowerControlRegion.ptDiJet->Fill(mva.ptDiJet, weight);
       histsLowerControlRegion.ptJet1->Fill(mva.ptJet1, weight);
       histsLowerControlRegion.ptJet2->Fill(mva.ptJet2, weight);
       histsLowerControlRegion.etaJet1->Fill(mva.etaJet1, weight);
@@ -1179,6 +1188,7 @@ int main(int argc, char *argv[])
       histsVBFLoose.met->Fill(met.pt, weight);
 
       histsVBFLoose.mDiJet->Fill(mva.mDiJet, weight);
+      histsVBFLoose.ptDiJet->Fill(mva.ptDiJet, weight);
       histsVBFLoose.ptJet1->Fill(mva.ptJet1, weight);
       histsVBFLoose.ptJet2->Fill(mva.ptJet2, weight);
       histsVBFLoose.etaJet1->Fill(mva.etaJet1, weight);
@@ -1222,6 +1232,7 @@ int main(int argc, char *argv[])
       histsVBFMedium.met->Fill(met.pt, weight);
 
       histsVBFMedium.mDiJet->Fill(mva.mDiJet, weight);
+      histsVBFMedium.ptDiJet->Fill(mva.ptDiJet, weight);
       histsVBFMedium.ptJet1->Fill(mva.ptJet1, weight);
       histsVBFMedium.ptJet2->Fill(mva.ptJet2, weight);
       histsVBFMedium.etaJet1->Fill(mva.etaJet1, weight);
@@ -1265,6 +1276,7 @@ int main(int argc, char *argv[])
       histsVBFTight.met->Fill(met.pt, weight);
 
       histsVBFTight.mDiJet->Fill(mva.mDiJet, weight);
+      histsVBFTight.ptDiJet->Fill(mva.ptDiJet, weight);
       histsVBFTight.ptJet1->Fill(mva.ptJet1, weight);
       histsVBFTight.ptJet2->Fill(mva.ptJet2, weight);
       histsVBFTight.etaJet1->Fill(mva.etaJet1, weight);
@@ -1308,6 +1320,7 @@ int main(int argc, char *argv[])
       histsVBFVeryTight.met->Fill(met.pt, weight);
 
       histsVBFVeryTight.mDiJet->Fill(mva.mDiJet, weight);
+      histsVBFVeryTight.ptDiJet->Fill(mva.ptDiJet, weight);
       histsVBFVeryTight.ptJet1->Fill(mva.ptJet1, weight);
       histsVBFVeryTight.ptJet2->Fill(mva.ptJet2, weight);
       histsVBFVeryTight.etaJet1->Fill(mva.etaJet1, weight);
@@ -1351,6 +1364,7 @@ int main(int argc, char *argv[])
       histsPt0to30.met->Fill(met.pt, weight);
 
       histsPt0to30.mDiJet->Fill(mva.mDiJet, weight);
+      histsPt0to30.ptDiJet->Fill(mva.ptDiJet, weight);
       histsPt0to30.ptJet1->Fill(mva.ptJet1, weight);
       histsPt0to30.ptJet2->Fill(mva.ptJet2, weight);
       histsPt0to30.etaJet1->Fill(mva.etaJet1, weight);
@@ -1394,6 +1408,7 @@ int main(int argc, char *argv[])
       histsPt30to50.met->Fill(met.pt, weight);
 
       histsPt30to50.mDiJet->Fill(mva.mDiJet, weight);
+      histsPt30to50.ptDiJet->Fill(mva.ptDiJet, weight);
       histsPt30to50.ptJet1->Fill(mva.ptJet1, weight);
       histsPt30to50.ptJet2->Fill(mva.ptJet2, weight);
       histsPt30to50.etaJet1->Fill(mva.etaJet1, weight);
@@ -1437,6 +1452,7 @@ int main(int argc, char *argv[])
       histsPt50to125.met->Fill(met.pt, weight);
 
       histsPt50to125.mDiJet->Fill(mva.mDiJet, weight);
+      histsPt50to125.ptDiJet->Fill(mva.ptDiJet, weight);
       histsPt50to125.ptJet1->Fill(mva.ptJet1, weight);
       histsPt50to125.ptJet2->Fill(mva.ptJet2, weight);
       histsPt50to125.etaJet1->Fill(mva.etaJet1, weight);
@@ -1480,6 +1496,7 @@ int main(int argc, char *argv[])
       histsPt125to250.met->Fill(met.pt, weight);
 
       histsPt125to250.mDiJet->Fill(mva.mDiJet, weight);
+      histsPt125to250.ptDiJet->Fill(mva.ptDiJet, weight);
       histsPt125to250.ptJet1->Fill(mva.ptJet1, weight);
       histsPt125to250.ptJet2->Fill(mva.ptJet2, weight);
       histsPt125to250.etaJet1->Fill(mva.etaJet1, weight);
@@ -1523,6 +1540,7 @@ int main(int argc, char *argv[])
       histsPt250.met->Fill(met.pt, weight);
 
       histsPt250.mDiJet->Fill(mva.mDiJet, weight);
+      histsPt250.ptDiJet->Fill(mva.ptDiJet, weight);
       histsPt250.ptJet1->Fill(mva.ptJet1, weight);
       histsPt250.ptJet2->Fill(mva.ptJet2, weight);
       histsPt250.etaJet1->Fill(mva.etaJet1, weight);
@@ -1566,6 +1584,7 @@ int main(int argc, char *argv[])
       histsIncBDTSig80.met->Fill(met.pt, weight);
 
       histsIncBDTSig80.mDiJet->Fill(mva.mDiJet, weight);
+      histsIncBDTSig80.ptDiJet->Fill(mva.ptDiJet, weight);
       histsIncBDTSig80.ptJet1->Fill(mva.ptJet1, weight);
       histsIncBDTSig80.ptJet2->Fill(mva.ptJet2, weight);
       histsIncBDTSig80.etaJet1->Fill(mva.etaJet1, weight);
@@ -1608,6 +1627,7 @@ int main(int argc, char *argv[])
       histsVBFBDTSig80.met->Fill(met.pt, weight);
 
       histsVBFBDTSig80.mDiJet->Fill(mva.mDiJet, weight);
+      histsVBFBDTSig80.ptDiJet->Fill(mva.ptDiJet, weight);
       histsVBFBDTSig80.ptJet1->Fill(mva.ptJet1, weight);
       histsVBFBDTSig80.ptJet2->Fill(mva.ptJet2, weight);
       histsVBFBDTSig80.etaJet1->Fill(mva.etaJet1, weight);
@@ -1845,6 +1865,9 @@ HistStruct::HistStruct()
 
   ptDiMu = new TH1F("ptDiMu","DiMuon Pt",250,0,500);
   histVec.push_back(ptDiMu);
+
+  ptDiJet = new TH1F("ptDiJet","DiJet Pt",250,0,1000);
+  histVec.push_back(ptDiJet);
 
   yDiMu = new TH1F("yDiMu","DiMuon Rapidity",100,-4,4);
   histVec.push_back(yDiMu);
