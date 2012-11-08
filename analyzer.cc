@@ -53,6 +53,14 @@ struct HistStruct
   std::vector<TH2F*> histVec2D;
 
   TH1F* mDiMu;
+  TH1F* mDiMuBB;
+  TH1F* mDiMuBO;
+  TH1F* mDiMuBE;
+  TH1F* mDiMuOO;
+  TH1F* mDiMuOE;
+  TH1F* mDiMuEE;
+  TH1F* mDiMuNotBB;
+
   TH1F* mDiJet;
   TH1F* ptDiMu;
   TH1F* ptDiJet;
@@ -496,6 +504,48 @@ int main(int argc, char *argv[])
     float mDiMuResUp = smearMC(trueMass,recoCandMass,calib,resSmear+resSysSmear,random);
     float mDiMuResDown = smearMC(trueMass,recoCandMass,calib,resSmear-resSysSmear,random);
 
+    bool isBB = false;
+    bool isBO = false;
+    bool isBE = false;
+    bool isOO = false;
+    bool isOE = false;
+    bool isEE = false;
+    if(fabs(muon1.eta)<0.8 && fabs(muon2.eta)<0.8)
+    {
+        isBB=true;
+    }
+    else if(
+        (fabs(muon1.eta)<0.8 && fabs(muon2.eta)<1.6)
+            || (fabs(muon1.eta)<1.6 && fabs(muon2.eta)<0.8)
+        )
+    {
+        isBO=true;
+    }
+    else if(
+        fabs(muon1.eta)<0.8 || fabs(muon2.eta)<0.8
+        )
+    {
+        isBE=true;
+    }
+    else if(
+        fabs(muon1.eta)<1.6 && fabs(muon2.eta)<1.6
+        )
+    {
+        isOO=true;
+    }
+    else if(
+        fabs(muon1.eta)<1.6 || fabs(muon2.eta)<1.6
+        )
+    {
+        isOE=true;
+    }
+    else
+    {
+        isEE=true;
+    }
+    bool isNotBB = !isBB;
+    
+
     //////////////////////////////////////////
     //Computing CosTheta*
 
@@ -576,6 +626,14 @@ int main(int argc, char *argv[])
     {
 #endif
     hists.mDiMu->Fill(mva.mDiMu, weight);
+    if (isBB) hists.mDiMuBB->Fill(mva.mDiMu, weight);
+    if (isBE) hists.mDiMuBE->Fill(mva.mDiMu, weight);
+    if (isBO) hists.mDiMuBO->Fill(mva.mDiMu, weight);
+    if (isOO) hists.mDiMuOO->Fill(mva.mDiMu, weight);
+    if (isOE) hists.mDiMuOE->Fill(mva.mDiMu, weight);
+    if (isEE) hists.mDiMuEE->Fill(mva.mDiMu, weight);
+    if (isNotBB) hists.mDiMuNotBB->Fill(mva.mDiMu, weight);
+
     hists.yVmDiMu->Fill(mva.mDiMu,fabs(mva.yDiMu), weight);
     hists.ptVmDiMu->Fill(mva.mDiMu,mva.ptDiMu, weight);
     hists.phiVmDiMu->Fill(mva.mDiMu,recoCandPhi, weight);
@@ -849,6 +907,14 @@ int main(int argc, char *argv[])
       hists4GeVWindow.nJets->Fill(mva.nJets, weight);
       hists4GeVWindow.ht->Fill(mva.ht, weight);
       hists4GeVWindow.mDiMu->Fill(mva.mDiMu, weight);
+      if (isBB) hists4GeVWindow.mDiMuBB->Fill(mva.mDiMu, weight);
+      if (isBE) hists4GeVWindow.mDiMuBE->Fill(mva.mDiMu, weight);
+      if (isBO) hists4GeVWindow.mDiMuBO->Fill(mva.mDiMu, weight);
+      if (isOO) hists4GeVWindow.mDiMuOO->Fill(mva.mDiMu, weight);
+      if (isOE) hists4GeVWindow.mDiMuOE->Fill(mva.mDiMu, weight);
+      if (isEE) hists4GeVWindow.mDiMuEE->Fill(mva.mDiMu, weight);
+      if (isNotBB) hists4GeVWindow.mDiMuNotBB->Fill(mva.mDiMu, weight);
+
       if(!vbfPreselection)
       {
         hists4GeVWindow.BDTHistMuonOnly->Fill(bdtValInc, weight);
@@ -902,6 +968,14 @@ int main(int argc, char *argv[])
       {
 #endif
       histsPtDiMu100.mDiMu->Fill(mva.mDiMu, weight);
+      if (isBB) histsPtDiMu100.mDiMuBB->Fill(mva.mDiMu, weight);
+      if (isBE) histsPtDiMu100.mDiMuBE->Fill(mva.mDiMu, weight);
+      if (isBO) histsPtDiMu100.mDiMuBO->Fill(mva.mDiMu, weight);
+      if (isOO) histsPtDiMu100.mDiMuOO->Fill(mva.mDiMu, weight);
+      if (isOE) histsPtDiMu100.mDiMuOE->Fill(mva.mDiMu, weight);
+      if (isEE) histsPtDiMu100.mDiMuEE->Fill(mva.mDiMu, weight);
+      if (isNotBB) histsPtDiMu100.mDiMuNotBB->Fill(mva.mDiMu, weight);
+
       if(!vbfPreselection)
       {
         histsPtDiMu100.BDTHistMuonOnly->Fill(bdtValInc, weight);
@@ -955,15 +1029,25 @@ int main(int argc, char *argv[])
       {
 #endif
       histsVBFPresel.mDiMu->Fill(mva.mDiMu, weight);
+      if (isBB) histsVBFPresel.mDiMuBB->Fill(mva.mDiMu, weight);
+      if (isBE) histsVBFPresel.mDiMuBE->Fill(mva.mDiMu, weight);
+      if (isBO) histsVBFPresel.mDiMuBO->Fill(mva.mDiMu, weight);
+      if (isOO) histsVBFPresel.mDiMuOO->Fill(mva.mDiMu, weight);
+      if (isOE) histsVBFPresel.mDiMuOE->Fill(mva.mDiMu, weight);
+      if (isEE) histsVBFPresel.mDiMuEE->Fill(mva.mDiMu, weight);
+      if (isNotBB) histsVBFPresel.mDiMuNotBB->Fill(mva.mDiMu, weight);
+
       if(!vbfPreselection)
       {
         histsVBFPresel.BDTHistMuonOnly->Fill(bdtValInc, weight);
         histsVBFPresel.likelihoodHistMuonOnly->Fill(likeValInc, weight);
+        histsVBFPresel.BDTHistMuonOnlyVMass->Fill(mva.mDiMu, bdtValInc, weight);
       }
       else
       {
         histsVBFPresel.BDTHistVBF->Fill(bdtValVBF, weight);
         histsVBFPresel.likelihoodHistVBF->Fill(likeValVBF, weight);
+        histsVBFPresel.BDTHistVBFVMass->Fill(mva.mDiMu, bdtValVBF, weight);
       }
 #ifdef BLIND
       }
@@ -1008,15 +1092,25 @@ int main(int argc, char *argv[])
       {
 #endif
       histsIncPresel.mDiMu->Fill(mva.mDiMu, weight);
+      if (isBB) histsIncPresel.mDiMuBB->Fill(mva.mDiMu, weight);
+      if (isBE) histsIncPresel.mDiMuBE->Fill(mva.mDiMu, weight);
+      if (isBO) histsIncPresel.mDiMuBO->Fill(mva.mDiMu, weight);
+      if (isOO) histsIncPresel.mDiMuOO->Fill(mva.mDiMu, weight);
+      if (isOE) histsIncPresel.mDiMuOE->Fill(mva.mDiMu, weight);
+      if (isEE) histsIncPresel.mDiMuEE->Fill(mva.mDiMu, weight);
+      if (isNotBB) histsIncPresel.mDiMuNotBB->Fill(mva.mDiMu, weight);
+
       if(!vbfPreselection)
       {
         histsIncPresel.BDTHistMuonOnly->Fill(bdtValInc, weight);
         histsIncPresel.likelihoodHistMuonOnly->Fill(likeValInc, weight);
+        histsIncPresel.BDTHistMuonOnlyVMass->Fill(mva.mDiMu, bdtValInc, weight);
       }
       else
       {
         histsIncPresel.BDTHistVBF->Fill(bdtValVBF, weight);
         histsIncPresel.likelihoodHistVBF->Fill(likeValVBF, weight);
+        histsIncPresel.BDTHistVBFVMass->Fill(mva.mDiMu, bdtValVBF, weight);
       }
 #ifdef BLIND
       }
@@ -1027,6 +1121,14 @@ int main(int argc, char *argv[])
     if (!inBlindWindow)
     {
       histsNotBlindWindow.mDiMu->Fill(mva.mDiMu, weight);
+      if (isBB) histsNotBlindWindow.mDiMuBB->Fill(mva.mDiMu, weight);
+      if (isBE) histsNotBlindWindow.mDiMuBE->Fill(mva.mDiMu, weight);
+      if (isBO) histsNotBlindWindow.mDiMuBO->Fill(mva.mDiMu, weight);
+      if (isOO) histsNotBlindWindow.mDiMuOO->Fill(mva.mDiMu, weight);
+      if (isOE) histsNotBlindWindow.mDiMuOE->Fill(mva.mDiMu, weight);
+      if (isEE) histsNotBlindWindow.mDiMuEE->Fill(mva.mDiMu, weight);
+      if (isNotBB) histsNotBlindWindow.mDiMuNotBB->Fill(mva.mDiMu, weight);
+
       histsNotBlindWindow.yDiMu->Fill(mva.yDiMu, weight);
       histsNotBlindWindow.ptDiMu->Fill(mva.ptDiMu, weight);
       histsNotBlindWindow.ptMu1->Fill(mva.ptMu1, weight);
@@ -1073,6 +1175,14 @@ int main(int argc, char *argv[])
     if (mva.mDiMu>maxBlind)
     {
       histsUpperControlRegion.mDiMu->Fill(mva.mDiMu, weight);
+      if (isBB) histsUpperControlRegion.mDiMuBB->Fill(mva.mDiMu, weight);
+      if (isBE) histsUpperControlRegion.mDiMuBE->Fill(mva.mDiMu, weight);
+      if (isBO) histsUpperControlRegion.mDiMuBO->Fill(mva.mDiMu, weight);
+      if (isOO) histsUpperControlRegion.mDiMuOO->Fill(mva.mDiMu, weight);
+      if (isOE) histsUpperControlRegion.mDiMuOE->Fill(mva.mDiMu, weight);
+      if (isEE) histsUpperControlRegion.mDiMuEE->Fill(mva.mDiMu, weight);
+      if (isNotBB) histsUpperControlRegion.mDiMuNotBB->Fill(mva.mDiMu, weight);
+
       histsUpperControlRegion.yDiMu->Fill(mva.yDiMu, weight);
       histsUpperControlRegion.ptDiMu->Fill(mva.ptDiMu, weight);
       histsUpperControlRegion.ptMu1->Fill(mva.ptMu1, weight);
@@ -1118,6 +1228,14 @@ int main(int argc, char *argv[])
     if (mva.mDiMu<minBlind)
     {
       histsLowerControlRegion.mDiMu->Fill(mva.mDiMu, weight);
+      if (isBB) histsLowerControlRegion.mDiMuBB->Fill(mva.mDiMu, weight);
+      if (isBE) histsLowerControlRegion.mDiMuBE->Fill(mva.mDiMu, weight);
+      if (isBO) histsLowerControlRegion.mDiMuBO->Fill(mva.mDiMu, weight);
+      if (isOO) histsLowerControlRegion.mDiMuOO->Fill(mva.mDiMu, weight);
+      if (isOE) histsLowerControlRegion.mDiMuOE->Fill(mva.mDiMu, weight);
+      if (isEE) histsLowerControlRegion.mDiMuEE->Fill(mva.mDiMu, weight);
+      if (isNotBB) histsLowerControlRegion.mDiMuNotBB->Fill(mva.mDiMu, weight);
+
       histsLowerControlRegion.yDiMu->Fill(mva.yDiMu, weight);
       histsLowerControlRegion.ptDiMu->Fill(mva.ptDiMu, weight);
       histsLowerControlRegion.ptMu1->Fill(mva.ptMu1, weight);
@@ -1167,6 +1285,14 @@ int main(int argc, char *argv[])
       {
 #endif
       histsVBFLoose.mDiMu->Fill(mva.mDiMu, weight);
+      if (isBB) histsVBFLoose.mDiMuBB->Fill(mva.mDiMu, weight);
+      if (isBE) histsVBFLoose.mDiMuBE->Fill(mva.mDiMu, weight);
+      if (isBO) histsVBFLoose.mDiMuBO->Fill(mva.mDiMu, weight);
+      if (isOO) histsVBFLoose.mDiMuOO->Fill(mva.mDiMu, weight);
+      if (isOE) histsVBFLoose.mDiMuOE->Fill(mva.mDiMu, weight);
+      if (isEE) histsVBFLoose.mDiMuEE->Fill(mva.mDiMu, weight);
+      if (isNotBB) histsVBFLoose.mDiMuNotBB->Fill(mva.mDiMu, weight);
+
 #ifdef BLIND
       }
 #endif
@@ -1211,6 +1337,14 @@ int main(int argc, char *argv[])
       {
 #endif
       histsVBFMedium.mDiMu->Fill(mva.mDiMu, weight);
+      if (isBB) histsVBFMedium.mDiMuBB->Fill(mva.mDiMu, weight);
+      if (isBE) histsVBFMedium.mDiMuBE->Fill(mva.mDiMu, weight);
+      if (isBO) histsVBFMedium.mDiMuBO->Fill(mva.mDiMu, weight);
+      if (isOO) histsVBFMedium.mDiMuOO->Fill(mva.mDiMu, weight);
+      if (isOE) histsVBFMedium.mDiMuOE->Fill(mva.mDiMu, weight);
+      if (isEE) histsVBFMedium.mDiMuEE->Fill(mva.mDiMu, weight);
+      if (isNotBB) histsVBFMedium.mDiMuNotBB->Fill(mva.mDiMu, weight);
+
 #ifdef BLIND
       }
 #endif
@@ -1255,6 +1389,14 @@ int main(int argc, char *argv[])
       {
 #endif
       histsVBFTight.mDiMu->Fill(mva.mDiMu, weight);
+      if (isBB) histsVBFTight.mDiMuBB->Fill(mva.mDiMu, weight);
+      if (isBE) histsVBFTight.mDiMuBE->Fill(mva.mDiMu, weight);
+      if (isBO) histsVBFTight.mDiMuBO->Fill(mva.mDiMu, weight);
+      if (isOO) histsVBFTight.mDiMuOO->Fill(mva.mDiMu, weight);
+      if (isOE) histsVBFTight.mDiMuOE->Fill(mva.mDiMu, weight);
+      if (isEE) histsVBFTight.mDiMuEE->Fill(mva.mDiMu, weight);
+      if (isNotBB) histsVBFTight.mDiMuNotBB->Fill(mva.mDiMu, weight);
+
 #ifdef BLIND
       }
 #endif
@@ -1299,6 +1441,14 @@ int main(int argc, char *argv[])
       {
 #endif
       histsVBFVeryTight.mDiMu->Fill(mva.mDiMu, weight);
+      if (isBB) histsVBFVeryTight.mDiMuBB->Fill(mva.mDiMu, weight);
+      if (isBE) histsVBFVeryTight.mDiMuBE->Fill(mva.mDiMu, weight);
+      if (isBO) histsVBFVeryTight.mDiMuBO->Fill(mva.mDiMu, weight);
+      if (isOO) histsVBFVeryTight.mDiMuOO->Fill(mva.mDiMu, weight);
+      if (isOE) histsVBFVeryTight.mDiMuOE->Fill(mva.mDiMu, weight);
+      if (isEE) histsVBFVeryTight.mDiMuEE->Fill(mva.mDiMu, weight);
+      if (isNotBB) histsVBFVeryTight.mDiMuNotBB->Fill(mva.mDiMu, weight);
+
 #ifdef BLIND
       }
 #endif
@@ -1343,6 +1493,14 @@ int main(int argc, char *argv[])
       {
 #endif
       histsPt0to30.mDiMu->Fill(mva.mDiMu, weight);
+      if (isBB) histsPt0to30.mDiMuBB->Fill(mva.mDiMu, weight);
+      if (isBE) histsPt0to30.mDiMuBE->Fill(mva.mDiMu, weight);
+      if (isBO) histsPt0to30.mDiMuBO->Fill(mva.mDiMu, weight);
+      if (isOO) histsPt0to30.mDiMuOO->Fill(mva.mDiMu, weight);
+      if (isOE) histsPt0to30.mDiMuOE->Fill(mva.mDiMu, weight);
+      if (isEE) histsPt0to30.mDiMuEE->Fill(mva.mDiMu, weight);
+      if (isNotBB) histsPt0to30.mDiMuNotBB->Fill(mva.mDiMu, weight);
+
 #ifdef BLIND
       }
 #endif
@@ -1387,6 +1545,14 @@ int main(int argc, char *argv[])
       {
 #endif
       histsPt30to50.mDiMu->Fill(mva.mDiMu, weight);
+      if (isBB) histsPt30to50.mDiMuBB->Fill(mva.mDiMu, weight);
+      if (isBE) histsPt30to50.mDiMuBE->Fill(mva.mDiMu, weight);
+      if (isBO) histsPt30to50.mDiMuBO->Fill(mva.mDiMu, weight);
+      if (isOO) histsPt30to50.mDiMuOO->Fill(mva.mDiMu, weight);
+      if (isOE) histsPt30to50.mDiMuOE->Fill(mva.mDiMu, weight);
+      if (isEE) histsPt30to50.mDiMuEE->Fill(mva.mDiMu, weight);
+      if (isNotBB) histsPt30to50.mDiMuNotBB->Fill(mva.mDiMu, weight);
+
 #ifdef BLIND
       }
 #endif
@@ -1431,6 +1597,14 @@ int main(int argc, char *argv[])
       {
 #endif
       histsPt50to125.mDiMu->Fill(mva.mDiMu, weight);
+      if (isBB) histsPt50to125.mDiMuBB->Fill(mva.mDiMu, weight);
+      if (isBE) histsPt50to125.mDiMuBE->Fill(mva.mDiMu, weight);
+      if (isBO) histsPt50to125.mDiMuBO->Fill(mva.mDiMu, weight);
+      if (isOO) histsPt50to125.mDiMuOO->Fill(mva.mDiMu, weight);
+      if (isOE) histsPt50to125.mDiMuOE->Fill(mva.mDiMu, weight);
+      if (isEE) histsPt50to125.mDiMuEE->Fill(mva.mDiMu, weight);
+      if (isNotBB) histsPt50to125.mDiMuNotBB->Fill(mva.mDiMu, weight);
+
 #ifdef BLIND
       }
 #endif
@@ -1475,6 +1649,14 @@ int main(int argc, char *argv[])
       {
 #endif
       histsPt125to250.mDiMu->Fill(mva.mDiMu, weight);
+      if (isBB) histsPt125to250.mDiMuBB->Fill(mva.mDiMu, weight);
+      if (isBE) histsPt125to250.mDiMuBE->Fill(mva.mDiMu, weight);
+      if (isBO) histsPt125to250.mDiMuBO->Fill(mva.mDiMu, weight);
+      if (isOO) histsPt125to250.mDiMuOO->Fill(mva.mDiMu, weight);
+      if (isOE) histsPt125to250.mDiMuOE->Fill(mva.mDiMu, weight);
+      if (isEE) histsPt125to250.mDiMuEE->Fill(mva.mDiMu, weight);
+      if (isNotBB) histsPt125to250.mDiMuNotBB->Fill(mva.mDiMu, weight);
+
 #ifdef BLIND
       }
 #endif
@@ -1519,6 +1701,14 @@ int main(int argc, char *argv[])
       {
 #endif
       histsPt250.mDiMu->Fill(mva.mDiMu, weight);
+      if (isBB) histsPt250.mDiMuBB->Fill(mva.mDiMu, weight);
+      if (isBE) histsPt250.mDiMuBE->Fill(mva.mDiMu, weight);
+      if (isBO) histsPt250.mDiMuBO->Fill(mva.mDiMu, weight);
+      if (isOO) histsPt250.mDiMuOO->Fill(mva.mDiMu, weight);
+      if (isOE) histsPt250.mDiMuOE->Fill(mva.mDiMu, weight);
+      if (isEE) histsPt250.mDiMuEE->Fill(mva.mDiMu, weight);
+      if (isNotBB) histsPt250.mDiMuNotBB->Fill(mva.mDiMu, weight);
+
 #ifdef BLIND
       }
 #endif
@@ -1563,6 +1753,14 @@ int main(int argc, char *argv[])
       {
 #endif
       histsIncBDTSig80.mDiMu->Fill(mva.mDiMu, weight);
+      if (isBB) histsIncBDTSig80.mDiMuBB->Fill(mva.mDiMu, weight);
+      if (isBE) histsIncBDTSig80.mDiMuBE->Fill(mva.mDiMu, weight);
+      if (isBO) histsIncBDTSig80.mDiMuBO->Fill(mva.mDiMu, weight);
+      if (isOO) histsIncBDTSig80.mDiMuOO->Fill(mva.mDiMu, weight);
+      if (isOE) histsIncBDTSig80.mDiMuOE->Fill(mva.mDiMu, weight);
+      if (isEE) histsIncBDTSig80.mDiMuEE->Fill(mva.mDiMu, weight);
+      if (isNotBB) histsIncBDTSig80.mDiMuNotBB->Fill(mva.mDiMu, weight);
+
 #ifdef BLIND
       }
 #endif
@@ -1606,6 +1804,14 @@ int main(int argc, char *argv[])
       {
 #endif
       histsVBFBDTSig80.mDiMu->Fill(mva.mDiMu, weight);
+      if (isBB) histsVBFBDTSig80.mDiMuBB->Fill(mva.mDiMu, weight);
+      if (isBE) histsVBFBDTSig80.mDiMuBE->Fill(mva.mDiMu, weight);
+      if (isBO) histsVBFBDTSig80.mDiMuBO->Fill(mva.mDiMu, weight);
+      if (isOO) histsVBFBDTSig80.mDiMuOO->Fill(mva.mDiMu, weight);
+      if (isOE) histsVBFBDTSig80.mDiMuOE->Fill(mva.mDiMu, weight);
+      if (isEE) histsVBFBDTSig80.mDiMuEE->Fill(mva.mDiMu, weight);
+      if (isNotBB) histsVBFBDTSig80.mDiMuNotBB->Fill(mva.mDiMu, weight);
+
 #ifdef BLIND
       }
 #endif
@@ -1754,7 +1960,10 @@ int main(int argc, char *argv[])
   cout << "Setup Time: "<<std::setprecision(3) <<difftime(timeStartEventLoop,timeStart)<<"\n";
   cout << "Event Loop Time: "<<std::setprecision(3) 
         <<difftime(timeEndEventLoop,timeStartEventLoop)<< ", "<<std::setprecision(3) 
-        <<difftime(timeEndEventLoop,timeStartEventLoop)/(std::min(nEvents,(unsigned) maxEvents))*1000.<<" s / 1000 events \n";
+        <<difftime(timeEndEventLoop,timeStartEventLoop)/(std::min(nEvents,(unsigned) maxEvents))*1000.
+        <<" s / 1000 events or "
+        <<(std::min(nEvents,(unsigned) maxEvents))/difftime(timeEndEventLoop,timeStartEventLoop)*3600./1.0e6
+        <<"M events/hour \n";
   cout << "  Read Time: "<<std::setprecision(3) << timeReading << std::endl;
   cout << "  Proc Time: "<<std::setprecision(3) << timeProcessing << std::endl;
   cout << "  Fill Time: "<<std::setprecision(3) << timeFilling << std::endl;
@@ -1857,8 +2066,28 @@ printStationMiss(_MuonInfo& mu1, _MuonInfo& mu2, _EventInfo& eventInfo, std::str
 
 HistStruct::HistStruct()
 {
-  mDiMu = new TH1F("mDiMu","DiMuon Mass",1600,0,400);
+
+  unsigned nMassBins = 400;
+  float minMass = 0.;
+  float maxMass = 400.;
+  unsigned nMVABins = 200;
+  mDiMu = new TH1F("mDiMu","DiMuon Mass",nMassBins,minMass,maxMass);
   histVec.push_back(mDiMu);
+
+  mDiMuBB = new TH1F("mDiMuBB","DiMuon Mass Barrel-Barrel",nMassBins,minMass,maxMass);
+  histVec.push_back(mDiMuBB);
+  mDiMuBO = new TH1F("mDiMuBO","DiMuon Mass Barrel-Overlap",nMassBins,minMass,maxMass);
+  histVec.push_back(mDiMuBO);
+  mDiMuBE = new TH1F("mDiMuBE","DiMuon Mass Barrel-Endcap",nMassBins,minMass,maxMass);
+  histVec.push_back(mDiMuBE);
+  mDiMuOO = new TH1F("mDiMuOO","DiMuon Mass Overlap-Overlap",nMassBins,minMass,maxMass);
+  histVec.push_back(mDiMuOO);
+  mDiMuOE = new TH1F("mDiMuOE","DiMuon Mass Overlap-Endcap",nMassBins,minMass,maxMass);
+  histVec.push_back(mDiMuOE);
+  mDiMuEE = new TH1F("mDiMuEE","DiMuon Mass Endcap-Endcap",nMassBins,minMass,maxMass);
+  histVec.push_back(mDiMuEE);
+  mDiMuNotBB = new TH1F("mDiMuNotBB","DiMuon Mass Not Barrel-Barrel",nMassBins,minMass,maxMass);
+  histVec.push_back(mDiMuNotBB);
 
   mDiJet = new TH1F("mDiJet","DiJet Mass",500,0,2000);
   histVec.push_back(mDiJet);
@@ -1874,10 +2103,10 @@ HistStruct::HistStruct()
 
   yVptDiMu = new TH2F("yVptDiMu","DiMuon Rapidity v. p_{T}",250,0,500,100,0,4);
   histVec2D.push_back(yVptDiMu);
-  ptVmDiMu = new TH2F("ptVmDiMu","DiMuon p_{T} v. Mass",1600,0,400,250,0,250);
+  ptVmDiMu = new TH2F("ptVmDiMu","DiMuon p_{T} v. Mass",nMassBins,minMass,maxMass,250,0,250);
   histVec2D.push_back(ptVmDiMu);
-  yVmDiMu = new TH2F("yVmDiMu","DiMuon |y| v. Mass",1600,0,400,100,0,4);
-  phiVmDiMu = new TH2F("phiVmDiMu","DiMuon #phi v. Mass",1600,0,400,100,0,3.2);
+  yVmDiMu = new TH2F("yVmDiMu","DiMuon |y| v. Mass",nMassBins,minMass,maxMass,100,0,4);
+  phiVmDiMu = new TH2F("phiVmDiMu","DiMuon #phi v. Mass",nMassBins,minMass,maxMass,100,0,3.2);
   histVec2D.push_back(phiVmDiMu);
 
   ptMu1 = new TH1F("ptMu1","Leading Muon Pt",100,0,200);
@@ -1964,23 +2193,23 @@ HistStruct::HistStruct()
   puJetIDSimpleJet3->GetXaxis()->SetBinLabel(1,"Fail");
   puJetIDSimpleJet3->GetXaxis()->SetBinLabel(2,"Pass");
 
-  BDTHistMuonOnly = new TH1F("BDTHistMuonOnly","BDT Discriminator",2000,-1,1);
+  BDTHistMuonOnly = new TH1F("BDTHistMuonOnly","BDT Discriminator",nMVABins,-1,1);
   histVec.push_back(BDTHistMuonOnly);
-  likelihoodHistMuonOnly = new TH1F("likelihoodHistMuonOnly","Likelihood Discriminator",2000,-1,1);
+  likelihoodHistMuonOnly = new TH1F("likelihoodHistMuonOnly","Likelihood Discriminator",nMVABins,-1,1);
   histVec.push_back(likelihoodHistMuonOnly);
 
-  BDTHistVBF = new TH1F("BDTHistVBF","BDT Discriminator",2000,-1,1);
+  BDTHistVBF = new TH1F("BDTHistVBF","BDT Discriminator",nMVABins,-1,1);
   histVec.push_back(BDTHistVBF);
-  likelihoodHistVBF = new TH1F("likelihoodHistVBF","Likelihood Discriminator",2000,-1,1);
+  likelihoodHistVBF = new TH1F("likelihoodHistVBF","Likelihood Discriminator",nMVABins,-1,1);
   histVec.push_back(likelihoodHistVBF);
 
-  BDTHistMuonOnlyVMass = new TH2F("BDTHistMuonOnlyVMass","BDT Discriminator",1600,0,400,2000,-1,1);
+  BDTHistMuonOnlyVMass = new TH2F("BDTHistMuonOnlyVMass","BDT Discriminator",nMassBins,minMass,maxMass,nMVABins,-1,1);
   histVec2D.push_back(BDTHistMuonOnlyVMass);
-  likelihoodHistMuonOnlyVMass = new TH2F("likelihoodHistMuonOnlyVMass","Likelihood Discriminator",1600,0,400,2000,-1,1);
+  likelihoodHistMuonOnlyVMass = new TH2F("likelihoodHistMuonOnlyVMass","Likelihood Discriminator",nMassBins,minMass,maxMass,nMVABins,-1,1);
   histVec2D.push_back(likelihoodHistMuonOnlyVMass);
-  BDTHistVBFVMass = new TH2F("BDTHistVBFVMass","BDT Discriminator",1600,0,400,2000,-1,1);
+  BDTHistVBFVMass = new TH2F("BDTHistVBFVMass","BDT Discriminator",nMassBins,minMass,maxMass,nMVABins,-1,1);
   histVec2D.push_back(BDTHistVBFVMass);
-  likelihoodHistVBFVMass = new TH2F("likelihoodHistVBFVMass","Likelihood Discriminator",1600,0,400,2000,-1,1);
+  likelihoodHistVBFVMass = new TH2F("likelihoodHistVBFVMass","Likelihood Discriminator",nMassBins,minMass,maxMass,nMVABins,-1,1);
   histVec2D.push_back(likelihoodHistVBFVMass);
 
   relIsoMu1 = new TH1F("relIsoMu1","",1000,0,10.0);

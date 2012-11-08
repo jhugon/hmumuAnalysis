@@ -8,6 +8,7 @@ includes = []
 libpath = []
 libs = []
 env.MergeFlags('-fPIC -O2 -lm')
+env.MergeFlags('-g')
 
 # For BLINDING
 env.MergeFlags("-D BLIND")
