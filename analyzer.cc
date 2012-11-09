@@ -461,6 +461,11 @@ int main(int argc, char *argv[])
     timeReadingAll += difftime(timeStopReading,timeStartReading);
     if (i % reportEach == 0) cout << "Event: " << i << endl;
 
+    float mDiMuResSigUp = recoCandMass;
+    float mDiMuResSigDown = recoCandMass;
+    float mDiMuResASigUp = recoCandMass;
+    float mDiMuResASigDown = recoCandMass;
+
 #ifdef SMEARING
     if(isSignal)
     {
@@ -482,6 +487,36 @@ int main(int argc, char *argv[])
       recoCandPt = diMuonVec.Pt();
       recoCandY = diMuonVec.Rapidity();
       recoCandPhi = diMuonVec.Phi();
+
+      //Systematics Time
+      ptReco1 = smearPT->PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge,"sig1",1.0);
+      ptReco2 = smearPT->PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge,"sig1",1.0);
+      reco1Vec.SetPtEtaPhiM(ptReco1,reco1.eta,reco1.phi,0.105);
+      reco2Vec.SetPtEtaPhiM(ptReco2,reco2.eta,reco2.phi,0.105);
+      diMuonVec = reco1Vec + reco2Vec;
+      mDiMuResSigUp = diMuonVec.M();
+
+      ptReco1 = smearPT->PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge,"sig1",-1.0);
+      ptReco2 = smearPT->PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge,"sig1",-1.0);
+      reco1Vec.SetPtEtaPhiM(ptReco1,reco1.eta,reco1.phi,0.105);
+      reco2Vec.SetPtEtaPhiM(ptReco2,reco2.eta,reco2.phi,0.105);
+      diMuonVec = reco1Vec + reco2Vec;
+      mDiMuResSigDown = diMuonVec.M();
+
+      ptReco1 = smearPT->PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge,"Asig2Var",1.0);
+      ptReco2 = smearPT->PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge,"Asig2Var",1.0);
+      reco1Vec.SetPtEtaPhiM(ptReco1,reco1.eta,reco1.phi,0.105);
+      reco2Vec.SetPtEtaPhiM(ptReco2,reco2.eta,reco2.phi,0.105);
+      diMuonVec = reco1Vec + reco2Vec;
+      mDiMuResASigUp = diMuonVec.M();
+
+      ptReco1 = smearPT->PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge,"Asig2Var",-1.0);
+      ptReco2 = smearPT->PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge,"Asig2Var",-1.0);
+      reco1Vec.SetPtEtaPhiM(ptReco1,reco1.eta,reco1.phi,0.105);
+      reco2Vec.SetPtEtaPhiM(ptReco2,reco2.eta,reco2.phi,0.105);
+      diMuonVec = reco1Vec + reco2Vec;
+      mDiMuResASigDown = diMuonVec.M();
+      
     }
 #endif
 
