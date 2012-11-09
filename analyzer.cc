@@ -37,7 +37,7 @@
 
 #define JETPUID
 #define PUREWEIGHT
-#define SMEARING
+//#define SMEARING
 
 using namespace std;
 using namespace boost;
@@ -55,13 +55,6 @@ struct HistStruct
   std::vector<TH2F*> histVec2D;
 
   TH1F* mDiMu;
-  TH1F* mDiMuBB;
-  TH1F* mDiMuBO;
-  TH1F* mDiMuBE;
-  TH1F* mDiMuOO;
-  TH1F* mDiMuOE;
-  TH1F* mDiMuEE;
-  TH1F* mDiMuNotBB;
 
   TH1F* mDiJet;
   TH1F* ptDiMu;
@@ -261,7 +254,7 @@ int main(int argc, char *argv[])
     regex re(*signalWord);
     if(regex_search(filenames[0],re))
     {
-        isData = true;
+        isSignal = true;
         break;
     }
   }
@@ -377,11 +370,42 @@ int main(int argc, char *argv[])
   //////////////////////////
   // Histograms
   HistStruct hists;
+  HistStruct histsBB;
+  HistStruct histsBO;
+  HistStruct histsBE;
+  HistStruct histsOO;
+  HistStruct histsOE;
+  HistStruct histsEE;
+  HistStruct histsNotBB;
+
   HistStruct hists4GeVWindow;
-  HistStruct histsVBFPresel;
+
   HistStruct histsIncPresel;
+  HistStruct histsIncPreselBB;
+  HistStruct histsIncPreselBO;
+  HistStruct histsIncPreselBE;
+  HistStruct histsIncPreselOO;
+  HistStruct histsIncPreselOE;
+  HistStruct histsIncPreselEE;
+  HistStruct histsIncPreselNotBB;
+
+  HistStruct histsVBFPresel;
+  HistStruct histsVBFPreselBB;
+  HistStruct histsVBFPreselNotBB;
+
   HistStruct histsIncBDTSig80;
+  HistStruct histsIncBDTSig80BB;
+  HistStruct histsIncBDTSig80BO;
+  HistStruct histsIncBDTSig80BE;
+  HistStruct histsIncBDTSig80OO;
+  HistStruct histsIncBDTSig80OE;
+  HistStruct histsIncBDTSig80EE;
+  HistStruct histsIncBDTSig80NotBB;
+
+
   HistStruct histsVBFBDTSig80;
+  HistStruct histsVBFBDTSig80BB;
+  HistStruct histsVBFBDTSig80NotBB;
 
   //////////////////////////
   //for MVA
@@ -694,13 +718,6 @@ int main(int argc, char *argv[])
     {
 #endif
     hists.mDiMu->Fill(mva.mDiMu, weight);
-    if (isBB) hists.mDiMuBB->Fill(mva.mDiMu, weight);
-    if (isBE) hists.mDiMuBE->Fill(mva.mDiMu, weight);
-    if (isBO) hists.mDiMuBO->Fill(mva.mDiMu, weight);
-    if (isOO) hists.mDiMuOO->Fill(mva.mDiMu, weight);
-    if (isOE) hists.mDiMuOE->Fill(mva.mDiMu, weight);
-    if (isEE) hists.mDiMuEE->Fill(mva.mDiMu, weight);
-    if (isNotBB) hists.mDiMuNotBB->Fill(mva.mDiMu, weight);
 
     hists.yVmDiMu->Fill(mva.mDiMu,fabs(mva.yDiMu), weight);
     hists.ptVmDiMu->Fill(mva.mDiMu,mva.ptDiMu, weight);
@@ -959,13 +976,6 @@ int main(int argc, char *argv[])
       hists4GeVWindow.nJets->Fill(mva.nJets, weight);
       hists4GeVWindow.ht->Fill(mva.ht, weight);
       hists4GeVWindow.mDiMu->Fill(mva.mDiMu, weight);
-      if (isBB) hists4GeVWindow.mDiMuBB->Fill(mva.mDiMu, weight);
-      if (isBE) hists4GeVWindow.mDiMuBE->Fill(mva.mDiMu, weight);
-      if (isBO) hists4GeVWindow.mDiMuBO->Fill(mva.mDiMu, weight);
-      if (isOO) hists4GeVWindow.mDiMuOO->Fill(mva.mDiMu, weight);
-      if (isOE) hists4GeVWindow.mDiMuOE->Fill(mva.mDiMu, weight);
-      if (isEE) hists4GeVWindow.mDiMuEE->Fill(mva.mDiMu, weight);
-      if (isNotBB) hists4GeVWindow.mDiMuNotBB->Fill(mva.mDiMu, weight);
 
       if(!vbfPreselection)
       {
@@ -981,6 +991,391 @@ int main(int argc, char *argv[])
 #ifdef BLIND
     }
 #endif
+
+    if (isBB)
+    {
+      histsBB.yDiMu->Fill(mva.yDiMu, weight);
+      histsBB.ptDiMu->Fill(mva.ptDiMu, weight);
+      histsBB.ptMu1->Fill(mva.ptMu1, weight);
+      histsBB.ptMu2->Fill(mva.ptMu2, weight);
+      histsBB.etaMu1->Fill(mva.etaMu1, weight);
+      histsBB.etaMu2->Fill(mva.etaMu2, weight);
+      histsBB.cosThetaStar->Fill(mva.cosThetaStar, weight);
+      histsBB.cosThetaStarCS->Fill(mva.cosThetaStarCS, weight);
+      histsBB.deltaPhiMuons->Fill(mva.deltaPhiMuons, weight);
+      histsBB.deltaEtaMuons->Fill(mva.deltaEtaMuons, weight);
+      histsBB.deltaRMuons->Fill(mva.deltaRMuons, weight);
+      histsBB.relIsoMu1->Fill(mva.relIsoMu1, weight);
+      histsBB.relIsoMu2->Fill(mva.relIsoMu2, weight);
+      histsBB.nPU->Fill(nPU, weight);
+      histsBB.nVtx->Fill(mva.nVtx, weight);
+      histsBB.met->Fill(met.pt, weight);
+
+      histsBB.mDiJet->Fill(mva.mDiJet, weight);
+      histsBB.ptDiJet->Fill(mva.ptDiJet, weight);
+      histsBB.ptJet1->Fill(mva.ptJet1, weight);
+      histsBB.ptJet2->Fill(mva.ptJet2, weight);
+      histsBB.etaJet1->Fill(mva.etaJet1, weight);
+      histsBB.etaJet2->Fill(mva.etaJet2, weight);
+      histsBB.deltaEtaJets->Fill(mva.deltaEtaJets, weight);
+      histsBB.deltaPhiJets->Fill(mva.deltaPhiJets, weight);
+      histsBB.deltaRJets->Fill(mva.deltaRJets, weight);
+      histsBB.nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, weight);
+      histsBB.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
+      histsBB.nJets->Fill(mva.nJets, weight);
+      histsBB.ht->Fill(mva.ht, weight);
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
+      histsBB.mDiMu->Fill(mva.mDiMu, weight);
+
+      if(!vbfPreselection)
+      {
+        histsBB.BDTHistMuonOnly->Fill(bdtValInc, weight);
+        histsBB.likelihoodHistMuonOnly->Fill(likeValInc, weight);
+        histsBB.BDTHistMuonOnlyVMass->Fill(mva.mDiMu, bdtValInc, weight);
+      }
+      else
+      {
+        histsBB.BDTHistVBF->Fill(bdtValVBF, weight);
+        histsBB.likelihoodHistVBF->Fill(likeValVBF, weight);
+        histsBB.BDTHistVBFVMass->Fill(mva.mDiMu, bdtValVBF, weight);
+      }
+#ifdef BLIND
+      }
+#endif
+    }
+
+    if (isBO)
+    {
+      histsBO.yDiMu->Fill(mva.yDiMu, weight);
+      histsBO.ptDiMu->Fill(mva.ptDiMu, weight);
+      histsBO.ptMu1->Fill(mva.ptMu1, weight);
+      histsBO.ptMu2->Fill(mva.ptMu2, weight);
+      histsBO.etaMu1->Fill(mva.etaMu1, weight);
+      histsBO.etaMu2->Fill(mva.etaMu2, weight);
+      histsBO.cosThetaStar->Fill(mva.cosThetaStar, weight);
+      histsBO.cosThetaStarCS->Fill(mva.cosThetaStarCS, weight);
+      histsBO.deltaPhiMuons->Fill(mva.deltaPhiMuons, weight);
+      histsBO.deltaEtaMuons->Fill(mva.deltaEtaMuons, weight);
+      histsBO.deltaRMuons->Fill(mva.deltaRMuons, weight);
+      histsBO.relIsoMu1->Fill(mva.relIsoMu1, weight);
+      histsBO.relIsoMu2->Fill(mva.relIsoMu2, weight);
+      histsBO.nPU->Fill(nPU, weight);
+      histsBO.nVtx->Fill(mva.nVtx, weight);
+      histsBO.met->Fill(met.pt, weight);
+
+      histsBO.mDiJet->Fill(mva.mDiJet, weight);
+      histsBO.ptDiJet->Fill(mva.ptDiJet, weight);
+      histsBO.ptJet1->Fill(mva.ptJet1, weight);
+      histsBO.ptJet2->Fill(mva.ptJet2, weight);
+      histsBO.etaJet1->Fill(mva.etaJet1, weight);
+      histsBO.etaJet2->Fill(mva.etaJet2, weight);
+      histsBO.deltaEtaJets->Fill(mva.deltaEtaJets, weight);
+      histsBO.deltaPhiJets->Fill(mva.deltaPhiJets, weight);
+      histsBO.deltaRJets->Fill(mva.deltaRJets, weight);
+      histsBO.nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, weight);
+      histsBO.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
+      histsBO.nJets->Fill(mva.nJets, weight);
+      histsBO.ht->Fill(mva.ht, weight);
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
+      histsBO.mDiMu->Fill(mva.mDiMu, weight);
+
+      if(!vbfPreselection)
+      {
+        histsBO.BDTHistMuonOnly->Fill(bdtValInc, weight);
+        histsBO.likelihoodHistMuonOnly->Fill(likeValInc, weight);
+        histsBO.BDTHistMuonOnlyVMass->Fill(mva.mDiMu, bdtValInc, weight);
+      }
+      else
+      {
+        histsBO.BDTHistVBF->Fill(bdtValVBF, weight);
+        histsBO.likelihoodHistVBF->Fill(likeValVBF, weight);
+        histsBO.BDTHistVBFVMass->Fill(mva.mDiMu, bdtValVBF, weight);
+      }
+#ifdef BLIND
+      }
+#endif
+    }
+
+    if (isBE)
+    {
+      histsBE.yDiMu->Fill(mva.yDiMu, weight);
+      histsBE.ptDiMu->Fill(mva.ptDiMu, weight);
+      histsBE.ptMu1->Fill(mva.ptMu1, weight);
+      histsBE.ptMu2->Fill(mva.ptMu2, weight);
+      histsBE.etaMu1->Fill(mva.etaMu1, weight);
+      histsBE.etaMu2->Fill(mva.etaMu2, weight);
+      histsBE.cosThetaStar->Fill(mva.cosThetaStar, weight);
+      histsBE.cosThetaStarCS->Fill(mva.cosThetaStarCS, weight);
+      histsBE.deltaPhiMuons->Fill(mva.deltaPhiMuons, weight);
+      histsBE.deltaEtaMuons->Fill(mva.deltaEtaMuons, weight);
+      histsBE.deltaRMuons->Fill(mva.deltaRMuons, weight);
+      histsBE.relIsoMu1->Fill(mva.relIsoMu1, weight);
+      histsBE.relIsoMu2->Fill(mva.relIsoMu2, weight);
+      histsBE.nPU->Fill(nPU, weight);
+      histsBE.nVtx->Fill(mva.nVtx, weight);
+      histsBE.met->Fill(met.pt, weight);
+
+      histsBE.mDiJet->Fill(mva.mDiJet, weight);
+      histsBE.ptDiJet->Fill(mva.ptDiJet, weight);
+      histsBE.ptJet1->Fill(mva.ptJet1, weight);
+      histsBE.ptJet2->Fill(mva.ptJet2, weight);
+      histsBE.etaJet1->Fill(mva.etaJet1, weight);
+      histsBE.etaJet2->Fill(mva.etaJet2, weight);
+      histsBE.deltaEtaJets->Fill(mva.deltaEtaJets, weight);
+      histsBE.deltaPhiJets->Fill(mva.deltaPhiJets, weight);
+      histsBE.deltaRJets->Fill(mva.deltaRJets, weight);
+      histsBE.nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, weight);
+      histsBE.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
+      histsBE.nJets->Fill(mva.nJets, weight);
+      histsBE.ht->Fill(mva.ht, weight);
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
+      histsBE.mDiMu->Fill(mva.mDiMu, weight);
+
+      if(!vbfPreselection)
+      {
+        histsBE.BDTHistMuonOnly->Fill(bdtValInc, weight);
+        histsBE.likelihoodHistMuonOnly->Fill(likeValInc, weight);
+        histsBE.BDTHistMuonOnlyVMass->Fill(mva.mDiMu, bdtValInc, weight);
+      }
+      else
+      {
+        histsBE.BDTHistVBF->Fill(bdtValVBF, weight);
+        histsBE.likelihoodHistVBF->Fill(likeValVBF, weight);
+        histsBE.BDTHistVBFVMass->Fill(mva.mDiMu, bdtValVBF, weight);
+      }
+#ifdef BLIND
+      }
+#endif
+    }
+
+    if (isOO)
+    {
+      histsOO.yDiMu->Fill(mva.yDiMu, weight);
+      histsOO.ptDiMu->Fill(mva.ptDiMu, weight);
+      histsOO.ptMu1->Fill(mva.ptMu1, weight);
+      histsOO.ptMu2->Fill(mva.ptMu2, weight);
+      histsOO.etaMu1->Fill(mva.etaMu1, weight);
+      histsOO.etaMu2->Fill(mva.etaMu2, weight);
+      histsOO.cosThetaStar->Fill(mva.cosThetaStar, weight);
+      histsOO.cosThetaStarCS->Fill(mva.cosThetaStarCS, weight);
+      histsOO.deltaPhiMuons->Fill(mva.deltaPhiMuons, weight);
+      histsOO.deltaEtaMuons->Fill(mva.deltaEtaMuons, weight);
+      histsOO.deltaRMuons->Fill(mva.deltaRMuons, weight);
+      histsOO.relIsoMu1->Fill(mva.relIsoMu1, weight);
+      histsOO.relIsoMu2->Fill(mva.relIsoMu2, weight);
+      histsOO.nPU->Fill(nPU, weight);
+      histsOO.nVtx->Fill(mva.nVtx, weight);
+      histsOO.met->Fill(met.pt, weight);
+
+      histsOO.mDiJet->Fill(mva.mDiJet, weight);
+      histsOO.ptDiJet->Fill(mva.ptDiJet, weight);
+      histsOO.ptJet1->Fill(mva.ptJet1, weight);
+      histsOO.ptJet2->Fill(mva.ptJet2, weight);
+      histsOO.etaJet1->Fill(mva.etaJet1, weight);
+      histsOO.etaJet2->Fill(mva.etaJet2, weight);
+      histsOO.deltaEtaJets->Fill(mva.deltaEtaJets, weight);
+      histsOO.deltaPhiJets->Fill(mva.deltaPhiJets, weight);
+      histsOO.deltaRJets->Fill(mva.deltaRJets, weight);
+      histsOO.nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, weight);
+      histsOO.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
+      histsOO.nJets->Fill(mva.nJets, weight);
+      histsOO.ht->Fill(mva.ht, weight);
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
+      histsOO.mDiMu->Fill(mva.mDiMu, weight);
+
+      if(!vbfPreselection)
+      {
+        histsOO.BDTHistMuonOnly->Fill(bdtValInc, weight);
+        histsOO.likelihoodHistMuonOnly->Fill(likeValInc, weight);
+        histsOO.BDTHistMuonOnlyVMass->Fill(mva.mDiMu, bdtValInc, weight);
+      }
+      else
+      {
+        histsOO.BDTHistVBF->Fill(bdtValVBF, weight);
+        histsOO.likelihoodHistVBF->Fill(likeValVBF, weight);
+        histsOO.BDTHistVBFVMass->Fill(mva.mDiMu, bdtValVBF, weight);
+      }
+#ifdef BLIND
+      }
+#endif
+    }
+
+    if (isOE)
+    {
+      histsOE.yDiMu->Fill(mva.yDiMu, weight);
+      histsOE.ptDiMu->Fill(mva.ptDiMu, weight);
+      histsOE.ptMu1->Fill(mva.ptMu1, weight);
+      histsOE.ptMu2->Fill(mva.ptMu2, weight);
+      histsOE.etaMu1->Fill(mva.etaMu1, weight);
+      histsOE.etaMu2->Fill(mva.etaMu2, weight);
+      histsOE.cosThetaStar->Fill(mva.cosThetaStar, weight);
+      histsOE.cosThetaStarCS->Fill(mva.cosThetaStarCS, weight);
+      histsOE.deltaPhiMuons->Fill(mva.deltaPhiMuons, weight);
+      histsOE.deltaEtaMuons->Fill(mva.deltaEtaMuons, weight);
+      histsOE.deltaRMuons->Fill(mva.deltaRMuons, weight);
+      histsOE.relIsoMu1->Fill(mva.relIsoMu1, weight);
+      histsOE.relIsoMu2->Fill(mva.relIsoMu2, weight);
+      histsOE.nPU->Fill(nPU, weight);
+      histsOE.nVtx->Fill(mva.nVtx, weight);
+      histsOE.met->Fill(met.pt, weight);
+
+      histsOE.mDiJet->Fill(mva.mDiJet, weight);
+      histsOE.ptDiJet->Fill(mva.ptDiJet, weight);
+      histsOE.ptJet1->Fill(mva.ptJet1, weight);
+      histsOE.ptJet2->Fill(mva.ptJet2, weight);
+      histsOE.etaJet1->Fill(mva.etaJet1, weight);
+      histsOE.etaJet2->Fill(mva.etaJet2, weight);
+      histsOE.deltaEtaJets->Fill(mva.deltaEtaJets, weight);
+      histsOE.deltaPhiJets->Fill(mva.deltaPhiJets, weight);
+      histsOE.deltaRJets->Fill(mva.deltaRJets, weight);
+      histsOE.nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, weight);
+      histsOE.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
+      histsOE.nJets->Fill(mva.nJets, weight);
+      histsOE.ht->Fill(mva.ht, weight);
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
+      histsOE.mDiMu->Fill(mva.mDiMu, weight);
+
+      if(!vbfPreselection)
+      {
+        histsOE.BDTHistMuonOnly->Fill(bdtValInc, weight);
+        histsOE.likelihoodHistMuonOnly->Fill(likeValInc, weight);
+        histsOE.BDTHistMuonOnlyVMass->Fill(mva.mDiMu, bdtValInc, weight);
+      }
+      else
+      {
+        histsOE.BDTHistVBF->Fill(bdtValVBF, weight);
+        histsOE.likelihoodHistVBF->Fill(likeValVBF, weight);
+        histsOE.BDTHistVBFVMass->Fill(mva.mDiMu, bdtValVBF, weight);
+      }
+#ifdef BLIND
+      }
+#endif
+    }
+
+    if (isEE)
+    {
+      histsEE.yDiMu->Fill(mva.yDiMu, weight);
+      histsEE.ptDiMu->Fill(mva.ptDiMu, weight);
+      histsEE.ptMu1->Fill(mva.ptMu1, weight);
+      histsEE.ptMu2->Fill(mva.ptMu2, weight);
+      histsEE.etaMu1->Fill(mva.etaMu1, weight);
+      histsEE.etaMu2->Fill(mva.etaMu2, weight);
+      histsEE.cosThetaStar->Fill(mva.cosThetaStar, weight);
+      histsEE.cosThetaStarCS->Fill(mva.cosThetaStarCS, weight);
+      histsEE.deltaPhiMuons->Fill(mva.deltaPhiMuons, weight);
+      histsEE.deltaEtaMuons->Fill(mva.deltaEtaMuons, weight);
+      histsEE.deltaRMuons->Fill(mva.deltaRMuons, weight);
+      histsEE.relIsoMu1->Fill(mva.relIsoMu1, weight);
+      histsEE.relIsoMu2->Fill(mva.relIsoMu2, weight);
+      histsEE.nPU->Fill(nPU, weight);
+      histsEE.nVtx->Fill(mva.nVtx, weight);
+      histsEE.met->Fill(met.pt, weight);
+
+      histsEE.mDiJet->Fill(mva.mDiJet, weight);
+      histsEE.ptDiJet->Fill(mva.ptDiJet, weight);
+      histsEE.ptJet1->Fill(mva.ptJet1, weight);
+      histsEE.ptJet2->Fill(mva.ptJet2, weight);
+      histsEE.etaJet1->Fill(mva.etaJet1, weight);
+      histsEE.etaJet2->Fill(mva.etaJet2, weight);
+      histsEE.deltaEtaJets->Fill(mva.deltaEtaJets, weight);
+      histsEE.deltaPhiJets->Fill(mva.deltaPhiJets, weight);
+      histsEE.deltaRJets->Fill(mva.deltaRJets, weight);
+      histsEE.nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, weight);
+      histsEE.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
+      histsEE.nJets->Fill(mva.nJets, weight);
+      histsEE.ht->Fill(mva.ht, weight);
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
+      histsEE.mDiMu->Fill(mva.mDiMu, weight);
+
+      if(!vbfPreselection)
+      {
+        histsEE.BDTHistMuonOnly->Fill(bdtValInc, weight);
+        histsEE.likelihoodHistMuonOnly->Fill(likeValInc, weight);
+        histsEE.BDTHistMuonOnlyVMass->Fill(mva.mDiMu, bdtValInc, weight);
+      }
+      else
+      {
+        histsEE.BDTHistVBF->Fill(bdtValVBF, weight);
+        histsEE.likelihoodHistVBF->Fill(likeValVBF, weight);
+        histsEE.BDTHistVBFVMass->Fill(mva.mDiMu, bdtValVBF, weight);
+      }
+#ifdef BLIND
+      }
+#endif
+    }
+
+    if (isNotBB)
+    {
+      histsNotBB.yDiMu->Fill(mva.yDiMu, weight);
+      histsNotBB.ptDiMu->Fill(mva.ptDiMu, weight);
+      histsNotBB.ptMu1->Fill(mva.ptMu1, weight);
+      histsNotBB.ptMu2->Fill(mva.ptMu2, weight);
+      histsNotBB.etaMu1->Fill(mva.etaMu1, weight);
+      histsNotBB.etaMu2->Fill(mva.etaMu2, weight);
+      histsNotBB.cosThetaStar->Fill(mva.cosThetaStar, weight);
+      histsNotBB.cosThetaStarCS->Fill(mva.cosThetaStarCS, weight);
+      histsNotBB.deltaPhiMuons->Fill(mva.deltaPhiMuons, weight);
+      histsNotBB.deltaEtaMuons->Fill(mva.deltaEtaMuons, weight);
+      histsNotBB.deltaRMuons->Fill(mva.deltaRMuons, weight);
+      histsNotBB.relIsoMu1->Fill(mva.relIsoMu1, weight);
+      histsNotBB.relIsoMu2->Fill(mva.relIsoMu2, weight);
+      histsNotBB.nPU->Fill(nPU, weight);
+      histsNotBB.nVtx->Fill(mva.nVtx, weight);
+      histsNotBB.met->Fill(met.pt, weight);
+
+      histsNotBB.mDiJet->Fill(mva.mDiJet, weight);
+      histsNotBB.ptDiJet->Fill(mva.ptDiJet, weight);
+      histsNotBB.ptJet1->Fill(mva.ptJet1, weight);
+      histsNotBB.ptJet2->Fill(mva.ptJet2, weight);
+      histsNotBB.etaJet1->Fill(mva.etaJet1, weight);
+      histsNotBB.etaJet2->Fill(mva.etaJet2, weight);
+      histsNotBB.deltaEtaJets->Fill(mva.deltaEtaJets, weight);
+      histsNotBB.deltaPhiJets->Fill(mva.deltaPhiJets, weight);
+      histsNotBB.deltaRJets->Fill(mva.deltaRJets, weight);
+      histsNotBB.nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, weight);
+      histsNotBB.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
+      histsNotBB.nJets->Fill(mva.nJets, weight);
+      histsNotBB.ht->Fill(mva.ht, weight);
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
+      histsNotBB.mDiMu->Fill(mva.mDiMu, weight);
+
+      if(!vbfPreselection)
+      {
+        histsNotBB.BDTHistMuonOnly->Fill(bdtValInc, weight);
+        histsNotBB.likelihoodHistMuonOnly->Fill(likeValInc, weight);
+        histsNotBB.BDTHistMuonOnlyVMass->Fill(mva.mDiMu, bdtValInc, weight);
+      }
+      else
+      {
+        histsNotBB.BDTHistVBF->Fill(bdtValVBF, weight);
+        histsNotBB.likelihoodHistVBF->Fill(likeValVBF, weight);
+        histsNotBB.BDTHistVBFVMass->Fill(mva.mDiMu, bdtValVBF, weight);
+      }
+#ifdef BLIND
+      }
+#endif
+    }
 
     //VBF Preselected Plots
     if (vbfPreselection)
@@ -1020,13 +1415,6 @@ int main(int argc, char *argv[])
       {
 #endif
       histsVBFPresel.mDiMu->Fill(mva.mDiMu, weight);
-      if (isBB) histsVBFPresel.mDiMuBB->Fill(mva.mDiMu, weight);
-      if (isBE) histsVBFPresel.mDiMuBE->Fill(mva.mDiMu, weight);
-      if (isBO) histsVBFPresel.mDiMuBO->Fill(mva.mDiMu, weight);
-      if (isOO) histsVBFPresel.mDiMuOO->Fill(mva.mDiMu, weight);
-      if (isOE) histsVBFPresel.mDiMuOE->Fill(mva.mDiMu, weight);
-      if (isEE) histsVBFPresel.mDiMuEE->Fill(mva.mDiMu, weight);
-      if (isNotBB) histsVBFPresel.mDiMuNotBB->Fill(mva.mDiMu, weight);
 
       if(!vbfPreselection)
       {
@@ -1039,6 +1427,116 @@ int main(int argc, char *argv[])
         histsVBFPresel.BDTHistVBF->Fill(bdtValVBF, weight);
         histsVBFPresel.likelihoodHistVBF->Fill(likeValVBF, weight);
         histsVBFPresel.BDTHistVBFVMass->Fill(mva.mDiMu, bdtValVBF, weight);
+      }
+#ifdef BLIND
+      }
+#endif
+    }
+
+    if (vbfPreselection && isBB)
+    {
+      histsVBFPreselBB.yDiMu->Fill(mva.yDiMu, weight);
+      histsVBFPreselBB.ptDiMu->Fill(mva.ptDiMu, weight);
+      histsVBFPreselBB.ptMu1->Fill(mva.ptMu1, weight);
+      histsVBFPreselBB.ptMu2->Fill(mva.ptMu2, weight);
+      histsVBFPreselBB.etaMu1->Fill(mva.etaMu1, weight);
+      histsVBFPreselBB.etaMu2->Fill(mva.etaMu2, weight);
+      histsVBFPreselBB.cosThetaStar->Fill(mva.cosThetaStar, weight);
+      histsVBFPreselBB.cosThetaStarCS->Fill(mva.cosThetaStarCS, weight);
+      histsVBFPreselBB.deltaPhiMuons->Fill(mva.deltaPhiMuons, weight);
+      histsVBFPreselBB.deltaEtaMuons->Fill(mva.deltaEtaMuons, weight);
+      histsVBFPreselBB.deltaRMuons->Fill(mva.deltaRMuons, weight);
+      histsVBFPreselBB.relIsoMu1->Fill(mva.relIsoMu1, weight);
+      histsVBFPreselBB.relIsoMu2->Fill(mva.relIsoMu2, weight);
+      histsVBFPreselBB.nPU->Fill(nPU, weight);
+      histsVBFPreselBB.nVtx->Fill(mva.nVtx, weight);
+      histsVBFPreselBB.met->Fill(met.pt, weight);
+
+      histsVBFPreselBB.mDiJet->Fill(mva.mDiJet, weight);
+      histsVBFPreselBB.ptDiJet->Fill(mva.ptDiJet, weight);
+      histsVBFPreselBB.ptJet1->Fill(mva.ptJet1, weight);
+      histsVBFPreselBB.ptJet2->Fill(mva.ptJet2, weight);
+      histsVBFPreselBB.etaJet1->Fill(mva.etaJet1, weight);
+      histsVBFPreselBB.etaJet2->Fill(mva.etaJet2, weight);
+      histsVBFPreselBB.deltaEtaJets->Fill(mva.deltaEtaJets, weight);
+      histsVBFPreselBB.deltaPhiJets->Fill(mva.deltaPhiJets, weight);
+      histsVBFPreselBB.deltaRJets->Fill(mva.deltaRJets, weight);
+      histsVBFPreselBB.nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, weight);
+      histsVBFPreselBB.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
+      histsVBFPreselBB.nJets->Fill(mva.nJets, weight);
+      histsVBFPreselBB.ht->Fill(mva.ht, weight);
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
+      histsVBFPreselBB.mDiMu->Fill(mva.mDiMu, weight);
+
+      if(!vbfPreselection)
+      {
+        histsVBFPreselBB.BDTHistMuonOnly->Fill(bdtValInc, weight);
+        histsVBFPreselBB.likelihoodHistMuonOnly->Fill(likeValInc, weight);
+        histsVBFPreselBB.BDTHistMuonOnlyVMass->Fill(mva.mDiMu, bdtValInc, weight);
+      }
+      else
+      {
+        histsVBFPreselBB.BDTHistVBF->Fill(bdtValVBF, weight);
+        histsVBFPreselBB.likelihoodHistVBF->Fill(likeValVBF, weight);
+        histsVBFPreselBB.BDTHistVBFVMass->Fill(mva.mDiMu, bdtValVBF, weight);
+      }
+#ifdef BLIND
+      }
+#endif
+    }
+
+    if (vbfPreselection && isNotBB)
+    {
+      histsVBFPreselNotBB.yDiMu->Fill(mva.yDiMu, weight);
+      histsVBFPreselNotBB.ptDiMu->Fill(mva.ptDiMu, weight);
+      histsVBFPreselNotBB.ptMu1->Fill(mva.ptMu1, weight);
+      histsVBFPreselNotBB.ptMu2->Fill(mva.ptMu2, weight);
+      histsVBFPreselNotBB.etaMu1->Fill(mva.etaMu1, weight);
+      histsVBFPreselNotBB.etaMu2->Fill(mva.etaMu2, weight);
+      histsVBFPreselNotBB.cosThetaStar->Fill(mva.cosThetaStar, weight);
+      histsVBFPreselNotBB.cosThetaStarCS->Fill(mva.cosThetaStarCS, weight);
+      histsVBFPreselNotBB.deltaPhiMuons->Fill(mva.deltaPhiMuons, weight);
+      histsVBFPreselNotBB.deltaEtaMuons->Fill(mva.deltaEtaMuons, weight);
+      histsVBFPreselNotBB.deltaRMuons->Fill(mva.deltaRMuons, weight);
+      histsVBFPreselNotBB.relIsoMu1->Fill(mva.relIsoMu1, weight);
+      histsVBFPreselNotBB.relIsoMu2->Fill(mva.relIsoMu2, weight);
+      histsVBFPreselNotBB.nPU->Fill(nPU, weight);
+      histsVBFPreselNotBB.nVtx->Fill(mva.nVtx, weight);
+      histsVBFPreselNotBB.met->Fill(met.pt, weight);
+
+      histsVBFPreselNotBB.mDiJet->Fill(mva.mDiJet, weight);
+      histsVBFPreselNotBB.ptDiJet->Fill(mva.ptDiJet, weight);
+      histsVBFPreselNotBB.ptJet1->Fill(mva.ptJet1, weight);
+      histsVBFPreselNotBB.ptJet2->Fill(mva.ptJet2, weight);
+      histsVBFPreselNotBB.etaJet1->Fill(mva.etaJet1, weight);
+      histsVBFPreselNotBB.etaJet2->Fill(mva.etaJet2, weight);
+      histsVBFPreselNotBB.deltaEtaJets->Fill(mva.deltaEtaJets, weight);
+      histsVBFPreselNotBB.deltaPhiJets->Fill(mva.deltaPhiJets, weight);
+      histsVBFPreselNotBB.deltaRJets->Fill(mva.deltaRJets, weight);
+      histsVBFPreselNotBB.nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, weight);
+      histsVBFPreselNotBB.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
+      histsVBFPreselNotBB.nJets->Fill(mva.nJets, weight);
+      histsVBFPreselNotBB.ht->Fill(mva.ht, weight);
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
+      histsVBFPreselNotBB.mDiMu->Fill(mva.mDiMu, weight);
+
+      if(!vbfPreselection)
+      {
+        histsVBFPreselNotBB.BDTHistMuonOnly->Fill(bdtValInc, weight);
+        histsVBFPreselNotBB.likelihoodHistMuonOnly->Fill(likeValInc, weight);
+        histsVBFPreselNotBB.BDTHistMuonOnlyVMass->Fill(mva.mDiMu, bdtValInc, weight);
+      }
+      else
+      {
+        histsVBFPreselNotBB.BDTHistVBF->Fill(bdtValVBF, weight);
+        histsVBFPreselNotBB.likelihoodHistVBF->Fill(likeValVBF, weight);
+        histsVBFPreselNotBB.BDTHistVBFVMass->Fill(mva.mDiMu, bdtValVBF, weight);
       }
 #ifdef BLIND
       }
@@ -1083,13 +1581,6 @@ int main(int argc, char *argv[])
       {
 #endif
       histsIncPresel.mDiMu->Fill(mva.mDiMu, weight);
-      if (isBB) histsIncPresel.mDiMuBB->Fill(mva.mDiMu, weight);
-      if (isBE) histsIncPresel.mDiMuBE->Fill(mva.mDiMu, weight);
-      if (isBO) histsIncPresel.mDiMuBO->Fill(mva.mDiMu, weight);
-      if (isOO) histsIncPresel.mDiMuOO->Fill(mva.mDiMu, weight);
-      if (isOE) histsIncPresel.mDiMuOE->Fill(mva.mDiMu, weight);
-      if (isEE) histsIncPresel.mDiMuEE->Fill(mva.mDiMu, weight);
-      if (isNotBB) histsIncPresel.mDiMuNotBB->Fill(mva.mDiMu, weight);
 
       if(!vbfPreselection)
       {
@@ -1108,6 +1599,391 @@ int main(int argc, char *argv[])
 #endif
     }
 
+    if (!vbfPreselection && isBB)
+    {
+      histsIncPreselBB.yDiMu->Fill(mva.yDiMu, weight);
+      histsIncPreselBB.ptDiMu->Fill(mva.ptDiMu, weight);
+      histsIncPreselBB.ptMu1->Fill(mva.ptMu1, weight);
+      histsIncPreselBB.ptMu2->Fill(mva.ptMu2, weight);
+      histsIncPreselBB.etaMu1->Fill(mva.etaMu1, weight);
+      histsIncPreselBB.etaMu2->Fill(mva.etaMu2, weight);
+      histsIncPreselBB.cosThetaStar->Fill(mva.cosThetaStar, weight);
+      histsIncPreselBB.cosThetaStarCS->Fill(mva.cosThetaStarCS, weight);
+      histsIncPreselBB.deltaPhiMuons->Fill(mva.deltaPhiMuons, weight);
+      histsIncPreselBB.deltaEtaMuons->Fill(mva.deltaEtaMuons, weight);
+      histsIncPreselBB.deltaRMuons->Fill(mva.deltaRMuons, weight);
+      histsIncPreselBB.relIsoMu1->Fill(mva.relIsoMu1, weight);
+      histsIncPreselBB.relIsoMu2->Fill(mva.relIsoMu2, weight);
+      histsIncPreselBB.nPU->Fill(nPU, weight);
+      histsIncPreselBB.nVtx->Fill(mva.nVtx, weight);
+      histsIncPreselBB.met->Fill(met.pt, weight);
+
+      histsIncPreselBB.mDiJet->Fill(mva.mDiJet, weight);
+      histsIncPreselBB.ptDiJet->Fill(mva.ptDiJet, weight);
+      histsIncPreselBB.ptJet1->Fill(mva.ptJet1, weight);
+      histsIncPreselBB.ptJet2->Fill(mva.ptJet2, weight);
+      histsIncPreselBB.etaJet1->Fill(mva.etaJet1, weight);
+      histsIncPreselBB.etaJet2->Fill(mva.etaJet2, weight);
+      histsIncPreselBB.deltaEtaJets->Fill(mva.deltaEtaJets, weight);
+      histsIncPreselBB.deltaPhiJets->Fill(mva.deltaPhiJets, weight);
+      histsIncPreselBB.deltaRJets->Fill(mva.deltaRJets, weight);
+      histsIncPreselBB.nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, weight);
+      histsIncPreselBB.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
+      histsIncPreselBB.nJets->Fill(mva.nJets, weight);
+      histsIncPreselBB.ht->Fill(mva.ht, weight);
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
+      histsIncPreselBB.mDiMu->Fill(mva.mDiMu, weight);
+
+      if(!vbfPreselection)
+      {
+        histsIncPreselBB.BDTHistMuonOnly->Fill(bdtValInc, weight);
+        histsIncPreselBB.likelihoodHistMuonOnly->Fill(likeValInc, weight);
+        histsIncPreselBB.BDTHistMuonOnlyVMass->Fill(mva.mDiMu, bdtValInc, weight);
+      }
+      else
+      {
+        histsIncPreselBB.BDTHistVBF->Fill(bdtValVBF, weight);
+        histsIncPreselBB.likelihoodHistVBF->Fill(likeValVBF, weight);
+        histsIncPreselBB.BDTHistVBFVMass->Fill(mva.mDiMu, bdtValVBF, weight);
+      }
+#ifdef BLIND
+      }
+#endif
+    }
+
+    if (!vbfPreselection && isBO)
+    {
+      histsIncPreselBO.yDiMu->Fill(mva.yDiMu, weight);
+      histsIncPreselBO.ptDiMu->Fill(mva.ptDiMu, weight);
+      histsIncPreselBO.ptMu1->Fill(mva.ptMu1, weight);
+      histsIncPreselBO.ptMu2->Fill(mva.ptMu2, weight);
+      histsIncPreselBO.etaMu1->Fill(mva.etaMu1, weight);
+      histsIncPreselBO.etaMu2->Fill(mva.etaMu2, weight);
+      histsIncPreselBO.cosThetaStar->Fill(mva.cosThetaStar, weight);
+      histsIncPreselBO.cosThetaStarCS->Fill(mva.cosThetaStarCS, weight);
+      histsIncPreselBO.deltaPhiMuons->Fill(mva.deltaPhiMuons, weight);
+      histsIncPreselBO.deltaEtaMuons->Fill(mva.deltaEtaMuons, weight);
+      histsIncPreselBO.deltaRMuons->Fill(mva.deltaRMuons, weight);
+      histsIncPreselBO.relIsoMu1->Fill(mva.relIsoMu1, weight);
+      histsIncPreselBO.relIsoMu2->Fill(mva.relIsoMu2, weight);
+      histsIncPreselBO.nPU->Fill(nPU, weight);
+      histsIncPreselBO.nVtx->Fill(mva.nVtx, weight);
+      histsIncPreselBO.met->Fill(met.pt, weight);
+
+      histsIncPreselBO.mDiJet->Fill(mva.mDiJet, weight);
+      histsIncPreselBO.ptDiJet->Fill(mva.ptDiJet, weight);
+      histsIncPreselBO.ptJet1->Fill(mva.ptJet1, weight);
+      histsIncPreselBO.ptJet2->Fill(mva.ptJet2, weight);
+      histsIncPreselBO.etaJet1->Fill(mva.etaJet1, weight);
+      histsIncPreselBO.etaJet2->Fill(mva.etaJet2, weight);
+      histsIncPreselBO.deltaEtaJets->Fill(mva.deltaEtaJets, weight);
+      histsIncPreselBO.deltaPhiJets->Fill(mva.deltaPhiJets, weight);
+      histsIncPreselBO.deltaRJets->Fill(mva.deltaRJets, weight);
+      histsIncPreselBO.nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, weight);
+      histsIncPreselBO.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
+      histsIncPreselBO.nJets->Fill(mva.nJets, weight);
+      histsIncPreselBO.ht->Fill(mva.ht, weight);
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
+      histsIncPreselBO.mDiMu->Fill(mva.mDiMu, weight);
+
+      if(!vbfPreselection)
+      {
+        histsIncPreselBO.BDTHistMuonOnly->Fill(bdtValInc, weight);
+        histsIncPreselBO.likelihoodHistMuonOnly->Fill(likeValInc, weight);
+        histsIncPreselBO.BDTHistMuonOnlyVMass->Fill(mva.mDiMu, bdtValInc, weight);
+      }
+      else
+      {
+        histsIncPreselBO.BDTHistVBF->Fill(bdtValVBF, weight);
+        histsIncPreselBO.likelihoodHistVBF->Fill(likeValVBF, weight);
+        histsIncPreselBO.BDTHistVBFVMass->Fill(mva.mDiMu, bdtValVBF, weight);
+      }
+#ifdef BLIND
+      }
+#endif
+    }
+
+    if (!vbfPreselection && isBE)
+    {
+      histsIncPreselBE.yDiMu->Fill(mva.yDiMu, weight);
+      histsIncPreselBE.ptDiMu->Fill(mva.ptDiMu, weight);
+      histsIncPreselBE.ptMu1->Fill(mva.ptMu1, weight);
+      histsIncPreselBE.ptMu2->Fill(mva.ptMu2, weight);
+      histsIncPreselBE.etaMu1->Fill(mva.etaMu1, weight);
+      histsIncPreselBE.etaMu2->Fill(mva.etaMu2, weight);
+      histsIncPreselBE.cosThetaStar->Fill(mva.cosThetaStar, weight);
+      histsIncPreselBE.cosThetaStarCS->Fill(mva.cosThetaStarCS, weight);
+      histsIncPreselBE.deltaPhiMuons->Fill(mva.deltaPhiMuons, weight);
+      histsIncPreselBE.deltaEtaMuons->Fill(mva.deltaEtaMuons, weight);
+      histsIncPreselBE.deltaRMuons->Fill(mva.deltaRMuons, weight);
+      histsIncPreselBE.relIsoMu1->Fill(mva.relIsoMu1, weight);
+      histsIncPreselBE.relIsoMu2->Fill(mva.relIsoMu2, weight);
+      histsIncPreselBE.nPU->Fill(nPU, weight);
+      histsIncPreselBE.nVtx->Fill(mva.nVtx, weight);
+      histsIncPreselBE.met->Fill(met.pt, weight);
+
+      histsIncPreselBE.mDiJet->Fill(mva.mDiJet, weight);
+      histsIncPreselBE.ptDiJet->Fill(mva.ptDiJet, weight);
+      histsIncPreselBE.ptJet1->Fill(mva.ptJet1, weight);
+      histsIncPreselBE.ptJet2->Fill(mva.ptJet2, weight);
+      histsIncPreselBE.etaJet1->Fill(mva.etaJet1, weight);
+      histsIncPreselBE.etaJet2->Fill(mva.etaJet2, weight);
+      histsIncPreselBE.deltaEtaJets->Fill(mva.deltaEtaJets, weight);
+      histsIncPreselBE.deltaPhiJets->Fill(mva.deltaPhiJets, weight);
+      histsIncPreselBE.deltaRJets->Fill(mva.deltaRJets, weight);
+      histsIncPreselBE.nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, weight);
+      histsIncPreselBE.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
+      histsIncPreselBE.nJets->Fill(mva.nJets, weight);
+      histsIncPreselBE.ht->Fill(mva.ht, weight);
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
+      histsIncPreselBE.mDiMu->Fill(mva.mDiMu, weight);
+
+      if(!vbfPreselection)
+      {
+        histsIncPreselBE.BDTHistMuonOnly->Fill(bdtValInc, weight);
+        histsIncPreselBE.likelihoodHistMuonOnly->Fill(likeValInc, weight);
+        histsIncPreselBE.BDTHistMuonOnlyVMass->Fill(mva.mDiMu, bdtValInc, weight);
+      }
+      else
+      {
+        histsIncPreselBE.BDTHistVBF->Fill(bdtValVBF, weight);
+        histsIncPreselBE.likelihoodHistVBF->Fill(likeValVBF, weight);
+        histsIncPreselBE.BDTHistVBFVMass->Fill(mva.mDiMu, bdtValVBF, weight);
+      }
+#ifdef BLIND
+      }
+#endif
+    }
+
+    if (!vbfPreselection && isOO)
+    {
+      histsIncPreselOO.yDiMu->Fill(mva.yDiMu, weight);
+      histsIncPreselOO.ptDiMu->Fill(mva.ptDiMu, weight);
+      histsIncPreselOO.ptMu1->Fill(mva.ptMu1, weight);
+      histsIncPreselOO.ptMu2->Fill(mva.ptMu2, weight);
+      histsIncPreselOO.etaMu1->Fill(mva.etaMu1, weight);
+      histsIncPreselOO.etaMu2->Fill(mva.etaMu2, weight);
+      histsIncPreselOO.cosThetaStar->Fill(mva.cosThetaStar, weight);
+      histsIncPreselOO.cosThetaStarCS->Fill(mva.cosThetaStarCS, weight);
+      histsIncPreselOO.deltaPhiMuons->Fill(mva.deltaPhiMuons, weight);
+      histsIncPreselOO.deltaEtaMuons->Fill(mva.deltaEtaMuons, weight);
+      histsIncPreselOO.deltaRMuons->Fill(mva.deltaRMuons, weight);
+      histsIncPreselOO.relIsoMu1->Fill(mva.relIsoMu1, weight);
+      histsIncPreselOO.relIsoMu2->Fill(mva.relIsoMu2, weight);
+      histsIncPreselOO.nPU->Fill(nPU, weight);
+      histsIncPreselOO.nVtx->Fill(mva.nVtx, weight);
+      histsIncPreselOO.met->Fill(met.pt, weight);
+
+      histsIncPreselOO.mDiJet->Fill(mva.mDiJet, weight);
+      histsIncPreselOO.ptDiJet->Fill(mva.ptDiJet, weight);
+      histsIncPreselOO.ptJet1->Fill(mva.ptJet1, weight);
+      histsIncPreselOO.ptJet2->Fill(mva.ptJet2, weight);
+      histsIncPreselOO.etaJet1->Fill(mva.etaJet1, weight);
+      histsIncPreselOO.etaJet2->Fill(mva.etaJet2, weight);
+      histsIncPreselOO.deltaEtaJets->Fill(mva.deltaEtaJets, weight);
+      histsIncPreselOO.deltaPhiJets->Fill(mva.deltaPhiJets, weight);
+      histsIncPreselOO.deltaRJets->Fill(mva.deltaRJets, weight);
+      histsIncPreselOO.nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, weight);
+      histsIncPreselOO.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
+      histsIncPreselOO.nJets->Fill(mva.nJets, weight);
+      histsIncPreselOO.ht->Fill(mva.ht, weight);
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
+      histsIncPreselOO.mDiMu->Fill(mva.mDiMu, weight);
+
+      if(!vbfPreselection)
+      {
+        histsIncPreselOO.BDTHistMuonOnly->Fill(bdtValInc, weight);
+        histsIncPreselOO.likelihoodHistMuonOnly->Fill(likeValInc, weight);
+        histsIncPreselOO.BDTHistMuonOnlyVMass->Fill(mva.mDiMu, bdtValInc, weight);
+      }
+      else
+      {
+        histsIncPreselOO.BDTHistVBF->Fill(bdtValVBF, weight);
+        histsIncPreselOO.likelihoodHistVBF->Fill(likeValVBF, weight);
+        histsIncPreselOO.BDTHistVBFVMass->Fill(mva.mDiMu, bdtValVBF, weight);
+      }
+#ifdef BLIND
+      }
+#endif
+    }
+
+    if (!vbfPreselection && isOE)
+    {
+      histsIncPreselOE.yDiMu->Fill(mva.yDiMu, weight);
+      histsIncPreselOE.ptDiMu->Fill(mva.ptDiMu, weight);
+      histsIncPreselOE.ptMu1->Fill(mva.ptMu1, weight);
+      histsIncPreselOE.ptMu2->Fill(mva.ptMu2, weight);
+      histsIncPreselOE.etaMu1->Fill(mva.etaMu1, weight);
+      histsIncPreselOE.etaMu2->Fill(mva.etaMu2, weight);
+      histsIncPreselOE.cosThetaStar->Fill(mva.cosThetaStar, weight);
+      histsIncPreselOE.cosThetaStarCS->Fill(mva.cosThetaStarCS, weight);
+      histsIncPreselOE.deltaPhiMuons->Fill(mva.deltaPhiMuons, weight);
+      histsIncPreselOE.deltaEtaMuons->Fill(mva.deltaEtaMuons, weight);
+      histsIncPreselOE.deltaRMuons->Fill(mva.deltaRMuons, weight);
+      histsIncPreselOE.relIsoMu1->Fill(mva.relIsoMu1, weight);
+      histsIncPreselOE.relIsoMu2->Fill(mva.relIsoMu2, weight);
+      histsIncPreselOE.nPU->Fill(nPU, weight);
+      histsIncPreselOE.nVtx->Fill(mva.nVtx, weight);
+      histsIncPreselOE.met->Fill(met.pt, weight);
+
+      histsIncPreselOE.mDiJet->Fill(mva.mDiJet, weight);
+      histsIncPreselOE.ptDiJet->Fill(mva.ptDiJet, weight);
+      histsIncPreselOE.ptJet1->Fill(mva.ptJet1, weight);
+      histsIncPreselOE.ptJet2->Fill(mva.ptJet2, weight);
+      histsIncPreselOE.etaJet1->Fill(mva.etaJet1, weight);
+      histsIncPreselOE.etaJet2->Fill(mva.etaJet2, weight);
+      histsIncPreselOE.deltaEtaJets->Fill(mva.deltaEtaJets, weight);
+      histsIncPreselOE.deltaPhiJets->Fill(mva.deltaPhiJets, weight);
+      histsIncPreselOE.deltaRJets->Fill(mva.deltaRJets, weight);
+      histsIncPreselOE.nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, weight);
+      histsIncPreselOE.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
+      histsIncPreselOE.nJets->Fill(mva.nJets, weight);
+      histsIncPreselOE.ht->Fill(mva.ht, weight);
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
+      histsIncPreselOE.mDiMu->Fill(mva.mDiMu, weight);
+
+      if(!vbfPreselection)
+      {
+        histsIncPreselOE.BDTHistMuonOnly->Fill(bdtValInc, weight);
+        histsIncPreselOE.likelihoodHistMuonOnly->Fill(likeValInc, weight);
+        histsIncPreselOE.BDTHistMuonOnlyVMass->Fill(mva.mDiMu, bdtValInc, weight);
+      }
+      else
+      {
+        histsIncPreselOE.BDTHistVBF->Fill(bdtValVBF, weight);
+        histsIncPreselOE.likelihoodHistVBF->Fill(likeValVBF, weight);
+        histsIncPreselOE.BDTHistVBFVMass->Fill(mva.mDiMu, bdtValVBF, weight);
+      }
+#ifdef BLIND
+      }
+#endif
+    }
+
+    if (!vbfPreselection && isEE)
+    {
+      histsIncPreselEE.yDiMu->Fill(mva.yDiMu, weight);
+      histsIncPreselEE.ptDiMu->Fill(mva.ptDiMu, weight);
+      histsIncPreselEE.ptMu1->Fill(mva.ptMu1, weight);
+      histsIncPreselEE.ptMu2->Fill(mva.ptMu2, weight);
+      histsIncPreselEE.etaMu1->Fill(mva.etaMu1, weight);
+      histsIncPreselEE.etaMu2->Fill(mva.etaMu2, weight);
+      histsIncPreselEE.cosThetaStar->Fill(mva.cosThetaStar, weight);
+      histsIncPreselEE.cosThetaStarCS->Fill(mva.cosThetaStarCS, weight);
+      histsIncPreselEE.deltaPhiMuons->Fill(mva.deltaPhiMuons, weight);
+      histsIncPreselEE.deltaEtaMuons->Fill(mva.deltaEtaMuons, weight);
+      histsIncPreselEE.deltaRMuons->Fill(mva.deltaRMuons, weight);
+      histsIncPreselEE.relIsoMu1->Fill(mva.relIsoMu1, weight);
+      histsIncPreselEE.relIsoMu2->Fill(mva.relIsoMu2, weight);
+      histsIncPreselEE.nPU->Fill(nPU, weight);
+      histsIncPreselEE.nVtx->Fill(mva.nVtx, weight);
+      histsIncPreselEE.met->Fill(met.pt, weight);
+
+      histsIncPreselEE.mDiJet->Fill(mva.mDiJet, weight);
+      histsIncPreselEE.ptDiJet->Fill(mva.ptDiJet, weight);
+      histsIncPreselEE.ptJet1->Fill(mva.ptJet1, weight);
+      histsIncPreselEE.ptJet2->Fill(mva.ptJet2, weight);
+      histsIncPreselEE.etaJet1->Fill(mva.etaJet1, weight);
+      histsIncPreselEE.etaJet2->Fill(mva.etaJet2, weight);
+      histsIncPreselEE.deltaEtaJets->Fill(mva.deltaEtaJets, weight);
+      histsIncPreselEE.deltaPhiJets->Fill(mva.deltaPhiJets, weight);
+      histsIncPreselEE.deltaRJets->Fill(mva.deltaRJets, weight);
+      histsIncPreselEE.nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, weight);
+      histsIncPreselEE.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
+      histsIncPreselEE.nJets->Fill(mva.nJets, weight);
+      histsIncPreselEE.ht->Fill(mva.ht, weight);
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
+      histsIncPreselEE.mDiMu->Fill(mva.mDiMu, weight);
+
+      if(!vbfPreselection)
+      {
+        histsIncPreselEE.BDTHistMuonOnly->Fill(bdtValInc, weight);
+        histsIncPreselEE.likelihoodHistMuonOnly->Fill(likeValInc, weight);
+        histsIncPreselEE.BDTHistMuonOnlyVMass->Fill(mva.mDiMu, bdtValInc, weight);
+      }
+      else
+      {
+        histsIncPreselEE.BDTHistVBF->Fill(bdtValVBF, weight);
+        histsIncPreselEE.likelihoodHistVBF->Fill(likeValVBF, weight);
+        histsIncPreselEE.BDTHistVBFVMass->Fill(mva.mDiMu, bdtValVBF, weight);
+      }
+#ifdef BLIND
+      }
+#endif
+    }
+
+    if (!vbfPreselection && isNotBB)
+    {
+      histsIncPreselNotBB.yDiMu->Fill(mva.yDiMu, weight);
+      histsIncPreselNotBB.ptDiMu->Fill(mva.ptDiMu, weight);
+      histsIncPreselNotBB.ptMu1->Fill(mva.ptMu1, weight);
+      histsIncPreselNotBB.ptMu2->Fill(mva.ptMu2, weight);
+      histsIncPreselNotBB.etaMu1->Fill(mva.etaMu1, weight);
+      histsIncPreselNotBB.etaMu2->Fill(mva.etaMu2, weight);
+      histsIncPreselNotBB.cosThetaStar->Fill(mva.cosThetaStar, weight);
+      histsIncPreselNotBB.cosThetaStarCS->Fill(mva.cosThetaStarCS, weight);
+      histsIncPreselNotBB.deltaPhiMuons->Fill(mva.deltaPhiMuons, weight);
+      histsIncPreselNotBB.deltaEtaMuons->Fill(mva.deltaEtaMuons, weight);
+      histsIncPreselNotBB.deltaRMuons->Fill(mva.deltaRMuons, weight);
+      histsIncPreselNotBB.relIsoMu1->Fill(mva.relIsoMu1, weight);
+      histsIncPreselNotBB.relIsoMu2->Fill(mva.relIsoMu2, weight);
+      histsIncPreselNotBB.nPU->Fill(nPU, weight);
+      histsIncPreselNotBB.nVtx->Fill(mva.nVtx, weight);
+      histsIncPreselNotBB.met->Fill(met.pt, weight);
+
+      histsIncPreselNotBB.mDiJet->Fill(mva.mDiJet, weight);
+      histsIncPreselNotBB.ptDiJet->Fill(mva.ptDiJet, weight);
+      histsIncPreselNotBB.ptJet1->Fill(mva.ptJet1, weight);
+      histsIncPreselNotBB.ptJet2->Fill(mva.ptJet2, weight);
+      histsIncPreselNotBB.etaJet1->Fill(mva.etaJet1, weight);
+      histsIncPreselNotBB.etaJet2->Fill(mva.etaJet2, weight);
+      histsIncPreselNotBB.deltaEtaJets->Fill(mva.deltaEtaJets, weight);
+      histsIncPreselNotBB.deltaPhiJets->Fill(mva.deltaPhiJets, weight);
+      histsIncPreselNotBB.deltaRJets->Fill(mva.deltaRJets, weight);
+      histsIncPreselNotBB.nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, weight);
+      histsIncPreselNotBB.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
+      histsIncPreselNotBB.nJets->Fill(mva.nJets, weight);
+      histsIncPreselNotBB.ht->Fill(mva.ht, weight);
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
+      histsIncPreselNotBB.mDiMu->Fill(mva.mDiMu, weight);
+
+      if(!vbfPreselection)
+      {
+        histsIncPreselNotBB.BDTHistMuonOnly->Fill(bdtValInc, weight);
+        histsIncPreselNotBB.likelihoodHistMuonOnly->Fill(likeValInc, weight);
+        histsIncPreselNotBB.BDTHistMuonOnlyVMass->Fill(mva.mDiMu, bdtValInc, weight);
+      }
+      else
+      {
+        histsIncPreselNotBB.BDTHistVBF->Fill(bdtValVBF, weight);
+        histsIncPreselNotBB.likelihoodHistVBF->Fill(likeValVBF, weight);
+        histsIncPreselNotBB.BDTHistVBFVMass->Fill(mva.mDiMu, bdtValVBF, weight);
+      }
+#ifdef BLIND
+      }
+#endif
+    }
+
     if (!vbfPreselection && mva.getMVAPassBDTCut(cfgNameInc))
     {
 #ifdef BLIND
@@ -1115,13 +1991,6 @@ int main(int argc, char *argv[])
       {
 #endif
       histsIncBDTSig80.mDiMu->Fill(mva.mDiMu, weight);
-      if (isBB) histsIncBDTSig80.mDiMuBB->Fill(mva.mDiMu, weight);
-      if (isBE) histsIncBDTSig80.mDiMuBE->Fill(mva.mDiMu, weight);
-      if (isBO) histsIncBDTSig80.mDiMuBO->Fill(mva.mDiMu, weight);
-      if (isOO) histsIncBDTSig80.mDiMuOO->Fill(mva.mDiMu, weight);
-      if (isOE) histsIncBDTSig80.mDiMuOE->Fill(mva.mDiMu, weight);
-      if (isEE) histsIncBDTSig80.mDiMuEE->Fill(mva.mDiMu, weight);
-      if (isNotBB) histsIncBDTSig80.mDiMuNotBB->Fill(mva.mDiMu, weight);
 
 #ifdef BLIND
       }
@@ -1159,6 +2028,314 @@ int main(int argc, char *argv[])
       histsIncBDTSig80.BDTHistMuonOnly->Fill(bdtValInc, weight);
     }
 
+    if (!vbfPreselection && mva.getMVAPassBDTCut(cfgNameInc) && isBB)
+    {
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
+      histsIncBDTSig80BB.mDiMu->Fill(mva.mDiMu, weight);
+
+#ifdef BLIND
+      }
+#endif
+      histsIncBDTSig80BB.yDiMu->Fill(mva.yDiMu, weight);
+      histsIncBDTSig80BB.ptDiMu->Fill(mva.ptDiMu, weight);
+      histsIncBDTSig80BB.ptMu1->Fill(mva.ptMu1, weight);
+      histsIncBDTSig80BB.ptMu2->Fill(mva.ptMu2, weight);
+      histsIncBDTSig80BB.etaMu1->Fill(mva.etaMu1, weight);
+      histsIncBDTSig80BB.etaMu2->Fill(mva.etaMu2, weight);
+      histsIncBDTSig80BB.cosThetaStar->Fill(mva.cosThetaStar, weight);
+      histsIncBDTSig80BB.cosThetaStarCS->Fill(mva.cosThetaStarCS, weight);
+      histsIncBDTSig80BB.deltaPhiMuons->Fill(mva.deltaPhiMuons, weight);
+      histsIncBDTSig80BB.deltaEtaMuons->Fill(mva.deltaEtaMuons, weight);
+      histsIncBDTSig80BB.deltaRMuons->Fill(mva.deltaRMuons, weight);
+      histsIncBDTSig80BB.relIsoMu1->Fill(mva.relIsoMu1, weight);
+      histsIncBDTSig80BB.relIsoMu2->Fill(mva.relIsoMu2, weight);
+      histsIncBDTSig80BB.nPU->Fill(nPU, weight);
+      histsIncBDTSig80BB.nVtx->Fill(mva.nVtx, weight);
+      histsIncBDTSig80BB.met->Fill(met.pt, weight);
+
+      histsIncBDTSig80BB.mDiJet->Fill(mva.mDiJet, weight);
+      histsIncBDTSig80BB.ptDiJet->Fill(mva.ptDiJet, weight);
+      histsIncBDTSig80BB.ptJet1->Fill(mva.ptJet1, weight);
+      histsIncBDTSig80BB.ptJet2->Fill(mva.ptJet2, weight);
+      histsIncBDTSig80BB.etaJet1->Fill(mva.etaJet1, weight);
+      histsIncBDTSig80BB.etaJet2->Fill(mva.etaJet2, weight);
+      histsIncBDTSig80BB.deltaEtaJets->Fill(mva.deltaEtaJets, weight);
+      histsIncBDTSig80BB.deltaPhiJets->Fill(mva.deltaPhiJets, weight);
+      histsIncBDTSig80BB.deltaRJets->Fill(mva.deltaRJets, weight);
+      histsIncBDTSig80BB.nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, weight);
+      histsIncBDTSig80BB.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
+      histsIncBDTSig80BB.nJets->Fill(mva.nJets, weight);
+      histsIncBDTSig80BB.ht->Fill(mva.ht, weight);
+      histsIncBDTSig80BB.BDTHistMuonOnly->Fill(bdtValInc, weight);
+    }
+
+    if (!vbfPreselection && mva.getMVAPassBDTCut(cfgNameInc) && isBO)
+    {
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
+      histsIncBDTSig80BO.mDiMu->Fill(mva.mDiMu, weight);
+
+#ifdef BLIND
+      }
+#endif
+      histsIncBDTSig80BO.yDiMu->Fill(mva.yDiMu, weight);
+      histsIncBDTSig80BO.ptDiMu->Fill(mva.ptDiMu, weight);
+      histsIncBDTSig80BO.ptMu1->Fill(mva.ptMu1, weight);
+      histsIncBDTSig80BO.ptMu2->Fill(mva.ptMu2, weight);
+      histsIncBDTSig80BO.etaMu1->Fill(mva.etaMu1, weight);
+      histsIncBDTSig80BO.etaMu2->Fill(mva.etaMu2, weight);
+      histsIncBDTSig80BO.cosThetaStar->Fill(mva.cosThetaStar, weight);
+      histsIncBDTSig80BO.cosThetaStarCS->Fill(mva.cosThetaStarCS, weight);
+      histsIncBDTSig80BO.deltaPhiMuons->Fill(mva.deltaPhiMuons, weight);
+      histsIncBDTSig80BO.deltaEtaMuons->Fill(mva.deltaEtaMuons, weight);
+      histsIncBDTSig80BO.deltaRMuons->Fill(mva.deltaRMuons, weight);
+      histsIncBDTSig80BO.relIsoMu1->Fill(mva.relIsoMu1, weight);
+      histsIncBDTSig80BO.relIsoMu2->Fill(mva.relIsoMu2, weight);
+      histsIncBDTSig80BO.nPU->Fill(nPU, weight);
+      histsIncBDTSig80BO.nVtx->Fill(mva.nVtx, weight);
+      histsIncBDTSig80BO.met->Fill(met.pt, weight);
+
+      histsIncBDTSig80BO.mDiJet->Fill(mva.mDiJet, weight);
+      histsIncBDTSig80BO.ptDiJet->Fill(mva.ptDiJet, weight);
+      histsIncBDTSig80BO.ptJet1->Fill(mva.ptJet1, weight);
+      histsIncBDTSig80BO.ptJet2->Fill(mva.ptJet2, weight);
+      histsIncBDTSig80BO.etaJet1->Fill(mva.etaJet1, weight);
+      histsIncBDTSig80BO.etaJet2->Fill(mva.etaJet2, weight);
+      histsIncBDTSig80BO.deltaEtaJets->Fill(mva.deltaEtaJets, weight);
+      histsIncBDTSig80BO.deltaPhiJets->Fill(mva.deltaPhiJets, weight);
+      histsIncBDTSig80BO.deltaRJets->Fill(mva.deltaRJets, weight);
+      histsIncBDTSig80BO.nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, weight);
+      histsIncBDTSig80BO.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
+      histsIncBDTSig80BO.nJets->Fill(mva.nJets, weight);
+      histsIncBDTSig80BO.ht->Fill(mva.ht, weight);
+      histsIncBDTSig80BO.BDTHistMuonOnly->Fill(bdtValInc, weight);
+    }
+
+    if (!vbfPreselection && mva.getMVAPassBDTCut(cfgNameInc) && isBE)
+    {
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
+      histsIncBDTSig80BE.mDiMu->Fill(mva.mDiMu, weight);
+
+#ifdef BLIND
+      }
+#endif
+      histsIncBDTSig80BE.yDiMu->Fill(mva.yDiMu, weight);
+      histsIncBDTSig80BE.ptDiMu->Fill(mva.ptDiMu, weight);
+      histsIncBDTSig80BE.ptMu1->Fill(mva.ptMu1, weight);
+      histsIncBDTSig80BE.ptMu2->Fill(mva.ptMu2, weight);
+      histsIncBDTSig80BE.etaMu1->Fill(mva.etaMu1, weight);
+      histsIncBDTSig80BE.etaMu2->Fill(mva.etaMu2, weight);
+      histsIncBDTSig80BE.cosThetaStar->Fill(mva.cosThetaStar, weight);
+      histsIncBDTSig80BE.cosThetaStarCS->Fill(mva.cosThetaStarCS, weight);
+      histsIncBDTSig80BE.deltaPhiMuons->Fill(mva.deltaPhiMuons, weight);
+      histsIncBDTSig80BE.deltaEtaMuons->Fill(mva.deltaEtaMuons, weight);
+      histsIncBDTSig80BE.deltaRMuons->Fill(mva.deltaRMuons, weight);
+      histsIncBDTSig80BE.relIsoMu1->Fill(mva.relIsoMu1, weight);
+      histsIncBDTSig80BE.relIsoMu2->Fill(mva.relIsoMu2, weight);
+      histsIncBDTSig80BE.nPU->Fill(nPU, weight);
+      histsIncBDTSig80BE.nVtx->Fill(mva.nVtx, weight);
+      histsIncBDTSig80BE.met->Fill(met.pt, weight);
+
+      histsIncBDTSig80BE.mDiJet->Fill(mva.mDiJet, weight);
+      histsIncBDTSig80BE.ptDiJet->Fill(mva.ptDiJet, weight);
+      histsIncBDTSig80BE.ptJet1->Fill(mva.ptJet1, weight);
+      histsIncBDTSig80BE.ptJet2->Fill(mva.ptJet2, weight);
+      histsIncBDTSig80BE.etaJet1->Fill(mva.etaJet1, weight);
+      histsIncBDTSig80BE.etaJet2->Fill(mva.etaJet2, weight);
+      histsIncBDTSig80BE.deltaEtaJets->Fill(mva.deltaEtaJets, weight);
+      histsIncBDTSig80BE.deltaPhiJets->Fill(mva.deltaPhiJets, weight);
+      histsIncBDTSig80BE.deltaRJets->Fill(mva.deltaRJets, weight);
+      histsIncBDTSig80BE.nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, weight);
+      histsIncBDTSig80BE.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
+      histsIncBDTSig80BE.nJets->Fill(mva.nJets, weight);
+      histsIncBDTSig80BE.ht->Fill(mva.ht, weight);
+      histsIncBDTSig80BE.BDTHistMuonOnly->Fill(bdtValInc, weight);
+    }
+
+    if (!vbfPreselection && mva.getMVAPassBDTCut(cfgNameInc) && isOO)
+    {
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
+      histsIncBDTSig80OO.mDiMu->Fill(mva.mDiMu, weight);
+
+#ifdef BLIND
+      }
+#endif
+      histsIncBDTSig80OO.yDiMu->Fill(mva.yDiMu, weight);
+      histsIncBDTSig80OO.ptDiMu->Fill(mva.ptDiMu, weight);
+      histsIncBDTSig80OO.ptMu1->Fill(mva.ptMu1, weight);
+      histsIncBDTSig80OO.ptMu2->Fill(mva.ptMu2, weight);
+      histsIncBDTSig80OO.etaMu1->Fill(mva.etaMu1, weight);
+      histsIncBDTSig80OO.etaMu2->Fill(mva.etaMu2, weight);
+      histsIncBDTSig80OO.cosThetaStar->Fill(mva.cosThetaStar, weight);
+      histsIncBDTSig80OO.cosThetaStarCS->Fill(mva.cosThetaStarCS, weight);
+      histsIncBDTSig80OO.deltaPhiMuons->Fill(mva.deltaPhiMuons, weight);
+      histsIncBDTSig80OO.deltaEtaMuons->Fill(mva.deltaEtaMuons, weight);
+      histsIncBDTSig80OO.deltaRMuons->Fill(mva.deltaRMuons, weight);
+      histsIncBDTSig80OO.relIsoMu1->Fill(mva.relIsoMu1, weight);
+      histsIncBDTSig80OO.relIsoMu2->Fill(mva.relIsoMu2, weight);
+      histsIncBDTSig80OO.nPU->Fill(nPU, weight);
+      histsIncBDTSig80OO.nVtx->Fill(mva.nVtx, weight);
+      histsIncBDTSig80OO.met->Fill(met.pt, weight);
+
+      histsIncBDTSig80OO.mDiJet->Fill(mva.mDiJet, weight);
+      histsIncBDTSig80OO.ptDiJet->Fill(mva.ptDiJet, weight);
+      histsIncBDTSig80OO.ptJet1->Fill(mva.ptJet1, weight);
+      histsIncBDTSig80OO.ptJet2->Fill(mva.ptJet2, weight);
+      histsIncBDTSig80OO.etaJet1->Fill(mva.etaJet1, weight);
+      histsIncBDTSig80OO.etaJet2->Fill(mva.etaJet2, weight);
+      histsIncBDTSig80OO.deltaEtaJets->Fill(mva.deltaEtaJets, weight);
+      histsIncBDTSig80OO.deltaPhiJets->Fill(mva.deltaPhiJets, weight);
+      histsIncBDTSig80OO.deltaRJets->Fill(mva.deltaRJets, weight);
+      histsIncBDTSig80OO.nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, weight);
+      histsIncBDTSig80OO.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
+      histsIncBDTSig80OO.nJets->Fill(mva.nJets, weight);
+      histsIncBDTSig80OO.ht->Fill(mva.ht, weight);
+      histsIncBDTSig80OO.BDTHistMuonOnly->Fill(bdtValInc, weight);
+    }
+
+    if (!vbfPreselection && mva.getMVAPassBDTCut(cfgNameInc) && isOE)
+    {
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
+      histsIncBDTSig80OE.mDiMu->Fill(mva.mDiMu, weight);
+
+#ifdef BLIND
+      }
+#endif
+      histsIncBDTSig80OE.yDiMu->Fill(mva.yDiMu, weight);
+      histsIncBDTSig80OE.ptDiMu->Fill(mva.ptDiMu, weight);
+      histsIncBDTSig80OE.ptMu1->Fill(mva.ptMu1, weight);
+      histsIncBDTSig80OE.ptMu2->Fill(mva.ptMu2, weight);
+      histsIncBDTSig80OE.etaMu1->Fill(mva.etaMu1, weight);
+      histsIncBDTSig80OE.etaMu2->Fill(mva.etaMu2, weight);
+      histsIncBDTSig80OE.cosThetaStar->Fill(mva.cosThetaStar, weight);
+      histsIncBDTSig80OE.cosThetaStarCS->Fill(mva.cosThetaStarCS, weight);
+      histsIncBDTSig80OE.deltaPhiMuons->Fill(mva.deltaPhiMuons, weight);
+      histsIncBDTSig80OE.deltaEtaMuons->Fill(mva.deltaEtaMuons, weight);
+      histsIncBDTSig80OE.deltaRMuons->Fill(mva.deltaRMuons, weight);
+      histsIncBDTSig80OE.relIsoMu1->Fill(mva.relIsoMu1, weight);
+      histsIncBDTSig80OE.relIsoMu2->Fill(mva.relIsoMu2, weight);
+      histsIncBDTSig80OE.nPU->Fill(nPU, weight);
+      histsIncBDTSig80OE.nVtx->Fill(mva.nVtx, weight);
+      histsIncBDTSig80OE.met->Fill(met.pt, weight);
+
+      histsIncBDTSig80OE.mDiJet->Fill(mva.mDiJet, weight);
+      histsIncBDTSig80OE.ptDiJet->Fill(mva.ptDiJet, weight);
+      histsIncBDTSig80OE.ptJet1->Fill(mva.ptJet1, weight);
+      histsIncBDTSig80OE.ptJet2->Fill(mva.ptJet2, weight);
+      histsIncBDTSig80OE.etaJet1->Fill(mva.etaJet1, weight);
+      histsIncBDTSig80OE.etaJet2->Fill(mva.etaJet2, weight);
+      histsIncBDTSig80OE.deltaEtaJets->Fill(mva.deltaEtaJets, weight);
+      histsIncBDTSig80OE.deltaPhiJets->Fill(mva.deltaPhiJets, weight);
+      histsIncBDTSig80OE.deltaRJets->Fill(mva.deltaRJets, weight);
+      histsIncBDTSig80OE.nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, weight);
+      histsIncBDTSig80OE.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
+      histsIncBDTSig80OE.nJets->Fill(mva.nJets, weight);
+      histsIncBDTSig80OE.ht->Fill(mva.ht, weight);
+      histsIncBDTSig80OE.BDTHistMuonOnly->Fill(bdtValInc, weight);
+    }
+
+    if (!vbfPreselection && mva.getMVAPassBDTCut(cfgNameInc) && isEE)
+    {
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
+      histsIncBDTSig80EE.mDiMu->Fill(mva.mDiMu, weight);
+
+#ifdef BLIND
+      }
+#endif
+      histsIncBDTSig80EE.yDiMu->Fill(mva.yDiMu, weight);
+      histsIncBDTSig80EE.ptDiMu->Fill(mva.ptDiMu, weight);
+      histsIncBDTSig80EE.ptMu1->Fill(mva.ptMu1, weight);
+      histsIncBDTSig80EE.ptMu2->Fill(mva.ptMu2, weight);
+      histsIncBDTSig80EE.etaMu1->Fill(mva.etaMu1, weight);
+      histsIncBDTSig80EE.etaMu2->Fill(mva.etaMu2, weight);
+      histsIncBDTSig80EE.cosThetaStar->Fill(mva.cosThetaStar, weight);
+      histsIncBDTSig80EE.cosThetaStarCS->Fill(mva.cosThetaStarCS, weight);
+      histsIncBDTSig80EE.deltaPhiMuons->Fill(mva.deltaPhiMuons, weight);
+      histsIncBDTSig80EE.deltaEtaMuons->Fill(mva.deltaEtaMuons, weight);
+      histsIncBDTSig80EE.deltaRMuons->Fill(mva.deltaRMuons, weight);
+      histsIncBDTSig80EE.relIsoMu1->Fill(mva.relIsoMu1, weight);
+      histsIncBDTSig80EE.relIsoMu2->Fill(mva.relIsoMu2, weight);
+      histsIncBDTSig80EE.nPU->Fill(nPU, weight);
+      histsIncBDTSig80EE.nVtx->Fill(mva.nVtx, weight);
+      histsIncBDTSig80EE.met->Fill(met.pt, weight);
+
+      histsIncBDTSig80EE.mDiJet->Fill(mva.mDiJet, weight);
+      histsIncBDTSig80EE.ptDiJet->Fill(mva.ptDiJet, weight);
+      histsIncBDTSig80EE.ptJet1->Fill(mva.ptJet1, weight);
+      histsIncBDTSig80EE.ptJet2->Fill(mva.ptJet2, weight);
+      histsIncBDTSig80EE.etaJet1->Fill(mva.etaJet1, weight);
+      histsIncBDTSig80EE.etaJet2->Fill(mva.etaJet2, weight);
+      histsIncBDTSig80EE.deltaEtaJets->Fill(mva.deltaEtaJets, weight);
+      histsIncBDTSig80EE.deltaPhiJets->Fill(mva.deltaPhiJets, weight);
+      histsIncBDTSig80EE.deltaRJets->Fill(mva.deltaRJets, weight);
+      histsIncBDTSig80EE.nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, weight);
+      histsIncBDTSig80EE.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
+      histsIncBDTSig80EE.nJets->Fill(mva.nJets, weight);
+      histsIncBDTSig80EE.ht->Fill(mva.ht, weight);
+      histsIncBDTSig80EE.BDTHistMuonOnly->Fill(bdtValInc, weight);
+    }
+
+    if (!vbfPreselection && mva.getMVAPassBDTCut(cfgNameInc) && isNotBB)
+    {
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
+      histsIncBDTSig80NotBB.mDiMu->Fill(mva.mDiMu, weight);
+
+#ifdef BLIND
+      }
+#endif
+      histsIncBDTSig80NotBB.yDiMu->Fill(mva.yDiMu, weight);
+      histsIncBDTSig80NotBB.ptDiMu->Fill(mva.ptDiMu, weight);
+      histsIncBDTSig80NotBB.ptMu1->Fill(mva.ptMu1, weight);
+      histsIncBDTSig80NotBB.ptMu2->Fill(mva.ptMu2, weight);
+      histsIncBDTSig80NotBB.etaMu1->Fill(mva.etaMu1, weight);
+      histsIncBDTSig80NotBB.etaMu2->Fill(mva.etaMu2, weight);
+      histsIncBDTSig80NotBB.cosThetaStar->Fill(mva.cosThetaStar, weight);
+      histsIncBDTSig80NotBB.cosThetaStarCS->Fill(mva.cosThetaStarCS, weight);
+      histsIncBDTSig80NotBB.deltaPhiMuons->Fill(mva.deltaPhiMuons, weight);
+      histsIncBDTSig80NotBB.deltaEtaMuons->Fill(mva.deltaEtaMuons, weight);
+      histsIncBDTSig80NotBB.deltaRMuons->Fill(mva.deltaRMuons, weight);
+      histsIncBDTSig80NotBB.relIsoMu1->Fill(mva.relIsoMu1, weight);
+      histsIncBDTSig80NotBB.relIsoMu2->Fill(mva.relIsoMu2, weight);
+      histsIncBDTSig80NotBB.nPU->Fill(nPU, weight);
+      histsIncBDTSig80NotBB.nVtx->Fill(mva.nVtx, weight);
+      histsIncBDTSig80NotBB.met->Fill(met.pt, weight);
+
+      histsIncBDTSig80NotBB.mDiJet->Fill(mva.mDiJet, weight);
+      histsIncBDTSig80NotBB.ptDiJet->Fill(mva.ptDiJet, weight);
+      histsIncBDTSig80NotBB.ptJet1->Fill(mva.ptJet1, weight);
+      histsIncBDTSig80NotBB.ptJet2->Fill(mva.ptJet2, weight);
+      histsIncBDTSig80NotBB.etaJet1->Fill(mva.etaJet1, weight);
+      histsIncBDTSig80NotBB.etaJet2->Fill(mva.etaJet2, weight);
+      histsIncBDTSig80NotBB.deltaEtaJets->Fill(mva.deltaEtaJets, weight);
+      histsIncBDTSig80NotBB.deltaPhiJets->Fill(mva.deltaPhiJets, weight);
+      histsIncBDTSig80NotBB.deltaRJets->Fill(mva.deltaRJets, weight);
+      histsIncBDTSig80NotBB.nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, weight);
+      histsIncBDTSig80NotBB.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
+      histsIncBDTSig80NotBB.nJets->Fill(mva.nJets, weight);
+      histsIncBDTSig80NotBB.ht->Fill(mva.ht, weight);
+      histsIncBDTSig80NotBB.BDTHistMuonOnly->Fill(bdtValInc, weight);
+    }
+
     if (vbfPreselection && mva.getMVAPassBDTCut(cfgNameVBF))
     {
 #ifdef BLIND
@@ -1166,13 +2343,6 @@ int main(int argc, char *argv[])
       {
 #endif
       histsVBFBDTSig80.mDiMu->Fill(mva.mDiMu, weight);
-      if (isBB) histsVBFBDTSig80.mDiMuBB->Fill(mva.mDiMu, weight);
-      if (isBE) histsVBFBDTSig80.mDiMuBE->Fill(mva.mDiMu, weight);
-      if (isBO) histsVBFBDTSig80.mDiMuBO->Fill(mva.mDiMu, weight);
-      if (isOO) histsVBFBDTSig80.mDiMuOO->Fill(mva.mDiMu, weight);
-      if (isOE) histsVBFBDTSig80.mDiMuOE->Fill(mva.mDiMu, weight);
-      if (isEE) histsVBFBDTSig80.mDiMuEE->Fill(mva.mDiMu, weight);
-      if (isNotBB) histsVBFBDTSig80.mDiMuNotBB->Fill(mva.mDiMu, weight);
 
 #ifdef BLIND
       }
@@ -1210,6 +2380,94 @@ int main(int argc, char *argv[])
       histsVBFBDTSig80.BDTHistVBF->Fill(bdtValVBF, weight);
     }
 
+    if (vbfPreselection && mva.getMVAPassBDTCut(cfgNameVBF) && isBB)
+    {
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
+      histsVBFBDTSig80BB.mDiMu->Fill(mva.mDiMu, weight);
+
+#ifdef BLIND
+      }
+#endif
+      histsVBFBDTSig80BB.yDiMu->Fill(mva.yDiMu, weight);
+      histsVBFBDTSig80BB.ptDiMu->Fill(mva.ptDiMu, weight);
+      histsVBFBDTSig80BB.ptMu1->Fill(mva.ptMu1, weight);
+      histsVBFBDTSig80BB.ptMu2->Fill(mva.ptMu2, weight);
+      histsVBFBDTSig80BB.etaMu1->Fill(mva.etaMu1, weight);
+      histsVBFBDTSig80BB.etaMu2->Fill(mva.etaMu2, weight);
+      histsVBFBDTSig80BB.cosThetaStar->Fill(mva.cosThetaStar, weight);
+      histsVBFBDTSig80BB.cosThetaStarCS->Fill(mva.cosThetaStarCS, weight);
+      histsVBFBDTSig80BB.deltaPhiMuons->Fill(mva.deltaPhiMuons, weight);
+      histsVBFBDTSig80BB.deltaEtaMuons->Fill(mva.deltaEtaMuons, weight);
+      histsVBFBDTSig80BB.deltaRMuons->Fill(mva.deltaRMuons, weight);
+      histsVBFBDTSig80BB.relIsoMu1->Fill(mva.relIsoMu1, weight);
+      histsVBFBDTSig80BB.relIsoMu2->Fill(mva.relIsoMu2, weight);
+      histsVBFBDTSig80BB.nPU->Fill(nPU, weight);
+      histsVBFBDTSig80BB.nVtx->Fill(mva.nVtx, weight);
+      histsVBFBDTSig80BB.met->Fill(met.pt, weight);
+
+      histsVBFBDTSig80BB.mDiJet->Fill(mva.mDiJet, weight);
+      histsVBFBDTSig80BB.ptDiJet->Fill(mva.ptDiJet, weight);
+      histsVBFBDTSig80BB.ptJet1->Fill(mva.ptJet1, weight);
+      histsVBFBDTSig80BB.ptJet2->Fill(mva.ptJet2, weight);
+      histsVBFBDTSig80BB.etaJet1->Fill(mva.etaJet1, weight);
+      histsVBFBDTSig80BB.etaJet2->Fill(mva.etaJet2, weight);
+      histsVBFBDTSig80BB.deltaEtaJets->Fill(mva.deltaEtaJets, weight);
+      histsVBFBDTSig80BB.deltaPhiJets->Fill(mva.deltaPhiJets, weight);
+      histsVBFBDTSig80BB.deltaRJets->Fill(mva.deltaRJets, weight);
+      histsVBFBDTSig80BB.nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, weight);
+      histsVBFBDTSig80BB.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
+      histsVBFBDTSig80BB.nJets->Fill(mva.nJets, weight);
+      histsVBFBDTSig80BB.ht->Fill(mva.ht, weight);
+      histsVBFBDTSig80BB.BDTHistVBF->Fill(bdtValVBF, weight);
+    }
+
+    if (vbfPreselection && mva.getMVAPassBDTCut(cfgNameVBF) && isNotBB)
+    {
+#ifdef BLIND
+      if (!(inBlindWindow && isData))
+      {
+#endif
+      histsVBFBDTSig80NotBB.mDiMu->Fill(mva.mDiMu, weight);
+
+#ifdef BLIND
+      }
+#endif
+      histsVBFBDTSig80NotBB.yDiMu->Fill(mva.yDiMu, weight);
+      histsVBFBDTSig80NotBB.ptDiMu->Fill(mva.ptDiMu, weight);
+      histsVBFBDTSig80NotBB.ptMu1->Fill(mva.ptMu1, weight);
+      histsVBFBDTSig80NotBB.ptMu2->Fill(mva.ptMu2, weight);
+      histsVBFBDTSig80NotBB.etaMu1->Fill(mva.etaMu1, weight);
+      histsVBFBDTSig80NotBB.etaMu2->Fill(mva.etaMu2, weight);
+      histsVBFBDTSig80NotBB.cosThetaStar->Fill(mva.cosThetaStar, weight);
+      histsVBFBDTSig80NotBB.cosThetaStarCS->Fill(mva.cosThetaStarCS, weight);
+      histsVBFBDTSig80NotBB.deltaPhiMuons->Fill(mva.deltaPhiMuons, weight);
+      histsVBFBDTSig80NotBB.deltaEtaMuons->Fill(mva.deltaEtaMuons, weight);
+      histsVBFBDTSig80NotBB.deltaRMuons->Fill(mva.deltaRMuons, weight);
+      histsVBFBDTSig80NotBB.relIsoMu1->Fill(mva.relIsoMu1, weight);
+      histsVBFBDTSig80NotBB.relIsoMu2->Fill(mva.relIsoMu2, weight);
+      histsVBFBDTSig80NotBB.nPU->Fill(nPU, weight);
+      histsVBFBDTSig80NotBB.nVtx->Fill(mva.nVtx, weight);
+      histsVBFBDTSig80NotBB.met->Fill(met.pt, weight);
+
+      histsVBFBDTSig80NotBB.mDiJet->Fill(mva.mDiJet, weight);
+      histsVBFBDTSig80NotBB.ptDiJet->Fill(mva.ptDiJet, weight);
+      histsVBFBDTSig80NotBB.ptJet1->Fill(mva.ptJet1, weight);
+      histsVBFBDTSig80NotBB.ptJet2->Fill(mva.ptJet2, weight);
+      histsVBFBDTSig80NotBB.etaJet1->Fill(mva.etaJet1, weight);
+      histsVBFBDTSig80NotBB.etaJet2->Fill(mva.etaJet2, weight);
+      histsVBFBDTSig80NotBB.deltaEtaJets->Fill(mva.deltaEtaJets, weight);
+      histsVBFBDTSig80NotBB.deltaPhiJets->Fill(mva.deltaPhiJets, weight);
+      histsVBFBDTSig80NotBB.deltaRJets->Fill(mva.deltaRJets, weight);
+      histsVBFBDTSig80NotBB.nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, weight);
+      histsVBFBDTSig80NotBB.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
+      histsVBFBDTSig80NotBB.nJets->Fill(mva.nJets, weight);
+      histsVBFBDTSig80NotBB.ht->Fill(mva.ht, weight);
+      histsVBFBDTSig80NotBB.BDTHistVBF->Fill(bdtValVBF, weight);
+    }
+
     timeReading += difftime(timeStopReading,timeStartReading);
     timeProcessing += difftime(timeStartFilling,timeStopReading);
     timeFilling += difftime(time(NULL),timeStartFilling);
@@ -1224,6 +2482,34 @@ int main(int argc, char *argv[])
 
   hists.Write();
 
+  TDirectory* dirBB = outFile->mkdir("BB");
+  dirBB->cd();
+  histsBB.Write();
+
+  TDirectory* dirBO = outFile->mkdir("BO");
+  dirBO->cd();
+  histsBO.Write();
+
+  TDirectory* dirBE = outFile->mkdir("BE");
+  dirBE->cd();
+  histsBE.Write();
+
+  TDirectory* dirOO = outFile->mkdir("OO");
+  dirOO->cd();
+  histsOO.Write();
+
+  TDirectory* dirOE = outFile->mkdir("OE");
+  dirOE->cd();
+  histsOE.Write();
+
+  TDirectory* dirEE = outFile->mkdir("EE");
+  dirEE->cd();
+  histsEE.Write();
+
+  TDirectory* dirNotBB = outFile->mkdir("NotBB");
+  dirNotBB->cd();
+  histsNotBB.Write();
+
   TDirectory* dir4GeVWindow = outFile->mkdir("4GeVWindow");
   dir4GeVWindow->cd();
   hists4GeVWindow.Write();
@@ -1232,16 +2518,88 @@ int main(int argc, char *argv[])
   dirVBFPresel->cd();
   histsVBFPresel.Write();
 
+  TDirectory* dirVBFPreselBB = outFile->mkdir("VBFPreselBB");
+  dirVBFPreselBB->cd();
+  histsVBFPreselBB.Write();
+
+  TDirectory* dirVBFPreselNotBB = outFile->mkdir("VBFPreselNotBB");
+  dirVBFPreselNotBB->cd();
+  histsVBFPreselNotBB.Write();
+
   TDirectory* dirIncPresel = outFile->mkdir("IncPresel");
   dirIncPresel->cd();
   histsIncPresel.Write();
+
+  TDirectory* dirIncPreselBB = outFile->mkdir("IncPreselBB");
+  dirIncPreselBB->cd();
+  histsIncPreselBB.Write();
+
+  TDirectory* dirIncPreselBO = outFile->mkdir("IncPreselBO");
+  dirIncPreselBO->cd();
+  histsIncPreselBO.Write();
+
+  TDirectory* dirIncPreselBE = outFile->mkdir("IncPreselBE");
+  dirIncPreselBE->cd();
+  histsIncPreselBE.Write();
+
+  TDirectory* dirIncPreselOO = outFile->mkdir("IncPreselOO");
+  dirIncPreselOO->cd();
+  histsIncPreselOO.Write();
+
+  TDirectory* dirIncPreselOE = outFile->mkdir("IncPreselOE");
+  dirIncPreselOE->cd();
+  histsIncPreselOE.Write();
+
+  TDirectory* dirIncPreselEE = outFile->mkdir("IncPreselEE");
+  dirIncPreselEE->cd();
+  histsIncPreselEE.Write();
+
+  TDirectory* dirIncPreselNotBB = outFile->mkdir("IncPreselNotBB");
+  dirIncPreselNotBB->cd();
+  histsIncPreselNotBB.Write();
 
   TDirectory* dirIncBDTSig80 = outFile->mkdir("IncBDTSig80");
   dirIncBDTSig80->cd();
   histsIncBDTSig80.Write();
 
+  TDirectory* dirIncBDTSig80BB = outFile->mkdir("IncBDTSig80BB");
+  dirIncBDTSig80BB->cd();
+  histsIncBDTSig80BB.Write();
+
+  TDirectory* dirIncBDTSig80BO = outFile->mkdir("IncBDTSig80BO");
+  dirIncBDTSig80BO->cd();
+  histsIncBDTSig80BO.Write();
+
+  TDirectory* dirIncBDTSig80BE = outFile->mkdir("IncBDTSig80BE");
+  dirIncBDTSig80BE->cd();
+  histsIncBDTSig80BE.Write();
+
+  TDirectory* dirIncBDTSig80OO = outFile->mkdir("IncBDTSig80OO");
+  dirIncBDTSig80OO->cd();
+  histsIncBDTSig80OO.Write();
+
+  TDirectory* dirIncBDTSig80OE = outFile->mkdir("IncBDTSig80OE");
+  dirIncBDTSig80OE->cd();
+  histsIncBDTSig80OE.Write();
+
+  TDirectory* dirIncBDTSig80EE = outFile->mkdir("IncBDTSig80EE");
+  dirIncBDTSig80EE->cd();
+  histsIncBDTSig80EE.Write();
+
+  TDirectory* dirIncBDTSig80NotBB = outFile->mkdir("IncBDTSig80NotBB");
+  dirIncBDTSig80NotBB->cd();
+  histsIncBDTSig80NotBB.Write();
+
   TDirectory* dirVBFBDTSig80 = outFile->mkdir("VBFBDTSig80");
   dirVBFBDTSig80->cd();
+  histsVBFBDTSig80.Write();
+
+  TDirectory* dirVBFBDTSig80BB = outFile->mkdir("VBFBDTSig80BB");
+  dirVBFBDTSig80BB->cd();
+  histsVBFBDTSig80BB.Write();
+
+  TDirectory* dirVBFBDTSig80NotBB = outFile->mkdir("VBFBDTSig80NotBB");
+  dirVBFBDTSig80NotBB->cd();
   histsVBFBDTSig80.Write();
 
   ofstream testOutFile;
@@ -1367,21 +2725,6 @@ HistStruct::HistStruct()
   unsigned nMVABins = 200;
   mDiMu = new TH1F("mDiMu","DiMuon Mass",nMassBins,minMass,maxMass);
   histVec.push_back(mDiMu);
-
-  mDiMuBB = new TH1F("mDiMuBB","DiMuon Mass Barrel-Barrel",nMassBins,minMass,maxMass);
-  histVec.push_back(mDiMuBB);
-  mDiMuBO = new TH1F("mDiMuBO","DiMuon Mass Barrel-Overlap",nMassBins,minMass,maxMass);
-  histVec.push_back(mDiMuBO);
-  mDiMuBE = new TH1F("mDiMuBE","DiMuon Mass Barrel-Endcap",nMassBins,minMass,maxMass);
-  histVec.push_back(mDiMuBE);
-  mDiMuOO = new TH1F("mDiMuOO","DiMuon Mass Overlap-Overlap",nMassBins,minMass,maxMass);
-  histVec.push_back(mDiMuOO);
-  mDiMuOE = new TH1F("mDiMuOE","DiMuon Mass Overlap-Endcap",nMassBins,minMass,maxMass);
-  histVec.push_back(mDiMuOE);
-  mDiMuEE = new TH1F("mDiMuEE","DiMuon Mass Endcap-Endcap",nMassBins,minMass,maxMass);
-  histVec.push_back(mDiMuEE);
-  mDiMuNotBB = new TH1F("mDiMuNotBB","DiMuon Mass Not Barrel-Barrel",nMassBins,minMass,maxMass);
-  histVec.push_back(mDiMuNotBB);
 
   mDiJet = new TH1F("mDiJet","DiJet Mass",500,0,2000);
   histVec.push_back(mDiJet);
