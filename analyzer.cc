@@ -55,6 +55,10 @@ struct HistStruct
   std::vector<TH2F*> histVec2D;
 
   TH1F* mDiMu;
+  TH1F* mDiMuResSigUp;
+  TH1F* mDiMuResSigDown;
+  TH1F* mDiMuResASigUp;
+  TH1F* mDiMuResASigDown;
 
   TH1F* mDiJet;
   TH1F* ptDiMu;
@@ -718,7 +722,10 @@ int main(int argc, char *argv[])
     {
 #endif
     hists.mDiMu->Fill(mva.mDiMu, weight);
-
+    hists.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+    hists.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+    hists.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+    hists.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
     hists.yVmDiMu->Fill(mva.mDiMu,fabs(mva.yDiMu), weight);
     hists.ptVmDiMu->Fill(mva.mDiMu,mva.ptDiMu, weight);
     hists.phiVmDiMu->Fill(mva.mDiMu,recoCandPhi, weight);
@@ -976,6 +983,10 @@ int main(int argc, char *argv[])
       hists4GeVWindow.nJets->Fill(mva.nJets, weight);
       hists4GeVWindow.ht->Fill(mva.ht, weight);
       hists4GeVWindow.mDiMu->Fill(mva.mDiMu, weight);
+      hists4GeVWindow.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+      hists4GeVWindow.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+      hists4GeVWindow.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+      hists4GeVWindow.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
 
       if(!vbfPreselection)
       {
@@ -1029,6 +1040,10 @@ int main(int argc, char *argv[])
       {
 #endif
       histsBB.mDiMu->Fill(mva.mDiMu, weight);
+      histsBB.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+      histsBB.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+      histsBB.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+      histsBB.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
 
       if(!vbfPreselection)
       {
@@ -1084,6 +1099,10 @@ int main(int argc, char *argv[])
       {
 #endif
       histsBO.mDiMu->Fill(mva.mDiMu, weight);
+      histsBO.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+      histsBO.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+      histsBO.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+      histsBO.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
 
       if(!vbfPreselection)
       {
@@ -1139,6 +1158,10 @@ int main(int argc, char *argv[])
       {
 #endif
       histsBE.mDiMu->Fill(mva.mDiMu, weight);
+      histsBE.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+      histsBE.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+      histsBE.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+      histsBE.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
 
       if(!vbfPreselection)
       {
@@ -1194,6 +1217,10 @@ int main(int argc, char *argv[])
       {
 #endif
       histsOO.mDiMu->Fill(mva.mDiMu, weight);
+      histsOO.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+      histsOO.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+      histsOO.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+      histsOO.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
 
       if(!vbfPreselection)
       {
@@ -1249,6 +1276,10 @@ int main(int argc, char *argv[])
       {
 #endif
       histsOE.mDiMu->Fill(mva.mDiMu, weight);
+      histsOE.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+      histsOE.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+      histsOE.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+      histsOE.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
 
       if(!vbfPreselection)
       {
@@ -1304,6 +1335,10 @@ int main(int argc, char *argv[])
       {
 #endif
       histsEE.mDiMu->Fill(mva.mDiMu, weight);
+      histsEE.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+      histsEE.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+      histsEE.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+      histsEE.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
 
       if(!vbfPreselection)
       {
@@ -1359,6 +1394,10 @@ int main(int argc, char *argv[])
       {
 #endif
       histsNotBB.mDiMu->Fill(mva.mDiMu, weight);
+      histsNotBB.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+      histsNotBB.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+      histsNotBB.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+      histsNotBB.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
 
       if(!vbfPreselection)
       {
@@ -1415,6 +1454,10 @@ int main(int argc, char *argv[])
       {
 #endif
       histsVBFPresel.mDiMu->Fill(mva.mDiMu, weight);
+      histsVBFPresel.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+      histsVBFPresel.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+      histsVBFPresel.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+      histsVBFPresel.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
 
       if(!vbfPreselection)
       {
@@ -1470,6 +1513,10 @@ int main(int argc, char *argv[])
       {
 #endif
       histsVBFPreselBB.mDiMu->Fill(mva.mDiMu, weight);
+      histsVBFPreselBB.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+      histsVBFPreselBB.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+      histsVBFPreselBB.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+      histsVBFPreselBB.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
 
       if(!vbfPreselection)
       {
@@ -1525,6 +1572,10 @@ int main(int argc, char *argv[])
       {
 #endif
       histsVBFPreselNotBB.mDiMu->Fill(mva.mDiMu, weight);
+      histsVBFPreselNotBB.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+      histsVBFPreselNotBB.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+      histsVBFPreselNotBB.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+      histsVBFPreselNotBB.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
 
       if(!vbfPreselection)
       {
@@ -1581,6 +1632,10 @@ int main(int argc, char *argv[])
       {
 #endif
       histsIncPresel.mDiMu->Fill(mva.mDiMu, weight);
+      histsIncPresel.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+      histsIncPresel.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+      histsIncPresel.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+      histsIncPresel.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
 
       if(!vbfPreselection)
       {
@@ -1636,6 +1691,10 @@ int main(int argc, char *argv[])
       {
 #endif
       histsIncPreselBB.mDiMu->Fill(mva.mDiMu, weight);
+      histsIncPreselBB.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+      histsIncPreselBB.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+      histsIncPreselBB.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+      histsIncPreselBB.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
 
       if(!vbfPreselection)
       {
@@ -1691,6 +1750,10 @@ int main(int argc, char *argv[])
       {
 #endif
       histsIncPreselBO.mDiMu->Fill(mva.mDiMu, weight);
+      histsIncPreselBO.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+      histsIncPreselBO.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+      histsIncPreselBO.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+      histsIncPreselBO.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
 
       if(!vbfPreselection)
       {
@@ -1746,6 +1809,10 @@ int main(int argc, char *argv[])
       {
 #endif
       histsIncPreselBE.mDiMu->Fill(mva.mDiMu, weight);
+      histsIncPreselBE.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+      histsIncPreselBE.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+      histsIncPreselBE.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+      histsIncPreselBE.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
 
       if(!vbfPreselection)
       {
@@ -1801,6 +1868,10 @@ int main(int argc, char *argv[])
       {
 #endif
       histsIncPreselOO.mDiMu->Fill(mva.mDiMu, weight);
+      histsIncPreselOO.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+      histsIncPreselOO.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+      histsIncPreselOO.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+      histsIncPreselOO.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
 
       if(!vbfPreselection)
       {
@@ -1856,6 +1927,10 @@ int main(int argc, char *argv[])
       {
 #endif
       histsIncPreselOE.mDiMu->Fill(mva.mDiMu, weight);
+      histsIncPreselOE.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+      histsIncPreselOE.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+      histsIncPreselOE.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+      histsIncPreselOE.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
 
       if(!vbfPreselection)
       {
@@ -1911,6 +1986,10 @@ int main(int argc, char *argv[])
       {
 #endif
       histsIncPreselEE.mDiMu->Fill(mva.mDiMu, weight);
+      histsIncPreselEE.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+      histsIncPreselEE.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+      histsIncPreselEE.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+      histsIncPreselEE.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
 
       if(!vbfPreselection)
       {
@@ -1966,6 +2045,10 @@ int main(int argc, char *argv[])
       {
 #endif
       histsIncPreselNotBB.mDiMu->Fill(mva.mDiMu, weight);
+      histsIncPreselNotBB.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+      histsIncPreselNotBB.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+      histsIncPreselNotBB.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+      histsIncPreselNotBB.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
 
       if(!vbfPreselection)
       {
@@ -1991,6 +2074,10 @@ int main(int argc, char *argv[])
       {
 #endif
       histsIncBDTSig80.mDiMu->Fill(mva.mDiMu, weight);
+      histsIncBDTSig80.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+      histsIncBDTSig80.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+      histsIncBDTSig80.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+      histsIncBDTSig80.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
 
 #ifdef BLIND
       }
@@ -2035,6 +2122,10 @@ int main(int argc, char *argv[])
       {
 #endif
       histsIncBDTSig80BB.mDiMu->Fill(mva.mDiMu, weight);
+      histsIncBDTSig80BB.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+      histsIncBDTSig80BB.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+      histsIncBDTSig80BB.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+      histsIncBDTSig80BB.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
 
 #ifdef BLIND
       }
@@ -2079,6 +2170,10 @@ int main(int argc, char *argv[])
       {
 #endif
       histsIncBDTSig80BO.mDiMu->Fill(mva.mDiMu, weight);
+      histsIncBDTSig80BO.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+      histsIncBDTSig80BO.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+      histsIncBDTSig80BO.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+      histsIncBDTSig80BO.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
 
 #ifdef BLIND
       }
@@ -2123,6 +2218,10 @@ int main(int argc, char *argv[])
       {
 #endif
       histsIncBDTSig80BE.mDiMu->Fill(mva.mDiMu, weight);
+      histsIncBDTSig80BE.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+      histsIncBDTSig80BE.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+      histsIncBDTSig80BE.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+      histsIncBDTSig80BE.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
 
 #ifdef BLIND
       }
@@ -2167,6 +2266,10 @@ int main(int argc, char *argv[])
       {
 #endif
       histsIncBDTSig80OO.mDiMu->Fill(mva.mDiMu, weight);
+      histsIncBDTSig80OO.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+      histsIncBDTSig80OO.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+      histsIncBDTSig80OO.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+      histsIncBDTSig80OO.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
 
 #ifdef BLIND
       }
@@ -2211,6 +2314,10 @@ int main(int argc, char *argv[])
       {
 #endif
       histsIncBDTSig80OE.mDiMu->Fill(mva.mDiMu, weight);
+      histsIncBDTSig80OE.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+      histsIncBDTSig80OE.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+      histsIncBDTSig80OE.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+      histsIncBDTSig80OE.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
 
 #ifdef BLIND
       }
@@ -2255,6 +2362,10 @@ int main(int argc, char *argv[])
       {
 #endif
       histsIncBDTSig80EE.mDiMu->Fill(mva.mDiMu, weight);
+      histsIncBDTSig80EE.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+      histsIncBDTSig80EE.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+      histsIncBDTSig80EE.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+      histsIncBDTSig80EE.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
 
 #ifdef BLIND
       }
@@ -2299,6 +2410,10 @@ int main(int argc, char *argv[])
       {
 #endif
       histsIncBDTSig80NotBB.mDiMu->Fill(mva.mDiMu, weight);
+      histsIncBDTSig80NotBB.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+      histsIncBDTSig80NotBB.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+      histsIncBDTSig80NotBB.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+      histsIncBDTSig80NotBB.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
 
 #ifdef BLIND
       }
@@ -2343,6 +2458,10 @@ int main(int argc, char *argv[])
       {
 #endif
       histsVBFBDTSig80.mDiMu->Fill(mva.mDiMu, weight);
+      histsVBFBDTSig80.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+      histsVBFBDTSig80.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+      histsVBFBDTSig80.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+      histsVBFBDTSig80.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
 
 #ifdef BLIND
       }
@@ -2387,6 +2506,10 @@ int main(int argc, char *argv[])
       {
 #endif
       histsVBFBDTSig80BB.mDiMu->Fill(mva.mDiMu, weight);
+      histsVBFBDTSig80BB.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+      histsVBFBDTSig80BB.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+      histsVBFBDTSig80BB.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+      histsVBFBDTSig80BB.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
 
 #ifdef BLIND
       }
@@ -2431,6 +2554,10 @@ int main(int argc, char *argv[])
       {
 #endif
       histsVBFBDTSig80NotBB.mDiMu->Fill(mva.mDiMu, weight);
+      histsVBFBDTSig80NotBB.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
+      histsVBFBDTSig80NotBB.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
+      histsVBFBDTSig80NotBB.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
+      histsVBFBDTSig80NotBB.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
 
 #ifdef BLIND
       }
@@ -2725,6 +2852,15 @@ HistStruct::HistStruct()
   unsigned nMVABins = 200;
   mDiMu = new TH1F("mDiMu","DiMuon Mass",nMassBins,minMass,maxMass);
   histVec.push_back(mDiMu);
+
+  mDiMuResSigUp = new TH1F("mDiMuResSigUp","DiMuon Mass Systematic Shift Up: Sigma",nMassBins,minMass,maxMass);
+  histVec.push_back(mDiMuResSigUp);
+  mDiMuResSigDown = new TH1F("mDiMuResSigDown","DiMuon Mass Systematic Shift Down: Sigma",nMassBins,minMass,maxMass);
+  histVec.push_back(mDiMuResSigDown);
+  mDiMuResASigUp = new TH1F("mDiMuResASigUp","DiMuon Mass Systematic Shift Up: ASigma",nMassBins,minMass,maxMass);
+  histVec.push_back(mDiMuResASigUp);
+  mDiMuResASigDown = new TH1F("mDiMuResASigDown","DiMuon Mass Systematic Shift Down: ASigma",nMassBins,minMass,maxMass);
+  histVec.push_back(mDiMuResASigDown);
 
   mDiJet = new TH1F("mDiJet","DiJet Mass",500,0,2000);
   histVec.push_back(mDiJet);
