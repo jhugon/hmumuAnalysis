@@ -222,6 +222,7 @@ int main(int argc, char *argv[])
         ("nEventsMin",program_options::value<unsigned>(),"")
 
         ("mvaSignalEff",program_options::value<float>(),"")
+        ("mvaCutVal",program_options::value<float>(),"")
     ;
 
     program_options::variables_map optionMap;

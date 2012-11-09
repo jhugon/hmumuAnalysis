@@ -113,6 +113,7 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
           ("nEventsMin",program_options::value<unsigned>(),"")
 
           ("mvaSignalEff",program_options::value<float>(),"")
+          ("mvaCutVal",program_options::value<float>(),"")
       ;
     
       program_options::variables_map optionMap;
@@ -282,7 +283,12 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
         throw;
       }
 
-      if (optionMap.count("mvaSignalEff"))
+      if (optionMap.count("mvaCutVal"))
+      {
+         float tmp = optionMap["mvaCutVal"].as<float>();
+         mvaCuts_.insert(make_pair(*configFileName,tmp));
+      }
+      else if (optionMap.count("mvaSignalEff"))
       {
          float tmp = optionMap["mvaSignalEff"].as<float>();
          mvaCuts_.insert(make_pair(*configFileName,getSigEffCut(*configFileName,tmp)));
