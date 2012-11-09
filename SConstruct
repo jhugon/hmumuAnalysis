@@ -38,6 +38,10 @@ libs.append("XMLIO")
 libs.append("MLP")
 libs.append("TreePlayer")
 
+#Anna's Calibration Code
+annaSmearFile = "annaCalibCode/FuncSmearingZmumu2012PtCorr0.C"
+includes.append("annaCalibCode/")
+
 env.Append(CPPPATH=includes)
 env.Append(LIBPATH=libpath)
 env.Append(LIBS=libs)
@@ -82,7 +86,7 @@ if not env.GetOption("clean"):
  
 env.Library(targer="src/mva",source=["src/mva.cc"])
 env.Library(targer="src/helpers",source=["src/helpers.cc"])
-env.Program(target="analyzer", source=["analyzer.cc","src/libmva.a","src/libhelpers.a"])
+env.Program(target="analyzer", source=["analyzer.cc","src/libmva.a","src/libhelpers.a",annaSmearFile])
 env.Program(target="mvaTrain", source=["mvaTrain.cc"])
 
 env.Program(target="testVertex", source=["testVertex.cc","src/libmva.a","src/libhelpers.a"])

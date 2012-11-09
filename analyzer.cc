@@ -33,9 +33,11 @@
 #include "mva.h"
 #include "LumiReweightingStandAlone.h"
 
+#include "annaCalibCode/SmearingTool.h"
+
 #define JETPUID
 #define PUREWEIGHT
-//#define SMEARING
+#define SMEARING
 
 using namespace std;
 using namespace boost;
@@ -245,6 +247,22 @@ int main(int argc, char *argv[])
     if(regex_search(filenames[0],re))
     {
         isData = true;
+        break;
+    }
+  }
+
+  // Check to see if it is signal
+  bool isSignal = false;
+  std::vector<std::string> signalWords;
+  signalWords.push_back("Hmumu");
+  std::vector<std::string>::const_iterator signalWord;
+  for(signalWord = signalWords.begin(); signalWord != signalWords.end();signalWord++)
+  {
+    regex re(*signalWord);
+    if(regex_search(filenames[0],re))
+    {
+        isData = true;
+        break;
     }
   }
 
@@ -252,6 +270,8 @@ int main(int argc, char *argv[])
     std::cout << "This is a Real Data Sample\n";
   else
     std::cout << "This is a MC Sample\n";
+  if(isSignal)
+    std::cout << "This is a Signal Sample\n";
 
   ///////////////////////////////
   // Which Muon Selection to Use
@@ -310,6 +330,14 @@ int main(int argc, char *argv[])
   float trueMass=-99999.0;
   if(!isData && tree->GetBranchStatus("trueMass"))
     tree->SetBranchAddress("trueMass", &trueMass);
+
+  _TrackInfo reco1GenPostFSR;
+  if(!isData && tree->GetBranchStatus("genM1HpostFSR"))
+    tree->SetBranchAddress("genM1HpostFSR", &reco1GenPostFSR);
+
+  _TrackInfo reco2GenPostFSR;
+  if(!isData && tree->GetBranchStatus("genM2HpostFSR"))
+    tree->SetBranchAddress("genM2HpostFSR", &reco2GenPostFSR);
 
   _PFJetInfo jets;
   tree->SetBranchAddress("pfJets",&jets);
@@ -398,6 +426,10 @@ int main(int argc, char *argv[])
   }
 #endif
 
+  /////////////////////////
+  // Smearing
+  SmearingTool *smearPT = new SmearingTool();
+
   const double SQRT2 = sqrt(2);
 
 //////////////////////////////////////////////////////////////////////
@@ -429,17 +461,35 @@ int main(int argc, char *argv[])
     timeReadingAll += difftime(timeStopReading,timeStartReading);
     if (i % reportEach == 0) cout << "Event: " << i << endl;
 
+#ifdef SMEARING
+    if(isSignal)
+    {
+      if(reco1GenPostFSR.pt<0.)
+        cout << "Muon 1 Post FSR not valid!\n";
+      if(reco2GenPostFSR.pt<0.)
+        cout << "Muon 2 Post FSR not valid!\n";
+      float ptReco1 = smearPT -> PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge);
+      float ptReco2 = smearPT -> PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge);
+      TLorentzVector reco1Vec;
+      TLorentzVector reco2Vec;
+      reco1Vec.SetPtEtaPhiM(ptReco1,reco1.eta,reco1.phi,0.105);
+      reco2Vec.SetPtEtaPhiM(ptReco2,reco2.eta,reco2.phi,0.105);
+      TLorentzVector diMuonVec = reco1Vec + reco2Vec;
+
+      reco1.pt = ptReco1;
+      reco2.pt = ptReco2;
+      recoCandMass = diMuonVec.M();
+      recoCandPt = diMuonVec.Pt();
+      recoCandY = diMuonVec.Rapidity();
+      recoCandPhi = diMuonVec.Phi();
+    }
+#endif
+
     fillMuonHist(hists.countsHist2, reco1, reco2);
     //printStationMiss(reco1,reco2,eventInfo,testString,testCounter);
 
     mva.resetValues();
     mva.mDiMu = recoCandMass;
-#ifdef SMEARING
-    if(!isData)
-    {
-      mva.mDiMu = smearMC(trueMass,recoCandMass,calib,resSmear,random);
-    }
-#endif
     bool inBlindWindow = mva.mDiMu < maxBlind && mva.mDiMu > minBlind;
 
     double weight = 1.0;
