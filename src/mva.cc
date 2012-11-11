@@ -49,6 +49,17 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
     outTree_->Branch("nVtx",&nVtx,"nVtx/F");
 
     outTree_->Branch("weight",&weight,"weight/F");
+
+    outTree_->Branch("met",&met,"met/F");
+    outTree_->Branch("nPU",&nPU,"nPU/F");
+
+    outTree_->Branch("vbfPreselection",&vbfPreselection,"vbfPreselection/I");
+
+    outTree_->Branch("mDiMuResSigUp",&mDiMuResSigUp,"mDiMuResSigUp/F");
+    outTree_->Branch("mDiMuResSigDown",&mDiMuResSigDown,"mDiMuResSigDown/F");
+    outTree_->Branch("mDiMuResASigUp",&mDiMuResASigUp,"mDiMuResASigUp/F");
+    outTree_->Branch("mDiMuResASigDown",&mDiMuResASigDown,"mDiMuResASigDown/F");
+
   }
 
   if(outFileName.size()<1)
@@ -114,6 +125,8 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
 
           ("mvaSignalEff",program_options::value<float>(),"")
           ("mvaCutVal",program_options::value<float>(),"")
+
+          ("met",program_options::value<int>(),"")
       ;
     
       program_options::variables_map optionMap;
@@ -272,6 +285,11 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
         reader->AddVariable("htInRapidityGap",&htInRapidityGap);
       else
         reader->AddSpectator("htInRapidityGap",&htInRapidityGap);
+
+      if (optionMap.count("met") && optionMap["met"].as<int>() == 1)
+        reader->AddVariable("met",&met);
+      else
+        reader->AddSpectator("met",&met);
     
       std::string weightsDirName;
       if (optionMap.count("weightsDirName"))
@@ -375,6 +393,19 @@ MVA::resetValues()
   nVtx=0.0;
 
   weight=1.0;
+
+  met=-10.0;
+  nPU=0;
+
+  vbfPreselection=false;
+
+  mDiMuResSigUp=-10.0;
+  mDiMuResSigDown=-10.0;
+  mDiMuResASigUp=-10.0;
+  mDiMuResASigDown=-10.0;
+
+  bdtValInc=-10.0;
+  bdtValVBF=-10.0;
 }
 
 float
