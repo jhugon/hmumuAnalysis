@@ -530,11 +530,6 @@ int main(int argc, char *argv[])
     }
 #endif
 
-    mva.mDiMuResSigUp = mDiMuResSigUp;
-    mva.mDiMuResSigDown = mDiMuResSigDown;
-    mva.mDiMuResASigUp = mDiMuResASigUp;
-    mva.mDiMuResASigDown = mDiMuResASigDown;
-
     fillMuonHist(hists.countsHist2, reco1, reco2);
     //printStationMiss(reco1,reco2,eventInfo,testString,testCounter);
 
@@ -595,6 +590,11 @@ int main(int argc, char *argv[])
     mva.weight = weight;
     mva.met = met.pt;
     mva.nPU = nPU;
+
+    mva.mDiMuResSigUp = mDiMuResSigUp;
+    mva.mDiMuResSigDown = mDiMuResSigDown;
+    mva.mDiMuResASigUp = mDiMuResASigUp;
+    mva.mDiMuResASigDown = mDiMuResASigDown;
 
     mva.ptMu1=muon1.pt;
     mva.ptMu2=muon2.pt;
@@ -1156,18 +1156,18 @@ int main(int argc, char *argv[])
   histsIncPreselEE.Write(outFile,"IncPreselEE");
   histsIncPreselNotBB.Write(outFile,"IncPreselNotBB");
 
-  histsIncBDTCut.Write(outFile,"IncBDTSig80");
-  histsIncBDTCutBB.Write(outFile,"IncBDTSig80BB");
-  histsIncBDTCutBO.Write(outFile,"IncBDTSig80BO");
-  histsIncBDTCutBE.Write(outFile,"IncBDTSig80BE");
-  histsIncBDTCutOO.Write(outFile,"IncBDTSig80OO");
-  histsIncBDTCutOE.Write(outFile,"IncBDTSig80OE");
-  histsIncBDTCutEE.Write(outFile,"IncBDTSig80EE");
-  histsIncBDTCutNotBB.Write(outFile,"IncBDTSig80NotBB");
+  histsIncBDTCut.Write(outFile,"IncBDTCut");
+  histsIncBDTCutBB.Write(outFile,"IncBDTCutBB");
+  histsIncBDTCutBO.Write(outFile,"IncBDTCutBO");
+  histsIncBDTCutBE.Write(outFile,"IncBDTCutBE");
+  histsIncBDTCutOO.Write(outFile,"IncBDTCutOO");
+  histsIncBDTCutOE.Write(outFile,"IncBDTCutOE");
+  histsIncBDTCutEE.Write(outFile,"IncBDTCutEE");
+  histsIncBDTCutNotBB.Write(outFile,"IncBDTCutNotBB");
 
-  histsVBFBDTCut.Write(outFile,"VBFBDTSig80");
-  histsVBFBDTCutBB.Write(outFile,"VBFBDTSig80BB");
-  histsVBFBDTCut.Write(outFile,"VBFBDTSig80NotBB");
+  histsVBFBDTCut.Write(outFile,"VBFBDTCut");
+  histsVBFBDTCutBB.Write(outFile,"VBFBDTCutBB");
+  histsVBFBDTCut.Write(outFile,"VBFBDTCutNotBB");
 
   histsVBFPreselDiMuPtL20.Write(outFile,"VBFPreselDiMuPtL20");
   histsIncPreselDiMuPtL20.Write(outFile,"IncPreselDiMuPtL20");
