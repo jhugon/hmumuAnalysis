@@ -49,7 +49,7 @@ struct HistStruct
 {
   HistStruct();
   ~HistStruct();
-  void Write();
+  void Write(TFile* outfile, std::string directory);
 
   std::vector<TH1F*> histVec;
   std::vector<TH2F*> histVec2D;
@@ -2725,137 +2725,44 @@ int main(int argc, char *argv[])
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
-  outFile->cd();
+  hists.Write(outFile,"");
+  histsBB.Write(outFile,"BB");
+  histsBO.Write(outFile,"BO");
+  histsBE.Write(outFile,"BE");
+  histsOO.Write(outFile,"OO");
+  histsOE.Write(outFile,"OE");
+  histsEE.Write(outFile,"EE");
+  histsNotBB.Write(outFile,"NotBB");
+  hists4GeVWindow.Write(outFile,"4GeVWindow");
 
-  hists.Write();
+  histsVBFPresel.Write(outFile,"VBFPresel");
+  histsVBFPreselBB.Write(outFile,"VBFPreselBB");
+  histsVBFPreselNotBB.Write(outFile,"VBFPreselNotBB");
 
-  TDirectory* dirBB = outFile->mkdir("BB");
-  dirBB->cd();
-  histsBB.Write();
+  histsIncPresel.Write(outFile,"IncPresel");
+  histsIncPreselBB.Write(outFile,"IncPreselBB");
+  histsIncPreselBO.Write(outFile,"IncPreselBO");
+  histsIncPreselBE.Write(outFile,"IncPreselBE");
+  histsIncPreselOO.Write(outFile,"IncPreselOO");
+  histsIncPreselOE.Write(outFile,"IncPreselOE");
+  histsIncPreselEE.Write(outFile,"IncPreselEE");
+  histsIncPreselNotBB.Write(outFile,"IncPreselNotBB");
 
-  TDirectory* dirBO = outFile->mkdir("BO");
-  dirBO->cd();
-  histsBO.Write();
+  histsIncBDTSig80.Write(outFile,"IncBDTSig80");
+  histsIncBDTSig80BB.Write(outFile,"IncBDTSig80BB");
+  histsIncBDTSig80BO.Write(outFile,"IncBDTSig80BO");
+  histsIncBDTSig80BE.Write(outFile,"IncBDTSig80BE");
+  histsIncBDTSig80OO.Write(outFile,"IncBDTSig80OO");
+  histsIncBDTSig80OE.Write(outFile,"IncBDTSig80OE");
+  histsIncBDTSig80EE.Write(outFile,"IncBDTSig80EE");
+  histsIncBDTSig80NotBB.Write(outFile,"IncBDTSig80NotBB");
 
-  TDirectory* dirBE = outFile->mkdir("BE");
-  dirBE->cd();
-  histsBE.Write();
+  histsVBFBDTSig80.Write(outFile,"VBFBDTSig80");
+  histsVBFBDTSig80BB.Write(outFile,"VBFBDTSig80BB");
+  histsVBFBDTSig80.Write(outFile,"VBFBDTSig80NotBB");
 
-  TDirectory* dirOO = outFile->mkdir("OO");
-  dirOO->cd();
-  histsOO.Write();
-
-  TDirectory* dirOE = outFile->mkdir("OE");
-  dirOE->cd();
-  histsOE.Write();
-
-  TDirectory* dirEE = outFile->mkdir("EE");
-  dirEE->cd();
-  histsEE.Write();
-
-  TDirectory* dirNotBB = outFile->mkdir("NotBB");
-  dirNotBB->cd();
-  histsNotBB.Write();
-
-  TDirectory* dir4GeVWindow = outFile->mkdir("4GeVWindow");
-  dir4GeVWindow->cd();
-  hists4GeVWindow.Write();
-
-  TDirectory* dirVBFPresel = outFile->mkdir("VBFPresel");
-  dirVBFPresel->cd();
-  histsVBFPresel.Write();
-
-  TDirectory* dirVBFPreselBB = outFile->mkdir("VBFPreselBB");
-  dirVBFPreselBB->cd();
-  histsVBFPreselBB.Write();
-
-  TDirectory* dirVBFPreselNotBB = outFile->mkdir("VBFPreselNotBB");
-  dirVBFPreselNotBB->cd();
-  histsVBFPreselNotBB.Write();
-
-  TDirectory* dirIncPresel = outFile->mkdir("IncPresel");
-  dirIncPresel->cd();
-  histsIncPresel.Write();
-
-  TDirectory* dirIncPreselBB = outFile->mkdir("IncPreselBB");
-  dirIncPreselBB->cd();
-  histsIncPreselBB.Write();
-
-  TDirectory* dirIncPreselBO = outFile->mkdir("IncPreselBO");
-  dirIncPreselBO->cd();
-  histsIncPreselBO.Write();
-
-  TDirectory* dirIncPreselBE = outFile->mkdir("IncPreselBE");
-  dirIncPreselBE->cd();
-  histsIncPreselBE.Write();
-
-  TDirectory* dirIncPreselOO = outFile->mkdir("IncPreselOO");
-  dirIncPreselOO->cd();
-  histsIncPreselOO.Write();
-
-  TDirectory* dirIncPreselOE = outFile->mkdir("IncPreselOE");
-  dirIncPreselOE->cd();
-  histsIncPreselOE.Write();
-
-  TDirectory* dirIncPreselEE = outFile->mkdir("IncPreselEE");
-  dirIncPreselEE->cd();
-  histsIncPreselEE.Write();
-
-  TDirectory* dirIncPreselNotBB = outFile->mkdir("IncPreselNotBB");
-  dirIncPreselNotBB->cd();
-  histsIncPreselNotBB.Write();
-
-  TDirectory* dirIncBDTSig80 = outFile->mkdir("IncBDTSig80");
-  dirIncBDTSig80->cd();
-  histsIncBDTSig80.Write();
-
-  TDirectory* dirIncBDTSig80BB = outFile->mkdir("IncBDTSig80BB");
-  dirIncBDTSig80BB->cd();
-  histsIncBDTSig80BB.Write();
-
-  TDirectory* dirIncBDTSig80BO = outFile->mkdir("IncBDTSig80BO");
-  dirIncBDTSig80BO->cd();
-  histsIncBDTSig80BO.Write();
-
-  TDirectory* dirIncBDTSig80BE = outFile->mkdir("IncBDTSig80BE");
-  dirIncBDTSig80BE->cd();
-  histsIncBDTSig80BE.Write();
-
-  TDirectory* dirIncBDTSig80OO = outFile->mkdir("IncBDTSig80OO");
-  dirIncBDTSig80OO->cd();
-  histsIncBDTSig80OO.Write();
-
-  TDirectory* dirIncBDTSig80OE = outFile->mkdir("IncBDTSig80OE");
-  dirIncBDTSig80OE->cd();
-  histsIncBDTSig80OE.Write();
-
-  TDirectory* dirIncBDTSig80EE = outFile->mkdir("IncBDTSig80EE");
-  dirIncBDTSig80EE->cd();
-  histsIncBDTSig80EE.Write();
-
-  TDirectory* dirIncBDTSig80NotBB = outFile->mkdir("IncBDTSig80NotBB");
-  dirIncBDTSig80NotBB->cd();
-  histsIncBDTSig80NotBB.Write();
-
-  TDirectory* dirVBFBDTSig80 = outFile->mkdir("VBFBDTSig80");
-  dirVBFBDTSig80->cd();
-  histsVBFBDTSig80.Write();
-
-  TDirectory* dirVBFBDTSig80BB = outFile->mkdir("VBFBDTSig80BB");
-  dirVBFBDTSig80BB->cd();
-  histsVBFBDTSig80BB.Write();
-
-  TDirectory* dirVBFBDTSig80NotBB = outFile->mkdir("VBFBDTSig80NotBB");
-  dirVBFBDTSig80NotBB->cd();
-  histsVBFBDTSig80.Write();
-
-  TDirectory* dirVBFPreselDiMuPtL20 = outFile->mkdir("VBFPreselDiMuPtL20");
-  dirVBFPreselDiMuPtL20->cd();
-  histsVBFPreselDiMuPtL20.Write();
-
-  TDirectory* dirIncPreselDiMuPtL20 = outFile->mkdir("IncPreselDiMuPtL20");
-  dirIncPreselDiMuPtL20->cd();
-  histsIncPreselDiMuPtL20.Write();
+  histsVBFPreselDiMuPtL20.Write(outFile,"VBFPreselDiMuPtL20");
+  histsIncPreselDiMuPtL20.Write(outFile,"IncPreselDiMuPtL20");
 
   ofstream testOutFile;
   testOutFile.open("testEventNums.txt");
@@ -3155,12 +3062,24 @@ HistStruct::~HistStruct()
 }
 
 void
-HistStruct::Write()
+HistStruct::Write(TFile* outfile, std::string directory)
 {
+  if(directory == "")
+  {
+    outfile->cd();
+  }
+  else
+  {
+    TDirectory* dir = outfile->mkdir(directory.c_str());
+    dir->cd();
+  }
+
   std::vector<TH1F*>::iterator hist;
   std::vector<TH2F*>::iterator hist2D;
   for(hist = histVec.begin();hist != histVec.end(); hist++)
     (*hist)->Write();
   for(hist2D = histVec2D.begin();hist2D != histVec2D.end(); hist2D++)
     (*hist2D)->Write();
+
+  outfile->cd();
 }
