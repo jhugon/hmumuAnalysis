@@ -10,6 +10,7 @@
 
 #include <fstream>
 #include <sstream>
+#include <string>
 #include "ScaleFunct.h"
 #include "ResolFunct.h"
 #include "TLorentzVector.h"
@@ -34,7 +35,7 @@ class MuScleFitCorrector
    * correction function and saves the corresponding pointer. It then fills the
    * vector of parameters.
    */
-  MuScleFitCorrector( TString identifier )
+  MuScleFitCorrector( std::string identifier )
   {
     readParameters( identifier ); 
     gRandom_ = new TRandom3();
@@ -121,7 +122,7 @@ class MuScleFitCorrector
   double * resolMCParArray_;
 
   /// Parser of the parameters file
-  void readParameters( TString fileName );
+  void readParameters( std::string fileName );
 
   // Functions
   scaleFunctBase<double * > * scaleFunct_;

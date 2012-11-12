@@ -223,6 +223,8 @@ int main(int argc, char *argv[])
 
         ("mvaSignalEff",program_options::value<float>(),"")
         ("mvaCutVal",program_options::value<float>(),"")
+
+        ("met",program_options::value<int>(),"")
     ;
 
     program_options::variables_map optionMap;
@@ -378,6 +380,11 @@ int main(int argc, char *argv[])
       factory->AddVariable("htInRapidityGap","","",'F');
     else
       factory->AddSpectator("htInRapidityGap","","",'F');
+
+    if (optionMap.count("met") && optionMap["met"].as<int>() == 1)
+      factory->AddVariable("met","","",'F');
+    else
+      factory->AddSpectator("met","","",'F');
   
     std::string weightsDirName;
     if (optionMap.count("weightsDirName"))

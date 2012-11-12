@@ -79,6 +79,19 @@ class MVA
 
   float weight;
 
+  float met;
+  float nPU;
+
+  int vbfPreselection;
+
+  float mDiMuResSigUp;
+  float mDiMuResSigDown;
+  float mDiMuResASigUp;
+  float mDiMuResASigDown;
+
+  float bdtValInc;
+  float bdtValVBF;
+
   //////////////////////
   
   std::map<std::string,TMVA::Reader*> readers_;
