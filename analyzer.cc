@@ -38,7 +38,7 @@
 #define JETPUID
 #define PUREWEIGHT
 //#define SMEARING
-#define ROCHESTER
+//#define ROCHESTER
 //#define MUSCLEFIT
 
 #ifdef ROCHESTER
