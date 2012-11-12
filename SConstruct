@@ -42,6 +42,11 @@ libs.append("TreePlayer")
 annaSmearFile = "annaCalibCode/FuncSmearingZmumu2012PtCorr0.C"
 includes.append("annaCalibCode/")
 
+#Muon Corrections
+corrFiles = ["rochester/rochcor2012.C","musclefit/MuScleFitCorrector.cc"]
+includes.append("rochester/")
+includes.append("musclefit/")
+
 env.Append(CPPPATH=includes)
 env.Append(LIBPATH=libpath)
 env.Append(LIBS=libs)
@@ -86,7 +91,7 @@ if not env.GetOption("clean"):
  
 env.Library(targer="src/mva",source=["src/mva.cc"])
 env.Library(targer="src/helpers",source=["src/helpers.cc"])
-env.Program(target="analyzer", source=["analyzer.cc","src/libmva.a","src/libhelpers.a",annaSmearFile])
+env.Program(target="analyzer", source=["analyzer.cc","src/libmva.a","src/libhelpers.a",annaSmearFile]+corrFiles)
 env.Program(target="mvaTrain", source=["mvaTrain.cc"])
 
 env.Program(target="testVertex", source=["testVertex.cc","src/libmva.a","src/libhelpers.a"])

@@ -38,6 +38,15 @@
 #define JETPUID
 #define PUREWEIGHT
 //#define SMEARING
+#define ROCHESTER
+//#define MUSCLEFIT
+
+#ifdef ROCHESTER
+#include "rochester/rochcor2012.h"
+#endif
+#ifdef MUSCLEFIT
+#include "musclefit/MuScleFitCorrector.h"
+#endif
 
 using namespace std;
 using namespace boost;
@@ -260,6 +269,44 @@ int main(int argc, char *argv[])
     }
   }
 
+  // Run periods
+  bool is2011A = false;
+  bool is2011B = false;
+  bool is2012A = false;
+  bool is2012B = false;
+  bool is2012C = false;
+  bool is2012D = false;
+  static const regex re2011A("2011A");
+  static const regex re2011B("2011B");
+  static const regex re2012A("2012A");
+  static const regex re2012B("2012B");
+  static const regex re2012C("2012C");
+  static const regex re2012D("2012D");
+  if(regex_search(filenames[0],re2011A))
+    is2011A = true;
+  if(regex_search(filenames[0],re2011B))
+    is2011B = true;
+  if(regex_search(filenames[0],re2012A))
+    is2012A = true;
+  if(regex_search(filenames[0],re2012B))
+    is2012B = true;
+  if(regex_search(filenames[0],re2012C))
+    is2012C = true;
+  if(regex_search(filenames[0],re2012D))
+    is2012D = true;
+  if(is2011A)
+    std::cout << "This is 2011A\n";
+  if(is2011B)
+    std::cout << "This is 2011B\n";
+  if(is2012A)
+    std::cout << "This is 2012A\n";
+  if(is2012B)
+    std::cout << "This is 2012B\n";
+  if(is2012C)
+    std::cout << "This is 2012C\n";
+  if(is2012D)
+    std::cout << "This is 2012D\n";
+
   if(isData)
     std::cout << "This is a Real Data Sample\n";
   else
@@ -436,6 +483,34 @@ int main(int argc, char *argv[])
   }
 #endif
 
+  /////////////////////////////
+  // Muon Momentum Corrections
+
+#ifdef MUSCLEFIT
+  std::string mfInFile;
+  if (isData)
+  {
+    if(runPeriod == "7TeV")
+      mfInFile = "musclefit/MuScleFit_2011_DATA_42X.txt";
+    else
+      mfInFile = "musclefit/MuScleFit_2012_DATA_53X.txt";
+  }
+  else
+  {
+    if(runPeriod == "7TeV")
+      mfInFile = "musclefit/MuScleFit_2011_MC_42X.txt";
+    else
+      mfInFile = "musclefit/MuScleFit_2012_MC_52X.txt";
+  }
+  MuScleFitCorrector* mfCorr = new MuScleFitCorrector(mfInFile);
+#endif
+#ifdef ROCHESTER
+  rochcor2012* rCorr12 = new rochcor2012();
+  int rochesterRun=0;
+  if(is2011B)
+    rochesterRun=1;
+#endif
+
   /////////////////////////
   // Smearing
   SmearingTool *smearPT = new SmearingTool();
@@ -470,6 +545,52 @@ int main(int argc, char *argv[])
     time_t timeStopReading = time(NULL);
     timeReadingAll += difftime(timeStopReading,timeStartReading);
     if (i % reportEach == 0) cout << "Event: " << i << endl;
+
+#ifdef MUSCLEFIT
+    TLorentzVector reco1Cor;
+    TLorentzVector reco2Cor;
+    reco1Cor.SetPtEtaPhiM(reco1.pt,reco1.eta,reco1.phi,0.105);
+    reco2Cor.SetPtEtaPhiM(reco2.pt,reco2.eta,reco2.phi,0.105);
+    mfCorr->applyPtCorrection(reco1Cor,reco1.charge);
+    mfCorr->applyPtCorrection(reco2Cor,reco2.charge);
+    //if (!isData && runPeriod=="8TeV")
+    //  mfCorr->applyPtSmearing(reco1Cor,reco1.charge);
+    //  mfCorr->applyPtSmearing(reco2Cor,reco2.charge);
+    TLorentzVector diMuonCor = reco1Cor + reco2Cor;
+    reco1.pt = reco1Cor.Pt();
+    reco2.pt = reco2Cor.Pt();
+    recoCandMass = diMuonCor.M();
+    recoCandPt = diMuonCor.Pt();
+    recoCandY = diMuonCor.Rapidity();
+    recoCandPhi = diMuonCor.Phi();
+#endif
+#ifdef ROCHESTER
+    TLorentzVector reco1Cor;
+    TLorentzVector reco2Cor;
+    reco1Cor.SetPtEtaPhiM(reco1.pt,reco1.eta,reco1.phi,0.105);
+    reco2Cor.SetPtEtaPhiM(reco2.pt,reco2.eta,reco2.phi,0.105);
+    if (runPeriod != "7TeV")
+    {
+      float rochesterError=1.0; //1.0 if you don't care
+      if (isData)
+      {
+        rCorr12->momcor_data(reco1Cor,reco1.charge,0,rochesterRun,rochesterError);
+        rCorr12->momcor_data(reco2Cor,reco2.charge,0,rochesterRun,rochesterError);
+      }
+      else
+      {
+        rCorr12->momcor_mc(reco1Cor,reco1.charge,0,rochesterRun,rochesterError);
+        rCorr12->momcor_mc(reco2Cor,reco2.charge,0,rochesterRun,rochesterError);
+      }
+    }
+    TLorentzVector diMuonCor = reco1Cor + reco2Cor;
+    reco1.pt = reco1Cor.Pt();
+    reco2.pt = reco2Cor.Pt();
+    recoCandMass = diMuonCor.M();
+    recoCandPt = diMuonCor.Pt();
+    recoCandY = diMuonCor.Rapidity();
+    recoCandPhi = diMuonCor.Phi();
+#endif
 
     float mDiMuResSigUp = recoCandMass;
     float mDiMuResSigDown = recoCandMass;
