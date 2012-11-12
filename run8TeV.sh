@@ -2,8 +2,8 @@
 
 nice scons -j4
 
-TRAININGTREES="true"
-TRAIN="true"
+#TRAININGTREES="true"
+#TRAIN="true"
 
 DIR=/data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/V00-01-01/
 
@@ -56,7 +56,7 @@ fi
 
 # Run with full MVA
 nice ./analyzer DYJetsToLL_8TeV.root $DIR/NtuplesMCDYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/DYJetsToLL_minimal.root -r 8TeV  >& log2 &
-nice ./analyzer DYToMuMu_8TeV.root $DIR/NtuplesMCDYToMuMu_M-20_CT10_TuneZ2star_v2_8TeV-powheg-pythia6_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/DYToMuMu_minimal.root -r 8TeV  >& log2 &
+#nice ./analyzer DYToMuMu_8TeV.root $DIR/NtuplesMCDYToMuMu_M-20_CT10_TuneZ2star_v2_8TeV-powheg-pythia6_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/DYToMuMu_minimal.root -r 8TeV  >& log2 &
 nice ./analyzer ttbar_8TeV.root $DIR/NtuplesMCTTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/TTJets_minimal.root -r 8TeV  >& log2 &
 
 nice ./analyzer ggHmumu125_8TeV.root $DIR/NtuplesMCPrivateSignal/ggHmumu8TeV125.root -r 8TeV 
@@ -77,6 +77,8 @@ nice ./analyzer SingleMuRun2012Cv1.root $DIR/NtuplesDataSingleMuRun2012C-24Aug20
 nice ./analyzer SingleMuRun2012Cv2.root $DIR/NtuplesDataSingleMuRun2012C-PromptReco-v2/minimal/SingleMuRun2012C-PromptReco-v2_minimal_2.root -r 8TeV 
 
 wait
+
+tar czf result.tgz ggHmumu*.root vbfHmumu*.root zHmumu*.root wHmumu*.root ttbar*.root DY*.root WW*.root WZ*.root ZZ*.root SingleMu*.root
 
 echo "#######################"
 echo "#######################"
