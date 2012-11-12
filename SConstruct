@@ -43,7 +43,10 @@ annaSmearFile = "annaCalibCode/FuncSmearingZmumu2012PtCorr0.C"
 includes.append("annaCalibCode/")
 
 #Muon Corrections
-corrFiles = ["rochester/rochcor2012.C","musclefit/MuScleFitCorrector.cc"]
+corrFiles = ["rochester/rochcor2012.C",
+            "rochester/rochcor.C",
+            "musclefit/MuScleFitCorrector.cc"
+        ]
 includes.append("rochester/")
 includes.append("musclefit/")
 

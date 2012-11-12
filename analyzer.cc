@@ -43,6 +43,7 @@
 
 #ifdef ROCHESTER
 #include "rochester/rochcor2012.h"
+#include "rochester/rochcor.h"
 #endif
 #ifdef MUSCLEFIT
 #include "musclefit/MuScleFitCorrector.h"
@@ -506,6 +507,7 @@ int main(int argc, char *argv[])
 #endif
 #ifdef ROCHESTER
   rochcor2012* rCorr12 = new rochcor2012();
+  rochcor* rCorr11 = new rochcor();
   int rochesterRun=0;
   if(is2011B)
     rochesterRun=1;
@@ -569,9 +571,9 @@ int main(int argc, char *argv[])
     TLorentzVector reco2Cor;
     reco1Cor.SetPtEtaPhiM(reco1.pt,reco1.eta,reco1.phi,0.105);
     reco2Cor.SetPtEtaPhiM(reco2.pt,reco2.eta,reco2.phi,0.105);
-    if (runPeriod != "7TeV")
+    float rochesterError=1.0; //1.0 if you don't care
+    if (runPeriod == "7TeV")
     {
-      float rochesterError=1.0; //1.0 if you don't care
       if (isData)
       {
         rCorr12->momcor_data(reco1Cor,reco1.charge,0,rochesterRun,rochesterError);
@@ -581,6 +583,19 @@ int main(int argc, char *argv[])
       {
         rCorr12->momcor_mc(reco1Cor,reco1.charge,0,rochesterRun,rochesterError);
         rCorr12->momcor_mc(reco2Cor,reco2.charge,0,rochesterRun,rochesterError);
+      }
+    }
+    else
+    {
+      if (isData)
+      {
+        rCorr11->momcor_data(reco1Cor,reco1.charge,0,rochesterRun,rochesterError);
+        rCorr11->momcor_data(reco2Cor,reco2.charge,0,rochesterRun,rochesterError);
+      }
+      else
+      {
+        rCorr11->momcor_mc(reco1Cor,reco1.charge,0,rochesterRun,rochesterError);
+        rCorr11->momcor_mc(reco2Cor,reco2.charge,0,rochesterRun,rochesterError);
       }
     }
     TLorentzVector diMuonCor = reco1Cor + reco2Cor;
