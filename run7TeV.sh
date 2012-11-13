@@ -2,8 +2,8 @@
 
 nice scons -j4
 
-#TRAININGTREES="true"
-#TRAIN="true"
+TRAININGTREES="true"
+TRAIN="true"
 
 DIR=/data/uftrig01b/digiovan/root/higgs/CMSSW_4_4_5/V00-01-01/
 

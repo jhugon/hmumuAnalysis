@@ -576,19 +576,6 @@ int main(int argc, char *argv[])
     {
       if (isData)
       {
-        rCorr12->momcor_data(reco1Cor,reco1.charge,0,rochesterRun,rochesterError);
-        rCorr12->momcor_data(reco2Cor,reco2.charge,0,rochesterRun,rochesterError);
-      }
-      else
-      {
-        rCorr12->momcor_mc(reco1Cor,reco1.charge,0,rochesterRun,rochesterError);
-        rCorr12->momcor_mc(reco2Cor,reco2.charge,0,rochesterRun,rochesterError);
-      }
-    }
-    else
-    {
-      if (isData)
-      {
         rCorr11->momcor_data(reco1Cor,reco1.charge,0,rochesterRun,rochesterError);
         rCorr11->momcor_data(reco2Cor,reco2.charge,0,rochesterRun,rochesterError);
       }
@@ -596,6 +583,19 @@ int main(int argc, char *argv[])
       {
         rCorr11->momcor_mc(reco1Cor,reco1.charge,0,rochesterRun,rochesterError);
         rCorr11->momcor_mc(reco2Cor,reco2.charge,0,rochesterRun,rochesterError);
+      }
+    }
+    else
+    {
+      if (isData)
+      {
+        rCorr12->momcor_data(reco1Cor,reco1.charge,0,rochesterRun,rochesterError);
+        rCorr12->momcor_data(reco2Cor,reco2.charge,0,rochesterRun,rochesterError);
+      }
+      else
+      {
+        rCorr12->momcor_mc(reco1Cor,reco1.charge,0,rochesterRun,rochesterError);
+        rCorr12->momcor_mc(reco2Cor,reco2.charge,0,rochesterRun,rochesterError);
       }
     }
     TLorentzVector diMuonCor = reco1Cor + reco2Cor;
