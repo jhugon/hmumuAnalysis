@@ -4,7 +4,7 @@ INSTRUCTIONS HOW TO USE MUSCLEFIT CORRECTION V1
 
 
 - The package consists of:
-	o MuScleFitCorrector.h and MuScleFitCorrector.cc: this is the main class implementing the corrections
+	o MuScleFitCorrector.h: this is the main class implementing the corrections
 	o ScaleFunct.h: this class defines the scale function and provides the flexibility needed to eventually redefine it
 	o ResolFunct.h: this class defines the resolution function and provides the flexibility needed to eventually redefine it
 	o MuScleFit_YEAR_DATASET_CMSSWREL.txt: this text file contains the parameters of the scale function. There exist one .txt file for every set of correction (e.g. MuScleFit_2011_DATA_42X.txt )

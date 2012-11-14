@@ -39,7 +39,7 @@
 #define PUREWEIGHT
 //#define SMEARING
 //#define ROCHESTER
-//#define MUSCLEFIT
+#define MUSCLEFIT
 
 #ifdef ROCHESTER
 #include "rochester/rochcor2012.h"
@@ -491,7 +491,7 @@ int main(int argc, char *argv[])
   std::string mfInFile;
   if (isData)
   {
-    if(runPeriod == "7TeV")
+    if(runPeriod == "8TeV")
       mfInFile = "musclefit/MuScleFit_2011_DATA_42X.txt";
     else
       mfInFile = "musclefit/MuScleFit_2012_DATA_53X.txt";

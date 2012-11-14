@@ -8,13 +8,14 @@
 #ifndef MuScleFitCorrector_h
 #define MuScleFitCorrector_h
 
+#include <iostream>
 #include <fstream>
 #include <sstream>
-#include <string>
 #include "ScaleFunct.h"
 #include "ResolFunct.h"
 #include "TLorentzVector.h"
 #include "TRandom3.h"
+
 
 /**
  * This is used to have a common set of functions for the specialized templates to use.
@@ -35,7 +36,7 @@ class MuScleFitCorrector
    * correction function and saves the corresponding pointer. It then fills the
    * vector of parameters.
    */
-  MuScleFitCorrector( std::string identifier )
+  MuScleFitCorrector(const TString& identifier)
   {
     readParameters( identifier ); 
     gRandom_ = new TRandom3();
@@ -105,8 +106,7 @@ class MuScleFitCorrector
 
  protected:
   /// Convert vectors to arrays for faster random access. The first pointer is replaced, thus it is taken by reference.
-  template<class T>
-  void convertToArrays(T *& function_);
+  void convertToArrays();
 
   // Identification numbers
   int scaleFunctId_;
@@ -114,7 +114,8 @@ class MuScleFitCorrector
 
   // Vectors of parameters
   std::vector<double> scaleParVec_;
-  std::vector<double> resolParVec_;
+  std::vector<double> resolDataParVec_;
+  std::vector<double> resolMCParVec_;
 
   // We will use the array for the function calls because it is faster than the vector for random access.
   double * scaleParArray_;
@@ -122,7 +123,7 @@ class MuScleFitCorrector
   double * resolMCParArray_;
 
   /// Parser of the parameters file
-  void readParameters( std::string fileName );
+  void readParameters(const TString& fileName);
 
   // Functions
   scaleFunctBase<double * > * scaleFunct_;
@@ -132,5 +133,143 @@ class MuScleFitCorrector
   TRandom3 * gRandom_;
 
 };
+
+void MuScleFitCorrector::convertToArrays()
+{
+
+  int resolParNum = resolFunct_->parNum();
+  int scaleParNum = scaleFunct_->parNum();
+
+  int resolDataParVecSize = resolDataParVec_.size();
+  int resolMCParVecSize = resolMCParVec_.size();
+  int scaleParVecSize = scaleParVec_.size();
+
+  if( resolParNum != resolDataParVecSize ) {
+    std::cout << "Error: inconsistent number of parameters: resolFunct has "<<resolParNum<<"parameters but "<<resolDataParVecSize<<" have been read from file" << std::endl;
+    exit(1);
+  }
+
+  if( resolParNum != resolMCParVecSize ) {
+    std::cout << "Error: inconsistent number of parameters: resolFunct has "<<resolParNum<<"parameters but "<<resolMCParVecSize<<" have been read from file" << std::endl;
+    exit(1);
+  }
+
+  if( scaleParNum != scaleParVecSize ) {
+    std::cout << "Error: inconsistent number of parameters: resolFunct has "<<resolParNum<<"parameters but "<<scaleParVecSize<<" have been read from file" << std::endl;
+    exit(1);
+  }
+
+    
+  std::vector<double>::const_iterator scaleParIt = scaleParVec_.begin();
+  std::vector<double>::const_iterator resolDataParIt = resolDataParVec_.begin();
+  std::vector<double>::const_iterator resolMCParIt = resolMCParVec_.begin();
+    
+  scaleParArray_ = new double[scaleParNum];
+  resolDataParArray_ = new double[resolParNum];
+  resolMCParArray_ = new double[resolParNum];
+  
+  for ( int iPar=0; iPar<scaleParNum; ++iPar) {
+    double parameter = *scaleParIt;
+    scaleParArray_[iPar] = parameter;
+    ++scaleParIt;
+  }
+
+  for ( int iPar=0; iPar<resolParNum; ++iPar) {
+    double parameter = *resolDataParIt;
+    resolDataParArray_[iPar] = parameter;
+    ++resolDataParIt;
+  }
+
+  for ( int iPar=0; iPar<resolParNum; ++iPar) {
+    double parameter = *resolMCParIt;
+    resolMCParArray_[iPar] = parameter;
+    ++resolMCParIt;
+  }
+  
+}
+
+
+void MuScleFitCorrector::readParameters(const TString& fileName )
+{
+  scaleParArray_ = 0;
+  resolDataParArray_ = 0;
+  resolMCParArray_ = 0;
+
+  // Read the parameters file
+  ifstream parametersFile(fileName.Data());
+
+  if( !parametersFile.is_open() ) {
+    std::cout << "Error: file " << fileName << " not found. Aborting." << std::endl;
+    abort();
+  }
+
+  std::string line;
+  int nReadPar = 0;
+  std::string iteration("Iteration ");
+  // Loop on the file lines
+  while (parametersFile) {
+
+    getline( parametersFile, line );
+    size_t lineInt = line.find("value");
+    size_t iterationSubStr = line.find(iteration);
+
+    if( iterationSubStr != std::string::npos ) {
+
+      std::stringstream sLine(line);
+      std::string num;
+      int scaleFunctNum = 0;
+      int resolFunctNum = 0;
+      int wordCounter = 0;
+
+      // Warning: this strongly depends on the parameters file structure.                                                                                   
+      while( sLine >> num ) {
+	++wordCounter;
+	if( wordCounter == 8 ) {
+	  std::stringstream in(num);
+	  in >> resolFunctNum;
+	}
+	
+	if( wordCounter == 9 ) {
+	  std::stringstream in(num);
+	  in >> scaleFunctNum;
+	}
+      }
+            
+      scaleFunctId_ = scaleFunctNum;
+      scaleFunct_ = scaleFunctService(scaleFunctNum);
+      resolFunctId_ = resolFunctNum;
+      resolFunct_ = resolutionFunctService(resolFunctNum);
+
+//       std::cout<<"Function IDs: "<<std::endl;
+//       std::cout<<"     scale function number "<<scaleFunctId_<<std::endl;
+//       std::cout<<"     resolution function number "<<resolFunctId_<<std::endl;
+
+  }
+        
+    int nScalePar = scaleFunct_->parNum();
+    int nResolPar = resolFunct_->parNum();
+
+    if ( (lineInt != std::string::npos) ) {
+      size_t subStr1 = line.find("value");
+      std::stringstream paramStr;
+      double param = 0;
+      paramStr << line.substr(subStr1+5);
+      paramStr >> param;
+      // Fill the last vector of parameters, which corresponds to this iteration.
+      if (nReadPar<nScalePar) {
+	scaleParVec_.push_back(param);
+      }
+      else if (nReadPar < (nScalePar+nResolPar) ) {
+	resolDataParVec_.push_back(param);
+      }
+      else if (nReadPar < (nScalePar+2*nResolPar) ) {
+	resolMCParVec_.push_back(param);
+      }
+      ++nReadPar;
+    }
+  }
+  convertToArrays();
+}
+
 
 #endif // MuScleFitCorrector_h
