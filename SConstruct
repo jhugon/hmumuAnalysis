@@ -39,7 +39,8 @@ libs.append("MLP")
 libs.append("TreePlayer")
 
 #Anna's Calibration Code
-annaSmearFile = "annaCalibCode/FuncSmearingZmumu2012PtCorr0.C"
+#annaSmearFile = "annaCalibCode/FuncSmearingZmumu2012PtCorr0.C" #For Vanilla 2012
+annaSmearFile = "annaCalibCode/FuncSmearingZmumu2012PtCorr0.C" #For Rochester 2012
 includes.append("annaCalibCode/")
 
 #Muon Corrections
