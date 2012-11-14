@@ -36,7 +36,7 @@ using namespace boost;
 
 struct HistStruct
 {
-  HistStruct();
+  HistStruct(float& pt, float& eta, float& phi, float& ptInv, float& q);
   ~HistStruct();
   void Write(TFile* outfile, std::string directory);
 
@@ -44,10 +44,18 @@ struct HistStruct
   std::vector<TH2F*> histVec2D;
 
   TH1F* qOverPt;
+  TH1F* qOverPtPlus;
+  TH1F* qOverPtMinus;
 
-  TH2F* qOverPtVEta;
-  TH2F* qOverPtVPt;
-  TH2F* qOverPtVPhi;
+  TH2F* qOverPtVEtaPlus;
+  TH2F* qOverPtVPtPlus;
+  TH2F* qOverPtVPhiPlus;
+
+  TH2F* qOverPtVEtaMinus;
+  TH2F* qOverPtVPtMinus;
+  TH2F* qOverPtVPhiMinus;
+
+  TTree* tree;
 };
 
 int main(int argc, char *argv[])
@@ -323,7 +331,13 @@ int main(int argc, char *argv[])
 
   //////////////////////////
   // Histograms
-  HistStruct hists;
+
+  float pt;
+  float eta;
+  float phi;
+  float ptInv;
+  float q;
+  HistStruct hists(pt,eta,phi,ptInv,q);
 
 
   TRandom3 random(1457);
@@ -413,12 +427,51 @@ int main(int argc, char *argv[])
 
     hists.qOverPt->Fill(muon1.charge/muon1.pt,weight);
     hists.qOverPt->Fill(muon2.charge/muon2.pt,weight);
-    hists.qOverPtVEta->Fill(muon1.eta,muon1.charge/muon1.pt,weight);
-    hists.qOverPtVEta->Fill(muon2.eta,muon2.charge/muon2.pt,weight);
-    hists.qOverPtVPt->Fill(muon1.pt,muon1.charge/muon1.pt,weight);
-    hists.qOverPtVPt->Fill(muon2.pt,muon2.charge/muon2.pt,weight);
-    hists.qOverPtVPhi->Fill(muon1.phi,muon1.charge/muon1.pt,weight);
-    hists.qOverPtVPhi->Fill(muon2.phi,muon2.charge/muon2.pt,weight);
+
+    if (muon1.charge>0)
+    {
+    hists.qOverPtPlus->Fill(1./muon1.pt,weight);
+    hists.qOverPtVEtaPlus->Fill(muon1.eta,1./muon1.pt,weight);
+    hists.qOverPtVPtPlus->Fill(muon1.pt,1./muon1.pt,weight);
+    hists.qOverPtVPhiPlus->Fill(muon1.phi,1./muon1.pt,weight);
+    }
+
+    if (muon2.charge>0)
+    {
+    hists.qOverPtPlus->Fill(1./muon2.pt,weight);
+    hists.qOverPtVEtaPlus->Fill(muon2.eta,1./muon2.pt,weight);
+    hists.qOverPtVPtPlus->Fill(muon2.pt,1./muon2.pt,weight);
+    hists.qOverPtVPhiPlus->Fill(muon2.phi,1./muon2.pt,weight);
+    }
+
+    if (muon1.charge<0)
+    {
+    hists.qOverPtMinus->Fill(1./muon1.pt,weight);
+    hists.qOverPtVEtaMinus->Fill(muon1.eta,1./muon1.pt,weight);
+    hists.qOverPtVPtMinus->Fill(muon1.pt,1./muon1.pt,weight);
+    hists.qOverPtVPhiMinus->Fill(muon1.phi,1./muon1.pt,weight);
+    }
+
+    if (muon2.charge<0)
+    {
+    hists.qOverPtMinus->Fill(1./muon2.pt,weight);
+    hists.qOverPtVEtaMinus->Fill(muon2.eta,1./muon2.pt,weight);
+    hists.qOverPtVPtMinus->Fill(muon2.pt,1./muon2.pt,weight);
+    hists.qOverPtVPhiMinus->Fill(muon2.phi,1./muon2.pt,weight);
+    }
+
+    pt = muon1.pt;
+    eta = muon1.eta;
+    phi = muon1.phi;
+    ptInv = 1./muon1.pt;
+    q = muon1.charge;
+    hists.tree->Fill();
+    pt = muon2.pt;
+    eta = muon2.eta;
+    phi = muon2.phi;
+    ptInv = 1./muon2.pt;
+    q = muon2.charge;
+    hists.tree->Fill();
 
   }// end event loop
   time_t timeEndEventLoop = time(NULL);
@@ -453,20 +506,38 @@ int main(int argc, char *argv[])
   return 0;
 }
 
-HistStruct::HistStruct()
+HistStruct::HistStruct(float& pt, float& eta, float& phi, float& ptInv, float& q)
 {
 
-  qOverPt = new TH1F("qOverPt","",100,-0.05,0.05);
+  qOverPt = new TH1F("qOverPt","",200,-0.05,0.05);
   histVec.push_back(qOverPt);
 
-  qOverPtVEta = new TH2F("qOverPtVEta","",10,-2.4,2.4,100,-0.05,0.05);
-  histVec2D.push_back(qOverPtVEta);
+  qOverPtPlus = new TH1F("qOverPtPlus","",100,0.00,0.05);
+  histVec.push_back(qOverPtPlus);
+  qOverPtMinus = new TH1F("qOverPtMinus","",100,0.00,0.05);
+  histVec.push_back(qOverPtMinus);
 
-  qOverPtVPt = new TH2F("qOverPtVPt","",10,0,200,100,-0.05,0.05);
-  histVec2D.push_back(qOverPtVPt);
+  qOverPtVEtaPlus = new TH2F("qOverPtVEtaPlus","",10,-2.4,2.4,100,0.0,0.05);
+  histVec2D.push_back(qOverPtVEtaPlus);
+  qOverPtVEtaMinus = new TH2F("qOverPtVEtaMinus","",10,-2.4,2.4,100,0.0,0.05);
+  histVec2D.push_back(qOverPtVEtaMinus);
 
-  qOverPtVPhi = new TH2F("qOverPtVPhi","",10,-3.14,3.14,100,-0.05,0.05);
-  histVec2D.push_back(qOverPtVPhi);
+  qOverPtVPtPlus = new TH2F("qOverPtVPtPlus","",10,0,200,100,0.0,0.05);
+  histVec2D.push_back(qOverPtVPtPlus);
+  qOverPtVPtMinus = new TH2F("qOverPtVPtMinus","",10,0,200,100,0.0,0.05);
+  histVec2D.push_back(qOverPtVPtMinus);
+
+  qOverPtVPhiPlus = new TH2F("qOverPtVPhiPlus","",10,-3.14,3.14,100,0.0,0.05);
+  histVec2D.push_back(qOverPtVPhiPlus);
+  qOverPtVPhiMinus = new TH2F("qOverPtVPhiMinus","",10,-3.14,3.14,100,0.0,0.05);
+  histVec2D.push_back(qOverPtVPhiMinus);
+
+  tree = new TTree("tree","tree");
+  tree->Branch("pt",&pt,"pt/F");
+  tree->Branch("eta",&eta,"eta/F");
+  tree->Branch("phi",&phi,"phi/F");
+  tree->Branch("ptInv",&ptInv,"ptInv/F");
+  tree->Branch("q",&q,"q/F");
 
   std::vector<TH1F*>::iterator hist;
   std::vector<TH2F*>::iterator hist2D;
@@ -484,6 +555,7 @@ HistStruct::~HistStruct()
     delete *hist;
   for(hist2D = histVec2D.begin();hist2D != histVec2D.end(); hist2D++)
     delete *hist2D;
+  delete tree;
 }
 
 void
@@ -505,6 +577,7 @@ HistStruct::Write(TFile* outfile, std::string directory)
     (*hist)->Write();
   for(hist2D = histVec2D.begin();hist2D != histVec2D.end(); hist2D++)
     (*hist2D)->Write();
+  tree->Write();
 
   outfile->cd();
 }

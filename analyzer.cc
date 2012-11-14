@@ -39,7 +39,7 @@
 #define PUREWEIGHT
 //#define SMEARING
 //#define ROCHESTER
-#define MUSCLEFIT
+//#define MUSCLEFIT
 
 #ifdef ROCHESTER
 #include "rochester/rochcor2012.h"
