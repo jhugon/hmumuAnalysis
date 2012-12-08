@@ -114,15 +114,11 @@ int main(int argc, char *argv[])
     tree->AddFile(filename->c_str());
   }
 
-  //std::vector<voidp> branchAddressPointers;
   TIter branchList(tree->GetListOfBranches());
   TBranch* tmpBranch;
   while (tmpBranch = (TBranch*) branchList())
   {
-    //voidp tmp = 0; //I Allocate, but Root Owns
     tree->SetBranchAddress(tmpBranch->GetName(),0);//Root handles objects
-    //tree->SetBranchAddress(tmpBranch->GetName(),&tmp);//I Own Objects
-    //branchAddressPointers.append(tmp)
   }
 
   cout << "Output File Name: " << outputFileName << endl;
@@ -147,7 +143,7 @@ int main(int argc, char *argv[])
         nPUBranch->GetEntry(iEvent);
         weight = lumiWeights->weight(nPU);
         weightBranch->Fill();
-        std::cout << nPU << "    "<<weight<< std::endl;
+        //std::cout << nPU << "    "<<weight<< std::endl;
     }
   }
 
