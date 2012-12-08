@@ -25,6 +25,8 @@
 #include <TRandom3.h>
 #include "DataFormats.h"
 
+#include "LumiReweightingStandAlone.h"
+
 using namespace std;
 using namespace boost;
 
@@ -46,6 +48,8 @@ int main(int argc, char *argv[])
       ("filenames",program_options::value<vector<string> >(), "Input & Output File Names, put output name first followed by all input file names")
       ("cut,c",program_options::value<string>(), "ROOT Cut String")
       ("maxEvents,m",program_options::value<Long64_t>(), "Max Number of Events")
+      ("dataPUHist",program_options::value<std::string>(), "Data PU Histogram")
+      ("mcPUHist",program_options::value<std::string>(), "MC PU Histogram")
   ;
   
   program_options::positional_options_description optionPos;
@@ -71,6 +75,14 @@ int main(int argc, char *argv[])
   if (optionMap.count("maxEvents")) 
   {
     maxEvents = optionMap["maxEvents"].as<Long64_t>();
+  }
+
+  reweight::LumiReWeighting* lumiWeights = NULL;
+  if (optionMap.count("dataPUHist") && optionMap.count("mcPUHist")) 
+  {
+     std::string dataPUHistFN = optionMap["dataPUHist"].as<std::string>();
+     std::string mcPUHistFN = optionMap["mcPUHist"].as<std::string>();
+     lumiWeights = new reweight::LumiReWeighting(mcPUHistFN.c_str(),dataPUHistFN.c_str(),"pileup","pileup");
   }
 
   std::vector<std::string> filenames;
@@ -118,9 +130,30 @@ int main(int argc, char *argv[])
 
   TTree *newtree = tree->CopyTree(cut.c_str(),"",maxEvents);
   newtree->SetAutoSave(true);
+
+  unsigned totalEvents = std::min(maxEvents,tree->GetEntries());
+
+  unsigned newEntries = newtree->GetEntries();
+  if(lumiWeights != NULL)
+  {
+    float weight = 0.0;
+    int nPU = 5;
+    TBranch* nPUBranch = newtree->GetBranch("nPU");
+    TBranch* weightBranch = newtree->Branch("puWeight",&weight,"puWeight/F");
+    nPUBranch->SetAddress(&nPU);
+
+    for(unsigned iEvent=0;iEvent<newEntries;iEvent++)
+    {
+        nPUBranch->GetEntry(iEvent);
+        weight = lumiWeights->weight(nPU);
+        weightBranch->Fill();
+        std::cout << nPU << "    "<<weight<< std::endl;
+    }
+  }
+
   outFile->Write();
 
-  float efficiency = ((float) newtree->GetEntries())/(float) std::min(tree->GetEntries(),maxEvents);
+  float efficiency = ((float) newEntries)/(float) totalEvents;
   std::cout <<"Events Pass: "<<efficiency*100.0<<"%"<<std::endl;
 
   return 0;
