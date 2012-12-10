@@ -128,10 +128,12 @@ int main(int argc, char *argv[])
   newtree->SetAutoSave(true);
 
   unsigned totalEvents = std::min(maxEvents,tree->GetEntries());
+  std::cout <<"Done with Skim"<<std::endl;
 
   unsigned newEntries = newtree->GetEntries();
   if(lumiWeights != NULL)
   {
+    std::cout <<"Adding puWeight Branch"<<std::endl;
     float weight = 0.0;
     int nPU = 5;
     TBranch* nPUBranch = newtree->GetBranch("nPU");
@@ -145,6 +147,7 @@ int main(int argc, char *argv[])
         weightBranch->Fill();
         //std::cout << nPU << "    "<<weight<< std::endl;
     }
+    std::cout <<"Done with puWeight Branch"<<std::endl;
   }
 
   outFile->Write();
