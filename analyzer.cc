@@ -38,6 +38,7 @@
 #define JETPUID
 #define PUREWEIGHT
 //#define SMEARING
+#define ISMEAR 1
 //#define ROCHESTER
 //#define MUSCLEFIT
 
@@ -619,8 +620,8 @@ int main(int argc, char *argv[])
         cout << "Muon 1 Post FSR not valid!\n";
       if(reco2GenPostFSR.pt<0.)
         cout << "Muon 2 Post FSR not valid!\n";
-      float ptReco1 = smearPT -> PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge);
-      float ptReco2 = smearPT -> PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge);
+      float ptReco1 = smearPT -> PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge, reco1.pt, ISMEAR);
+      float ptReco2 = smearPT -> PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge, reco2.pt, ISMEAR);
       TLorentzVector reco1Vec;
       TLorentzVector reco2Vec;
       reco1Vec.SetPtEtaPhiM(ptReco1,reco1.eta,reco1.phi,0.105);
@@ -635,29 +636,29 @@ int main(int argc, char *argv[])
       recoCandPhi = diMuonVec.Phi();
 
       //Systematics Time
-      ptReco1 = smearPT->PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge,"sig1",1.0);
-      ptReco2 = smearPT->PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge,"sig1",1.0);
+      ptReco1 = smearPT->PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge, reco1.pt, ISMEAR, "sig1",1.0);
+      ptReco2 = smearPT->PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge, reco2.pt, ISMEAR,"sig1",1.0);
       reco1Vec.SetPtEtaPhiM(ptReco1,reco1.eta,reco1.phi,0.105);
       reco2Vec.SetPtEtaPhiM(ptReco2,reco2.eta,reco2.phi,0.105);
       diMuonVec = reco1Vec + reco2Vec;
       mDiMuResSigUp = diMuonVec.M();
 
-      ptReco1 = smearPT->PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge,"sig1",-1.0);
-      ptReco2 = smearPT->PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge,"sig1",-1.0);
+      ptReco1 = smearPT->PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge, reco1.pt, ISMEAR,"sig1",-1.0);
+      ptReco2 = smearPT->PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge, reco2.pt, ISMEAR,"sig1",-1.0);
       reco1Vec.SetPtEtaPhiM(ptReco1,reco1.eta,reco1.phi,0.105);
       reco2Vec.SetPtEtaPhiM(ptReco2,reco2.eta,reco2.phi,0.105);
       diMuonVec = reco1Vec + reco2Vec;
       mDiMuResSigDown = diMuonVec.M();
 
-      ptReco1 = smearPT->PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge,"Asig2Var",1.0);
-      ptReco2 = smearPT->PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge,"Asig2Var",1.0);
+      ptReco1 = smearPT->PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge, reco1.pt, ISMEAR,"Asig2Var",1.0);
+      ptReco2 = smearPT->PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge, reco2.pt, ISMEAR,"Asig2Var",1.0);
       reco1Vec.SetPtEtaPhiM(ptReco1,reco1.eta,reco1.phi,0.105);
       reco2Vec.SetPtEtaPhiM(ptReco2,reco2.eta,reco2.phi,0.105);
       diMuonVec = reco1Vec + reco2Vec;
       mDiMuResASigUp = diMuonVec.M();
 
-      ptReco1 = smearPT->PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge,"Asig2Var",-1.0);
-      ptReco2 = smearPT->PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge,"Asig2Var",-1.0);
+      ptReco1 = smearPT->PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge, reco1.pt, ISMEAR,"Asig2Var",-1.0);
+      ptReco2 = smearPT->PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge, reco2.pt, ISMEAR,"Asig2Var",-1.0);
       reco1Vec.SetPtEtaPhiM(ptReco1,reco1.eta,reco1.phi,0.105);
       reco2Vec.SetPtEtaPhiM(ptReco2,reco2.eta,reco2.phi,0.105);
       diMuonVec = reco1Vec + reco2Vec;
