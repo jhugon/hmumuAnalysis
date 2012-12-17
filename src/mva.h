@@ -89,6 +89,14 @@ class MVA
   float mDiMuResASigUp;
   float mDiMuResASigDown;
 
+  float puJetIDSimpleDiscJet1;
+  float puJetIDSimpleDiscJet2;
+  float puJetIDSimpleDiscJet3;
+
+  int puJetIDSimpleJet1;
+  int puJetIDSimpleJet2;
+  int puJetIDSimpleJet3;
+
   float bdtValInc;
   float bdtValVBF;
 

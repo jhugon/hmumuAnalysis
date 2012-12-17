@@ -971,18 +971,18 @@ int main(int argc, char *argv[])
         if(jets.pt[iJet]>30.0)
         {
           if (iJet==0)
-            hists.puJetIDSimpleDiscJet1->Fill(puJetSimpleDisc[iJet], weight);
+            mva.puJetIDSimpleDiscJet1 = puJetSimpleDisc[iJet];
           else if (iJet==1)
-            hists.puJetIDSimpleDiscJet2->Fill(puJetSimpleDisc[iJet], weight);
+            mva.puJetIDSimpleDiscJet2 = puJetSimpleDisc[iJet];
           else if (iJet==2)
-            hists.puJetIDSimpleDiscJet3->Fill(puJetSimpleDisc[iJet], weight);
+            mva.puJetIDSimpleDiscJet3 = puJetSimpleDisc[iJet];
 
           if (iJet==0)
-            hists.puJetIDSimpleJet1->Fill(passPUJetID(puJetSimpleId[iJet],puJetLoose), weight);
+            mva.puJetIDSimpleJet1 = passPUJetID(puJetSimpleId[iJet],puJetLoose);
           else if (iJet==1)
-            hists.puJetIDSimpleJet2->Fill(passPUJetID(puJetSimpleId[iJet],puJetLoose), weight);
+            mva.puJetIDSimpleJet2 = passPUJetID(puJetSimpleId[iJet],puJetLoose);
           else if (iJet==2)
-            hists.puJetIDSimpleJet3->Fill(passPUJetID(puJetSimpleId[iJet],puJetLoose), weight);
+            mva.puJetIDSimpleJet3 = passPUJetID(puJetSimpleId[iJet],puJetLoose);
         }
       }
 #endif
@@ -1010,6 +1010,14 @@ int main(int argc, char *argv[])
       hists.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
       hists.nJets->Fill(mva.nJets, weight);
       hists.ht->Fill(mva.ht, weight);
+
+      hists.puJetIDSimpleDiscJet1->Fill(mva.puJetIDSimpleDiscJet1,weight);
+      hists.puJetIDSimpleDiscJet2->Fill(mva.puJetIDSimpleDiscJet2,weight);
+      hists.puJetIDSimpleDiscJet3->Fill(mva.puJetIDSimpleDiscJet3,weight);
+
+      hists.puJetIDSimpleJet1->Fill(mva.puJetIDSimpleJet1,weight);
+      hists.puJetIDSimpleJet2->Fill(mva.puJetIDSimpleJet2,weight);
+      hists.puJetIDSimpleJet3->Fill(mva.puJetIDSimpleJet3,weight);
     }
   
 //HIG-12-007 PAS H->tautau
@@ -1654,6 +1662,15 @@ HistStruct::Fill(const MVA& mva, bool blind)
   htInRapidityGap->Fill(mva.htInRapidityGap, mva.weight);
   nJets->Fill(mva.nJets, mva.weight);
   ht->Fill(mva.ht, mva.weight);
+
+  puJetIDSimpleDiscJet1->Fill(mva.puJetIDSimpleDiscJet1,mva.weight);
+  puJetIDSimpleDiscJet2->Fill(mva.puJetIDSimpleDiscJet2,mva.weight);
+  puJetIDSimpleDiscJet3->Fill(mva.puJetIDSimpleDiscJet3,mva.weight);
+
+  puJetIDSimpleJet1->Fill(mva.puJetIDSimpleJet1,mva.weight);
+  puJetIDSimpleJet2->Fill(mva.puJetIDSimpleJet2,mva.weight);
+  puJetIDSimpleJet3->Fill(mva.puJetIDSimpleJet3,mva.weight);
+
   if (!blind)
   {
     mDiMu->Fill(mva.mDiMu, mva.weight);

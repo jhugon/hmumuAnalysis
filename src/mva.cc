@@ -60,6 +60,14 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
     outTree_->Branch("mDiMuResASigUp",&mDiMuResASigUp,"mDiMuResASigUp/F");
     outTree_->Branch("mDiMuResASigDown",&mDiMuResASigDown,"mDiMuResASigDown/F");
 
+    outTree_->Branch("puJetIDSimpleDiscJet1",&puJetIDSimpleDiscJet1,"puJetIDSimgpleDiscJet1/F");
+    outTree_->Branch("puJetIDSimpleDiscJet2",&puJetIDSimpleDiscJet2,"puJetIDSimgpleDiscJet2/F");
+    outTree_->Branch("puJetIDSimpleDiscJet3",&puJetIDSimpleDiscJet3,"puJetIDSimgpleDiscJet3/F");
+
+    outTree_->Branch("puJetIDSimpleJet1",&puJetIDSimpleJet1,"puJetIDSimgpleJet1/I");
+    outTree_->Branch("puJetIDSimpleJet2",&puJetIDSimpleJet2,"puJetIDSimgpleJet2/I");
+    outTree_->Branch("puJetIDSimpleJet3",&puJetIDSimpleJet3,"puJetIDSimgpleJet3/I");
+
   }
 
   if(outFileName.size()<1)
@@ -403,6 +411,14 @@ MVA::resetValues()
   mDiMuResSigDown=-10.0;
   mDiMuResASigUp=-10.0;
   mDiMuResASigDown=-10.0;
+
+  puJetIDSimpleDiscJet1=-10.;
+  puJetIDSimpleDiscJet2=-10.;
+  puJetIDSimpleDiscJet3=-10.;
+
+  puJetIDSimpleJet1=-10;
+  puJetIDSimpleJet2=-10;
+  puJetIDSimpleJet3=-10;
 
   bdtValInc=-10.0;
   bdtValVBF=-10.0;
