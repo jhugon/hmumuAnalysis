@@ -12,6 +12,8 @@ env.MergeFlags('-fPIC -O2 -lm')
 
 # For BLINDING
 env.MergeFlags("-D BLIND")
+#env.MergeFlags("-D PTMISSINMVA")
+
 
 # For using gprof
 #env.Append(CCFLAGS=["-pg"])

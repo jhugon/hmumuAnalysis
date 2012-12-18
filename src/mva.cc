@@ -51,6 +51,7 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
     outTree_->Branch("weight",&weight,"weight/F");
 
     outTree_->Branch("met",&met,"met/F");
+    outTree_->Branch("ptmiss",&ptmiss,"ptmiss/F");
     outTree_->Branch("nPU",&nPU,"nPU/F");
 
     outTree_->Branch("vbfPreselection",&vbfPreselection,"vbfPreselection/I");
@@ -135,6 +136,9 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
           ("mvaCutVal",program_options::value<float>(),"")
 
           ("met",program_options::value<int>(),"")
+#ifdef PTMISSINMVA
+          ("ptmiss",program_options::value<int>(),"")
+#endif
       ;
     
       program_options::variables_map optionMap;
@@ -299,6 +303,13 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
       else
         reader->AddSpectator("met",&met);
     
+#ifdef PTMISSINMVA
+      if (optionMap.count("ptmiss") && optionMap["ptmiss"].as<int>() == 1)
+        reader->AddVariable("ptmiss",&ptmiss);
+      else
+        reader->AddSpectator("ptmiss",&ptmiss);
+#endif
+
       std::string weightsDirName;
       if (optionMap.count("weightsDirName"))
           weightsDirName = optionMap["weightsDirName"].as<std::string>();
@@ -403,6 +414,7 @@ MVA::resetValues()
   weight=1.0;
 
   met=-10.0;
+  ptmiss=-10.0;
   nPU=0;
 
   vbfPreselection=false;

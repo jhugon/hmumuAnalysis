@@ -80,6 +80,7 @@ class MVA
   float weight;
 
   float met;
+  float ptmiss;
   float nPU;
 
   int vbfPreselection;

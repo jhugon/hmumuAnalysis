@@ -132,6 +132,7 @@ struct HistStruct
   TH1F* nPU;
   TH1F* nVtx;
   TH1F* met;
+  TH1F* ptmiss;
   TH1F* weight;
 };
 
@@ -549,6 +550,10 @@ int main(int argc, char *argv[])
     timeReadingAll += difftime(timeStopReading,timeStartReading);
     if (i % reportEach == 0) cout << "Event: " << i << endl;
 
+    TLorentzVector reco1Vec;
+    TLorentzVector reco2Vec;
+    reco1Vec.SetPtEtaPhiM(reco1.pt,reco1.eta,reco1.phi,0.105);
+    reco2Vec.SetPtEtaPhiM(reco2.pt,reco2.eta,reco2.phi,0.105);
 #ifdef MUSCLEFIT
     TLorentzVector reco1Cor;
     TLorentzVector reco2Cor;
@@ -566,6 +571,8 @@ int main(int argc, char *argv[])
     recoCandPt = diMuonCor.Pt();
     recoCandY = diMuonCor.Rapidity();
     recoCandPhi = diMuonCor.Phi();
+    reco1Vec = recoCor1;
+    reco2Vec = recoCor2;
 #endif
 #ifdef ROCHESTER
     TLorentzVector reco1Cor;
@@ -606,7 +613,11 @@ int main(int argc, char *argv[])
     recoCandPt = diMuonCor.Pt();
     recoCandY = diMuonCor.Rapidity();
     recoCandPhi = diMuonCor.Phi();
+    reco1Vec = recoCor1;
+    reco2Vec = recoCor2;
 #endif
+
+    TLorentzVector recoCandVec = reco1Vec+reco2Vec;
 
     float mDiMuResSigUp = recoCandMass;
     float mDiMuResSigDown = recoCandMass;
@@ -996,6 +1007,7 @@ int main(int argc, char *argv[])
       mva.etaJet2 = pJet2.Eta();
       mva.productEtaJets = etaJetProduct;
       mva.deltaEtaJets = dEtaJets;
+      mva.ptmiss = (diJet+recoCandVec).Pt();
 
       hists.mDiJet->Fill(mva.mDiJet, weight);
       hists.ptDiJet->Fill(mva.ptDiJet, weight);
@@ -1010,6 +1022,7 @@ int main(int argc, char *argv[])
       hists.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
       hists.nJets->Fill(mva.nJets, weight);
       hists.ht->Fill(mva.ht, weight);
+      hists.ptmiss->Fill(mva.ptmiss, weight);
 
       hists.puJetIDSimpleDiscJet1->Fill(mva.puJetIDSimpleDiscJet1,weight);
       hists.puJetIDSimpleDiscJet2->Fill(mva.puJetIDSimpleDiscJet2,weight);
@@ -1585,6 +1598,8 @@ HistStruct::HistStruct()
   histVec.push_back(nVtx);
   met = new TH1F("met","",160,0,800);
   histVec.push_back(met);
+  ptmiss = new TH1F("ptmiss","",160,0,800);
+  histVec.push_back(ptmiss);
   weight = new TH1F("weight","",500,0,5.0);
   histVec.push_back(weight);
 
@@ -1648,6 +1663,7 @@ HistStruct::Fill(const MVA& mva, bool blind)
   nPU->Fill(mva.nPU, mva.weight);
   nVtx->Fill(mva.nVtx, mva.weight);
   met->Fill(mva.met, mva.weight);
+  ptmiss->Fill(mva.ptmiss, mva.weight);
 
   mDiJet->Fill(mva.mDiJet, mva.weight);
   ptDiJet->Fill(mva.ptDiJet, mva.weight);

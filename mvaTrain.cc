@@ -225,6 +225,9 @@ int main(int argc, char *argv[])
         ("mvaCutVal",program_options::value<float>(),"")
 
         ("met",program_options::value<int>(),"")
+#ifdef PTMISSINMVA
+        ("ptmiss",program_options::value<int>(),"")
+#endif
     ;
 
     program_options::variables_map optionMap;
@@ -385,6 +388,13 @@ int main(int argc, char *argv[])
       factory->AddVariable("met","","",'F');
     else
       factory->AddSpectator("met","","",'F');
+
+#ifdef PTMISSINMVA
+    if (optionMap.count("ptmiss") && optionMap["ptmiss"].as<int>() == 1)
+      factory->AddVariable("ptmiss","","",'F');
+    else
+      factory->AddSpectator("ptmiss","","",'F');
+#endif
   
     std::string weightsDirName;
     if (optionMap.count("weightsDirName"))
