@@ -460,6 +460,14 @@ int main(int argc, char *argv[])
   HistStruct histsIncPreselDiMuPtL20;
   HistStruct histsVBFPreselDiMuPtL20;
 
+  HistStruct histsIncPreselPUJETID;
+  HistStruct histsVBFPreselPUJETID;
+
+  HistStruct histsIncPreselPUJETIDForVeto;
+  HistStruct histsVBFPreselPUJETIDForVeto;
+
+  HistStruct histsVBFPreselPtMiss50Veto;
+
   //////////////////////////
   //for MVA
 
@@ -994,6 +1002,11 @@ int main(int argc, char *argv[])
             mva.puJetIDSimpleJet2 = passPUJetID(puJetSimpleId[iJet],puJetLoose);
           else if (iJet==2)
             mva.puJetIDSimpleJet3 = passPUJetID(puJetSimpleId[iJet],puJetLoose);
+
+            if (iJet==0)
+            {
+              std::cout << "Disc: " << puJetSimpleDisc[iJet] << " Raw Id: " << puJetSimpleId[iJet] << std::endl;
+            }
         }
       }
 #endif
@@ -1281,6 +1294,13 @@ int main(int argc, char *argv[])
       histsVBFPreselDiMuPtL20.Fill(mva,blind);
     }
 
+///////////////////////////////////////////
+
+    if (vbfPreselection && mva.ptmiss < 50.0)
+    {
+      histsVBFPreselPtMiss50Veto.Fill(mva,blind);
+    }
+
     timeReading += difftime(timeStopReading,timeStartReading);
     timeProcessing += difftime(timeStartFilling,timeStopReading);
     timeFilling += difftime(time(NULL),timeStartFilling);
@@ -1329,6 +1349,14 @@ int main(int argc, char *argv[])
 
   histsVBFPreselDiMuPtL20.Write(outFile,"VBFPreselDiMuPtL20");
   histsIncPreselDiMuPtL20.Write(outFile,"IncPreselDiMuPtL20");
+
+  histsIncPreselPUJETID.Write(outFile,"IncPreselPUJETID");
+  histsVBFPreselPUJETID.Write(outFile,"VBFPreselPUJETID");
+
+  histsIncPreselPUJETIDForVeto.Write(outFile,"IncPreselPUJETIDForVeto");
+  histsVBFPreselPUJETIDForVeto.Write(outFile,"VBFPreselPUJETIDForVeto");
+
+  histsVBFPreselPtMiss50Veto.Write(outFile,"VBFPreselPtMiss50Veto");
 
   ofstream testOutFile;
   testOutFile.open("testEventNums.txt");

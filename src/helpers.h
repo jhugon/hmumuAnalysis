@@ -19,6 +19,8 @@ bool isKinTight_2011(_MuonInfo& muon);
 
 bool passPUJetID(int flag, PUJetID desiredLevel);
 
+bool passPUJetIDSimple(float disc, float eta, float pt, std::string level);
+
 float smearMC(float trueVal, float recoVal, float calib, float smearRatio,TRandom random, bool debug=false);
 
 bool isHltMatched(_MuonInfo& muon1, _MuonInfo& muon2, std::vector<int> allowedPaths);
