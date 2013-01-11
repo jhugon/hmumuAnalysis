@@ -923,7 +923,7 @@ int main(int argc, char *argv[])
     // Jet Part
     for(unsigned iJet=0; (iJet < jets.nJets && iJet < 10);iJet++)
     {
-        if(jets.pt[iJet] > 30.0)
+        if(jets.pt[iJet] > 30.0 && fabs(jets.eta[iJet])<4.7)
         {
           mva.nJets++;
           mva.ht += jets.pt[iJet];
@@ -931,7 +931,7 @@ int main(int argc, char *argv[])
     }
 
     bool goodJets = false;
-    if(jets.nJets>=2 && jets.pt[0]>30.0 && jets.pt[1]>30.0)
+    if(jets.nJets>=2 && jets.pt[0]>30.0 && jets.pt[1]>30.0 && fabs(jets.eta[0])<4.7 && fabs(jets.eta[1])<4.7)
         goodJets = true;
 
 //    if (mva.mDiMu > 140. && mva.mDiMu < 150. && goodJets)
@@ -1475,7 +1475,7 @@ printStationMiss(_MuonInfo& mu1, _MuonInfo& mu2, _EventInfo& eventInfo, std::str
 HistStruct::HistStruct()
 {
 
-  unsigned nMassBins = 400;
+  unsigned nMassBins = 800;
   float minMass = 0.;
   float maxMass = 400.;
   unsigned nMVABins = 200;
