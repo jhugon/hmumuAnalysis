@@ -80,37 +80,6 @@ bool passPUJetID(int flag, PUJetID desiredLevel)
  return result;
 }
 
-bool passPUJetIDSimple(float disc, float eta, float pt, std::string level)
-{
-  unsigned etaLen = 4;
-  unsigned ptLen = 4;
-
-  unsigned iEta = 0;
-  unsigned iPt = 0;
-
-  eta = fabs(eta);
-
-  if(eta < 2.5)
-    iEta = 0;
-  else if (eta < 2.75)
-    iEta = 1;
-  else if (eta < 3.)
-    iEta = 2;
-  else
-    iEta = 3;
-
-  if(pt < 10.)
-    iEta = 0;
-  else if (pt<20.)
-    iEta = 1;
-  else if (pt<30.)
-    iEta = 2;
-  else
-    iEta = 3;
-
-  return false;
-}
-
 float smearMC(float trueVal, float recoVal, float calib, float smearRatio,TRandom random, bool debug)
 {
   if (trueVal > 0.0)

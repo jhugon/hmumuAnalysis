@@ -35,7 +35,7 @@
 
 #include "annaCalibCode/SmearingTool.h"
 
-#define JETPUID
+//#define JETPUID
 #define PUREWEIGHT
 //#define SMEARING
 #define ISMEAR 1
