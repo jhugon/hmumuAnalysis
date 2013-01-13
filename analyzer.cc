@@ -76,6 +76,7 @@ struct HistStruct
   TH1F* ptDiMu;
   TH1F* ptDiJet;
   TH1F* yDiMu;
+  TH1F* yDiJet;
 
   TH2F* yVptDiMu;
   TH2F* ptVmDiMu;
@@ -1024,6 +1025,7 @@ int main(int argc, char *argv[])
 
       hists.mDiJet->Fill(mva.mDiJet, weight);
       hists.ptDiJet->Fill(mva.ptDiJet, weight);
+      hists.yDiJet->Fill(mva.yDiJet, weight);
       hists.ptJet1->Fill(mva.ptJet1, weight);
       hists.ptJet2->Fill(mva.ptJet2, weight);
       hists.etaJet1->Fill(mva.etaJet1, weight);
@@ -1502,6 +1504,8 @@ HistStruct::HistStruct()
 
   yDiMu = new TH1F("yDiMu","DiMuon Rapidity",100,-4,4);
   histVec.push_back(yDiMu);
+  yDiJet = new TH1F("yDiJet","DiJet Rapidity",100,-5,5);
+  histVec.push_back(yDiJet);
 
   yVptDiMu = new TH2F("yVptDiMu","DiMuon Rapidity v. p_{T}",250,0,500,100,0,4);
   histVec2D.push_back(yVptDiMu);
@@ -1695,6 +1699,7 @@ HistStruct::Fill(const MVA& mva, bool blind)
 
   mDiJet->Fill(mva.mDiJet, mva.weight);
   ptDiJet->Fill(mva.ptDiJet, mva.weight);
+  yDiJet->Fill(mva.yDiJet, mva.weight);
   ptJet1->Fill(mva.ptJet1, mva.weight);
   ptJet2->Fill(mva.ptJet2, mva.weight);
   etaJet1->Fill(mva.etaJet1, mva.weight);
