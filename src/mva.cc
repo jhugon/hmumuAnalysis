@@ -36,6 +36,7 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
   
     outTree_->Branch("deltaPhiJets",&deltaPhiJets,"deltaPhiJets/F");
     outTree_->Branch("deltaRJets",&deltaRJets,"deltaRJets/F");
+    outTree_->Branch("deltaPhiHJ1",&deltaPhiHJ1,"deltaPhiHJ1/F");
     outTree_->Branch("deltaEtaMuons",&deltaEtaMuons,"deltaEtaMuons/F");
     outTree_->Branch("deltaPhiMuons",&deltaPhiMuons,"deltaPhiMuons/F");
     outTree_->Branch("deltaRMuons",&deltaRMuons,"deltaRMuons/F");
@@ -110,6 +111,7 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
           
           ("deltaPhiJets",program_options::value<int>(),"")
           ("deltaRJets",program_options::value<int>(),"")
+          ("deltaPhiHJ1",program_options::value<int>(),"")
           ("deltaEtaMuons",program_options::value<int>(),"")
           ("deltaPhiMuons",program_options::value<int>(),"")
           ("deltaRMuons",program_options::value<int>(),"")
@@ -267,6 +269,11 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
         reader->AddVariable("deltaRJets",&deltaRJets);
       else
         reader->AddSpectator("deltaRJets",&deltaRJets);
+
+      if (optionMap.count("deltaPhiHJ1") && optionMap["deltaPhiHJ1"].as<int>() == 1)
+        reader->AddVariable("deltaPhiHJ1",&deltaPhiHJ1);
+      else
+        reader->AddSpectator("deltaPhiHJ1",&deltaPhiHJ1);
   
       if (optionMap.count("relIsoMu1") && optionMap["relIsoMu1"].as<int>() == 1)
         reader->AddVariable("relIsoMu1",&relIsoMu1);
@@ -402,6 +409,7 @@ MVA::resetValues()
   deltaRMuons=-10.0;
   deltaPhiJets=-10.0;
   deltaRJets=-10.0;
+  deltaPhiHJ1=-10;
 
   relIsoMu1=-10.0;
   relIsoMu2=-10.0;

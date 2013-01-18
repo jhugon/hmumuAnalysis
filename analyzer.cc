@@ -96,6 +96,7 @@ struct HistStruct
   TH1F* deltaEtaJets;
   TH1F* deltaPhiJets;
   TH1F* deltaRJets;
+  TH1F* deltaPhiHJ1;
 
   TH1F* deltaEtaMuons;
   TH1F* deltaPhiMuons;
@@ -958,6 +959,7 @@ int main(int argc, char *argv[])
       double etaJetProduct = jets.eta[0]*jets.eta[1];
       mva.deltaPhiJets = pJet1.DeltaPhi(pJet2);
       mva.deltaRJets = pJet1.DeltaR(pJet2);
+      mva.deltaPhiHJ1 = pJet1.DeltaPhi(diMuon);
 
       // Seeing if there are jets in the rapidity gap
       float etaMax = jets.eta[0];
@@ -1033,6 +1035,7 @@ int main(int argc, char *argv[])
       hists.deltaEtaJets->Fill(mva.deltaEtaJets, weight);
       hists.deltaPhiJets->Fill(mva.deltaPhiJets, weight);
       hists.deltaRJets->Fill(mva.deltaRJets, weight);
+      hists.deltaPhiHJ1->Fill(mva.deltaPhiHJ1, weight);
       hists.nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, weight);
       hists.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
       hists.nJets->Fill(mva.nJets, weight);
@@ -1539,6 +1542,8 @@ HistStruct::HistStruct()
   histVec.push_back(deltaPhiJets);
   deltaRJets = new TH1F("deltaRJets","#Delta R Jets",50,0.0,10.0);
   histVec.push_back(deltaRJets);
+  deltaPhiHJ1 = new TH1F("deltaPhiHJ1","#Delta #phi Leading Jet Dimuon",50,0.0,3.2);
+  histVec.push_back(deltaPhiHJ1);
 
   deltaEtaMuons = new TH1F("deltaEtaMuons","#Delta#eta Jets",50,0.0,10.0);
   histVec.push_back(deltaEtaMuons);
@@ -1707,6 +1712,7 @@ HistStruct::Fill(const MVA& mva, bool blind)
   deltaEtaJets->Fill(mva.deltaEtaJets, mva.weight);
   deltaPhiJets->Fill(mva.deltaPhiJets, mva.weight);
   deltaRJets->Fill(mva.deltaRJets, mva.weight);
+  deltaPhiHJ1->Fill(mva.deltaPhiHJ1, mva.weight);
   nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, mva.weight);
   htInRapidityGap->Fill(mva.htInRapidityGap, mva.weight);
   nJets->Fill(mva.nJets, mva.weight);

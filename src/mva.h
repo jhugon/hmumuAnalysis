@@ -68,6 +68,7 @@ class MVA
   float deltaRMuons;
   float deltaPhiJets;
   float deltaRJets;
+  float deltaPhiHJ1;
 
   float relIsoMu1;
   float relIsoMu2;

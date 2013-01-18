@@ -199,6 +199,7 @@ int main(int argc, char *argv[])
         
         ("deltaPhiJets",program_options::value<int>(),"")
         ("deltaRJets",program_options::value<int>(),"")
+        ("deltaPhiHJ1",program_options::value<int>(),"")
         ("deltaEtaMuons",program_options::value<int>(),"")
         ("deltaPhiMuons",program_options::value<int>(),"")
         ("deltaRMuons",program_options::value<int>(),"")
@@ -353,6 +354,11 @@ int main(int argc, char *argv[])
       factory->AddVariable("deltaRJets","","",'F');
     else
       factory->AddSpectator("deltaRJets","","",'F');
+
+    if (optionMap.count("deltaPhiHJ1") && optionMap["deltaPhiHJ1"].as<int>() == 1)
+      factory->AddVariable("deltaPhiHJ1","","",'F');
+    else
+      factory->AddSpectator("deltaPhiHJ1","","",'F');
 
     if (optionMap.count("relIsoMu1") && optionMap["relIsoMu1"].as<int>() == 1)
       factory->AddVariable("relIsoMu1","","",'F');
