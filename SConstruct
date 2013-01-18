@@ -11,7 +11,7 @@ env.MergeFlags('-fPIC -O2 -lm')
 #env.MergeFlags('-g')
 
 # For BLINDING
-env.MergeFlags("-D BLIND")
+####env.MergeFlags("-D BLIND")
 env.MergeFlags("-D PTMISSINMVA")
 
 
@@ -98,7 +98,7 @@ if not env.GetOption("clean"):
 env.Library(targer="src/mva",source=["src/mva.cc"])
 env.Library(targer="src/helpers",source=["src/helpers.cc"])
 env.Program(target="analyzer", source=["analyzer.cc","src/libmva.a","src/libhelpers.a",annaSmearFile]+corrFiles)
-env.Program(target="systematics", source=["systematics.cc","src/libmva.a","src/libhelpers.a",annaSmearFile]+corrFiles)
+#env.Program(target="systematics", source=["systematics.cc","src/libmva.a","src/libhelpers.a",annaSmearFile]+corrFiles)
 env.Program(target="systematicsJets", source=["systematicsJets.cc","src/libmva.a","src/libhelpers.a",annaSmearFile]+corrFiles)
 env.Program(target="mvaTrain", source=["mvaTrain.cc"])
 
