@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <set>
 #include <limits.h>
 #include <ctime>
 #include "boost/program_options.hpp"
@@ -22,6 +23,7 @@
 #include <TStyle.h>
 #include <TLegend.h>
 #include <TF1.h>
+#include <TLorentzVector.h>
 #include <TRandom3.h>
 
 #include "TMVA/Tools.h"
@@ -32,6 +34,9 @@
 #include "helpers.h"
 #include "mva.h"
 #include "LumiReweightingStandAlone.h"
+// muon efficiencies scale factors
+
+#include "ScaleFactors.h"
 
 #include "annaCalibCode/SmearingTool.h"
 
@@ -52,88 +57,42 @@
 
 using namespace std;
 using namespace boost;
-
-void fillMuonHist(TH1F* hist, _MuonInfo& mu1, _MuonInfo& mu2);
-void printStationMiss(_MuonInfo& mu1, _MuonInfo& mu2, _EventInfo& eventInfo, std::string & testString, unsigned & testCounter);
-
+  
 struct HistStruct
 {
   HistStruct();
   ~HistStruct();
   void Write(TFile* outfile, std::string directory);
-  void Fill(const MVA& mva, bool blind);
+  void FillPU(const MVA& mva, 
+              const double weight,
+              const double weightPUErrUp,
+              const double weightPUErrDown,
+              const double weightPUSystShift);
 
   std::vector<TH1F*> histVec;
-  std::vector<TH2F*> histVec2D;
 
+  // PU
   TH1F* mDiMu;
-  TH1F* mDiMuResSigUp;
-  TH1F* mDiMuResSigDown;
-  TH1F* mDiMuResASigUp;
-  TH1F* mDiMuResASigDown;
+  TH1F* mDiMuPUErrUp;
+  TH1F* mDiMuPUErrDown;
+  TH1F* mDiMuPUSystShift;
 
-  TH1F* mDiJet;
-  TH1F* ptDiMu;
-  TH1F* ptDiJet;
-  TH1F* yDiMu;
+  // Selection Efficiency
 
-  TH2F* yVptDiMu;
-  TH2F* ptVmDiMu;
-  TH2F* yVmDiMu;
-  TH2F* phiVmDiMu;
+  // The filling of these histograms is done "manually"
+  TH1F* nDiMuGen;          // Denominator of the acceptance
+  TH1F* nDiMuGenInAcc;     // Denominator of the efficiency 
+  TH1F* nDiMuFullSel;      // Acc x Eff
 
-  TH1F* ptMu1;
-  TH1F* ptMu2;
-  TH1F* ptJet1;
-  TH1F* ptJet2;
+  // muon pog SF
+  TH1F* nDiMuFullSelSF;    // Acc x Eff after Scale Factors from Muon POG
+  TH1F* nDiMuFullSelSFUp;  // Acc x Eff after Scale Factors from Muon POG Up
+  TH1F* nDiMuFullSelSFDown;// Acc x Eff after Scale Factors from Muon POG Down
+    
+  // JEC
+  TH1F* nDiMuFullSelJECUp;  // Acc x Eff Jet Energy Corr. Up
+  TH1F* nDiMuFullSelJECDown;// Acc x Eff Jet Energy Corr. Down
 
-  TH1F* etaMu1;
-  TH1F* etaMu2;
-  TH1F* etaJet1;
-  TH1F* etaJet2;
-
-  TH1F* deltaEtaJets;
-  TH1F* deltaPhiJets;
-  TH1F* deltaRJets;
-
-  TH1F* deltaEtaMuons;
-  TH1F* deltaPhiMuons;
-  TH1F* deltaRMuons;
-
-  TH1F* countsHist;
-  TH1F* countsHist2;
-
-  TH1F* cosThetaStar;
-  TH1F* cosThetaStarCS;
-
-  TH1F* puJetIDSimpleDiscJet1;
-  TH1F* puJetIDSimpleDiscJet2;
-  TH1F* puJetIDSimpleDiscJet3;
-
-  TH1F* puJetIDSimpleJet1;
-  TH1F* puJetIDSimpleJet2;
-  TH1F* puJetIDSimpleJet3;
-
-  TH1F* BDTHistMuonOnly;
-
-  TH1F* BDTHistVBF;
-
-  TH2F* BDTHistMuonOnlyVMass;
-  TH2F* BDTHistVBFVMass;
-
-  TH1F* relIsoMu1;
-  TH1F* relIsoMu2;
-
-  TH1F* nJets;
-  TH1F* ht;
-  TH1F* nJetsInRapidityGap;
-  TH1F* htInRapidityGap;
-
-  TH1F* nPU;
-  TH1F* nVtx;
-  TH1F* met;
-  TH1F* ptmiss;
-  TH1F* weight;
 };
 
 int main(int argc, char *argv[])
@@ -145,11 +104,10 @@ int main(int argc, char *argv[])
   gErrorIgnoreLevel = kError;
   time_t timeStart = time(NULL);
 
-  const char* optionIntro = "H->MuMu Analyzer\n\nUsage: ./analyzer [--help] [--train] [--maxEvents N] <outputFileName.root> <inputFileName.root> [<inputFileName2.root>...]\n\nAllowed Options";
+  const char* optionIntro = "H->MuMu Analyzer For Systematic Uncertainties Evaluation\n\nUsage: ./systematics [--help] [--maxEvents N] <outputFileName.root> <inputFileName.root> [<inputFileName2.root>...]\n\nAllowed Options";
   program_options::options_description optionDesc(optionIntro);
   optionDesc.add_options()
       ("help,h", "Produce Help Message")
-      ("trainingTree,t",program_options::value<string>(), "Create Training Tree File with filename")
       ("filenames",program_options::value<vector<string> >(), "Input & Output File Names, put output name first followed by all input file names")
       ("maxEvents,m",program_options::value<int>(), "Maximum Number of Events to Process")
       ("runPeriod,r",program_options::value<string>(), "Running Periods e.g. 7TeV, 8TeV")
@@ -347,14 +305,6 @@ int main(int argc, char *argv[])
   TFile * outFile = new TFile(outputFileName.c_str(),"RECREATE");
 
   std::string trainingTreeFileName = "";
-  bool trainingTreeRun=false;
-  if (optionMap.count("trainingTree")) 
-  {
-      cout << "Training enabled" << "\n";
-      trainingTreeFileName = optionMap["trainingTree"].as<string>();
-      cout << "Training Tree File Name: " << trainingTreeFileName << "\n";
-      trainingTreeRun=true;
-  }
 
   //////////////////////////
   // Tree Branches
@@ -418,56 +368,46 @@ int main(int argc, char *argv[])
   _MetInfo met;
   tree->SetBranchAddress("met",&met);
 
+
+  // generator level useful for acceptance calculation
+  _genPartInfo genHpostFSR;
+  tree->SetBranchAddress("genHpostFSR",&genHpostFSR);
+
+  _TrackInfo   genM1HpostFSR;
+  _TrackInfo   genM2HpostFSR;
+
+  tree->SetBranchAddress("genM1HpostFSR",&genM1HpostFSR);
+  tree->SetBranchAddress("genM2HpostFSR",&genM2HpostFSR);
+
+  // for the final selection to avoid duplicates
+  typedef std::pair<int,int> pairOfInt;
+  typedef std::pair<double,double> pairOfDouble;
+  set<pairOfDouble> uniqueGeneratedEvents;
+  set<pairOfDouble> uniqueGeneratedEventsInAcc;
+
+
   //////////////////////////
   // Histograms
-  HistStruct hists;
-  HistStruct histsBB;
-  HistStruct histsBO;
-  HistStruct histsBE;
-  HistStruct histsOO;
-  HistStruct histsOE;
-  HistStruct histsEE;
-  HistStruct histsNotBB;
+  std::vector< HistStruct > hsVec;
+  hsVec.clear();
 
-  HistStruct hists4GeVWindow;
+  HistStruct histsPUIncPresel;       hsVec.push_back (histsPUIncPresel     ); 
+  HistStruct histsPUVBFPresel;       hsVec.push_back (histsPUVBFPresel     );
+                                     
+  HistStruct histsPUIncBDTCut;       hsVec.push_back (histsPUIncBDTCut     );   
+  HistStruct histsPUIncBDTCutBB;     hsVec.push_back (histsPUIncBDTCutBB   );
+  HistStruct histsPUIncBDTCutBO;     hsVec.push_back (histsPUIncBDTCutBO   );
+  HistStruct histsPUIncBDTCutBE;     hsVec.push_back (histsPUIncBDTCutBE   );
+  HistStruct histsPUIncBDTCutOO;     hsVec.push_back (histsPUIncBDTCutOO   );
+  HistStruct histsPUIncBDTCutOE;     hsVec.push_back (histsPUIncBDTCutOE   );
+  HistStruct histsPUIncBDTCutEE;     hsVec.push_back (histsPUIncBDTCutEE   );
+  HistStruct histsPUIncBDTCutNotBB;  hsVec.push_back (histsPUIncBDTCutNotBB);
+                                     
+  HistStruct histsPUVBFBDTCut;       hsVec.push_back (histsPUVBFBDTCut     );
+  HistStruct histsPUVBFBDTCutBB;     hsVec.push_back (histsPUVBFBDTCutBB   ); 
+  HistStruct histsPUVBFBDTCutNotBB;  hsVec.push_back (histsPUVBFBDTCutNotBB);
 
-  HistStruct histsIncPresel; //
-  HistStruct histsIncPreselBB;
-  HistStruct histsIncPreselBO;
-  HistStruct histsIncPreselBE;
-  HistStruct histsIncPreselOO;
-  HistStruct histsIncPreselOE;
-  HistStruct histsIncPreselEE;
-  HistStruct histsIncPreselNotBB;
-
-  HistStruct histsVBFPresel; //
-  HistStruct histsVBFPreselBB;
-  HistStruct histsVBFPreselNotBB;
-
-  HistStruct histsIncBDTCut;      //     
-  HistStruct histsIncBDTCutBB;    //
-  HistStruct histsIncBDTCutBO;    //
-  HistStruct histsIncBDTCutBE;    //
-  HistStruct histsIncBDTCutOO;    //
-  HistStruct histsIncBDTCutOE;    //
-  HistStruct histsIncBDTCutEE;    //
-  HistStruct histsIncBDTCutNotBB; //
-                                  
-  HistStruct histsVBFBDTCut;      //
-  HistStruct histsVBFBDTCutBB;    //   
-  HistStruct histsVBFBDTCutNotBB; //
-
-  HistStruct histsIncPreselDiMuPtL20;
-  HistStruct histsVBFPreselDiMuPtL20;
-
-  HistStruct histsIncPreselPUJETID;
-  HistStruct histsVBFPreselPUJETID;
-
-  HistStruct histsIncPreselPUJETIDForVeto;
-  HistStruct histsVBFPreselPUJETIDForVeto;
-
-  HistStruct histsVBFPreselPtMiss50Veto;
-
+  
   //////////////////////////
   //for MVA
 
@@ -477,21 +417,30 @@ int main(int argc, char *argv[])
   MVA mva(mvaConfigNames,trainingTreeFileName);
 
   TRandom3 random(1457);
+  TRandom3 randomForSF(702);
 
   //////////////////////////
   //for PU reweighting
 
 #ifdef PUREWEIGHT
-  reweight::LumiReWeighting lumiWeights("pileupDists/PileUpHistMC2012Summer50nsPoissonOOTPU.root","pileupDists/PileUpHist2012ABC.root","pileup","pileup");
-  if (runPeriod == "7TeV")
-  {
-    cout << "Using 2011AB PU reweighting\n";
-    lumiWeights = reweight::LumiReWeighting("pileupDists/PileUpHistMCFall11.root","pileupDists/PileUpHist2011AB.root","pileup","pileup");
-  }
-  else
-  {
-    cout << "Using 2012ABC PU reweighting\n";
-  }
+  //2012
+  reweight::LumiReWeighting lumiWeights          ("pileupDists/PileUpHistMC2012Summer50nsPoissonOOTPU.root",
+                                                  "pileupDists/PileUpHist2012ABC.root","pileup","pileup");
+  reweight::LumiReWeighting lumiWeights_ErrUp    ("pileupDists/PileUpHistMC2012Summer50nsPoissonOOTPU.root",
+                                                  "pileupDists/PileUpHist2012ABC_ErrUp.root","pileup","pileup");
+  reweight::LumiReWeighting lumiWeights_ErrDown  ("pileupDists/PileUpHistMC2012Summer50nsPoissonOOTPU.root",
+                                                  "pileupDists/PileUpHist2012ABC_ErrDown.root","pileup","pileup");
+  reweight::LumiReWeighting lumiWeights_SystShift("pileupDists/PileUpHistMC2012Summer50nsPoissonOOTPU.root",
+                                                  "pileupDists/PileUpHist2012ABC_SystematicShift.root","pileup","pileup");
+//   if (runPeriod == "7TeV")
+//   {
+//     cout << "Using 2011AB PU reweighting\n";
+//     lumiWeights = reweight::LumiReWeighting("pileupDists/PileUpHistMCFall11.root","pileupDists/PileUpHist2011AB.root","pileup","pileup");
+//   }
+//   else
+//   {
+//     cout << "Using 2012ABC PU reweighting\n";
+//   }
 #endif
 
   /////////////////////////////
@@ -579,8 +528,8 @@ int main(int argc, char *argv[])
     recoCandPt = diMuonCor.Pt();
     recoCandY = diMuonCor.Rapidity();
     recoCandPhi = diMuonCor.Phi();
-    reco1Vec = recoCor1;
-    reco2Vec = recoCor2;
+    reco1Vec = reco1Cor;
+    reco2Vec = reco2Cor;
 #endif
 #ifdef ROCHESTER
     TLorentzVector reco1Cor;
@@ -621,8 +570,8 @@ int main(int argc, char *argv[])
     recoCandPt = diMuonCor.Pt();
     recoCandY = diMuonCor.Rapidity();
     recoCandPhi = diMuonCor.Phi();
-    reco1Vec = recoCor1;
-    reco2Vec = recoCor2;
+    reco1Vec = reco1Cor;
+    reco2Vec = reco2Cor;
 #endif
 
     TLorentzVector recoCandVec = reco1Vec+reco2Vec;
@@ -686,49 +635,92 @@ int main(int argc, char *argv[])
     }
 #endif
 
-    fillMuonHist(hists.countsHist2, reco1, reco2);
-    //printStationMiss(reco1,reco2,eventInfo,testString,testCounter);
-
     mva.resetValues();
     mva.mDiMu = recoCandMass;
     bool inBlindWindow = mva.mDiMu < maxBlind && mva.mDiMu > minBlind;
 
     bool blind = false;
   
-#ifdef BLIND
-    if (inBlindWindow && isData)
-        blind = true;
-#endif
+//#ifdef BLIND
+//    if (inBlindWindow && isData)
+//        blind = true;
+//#endif
 
-    double weight = 1.0;
+    double weight            = 1.0;
+    double weightPUErrUp     = 1.0;
+    double weightPUErrDown   = 1.0;
+    double weightPUSystShift = 1.0;
+
+
 #ifdef PUREWEIGHT
     if (!isData)
     {
-      weight = lumiWeights.weight(nPU);
+      weight            = lumiWeights.weight(nPU);
+      weightPUErrUp     = lumiWeights_ErrUp.weight(nPU);
+      weightPUErrDown   = lumiWeights_ErrDown.weight(nPU);
+      weightPUSystShift = lumiWeights_SystShift.weight(nPU);
+
     }
 #endif
 
-    hists.countsHist->Fill(0.0, weight);
+    // std::cout << "run, event = " 
+    //           << eventInfo.run << ", " 
+    //           << eventInfo.event << std::endl;
+    
+    // fill all the gen events
+    // std::cout << "genHpostFSR.mass=" << genHpostFSR.mass << std::endl;
+    // std::cout << "genM1HpostFSR.pt          =" << genM1HpostFSR.pt << std::endl;; 
+    // std::cout << "genM2HpostFSR.pt          =" << genM2HpostFSR.pt << std::endl;;
+    // std::cout << "fabs( genM1HpostFSR.eta ) =" << fabs( genM1HpostFSR.eta ) << std::endl; 
+    // std::cout << "fabs( genM2HpostFSR.eta ) =" << fabs( genM2HpostFSR.eta ) << std::endl;
 
-    if (!((*muonIdFuncPtr)(reco1)) || !((*muonIdFuncPtr)(reco2)))
+    pairOfInt    runEvent(eventInfo.run,eventInfo.event);
+    pairOfDouble massPt(genHpostFSR.mass,genHpostFSR.pt);
+    //std::cout << "uniqueGeneratedEvents=" 
+    //          << uniqueGeneratedEvents.insert( runEvent ).second
+    //          << std::endl;
+
+    if (uniqueGeneratedEvents.insert( massPt ).second) {
+      if (genHpostFSR.mass < 0) continue;
+      //std::cout << "filling histograms\n";
+      for (int iHist=0; iHist<hsVec.size(); iHist++) {
+        hsVec[iHist].nDiMuGen -> Fill(0.);
+      }
+    }
+    
+
+    // generator level acceptance selections
+    // mass gen cut 
+    if (uniqueGeneratedEventsInAcc.insert( massPt ).second) {
+      for (int iHist=0; iHist<hsVec.size(); iHist++) {
+        
+        if (genHpostFSR.mass < minMmm || genHpostFSR.mass > maxMmm)
           continue;
+        
+        if ( genM1HpostFSR.pt < 25 ) continue; 
+        if ( genM2HpostFSR.pt < 25 ) continue;
+        if ( fabs( genM1HpostFSR.eta ) > 2.1 ) continue; 
+        if ( fabs( genM2HpostFSR.eta ) > 2.1 ) continue;
+        
+        hsVec[iHist].nDiMuGenInAcc -> Fill(0.);
+      }
+    }
+    
+    // dimuon selection
+    if (!((*muonIdFuncPtr)(reco1)) || !((*muonIdFuncPtr)(reco2)))
+      continue;
+    
+    // trigger matching
+    if (!isHltMatched(reco1,reco2,allowedHLTPaths))
+      continue;
 
-    hists.countsHist->Fill(1.0, weight);
-
-    if (!isHltMatched(reco1,reco2,allowedHLTPaths) && isData)
-        continue;
-
-    hists.countsHist->Fill(2.0, weight);
-
+    // opposite charge
     if (reco1.charge*reco2.charge != -1)
         continue;
 
-    hists.countsHist->Fill(3.0, weight);
-
+    // mass cut
     if (mva.mDiMu < minMmm || mva.mDiMu > maxMmm)
         continue;
-
-    hists.countsHist->Fill(4.0, weight);
 
     _MuonInfo muon1;
     _MuonInfo muon2;
@@ -883,42 +875,6 @@ int main(int argc, char *argv[])
     //}
     mva.nVtx = vertexInfo.nVertices;
 
-    //////////////////////////////////////////
-    // Filling Hists
-
-    if (!blind)
-    {
-      hists.mDiMu->Fill(mva.mDiMu, weight);
-      hists.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
-      hists.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
-      hists.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
-      hists.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
-      hists.yVmDiMu->Fill(mva.mDiMu,fabs(mva.yDiMu), weight);
-      hists.ptVmDiMu->Fill(mva.mDiMu,mva.ptDiMu, weight);
-      hists.phiVmDiMu->Fill(mva.mDiMu,recoCandPhi, weight);
-    }
-
-    hists.yDiMu->Fill(mva.yDiMu, weight);
-    hists.ptDiMu->Fill(mva.ptDiMu, weight);
-    hists.yVptDiMu->Fill(mva.ptDiMu,fabs(mva.yDiMu), weight);
-    hists.ptMu1->Fill(mva.ptMu1, weight);
-    hists.ptMu2->Fill(mva.ptMu2, weight);
-    hists.etaMu1->Fill(mva.etaMu1, weight);
-    hists.etaMu2->Fill(mva.etaMu2, weight);
-    hists.cosThetaStar->Fill(mva.cosThetaStar, weight);
-    hists.cosThetaStarCS->Fill(mva.cosThetaStarCS, weight);
-
-    hists.deltaPhiMuons->Fill(mva.deltaPhiMuons, weight);
-    hists.deltaEtaMuons->Fill(mva.deltaEtaMuons, weight);
-    hists.deltaRMuons->Fill(mva.deltaRMuons, weight);
-
-    hists.relIsoMu1->Fill(mva.relIsoMu1, weight);
-    hists.relIsoMu2->Fill(mva.relIsoMu2, weight);
-
-    hists.nPU->Fill(nPU, weight);
-    hists.nVtx->Fill(mva.nVtx, weight);
-    hists.met->Fill(met.pt, weight);
-    hists.weight->Fill(weight);
 
     // Jet Part
     for(unsigned iJet=0; (iJet < jets.nJets && iJet < 10);iJet++)
@@ -933,16 +889,6 @@ int main(int argc, char *argv[])
     bool goodJets = false;
     if(jets.nJets>=2 && jets.pt[0]>30.0 && jets.pt[1]>30.0)
         goodJets = true;
-
-//    if (mva.mDiMu > 140. && mva.mDiMu < 150. && goodJets)
-//    {
-//        testCounter++;
-//        //std::cout <<eventInfo.run <<":"<<eventInfo.event <<"\n"<< std::endl;
-//        testString.appendAny(eventInfo.run);
-//        testString.append(":");
-//        testString.appendAny(eventInfo.event);
-//        testString.append("\n");
-//    }
 
 
     if(goodJets)
@@ -1003,10 +949,10 @@ int main(int argc, char *argv[])
           else if (iJet==2)
             mva.puJetIDSimpleJet3 = passPUJetID(puJetSimpleId[iJet],puJetLoose);
 
-            if (iJet==0)
-            {
-              std::cout << "Disc: " << puJetSimpleDisc[iJet] << " Raw Id: " << puJetSimpleId[iJet] << std::endl;
-            }
+          //if (iJet==0)
+          // {
+          //  std::cout << "Disc: " << puJetSimpleDisc[iJet] << " Raw Id: " << puJetSimpleId[iJet] << std::endl;
+          //}
         }
       }
 #endif
@@ -1022,28 +968,6 @@ int main(int argc, char *argv[])
       mva.deltaEtaJets = dEtaJets;
       mva.ptmiss = (diJet+recoCandVec).Pt();
 
-      hists.mDiJet->Fill(mva.mDiJet, weight);
-      hists.ptDiJet->Fill(mva.ptDiJet, weight);
-      hists.ptJet1->Fill(mva.ptJet1, weight);
-      hists.ptJet2->Fill(mva.ptJet2, weight);
-      hists.etaJet1->Fill(mva.etaJet1, weight);
-      hists.etaJet2->Fill(mva.etaJet2, weight);
-      hists.deltaEtaJets->Fill(mva.deltaEtaJets, weight);
-      hists.deltaPhiJets->Fill(mva.deltaPhiJets, weight);
-      hists.deltaRJets->Fill(mva.deltaRJets, weight);
-      hists.nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, weight);
-      hists.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
-      hists.nJets->Fill(mva.nJets, weight);
-      hists.ht->Fill(mva.ht, weight);
-      hists.ptmiss->Fill(mva.ptmiss, weight);
-
-      hists.puJetIDSimpleDiscJet1->Fill(mva.puJetIDSimpleDiscJet1,weight);
-      hists.puJetIDSimpleDiscJet2->Fill(mva.puJetIDSimpleDiscJet2,weight);
-      hists.puJetIDSimpleDiscJet3->Fill(mva.puJetIDSimpleDiscJet3,weight);
-
-      hists.puJetIDSimpleJet1->Fill(mva.puJetIDSimpleJet1,weight);
-      hists.puJetIDSimpleJet2->Fill(mva.puJetIDSimpleJet2,weight);
-      hists.puJetIDSimpleJet3->Fill(mva.puJetIDSimpleJet3,weight);
     }
   
 //HIG-12-007 PAS H->tautau
@@ -1055,40 +979,12 @@ int main(int argc, char *argv[])
     if (!(inBlindWindow && isData))
       mva.writeEvent();
 
-    if (trainingTreeRun) //Skip Filling of histos when training Tree
-        continue;
 
     bool vbfPreselection = mva.mDiJet>300.0 && mva.deltaEtaJets>3.0 && mva.productEtaJets<0.0 && mva.nJetsInRapidityGap == 0;
     //if(vbfPreselection)
     //  std::cout << "VBF Preselected!!";
     mva.vbfPreselection = vbfPreselection;
 
-    if(vbfPreselection)
-        hists.countsHist->Fill(6);
-    else
-        hists.countsHist->Fill(5);
-    
-
-    bool vbfVeryTight = false;
-    bool vbfTight = false;
-    bool vbfMedium = false;
-    bool vbfLoose = false;
-    if(vbfPreselection && mva.mDiJet>700.0 && mva.deltaEtaJets>5.)
-    {
-        vbfVeryTight=true;
-    }
-    else if(vbfPreselection && mva.mDiJet>400.0 && mva.deltaEtaJets>5.)
-    {
-        vbfTight=true;
-    }
-    else if(vbfPreselection && mva.mDiJet>400.0 && mva.deltaEtaJets>4.)
-    {
-        vbfMedium=true;
-    }
-    else if(vbfPreselection && mva.mDiJet>300.0 && mva.deltaEtaJets>3.)
-    {
-        vbfLoose=true;
-    }
 
     bool pt0to30 = !vbfPreselection  && mva.ptDiMu <30.;
     bool pt30to50 = !vbfPreselection && mva.ptDiMu> 30. && mva.ptDiMu <50.;
@@ -1107,199 +1003,327 @@ int main(int argc, char *argv[])
 
     time_t timeStartFilling = time(NULL);
 
-    if (!blind)
-    {
-      if(!vbfPreselection)
-      {
-        hists.BDTHistMuonOnly->Fill(bdtValInc, weight);
-        hists.BDTHistMuonOnlyVMass->Fill(mva.mDiMu, bdtValInc, weight);
-  
-      }
-      else
-      {
-        hists.BDTHistVBFVMass->Fill(mva.mDiMu, bdtValVBF, weight);
-        hists.BDTHistVBF->Fill(bdtValVBF, weight);
-      }
-    }
+    // F I L L I N G
+    double randForSF = randomForSF.Rndm();
+    double effWeight     = weightFromSF(randForSF,muon1,muon2, 0.,    0.,    0.   );
+    double effWeightUp   = weightFromSF(randForSF,muon1,muon2, 0.005, 0.005, 0.005);
+    double effWeightDown = weightFromSF(randForSF,muon1,muon2,-0.005,-0.005,-0.005);
 
-    //4 GeV Window Plots
-    if (mva.mDiMu < 127.0 && mva.mDiMu > 123.0)
-    {
-      if (!blind)
-      {
-        hists4GeVWindow.Fill(mva,blind);
-      }
-    }
+    //std::cout << "weight From SF="      << effWeight     << std::endl;
+    //std::cout << "weight From SF Up="   << effWeightUp   << std::endl;
+    //std::cout << "weight From SF Down=" << effWeightDown << std::endl;
 
-    if (isBB)
-    {
-      histsBB.Fill(mva,blind);
-    }
+    int selectionMask = whichSelection(muon1,muon2,
+                                       allowedHLTPaths,
+                                       runPeriod,
+                                       jets,
+                                       passIncBDTCut,
+                                       passVBFBDTCut);
 
-    if (isBO)
-    {
-      histsBO.Fill(mva,blind);
-    }
+    int selectionMaskJECUp = whichSelection(muon1,muon2,
+                                            allowedHLTPaths,
+                                            runPeriod,
+                                            jets,
+                                            passIncBDTCut,
+                                            passVBFBDTCut,
+                                            +1); // JEC +1 sigma
 
-    if (isBE)
-    {
-      histsBE.Fill(mva,blind);
-    }
 
-    if (isOO)
-    {
-      histsOO.Fill(mva,blind);
-    }
+    int selectionMaskJECDown = whichSelection(muon1,muon2,
+                                              allowedHLTPaths,
+                                              runPeriod,
+                                              jets,
+                                              passIncBDTCut,
+                                              passVBFBDTCut,
+                                              -1); // JEC -1 sigma
+    
+    if (selectionMask != 0) {
+      std::cout << "\n\nprinting the mask\n";
+     
+      std::cout << "selectionMask=" 
+                << selectionMask 
+                << " = " << hex << selectionMask << std::endl;
 
-    if (isOE)
-    {
-      histsOE.Fill(mva,blind);
-    }
+      std::cout << "selectionMaskJECUp=" 
+                << selectionMaskJECUp 
+                << " = " << hex << selectionMaskJECUp << std::endl;
 
-    if (isEE)
-    {
-      histsEE.Fill(mva,blind);
-    }
+      std::cout << "selectionMaskJECDown=" 
+                << selectionMaskJECDown 
+                << " = " << hex << selectionMaskJECDown << std::endl;
 
-    if (isNotBB)
-    {
-      histsNotBB.Fill(mva,blind);
+//       std::cout << "selectionMask & vbfPresel = " << dec << (selectionMask & vbfPresel) << std::endl;
+//       std::cout << "selectionMask & incPresel = " << dec << (selectionMask & incPresel) << std::endl;
+//       std::cout << "selectionMask & vbfPresel_passVBFBDTCut = " << dec << (selectionMask & vbfPresel_passVBFBDTCut) << std::endl;
+//       std::cout << "selectionMask & vbfPresel_isBB_passVBFBDTCut = " << dec << (selectionMask & vbfPresel_isBB_passVBFBDTCut) << std::endl;
+//       std::cout << "selectionMask & vbfPresel_isNotBB_passVBFBDTCut = " << dec << (selectionMask & vbfPresel_isNotBB_passVBFBDTCut) << std::endl;
+//       std::cout << "selectionMask & incPresel_passIncBDTCut = " << dec << (selectionMask & incPresel_passIncBDTCut) << std::endl;
+//       std::cout << "selectionMask & incPresel_isBB_passIncBDTCut = " << dec << (selectionMask & incPresel_isBB_passIncBDTCut) << std::endl;
+//       std::cout << "selectionMask & incPresel_isBO_passIncBDTCut = " << dec << (selectionMask & incPresel_isBO_passIncBDTCut) << std::endl;
+//       std::cout << "selectionMask & incPresel_isBE_passIncBDTCut = " << dec << (selectionMask & incPresel_isBE_passIncBDTCut) << std::endl;
+//       std::cout << "selectionMask & incPresel_isOO_passIncBDTCut = " << dec << (selectionMask & incPresel_isOO_passIncBDTCut) << std::endl;
+//       std::cout << "selectionMask & incPresel_isOE_passIncBDTCut = " << dec << (selectionMask & incPresel_isOE_passIncBDTCut) << std::endl;
+//       std::cout << "selectionMask & incPresel_isEE_passIncBDTCut = " << dec << (selectionMask & incPresel_isEE_passIncBDTCut) << std::endl;
+//       std::cout << "selectionMask & incPresel_isNotBB_passIncBDTCut = " << dec << (selectionMask & incPresel_isNotBB_passIncBDTCut) << std::endl;
     }
 
     //VBF Preselected Plots
-    if (vbfPreselection)
+    if ( (selectionMask & vbfPresel) == vbfPresel)
     {
-      histsVBFPresel.Fill(mva,blind);
+      histsPUVBFPresel.FillPU(mva,
+                              weight,weightPUErrUp,
+                              weightPUErrDown,weightPUSystShift);
+      
+      // # of events after full selection
+      histsPUVBFPresel.nDiMuFullSel      -> Fill(0.);
+      histsPUVBFPresel.nDiMuFullSelSF    -> Fill(0.,effWeight);    
+      histsPUVBFPresel.nDiMuFullSelSFUp  -> Fill(0.,effWeightUp);  
+      histsPUVBFPresel.nDiMuFullSelSFDown-> Fill(0.,effWeightDown);
     }
 
-    if (vbfPreselection && isBB)
-    {
-      histsVBFPreselBB.Fill(mva,blind);
-    }
+    if ( (selectionMaskJECUp   & vbfPresel) == vbfPresel ) histsPUVBFPresel.nDiMuFullSelJECUp  -> Fill(0.);  
+    if ( (selectionMaskJECDown & vbfPresel) == vbfPresel ) histsPUVBFPresel.nDiMuFullSelJECDown-> Fill(0.);
+    // =========================================================================
 
-    if (vbfPreselection && isNotBB)
-    {
-      histsVBFPreselNotBB.Fill(mva,blind);
-    }
+
+
+
 
     //Inc Preselected Plots
-    if (!vbfPreselection)
+    if ( (selectionMask & incPresel) == incPresel)
     {
-      histsIncPresel.Fill(mva,blind);
+      histsPUIncPresel.FillPU(mva,
+                              weight,weightPUErrUp,
+                              weightPUErrDown,weightPUSystShift);
+
+      // # of events after full selection
+      histsPUIncPresel.nDiMuFullSel      -> Fill(0.);
+      histsPUIncPresel.nDiMuFullSelSF    -> Fill(0.,effWeight);    
+      histsPUIncPresel.nDiMuFullSelSFUp  -> Fill(0.,effWeightUp);  
+      histsPUIncPresel.nDiMuFullSelSFDown-> Fill(0.,effWeightDown);
     }
 
-    if (!vbfPreselection && isBB)
-    {
-      histsIncPreselBB.Fill(mva,blind);
-    }
+    if ( (selectionMaskJECUp   & incPresel) == incPresel ) histsPUIncPresel.nDiMuFullSelJECUp  -> Fill(0.);  
+    if ( (selectionMaskJECDown & incPresel) == incPresel ) histsPUIncPresel.nDiMuFullSelJECDown-> Fill(0.);
+    // =========================================================================
 
-    if (!vbfPreselection && isBO)
-    {
-      histsIncPreselBO.Fill(mva,blind);
-    }
-
-    if (!vbfPreselection && isBE)
-    {
-      histsIncPreselBE.Fill(mva,blind);
-    }
-
-    if (!vbfPreselection && isOO)
-    {
-      histsIncPreselOO.Fill(mva,blind);
-    }
-
-    if (!vbfPreselection && isOE)
-    {
-      histsIncPreselOE.Fill(mva,blind);
-    }
-
-    if (!vbfPreselection && isEE)
-    {
-      histsIncPreselEE.Fill(mva,blind);
-    }
-
-    if (!vbfPreselection && isNotBB)
-    {
-      histsIncPreselNotBB.Fill(mva,blind);
-    }
 
 
 
 
     //VBF BDT Cut Plots
-    if (vbfPreselection && passVBFBDTCut)
+    if ( (selectionMask & vbfPresel_passVBFBDTCut) == vbfPresel_passVBFBDTCut )
     {
-      histsVBFBDTCut.Fill(mva,blind);
+      histsPUVBFBDTCut.FillPU(mva,
+                              weight,weightPUErrUp,
+                              weightPUErrDown,weightPUSystShift);
+
+      // # of events after full selection
+      histsPUVBFBDTCut.nDiMuFullSel      -> Fill(0.);
+      histsPUVBFBDTCut.nDiMuFullSelSF    -> Fill(0.,effWeight);    
+      histsPUVBFBDTCut.nDiMuFullSelSFUp  -> Fill(0.,effWeightUp);  
+      histsPUVBFBDTCut.nDiMuFullSelSFDown-> Fill(0.,effWeightDown);
     }
 
-    if (vbfPreselection && isBB && passVBFBDTCut)
+    if ( (selectionMaskJECUp   & vbfPresel_passVBFBDTCut) == vbfPresel_passVBFBDTCut ) histsPUVBFBDTCut.nDiMuFullSelJECUp  -> Fill(0.);  
+    if ( (selectionMaskJECDown & vbfPresel_passVBFBDTCut) == vbfPresel_passVBFBDTCut ) histsPUVBFBDTCut.nDiMuFullSelJECDown-> Fill(0.);
+    // =========================================================================
+
+
+    if ( (selectionMask & vbfPresel_isBB_passVBFBDTCut) == vbfPresel_isBB_passVBFBDTCut )
     {
-      histsVBFBDTCutBB.Fill(mva,blind);
+      histsPUVBFBDTCutBB.FillPU(mva,
+                                weight,weightPUErrUp,
+                                weightPUErrDown,weightPUSystShift);
+
+      // # of events after full selection
+      histsPUVBFBDTCutBB.nDiMuFullSel      -> Fill(0.);
+      histsPUVBFBDTCutBB.nDiMuFullSelSF    -> Fill(0.,effWeight);    
+      histsPUVBFBDTCutBB.nDiMuFullSelSFUp  -> Fill(0.,effWeightUp);  
+      histsPUVBFBDTCutBB.nDiMuFullSelSFDown-> Fill(0.,effWeightDown);
     }
 
-    if (vbfPreselection && isNotBB && passVBFBDTCut)
+    if ( (selectionMaskJECUp   & vbfPresel_isBB_passVBFBDTCut) == vbfPresel_isBB_passVBFBDTCut ) histsPUVBFBDTCutBB.nDiMuFullSelJECUp  -> Fill(0.);  
+    if ( (selectionMaskJECDown & vbfPresel_isBB_passVBFBDTCut) == vbfPresel_isBB_passVBFBDTCut ) histsPUVBFBDTCutBB.nDiMuFullSelJECDown-> Fill(0.);
+    // =========================================================================
+
+
+
+    if ( (selectionMask & vbfPresel_isNotBB_passVBFBDTCut) == vbfPresel_isNotBB_passVBFBDTCut )
     {
-      histsVBFBDTCutNotBB.Fill(mva,blind);
+      histsPUVBFBDTCutNotBB.FillPU(mva,
+                                   weight,weightPUErrUp,
+                                   weightPUErrDown,weightPUSystShift);
+
+      // # of events after full selection
+      histsPUVBFBDTCutNotBB.nDiMuFullSel      -> Fill(0.);
+      histsPUVBFBDTCutNotBB.nDiMuFullSelSF    -> Fill(0.,effWeight);    
+      histsPUVBFBDTCutNotBB.nDiMuFullSelSFUp  -> Fill(0.,effWeightUp);  
+      histsPUVBFBDTCutNotBB.nDiMuFullSelSFDown-> Fill(0.,effWeightDown);
     }
+
+    if ( (selectionMaskJECUp   & vbfPresel_isNotBB_passVBFBDTCut) == vbfPresel_isNotBB_passVBFBDTCut ) histsPUVBFBDTCutNotBB.nDiMuFullSelJECUp  -> Fill(0.);  
+    if ( (selectionMaskJECDown & vbfPresel_isNotBB_passVBFBDTCut) == vbfPresel_isNotBB_passVBFBDTCut ) histsPUVBFBDTCutNotBB.nDiMuFullSelJECDown-> Fill(0.);
+    // =========================================================================
+
+
+
 
     //Inc BDT Cut Plots
-    if (!vbfPreselection && passIncBDTCut)
+    if ( (selectionMask & incPresel_passIncBDTCut) == incPresel_passIncBDTCut )
     {
-      histsIncBDTCut.Fill(mva,blind);
+      histsPUIncBDTCut.FillPU(mva,
+                              weight,weightPUErrUp,
+                              weightPUErrDown,weightPUSystShift);
+
+      // # of events after full selection
+      histsPUIncBDTCut.nDiMuFullSel      -> Fill(0.);
+      histsPUIncBDTCut.nDiMuFullSelSF    -> Fill(0.,effWeight);    
+      histsPUIncBDTCut.nDiMuFullSelSFUp  -> Fill(0.,effWeightUp);  
+      histsPUIncBDTCut.nDiMuFullSelSFDown-> Fill(0.,effWeightDown);
     }
 
-    if (!vbfPreselection && isBB && passIncBDTCut)
+    if ( (selectionMaskJECUp   & vbfPresel_passVBFBDTCut) == vbfPresel_passVBFBDTCut ) histsPUIncBDTCut.nDiMuFullSelJECUp  -> Fill(0.);  
+    if ( (selectionMaskJECDown & vbfPresel_passVBFBDTCut) == vbfPresel_passVBFBDTCut ) histsPUIncBDTCut.nDiMuFullSelJECDown-> Fill(0.);
+    // =========================================================================
+
+
+
+
+    if ( (selectionMask & incPresel_isBB_passIncBDTCut) == incPresel_isBB_passIncBDTCut )
     {
-      histsIncBDTCutBB.Fill(mva,blind);
+      histsPUIncBDTCutBB.FillPU(mva,
+                                weight,weightPUErrUp,
+                                weightPUErrDown,weightPUSystShift);
+
+      // # of events after full selection
+      histsPUIncBDTCutBB.nDiMuFullSel      -> Fill(0.);
+      histsPUIncBDTCutBB.nDiMuFullSelSF    -> Fill(0.,effWeight);    
+      histsPUIncBDTCutBB.nDiMuFullSelSFUp  -> Fill(0.,effWeightUp);  
+      histsPUIncBDTCutBB.nDiMuFullSelSFDown-> Fill(0.,effWeightDown);
     }
 
-    if (!vbfPreselection && isBO && passIncBDTCut)
+    if ( (selectionMaskJECUp   & incPresel_isBB_passIncBDTCut) == incPresel_isBB_passIncBDTCut ) histsPUIncBDTCutBB.nDiMuFullSelJECUp  -> Fill(0.);  
+    if ( (selectionMaskJECDown & incPresel_isBB_passIncBDTCut) == incPresel_isBB_passIncBDTCut ) histsPUIncBDTCutBB.nDiMuFullSelJECDown-> Fill(0.);
+    // =========================================================================
+
+
+
+    if ( (selectionMask & incPresel_isBO_passIncBDTCut) == incPresel_isBO_passIncBDTCut )
     {
-      histsIncBDTCutBO.Fill(mva,blind);
+      histsPUIncBDTCutBO.FillPU(mva,
+                                weight,weightPUErrUp,
+                                weightPUErrDown,weightPUSystShift);
+
+      // # of events after full selection
+      histsPUIncBDTCutBO.nDiMuFullSel      -> Fill(0.);
+      histsPUIncBDTCutBO.nDiMuFullSelSF    -> Fill(0.,effWeight);    
+      histsPUIncBDTCutBO.nDiMuFullSelSFUp  -> Fill(0.,effWeightUp);  
+      histsPUIncBDTCutBO.nDiMuFullSelSFDown-> Fill(0.,effWeightDown);
     }
 
-    if (!vbfPreselection && isBE && passIncBDTCut)
+    if ( (selectionMaskJECUp   & incPresel_isBO_passIncBDTCut) == incPresel_isBO_passIncBDTCut ) histsPUIncBDTCutBO.nDiMuFullSelJECUp  -> Fill(0.);  
+    if ( (selectionMaskJECDown & incPresel_isBO_passIncBDTCut) == incPresel_isBO_passIncBDTCut ) histsPUIncBDTCutBO.nDiMuFullSelJECDown-> Fill(0.);
+    // =========================================================================
+
+
+
+    if ( (selectionMask & incPresel_isBE_passIncBDTCut) == incPresel_isBE_passIncBDTCut )
     {
-      histsIncBDTCutBE.Fill(mva,blind);
+      histsPUIncBDTCutBE.FillPU(mva,
+                                weight,weightPUErrUp,
+                                weightPUErrDown,weightPUSystShift);
+
+      // # of events after full selection
+      histsPUIncBDTCutBE.nDiMuFullSel -> Fill(0.);
+      histsPUIncBDTCutBE.nDiMuFullSelSF    -> Fill(0.,effWeight);    
+      histsPUIncBDTCutBE.nDiMuFullSelSFUp  -> Fill(0.,effWeightUp);  
+      histsPUIncBDTCutBE.nDiMuFullSelSFDown-> Fill(0.,effWeightDown);
     }
 
-    if (!vbfPreselection && isOO && passIncBDTCut)
+    if ( (selectionMaskJECUp   & incPresel_isBE_passIncBDTCut) == incPresel_isBE_passIncBDTCut ) histsPUIncBDTCutBE.nDiMuFullSelJECUp  -> Fill(0.);  
+    if ( (selectionMaskJECDown & incPresel_isBE_passIncBDTCut) == incPresel_isBE_passIncBDTCut ) histsPUIncBDTCutBE.nDiMuFullSelJECDown-> Fill(0.);
+    // =========================================================================
+
+
+
+    if ( (selectionMask & incPresel_isOO_passIncBDTCut) == incPresel_isOO_passIncBDTCut ) 
     {
-      histsIncBDTCutOO.Fill(mva,blind);
+      histsPUIncBDTCutOO.FillPU(mva,
+                                weight,weightPUErrUp,
+                                weightPUErrDown,weightPUSystShift);
+
+      // # of events after full selection
+      histsPUIncBDTCutOO.nDiMuFullSel      -> Fill(0.);
+      histsPUIncBDTCutOO.nDiMuFullSelSF    -> Fill(0.,effWeight);    
+      histsPUIncBDTCutOO.nDiMuFullSelSFUp  -> Fill(0.,effWeightUp);  
+      histsPUIncBDTCutOO.nDiMuFullSelSFDown-> Fill(0.,effWeightDown);
     }
 
-    if (!vbfPreselection && isOE && passIncBDTCut)
+    if ( (selectionMaskJECUp   & incPresel_isOO_passIncBDTCut) == incPresel_isOO_passIncBDTCut ) histsPUIncBDTCutOO.nDiMuFullSelJECUp  -> Fill(0.);  
+    if ( (selectionMaskJECDown & incPresel_isOO_passIncBDTCut) == incPresel_isOO_passIncBDTCut ) histsPUIncBDTCutOO.nDiMuFullSelJECDown-> Fill(0.);
+    // =========================================================================
+
+
+
+    if ( (selectionMask & incPresel_isOE_passIncBDTCut) == incPresel_isOE_passIncBDTCut )
     {
-      histsIncBDTCutOE.Fill(mva,blind);
+      histsPUIncBDTCutOE.FillPU(mva,
+                                weight,weightPUErrUp,
+                                weightPUErrDown,weightPUSystShift);
+
+      // # of events after full selection
+      histsPUIncBDTCutOE.nDiMuFullSel      -> Fill(0.);
+      histsPUIncBDTCutOE.nDiMuFullSelSF    -> Fill(0.,effWeight);    
+      histsPUIncBDTCutOE.nDiMuFullSelSFUp  -> Fill(0.,effWeightUp);  
+      histsPUIncBDTCutOE.nDiMuFullSelSFDown-> Fill(0.,effWeightDown);
     }
 
-    if (!vbfPreselection && isEE && passIncBDTCut)
+    if ( (selectionMaskJECUp   & incPresel_isOE_passIncBDTCut) == incPresel_isOE_passIncBDTCut ) histsPUIncBDTCutOE.nDiMuFullSelJECUp  -> Fill(0.);  
+    if ( (selectionMaskJECDown & incPresel_isOE_passIncBDTCut) == incPresel_isOE_passIncBDTCut ) histsPUIncBDTCutOE.nDiMuFullSelJECDown-> Fill(0.);
+    // =========================================================================
+
+
+
+    if ( (selectionMask & incPresel_isEE_passIncBDTCut) == incPresel_isEE_passIncBDTCut )
     {
-      histsIncBDTCutEE.Fill(mva,blind);
+      histsPUIncBDTCutEE.FillPU(mva,
+                                weight,weightPUErrUp,
+                                weightPUErrDown,weightPUSystShift);
+
+      // # of events after full selection
+      histsPUIncBDTCutEE.nDiMuFullSel      -> Fill(0.);
+      histsPUIncBDTCutEE.nDiMuFullSelSF    -> Fill(0.,effWeight);    
+      histsPUIncBDTCutEE.nDiMuFullSelSFUp  -> Fill(0.,effWeightUp);  
+      histsPUIncBDTCutEE.nDiMuFullSelSFDown-> Fill(0.,effWeightDown);
     }
 
-    if (!vbfPreselection && isNotBB && passIncBDTCut)
+    if ( (selectionMaskJECUp   & incPresel_isEE_passIncBDTCut) == incPresel_isEE_passIncBDTCut )  histsPUIncBDTCutEE.nDiMuFullSelJECUp  -> Fill(0.);  
+    if ( (selectionMaskJECDown & incPresel_isEE_passIncBDTCut) == incPresel_isEE_passIncBDTCut )  histsPUIncBDTCutEE.nDiMuFullSelJECDown-> Fill(0.);
+    // =========================================================================
+
+
+
+    if ( (selectionMask & incPresel_isNotBB_passIncBDTCut) == incPresel_isNotBB_passIncBDTCut )
     {
-      histsIncBDTCutNotBB.Fill(mva,blind);
+      histsPUIncBDTCutNotBB.FillPU(mva,
+                                   weight,weightPUErrUp,
+                                   weightPUErrDown,weightPUSystShift);
+
+      // # of events after full selection
+      histsPUIncBDTCutNotBB.nDiMuFullSel      -> Fill(0.);
+      histsPUIncBDTCutNotBB.nDiMuFullSelSF    -> Fill(0.,effWeight);    
+      histsPUIncBDTCutNotBB.nDiMuFullSelSFUp  -> Fill(0.,effWeightUp);  
+      histsPUIncBDTCutNotBB.nDiMuFullSelSFDown-> Fill(0.,effWeightDown);
     }
 
+    if ( (selectionMaskJECUp   & incPresel_isNotBB_passIncBDTCut) == incPresel_isNotBB_passIncBDTCut ) histsPUIncBDTCutNotBB.nDiMuFullSelJECUp  -> Fill(0.);  
+    if ( (selectionMaskJECDown & incPresel_isNotBB_passIncBDTCut) == incPresel_isNotBB_passIncBDTCut ) histsPUIncBDTCutNotBB.nDiMuFullSelJECDown-> Fill(0.);
+    // =========================================================================
 
-    if (!vbfPreselection && mva.ptDiMu < 20.0)
-    {
-      histsIncPreselDiMuPtL20.Fill(mva,blind);
-    }
 
-    if (vbfPreselection && mva.ptDiMu < 20.0)
-    {
-      histsVBFPreselDiMuPtL20.Fill(mva,blind);
-    }
 
-///////////////////////////////////////////
 
-    if (vbfPreselection && mva.ptmiss < 50.0)
-    {
-      histsVBFPreselPtMiss50Veto.Fill(mva,blind);
-    }
 
     timeReading += difftime(timeStopReading,timeStartReading);
     timeProcessing += difftime(timeStartFilling,timeStopReading);
@@ -1311,58 +1335,25 @@ int main(int argc, char *argv[])
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
-  hists.Write(outFile,"");
-  histsBB.Write(outFile,"BB");
-  histsBO.Write(outFile,"BO");
-  histsBE.Write(outFile,"BE");
-  histsOO.Write(outFile,"OO");
-  histsOE.Write(outFile,"OE");
-  histsEE.Write(outFile,"EE");
-  histsNotBB.Write(outFile,"NotBB");
-  hists4GeVWindow.Write(outFile,"4GeVWindow");
 
-  histsVBFPresel.Write(outFile,"VBFPresel");
-  histsVBFPreselBB.Write(outFile,"VBFPreselBB");
-  histsVBFPreselNotBB.Write(outFile,"VBFPreselNotBB");
+  histsPUVBFPresel.Write(outFile,"PUVBFPresel");
+  histsPUIncPresel.Write(outFile,"PUIncPresel");
 
-  histsIncPresel.Write(outFile,"IncPresel");
-  histsIncPreselBB.Write(outFile,"IncPreselBB");
-  histsIncPreselBO.Write(outFile,"IncPreselBO");
-  histsIncPreselBE.Write(outFile,"IncPreselBE");
-  histsIncPreselOO.Write(outFile,"IncPreselOO");
-  histsIncPreselOE.Write(outFile,"IncPreselOE");
-  histsIncPreselEE.Write(outFile,"IncPreselEE");
-  histsIncPreselNotBB.Write(outFile,"IncPreselNotBB");
+  histsPUIncBDTCut  .Write(outFile,"PUIncBDTCut");
+  histsPUIncBDTCutBB.Write(outFile,"PUIncBDTCutBB");
+  histsPUIncBDTCutBO.Write(outFile,"PUIncBDTCutBO");
+  histsPUIncBDTCutBE.Write(outFile,"PUIncBDTCutBE");
+  histsPUIncBDTCutOO.Write(outFile,"PUIncBDTCutOO");
+  histsPUIncBDTCutOE.Write(outFile,"PUIncBDTCutOE");
+  histsPUIncBDTCutEE.Write(outFile,"PUIncBDTCutEE");
+  histsPUIncBDTCutNotBB.Write(outFile,"PUIncBDTCutNotBB");
 
-  histsIncBDTCut.Write(outFile,"IncBDTCut");
-  histsIncBDTCutBB.Write(outFile,"IncBDTCutBB");
-  histsIncBDTCutBO.Write(outFile,"IncBDTCutBO");
-  histsIncBDTCutBE.Write(outFile,"IncBDTCutBE");
-  histsIncBDTCutOO.Write(outFile,"IncBDTCutOO");
-  histsIncBDTCutOE.Write(outFile,"IncBDTCutOE");
-  histsIncBDTCutEE.Write(outFile,"IncBDTCutEE");
-  histsIncBDTCutNotBB.Write(outFile,"IncBDTCutNotBB");
+  histsPUVBFBDTCut     .Write(outFile,"PUVBFBDTCut");
+  histsPUVBFBDTCutBB   .Write(outFile,"PUVBFBDTCutBB");
+  histsPUVBFBDTCutNotBB.Write(outFile,"PUVBFBDTCutNotBB");
 
-  histsVBFBDTCut.Write(outFile,"VBFBDTCut");
-  histsVBFBDTCutBB.Write(outFile,"VBFBDTCutBB");
-  histsVBFBDTCut.Write(outFile,"VBFBDTCutNotBB");
 
-  histsVBFPreselDiMuPtL20.Write(outFile,"VBFPreselDiMuPtL20");
-  histsIncPreselDiMuPtL20.Write(outFile,"IncPreselDiMuPtL20");
-
-  histsIncPreselPUJETID.Write(outFile,"IncPreselPUJETID");
-  histsVBFPreselPUJETID.Write(outFile,"VBFPreselPUJETID");
-
-  histsIncPreselPUJETIDForVeto.Write(outFile,"IncPreselPUJETIDForVeto");
-  histsVBFPreselPUJETIDForVeto.Write(outFile,"VBFPreselPUJETIDForVeto");
-
-  histsVBFPreselPtMiss50Veto.Write(outFile,"VBFPreselPtMiss50Veto");
-
-  ofstream testOutFile;
-  testOutFile.open("testEventNums.txt");
-  testOutFile << testString;
-  testOutFile.close();
-  cout <<"#######################\n"<< testString <<"#######################\n" << endl;
+  cout <<"#######################\n" << endl;
   cout << "testCounter: "<< testCounter << endl;
   cout << "Total Time: "<<std::setprecision(3) << difftime(time(NULL),timeStart)<<"\n";
   cout << "Setup Time: "<<std::setprecision(3) <<difftime(timeStartEventLoop,timeStart)<<"\n";
@@ -1381,272 +1372,70 @@ int main(int argc, char *argv[])
   return 0;
 }
 
-void
-fillMuonHist(TH1F* hist, _MuonInfo& mu1, _MuonInfo& mu2)
-{
 
-  hist->Fill(1.0);
-  if (!mu1.isGlobal || !mu2.isGlobal)  return;
-  hist->Fill(2.0);
-  if (!mu1.isPFMuon || !mu2.isPFMuon) return;
-  hist->Fill(3.0);
 
-  // acceptance cuts
-  if (mu1.pt < 25 || mu2.pt < 25)         return; // pt cut
-  hist->Fill(4.0);
-  if (fabs(mu1.eta) > 2.1 || fabs(mu2.eta) > 2.1) return; // eta cut
-  hist->Fill(5.0);
-
-  // kinematic cuts
-  if (mu1.numTrackerLayers < 6 || mu2.numTrackerLayers < 6) return; // # hits in tracker
-  hist->Fill(6.0);
-
-  if(getRelIso(mu1) > 0.12 || getRelIso(mu2) > 0.12)
-  {
-      //cout << "Iso 1: "<< getRelIso(mu1) << "    Iso 2: " << getRelIso(mu2) << endl;
-      return;
-  }
-  hist->Fill(7.0);
-
-  if (fabs(mu1.d0_PV) > 0.2 || fabs(mu2.d0_PV) > 0.2) return;
-  hist->Fill(8.0);
-  if (fabs(mu1.dz_PV) > 0.5 || fabs(mu2.dz_PV) > 0.5) return;
-  hist->Fill(9.0);
-
-  if ( mu1.numValidMuonHits  < 1  || mu2.numValidMuonHits  < 1) return;
-  hist->Fill(10.0);
-  if ( mu1.numValidPixelHits < 1  || mu2.numValidPixelHits < 1) return;
-  hist->Fill(11.0);
-  if ( mu1.numOfMatchedStations < 2  || mu2.numOfMatchedStations < 2)
-  {
-      //cout << "Sta 1: "<<mu1.numOfMatchedStations << "    Sta 2: " << mu2.numOfMatchedStations << endl;
-      return;
-  }
-  hist->Fill(12.0);
-  if ( mu1.normChiSquare > 10 || mu2.normChiSquare > 10)     return;
-  hist->Fill(13.0);
-
-}
-
-void
-printStationMiss(_MuonInfo& mu1, _MuonInfo& mu2, _EventInfo& eventInfo, std::string & testString, unsigned & testCounter)
-{
-
-  if (!mu1.isGlobal || !mu2.isGlobal)  return;
-  if (!mu1.isPFMuon || !mu2.isPFMuon) return;
-
-  // acceptance cuts
-  if (mu1.pt < 25 || mu2.pt < 25)         return; // pt cut
-  if (fabs(mu1.eta) > 2.1 || fabs(mu2.eta) > 2.1) return; // eta cut
-
-  // kinematic cuts
-  if (mu1.numTrackerLayers < 6 || mu2.numTrackerLayers < 6) return; // # hits in tracker
-
-  if(getRelIso(mu1) > 0.12 || getRelIso(mu2) > 0.12)
-  {
-      //cout << "Iso 1: "<< getRelIso(mu1) << "    Iso 2: " << getRelIso(mu2) << endl;
-      return;
-  }
-
-  if (fabs(mu1.d0_PV) > 0.2 || fabs(mu2.d0_PV) > 0.2) return;
-  if (fabs(mu1.dz_PV) > 0.5 || fabs(mu2.dz_PV) > 0.5) return;
-
-  if ( mu1.numValidMuonHits  < 1  || mu2.numValidMuonHits  < 1) return;
-  if ( mu1.numValidPixelHits < 1  || mu2.numValidPixelHits < 1) return;
-  if ( mu1.numOfMatchedStations < 2  || mu2.numOfMatchedStations < 2)
-  {
-        testCounter++;
-        //std::cout <<eventInfo.run <<":"<<eventInfo.event <<"\n"<< std::endl;
-        testString.appendAny(eventInfo.run);
-        testString.append(":");
-        testString.appendAny(eventInfo.event);
-        //testString.append("  #  ");
-        //testString.appendAny(mu1.numOfMatchedStations);
-        //testString.append("  ");
-        //testString.appendAny(mu2.numOfMatchedStations);
-        testString.append("\n");
-      
-      return;
-  }
-  if ( mu1.normChiSquare > 10 || mu2.normChiSquare > 10)     return;
-
-}
 
 HistStruct::HistStruct()
 {
 
-  unsigned nMassBins = 400;
-  float minMass = 0.;
-  float maxMass = 400.;
-  unsigned nMVABins = 200;
+  // PU
+  unsigned nMassBins = 800 ;
+  float minMass      =   0.;
+  float maxMass      = 400.;
+
   mDiMu = new TH1F("mDiMu","DiMuon Mass",nMassBins,minMass,maxMass);
   histVec.push_back(mDiMu);
 
-  mDiMuResSigUp = new TH1F("mDiMuResSigUp","DiMuon Mass Systematic Shift Up: Sigma",nMassBins,minMass,maxMass);
-  histVec.push_back(mDiMuResSigUp);
-  mDiMuResSigDown = new TH1F("mDiMuResSigDown","DiMuon Mass Systematic Shift Down: Sigma",nMassBins,minMass,maxMass);
-  histVec.push_back(mDiMuResSigDown);
-  mDiMuResASigUp = new TH1F("mDiMuResASigUp","DiMuon Mass Systematic Shift Up: ASigma",nMassBins,minMass,maxMass);
-  histVec.push_back(mDiMuResASigUp);
-  mDiMuResASigDown = new TH1F("mDiMuResASigDown","DiMuon Mass Systematic Shift Down: ASigma",nMassBins,minMass,maxMass);
-  histVec.push_back(mDiMuResASigDown);
+  mDiMuPUErrUp = new TH1F("mDiMuPUErrUp","DiMuon Mass PU ErrUp",nMassBins,minMass,maxMass);
+  histVec.push_back(mDiMuPUErrUp);
 
-  mDiJet = new TH1F("mDiJet","DiJet Mass",500,0,2000);
-  histVec.push_back(mDiJet);
+  mDiMuPUErrDown = new TH1F("mDiMuPUErrDown","DiMuon Mass PU ErrDown",nMassBins,minMass,maxMass);
+  histVec.push_back(mDiMuPUErrDown);
 
-  ptDiMu = new TH1F("ptDiMu","DiMuon Pt",250,0,500);
-  histVec.push_back(ptDiMu);
+  mDiMuPUSystShift = new TH1F("mDiMuPUSystShift","DiMuon Mass PU Syst. Shift",nMassBins,minMass,maxMass);
+  histVec.push_back(mDiMuPUSystShift);
 
-  ptDiJet = new TH1F("ptDiJet","DiJet Pt",250,0,1000);
-  histVec.push_back(ptDiJet);
+  // Efficiency
+  // We are simply counting  
+  unsigned nEffBins = 1;
+  float minEff      = 0.;
+  float maxEff      = 1.;
 
-  yDiMu = new TH1F("yDiMu","DiMuon Rapidity",100,-4,4);
-  histVec.push_back(yDiMu);
+  nDiMuGen = new TH1F("nDiMuGen","Counting Gen. Events",nEffBins,minEff,maxEff);
+  histVec.push_back(nDiMuGen);
 
-  yVptDiMu = new TH2F("yVptDiMu","DiMuon Rapidity v. p_{T}",250,0,500,100,0,4);
-  histVec2D.push_back(yVptDiMu);
-  ptVmDiMu = new TH2F("ptVmDiMu","DiMuon p_{T} v. Mass",nMassBins,minMass,maxMass,250,0,250);
-  histVec2D.push_back(ptVmDiMu);
-  yVmDiMu = new TH2F("yVmDiMu","DiMuon |y| v. Mass",nMassBins,minMass,maxMass,100,0,4);
-  phiVmDiMu = new TH2F("phiVmDiMu","DiMuon #phi v. Mass",nMassBins,minMass,maxMass,100,0,3.2);
-  histVec2D.push_back(phiVmDiMu);
+  nDiMuGenInAcc = new TH1F("nDiMuGenInAcc","Counting Gen. Events in Acc",nEffBins,minEff,maxEff);
+  histVec.push_back(nDiMuGenInAcc);
 
-  ptMu1 = new TH1F("ptMu1","Leading Muon Pt",100,0,200);
-  histVec.push_back(ptMu1);
-  ptMu2 = new TH1F("ptMu2","Sub-Leading Muon Pt",100,0,200);
-  histVec.push_back(ptMu2);
-  ptJet1 = new TH1F("ptJet1","Leading Jet Pt",200,0,1000);
-  histVec.push_back(ptJet1);
-  ptJet2 = new TH1F("ptJet2","Sub-Leading Jet Pt",200,0,1000);
-  histVec.push_back(ptJet2);
+  nDiMuFullSel = new TH1F("nDiMuFullSel","Counting Reco Events after Full Sel.",nEffBins,minEff,maxEff);
+  histVec.push_back(nDiMuFullSel);
 
-  etaMu1 = new TH1F("etaMu1","Leading Muon #eta",50,-2.5,2.5);
-  histVec.push_back(etaMu1);
-  etaMu2 = new TH1F("etaMu2","Sub-Leading Muon #eta",50,-2.5,2.5);
-  histVec.push_back(etaMu2);
-  etaJet1 = new TH1F("etaJet1","Leading Jet #eta",50,-5.0,5.0);
-  histVec.push_back(etaJet1);
-  etaJet2 = new TH1F("etaJet2","Sub-Leading Jet #eta",50,-5.0,5.0);
-  histVec.push_back(etaJet2);
+  nDiMuFullSelSF = new TH1F("nDiMuFullSelSF","Counting Reco Events after Full Sel. and SF",nEffBins,minEff,maxEff);
+  histVec.push_back(nDiMuFullSelSF);
 
-  deltaEtaJets = new TH1F("deltaEtaJets","#Delta#eta Jets",50,0.0,10.0);
-  histVec.push_back(deltaEtaJets);
-  deltaPhiJets = new TH1F("deltaPhiJets","#Delta#phi Jets",50,0.0,3.2);
-  histVec.push_back(deltaPhiJets);
-  deltaRJets = new TH1F("deltaRJets","#Delta R Jets",50,0.0,10.0);
-  histVec.push_back(deltaRJets);
+  // varying all the systematic variations UP
+  nDiMuFullSelSFUp = new TH1F("nDiMuFullSelSFUp","Counting Reco Events after Full Sel. and SF varied UP",nEffBins,minEff,maxEff);
+  histVec.push_back(nDiMuFullSelSFUp);
 
-  deltaEtaMuons = new TH1F("deltaEtaMuons","#Delta#eta Jets",50,0.0,10.0);
-  histVec.push_back(deltaEtaMuons);
-  deltaPhiMuons = new TH1F("deltaPhiMuons","#Delta#phi Jets",50,0.0,3.2);
-  histVec.push_back(deltaPhiMuons);
-  deltaRMuons = new TH1F("deltaRMuons","#Delta R Jets",50,0.0,10.0);
-  histVec.push_back(deltaRMuons);
+  // varying all the systematic variations DOWN
+  nDiMuFullSelSFDown = new TH1F("nDiMuFullSelSFDown","Counting Reco Events after Full Sel. and SF varied DOWN",nEffBins,minEff,maxEff);
+  histVec.push_back(nDiMuFullSelSFDown);
 
-  countsHist = new TH1F("countsHist","Event Counts",10,0.0,10.0);
-  countsHist->GetXaxis()->SetBinLabel(1,"total");
-  countsHist->GetXaxis()->SetBinLabel(2,"2#mu ID");
-  countsHist->GetXaxis()->SetBinLabel(3,"HLT");
-  countsHist->GetXaxis()->SetBinLabel(4,"Charge");
-  countsHist->GetXaxis()->SetBinLabel(5,"m_{#mu#mu}");
-  countsHist->GetXaxis()->SetBinLabel(6,"Inc Pre");
-  countsHist->GetXaxis()->SetBinLabel(7,"VBF Pre");
-  histVec.push_back(countsHist);
+  // JEC
+  nDiMuFullSelJECUp   = new TH1F("nDiMuFullSelJECUp","Counting Reco Events after Full Sel. and JEC +1 sigma",nEffBins,minEff,maxEff);
+  histVec.push_back(nDiMuFullSelJECUp);
+  nDiMuFullSelJECDown = new TH1F("nDiMuFullSelJECDown","Counting Reco Events after Full Sel. and JEC -1 sigma",nEffBins,minEff,maxEff);
+  histVec.push_back(nDiMuFullSelJECDown);
 
-  countsHist2 = new TH1F("countsHist2","Event Counts",14,0.0,14.0);
-  countsHist2->GetXaxis()->SetBinLabel(1,"total");
-  countsHist2->GetXaxis()->SetBinLabel(2,"total");
-  countsHist2->GetXaxis()->SetBinLabel(3,"global");
-  countsHist2->GetXaxis()->SetBinLabel(4,"PF");
-  countsHist2->GetXaxis()->SetBinLabel(5,"pt");
-  countsHist2->GetXaxis()->SetBinLabel(6,"eta");
-  countsHist2->GetXaxis()->SetBinLabel(7,"tracker");
-  countsHist2->GetXaxis()->SetBinLabel(8,"iso");
-  countsHist2->GetXaxis()->SetBinLabel(9,"d0");
-  countsHist2->GetXaxis()->SetBinLabel(10,"dz");
-  countsHist2->GetXaxis()->SetBinLabel(11,"#mu hits");
-  countsHist2->GetXaxis()->SetBinLabel(12,"pixel");
-  countsHist2->GetXaxis()->SetBinLabel(13,"stations");
-  countsHist2->GetXaxis()->SetBinLabel(14,"#chi^2");
-  histVec.push_back(countsHist2);
 
-  cosThetaStar = new TH1F("cosThetaStar","cos(#theta^{*})",50,-1.,1.);
-  histVec.push_back(cosThetaStar);
-  cosThetaStarCS = new TH1F("cosThetaStarCS","cos(#theta^{*}_{CS})",50,-1.,1.);
-  histVec.push_back(cosThetaStarCS);
-
-  puJetIDSimpleDiscJet1 = new TH1F("puJetIDSimpleDiscJet1","PU Jet ID--Simple Discriminator Leading Jet",50,-1.,1.);
-  histVec.push_back(puJetIDSimpleDiscJet1);
-  puJetIDSimpleDiscJet2 = new TH1F("puJetIDSimpleDiscJet2","PU Jet ID--Simple Discriminator Sub-Leading Jet",50,-1.,1.);
-  histVec.push_back(puJetIDSimpleDiscJet2);
-  puJetIDSimpleDiscJet3 = new TH1F("puJetIDSimpleDiscJet3","PU Jet ID--Simple Discriminator 3rd Leading Jet",50,-1.,1.);
-  histVec.push_back(puJetIDSimpleDiscJet3);
-
-  puJetIDSimpleJet1 = new TH1F("puJetIDSimpleJet1","PU Jet ID--Simple Loose Leading Jet",2,0,2);
-  histVec.push_back(puJetIDSimpleJet1);
-  puJetIDSimpleJet1->GetXaxis()->SetBinLabel(1,"Fail");
-  puJetIDSimpleJet1->GetXaxis()->SetBinLabel(2,"Pass");
-  puJetIDSimpleJet2 = new TH1F("puJetIDSimpleJet2","PU Jet ID--Simple Loose Sub-Leading Jet",2,-0,2);
-  histVec.push_back(puJetIDSimpleJet2);
-  puJetIDSimpleJet2->GetXaxis()->SetBinLabel(1,"Fail");
-  puJetIDSimpleJet2->GetXaxis()->SetBinLabel(2,"Pass");
-  puJetIDSimpleJet3 = new TH1F("puJetIDSimpleJet3","PU Jet ID--Simple Loose 3rd Leading Jet",2,-0,2);
-  histVec.push_back(puJetIDSimpleJet3);
-  puJetIDSimpleJet3->GetXaxis()->SetBinLabel(1,"Fail");
-  puJetIDSimpleJet3->GetXaxis()->SetBinLabel(2,"Pass");
-
-  BDTHistMuonOnly = new TH1F("BDTHistMuonOnly","BDT Discriminator",nMVABins,-1,1);
-  histVec.push_back(BDTHistMuonOnly);
-
-  BDTHistVBF = new TH1F("BDTHistVBF","BDT Discriminator",nMVABins,-1,1);
-  histVec.push_back(BDTHistVBF);
-
-  BDTHistMuonOnlyVMass = new TH2F("BDTHistMuonOnlyVMass","BDT Discriminator",nMassBins,minMass,maxMass,nMVABins,-1,1);
-  histVec2D.push_back(BDTHistMuonOnlyVMass);
-  BDTHistVBFVMass = new TH2F("BDTHistVBFVMass","BDT Discriminator",nMassBins,minMass,maxMass,nMVABins,-1,1);
-  histVec2D.push_back(BDTHistVBFVMass);
-
-  relIsoMu1 = new TH1F("relIsoMu1","",1000,0,10.0);
-  histVec.push_back(relIsoMu1);
-  relIsoMu2 = new TH1F("relIsoMu2","",1000,0,10.0);
-  histVec.push_back(relIsoMu2);
-
-  nJets = new TH1F("nJets","",11,0,11);
-  histVec.push_back(nJets);
-  ht = new TH1F("ht","",200,0,2000);
-  histVec.push_back(ht);
-  nJetsInRapidityGap = new TH1F("nJetsInRapidityGap","",11,0,11);
-  histVec.push_back(nJetsInRapidityGap);
-  htInRapidityGap = new TH1F("htInRapidityGap","",200,0,2000);
-  histVec.push_back(htInRapidityGap);
-
-  nPU = new TH1F("nPU","",100,0,100);
-  histVec.push_back(nPU);
-  nVtx = new TH1F("nVtx","",100,0,100);
-  histVec.push_back(nVtx);
-  met = new TH1F("met","",160,0,800);
-  histVec.push_back(met);
-  ptmiss = new TH1F("ptmiss","",160,0,800);
-  histVec.push_back(ptmiss);
-  weight = new TH1F("weight","",500,0,5.0);
-  histVec.push_back(weight);
-
-  std::vector<TH1F*>::iterator hist;
-  std::vector<TH2F*>::iterator hist2D;
-  for(hist = histVec.begin();hist != histVec.end(); hist++)
-    (*hist)->Sumw2();
-  for(hist2D = histVec2D.begin();hist2D != histVec2D.end(); hist2D++)
-    (*hist2D)->Sumw2();
 }
 
 HistStruct::~HistStruct()
 {
-  std::vector<TH1F*>::iterator hist;
-  std::vector<TH2F*>::iterator hist2D;
-  for(hist = histVec.begin();hist != histVec.end(); hist++)
-    delete *hist;
-  for(hist2D = histVec2D.begin();hist2D != histVec2D.end(); hist2D++)
-    delete *hist2D;
+  //std::vector<TH1F*>::iterator hist;
+
+  //for(hist = histVec.begin();hist != histVec.end(); hist++)
+  //delete *hist;
 }
 
 void
@@ -1666,72 +1455,23 @@ HistStruct::Write(TFile* outfile, std::string directory)
   std::vector<TH2F*>::iterator hist2D;
   for(hist = histVec.begin();hist != histVec.end(); hist++)
     (*hist)->Write();
-  for(hist2D = histVec2D.begin();hist2D != histVec2D.end(); hist2D++)
-    (*hist2D)->Write();
 
   outfile->cd();
 }
 
+
 void 
-HistStruct::Fill(const MVA& mva, bool blind)
+HistStruct::FillPU(const MVA& mva,
+                   const double weight,
+                   const double weightPUErrUp,
+                   const double weightPUErrDown,
+                   const double weightPUSystShift)
 {
-  yDiMu->Fill(mva.yDiMu, mva.weight);
-  ptDiMu->Fill(mva.ptDiMu, mva.weight);
-  ptMu1->Fill(mva.ptMu1, mva.weight);
-  ptMu2->Fill(mva.ptMu2, mva.weight);
-  etaMu1->Fill(mva.etaMu1, mva.weight);
-  etaMu2->Fill(mva.etaMu2, mva.weight);
-  cosThetaStar->Fill(mva.cosThetaStar, mva.weight);
-  cosThetaStarCS->Fill(mva.cosThetaStarCS, mva.weight);
-  deltaPhiMuons->Fill(mva.deltaPhiMuons, mva.weight);
-  deltaEtaMuons->Fill(mva.deltaEtaMuons, mva.weight);
-  deltaRMuons->Fill(mva.deltaRMuons, mva.weight);
-  relIsoMu1->Fill(mva.relIsoMu1, mva.weight);
-  relIsoMu2->Fill(mva.relIsoMu2, mva.weight);
-  nPU->Fill(mva.nPU, mva.weight);
-  nVtx->Fill(mva.nVtx, mva.weight);
-  met->Fill(mva.met, mva.weight);
-  ptmiss->Fill(mva.ptmiss, mva.weight);
+  
+  mDiMu            -> Fill(mva.mDiMu, weight           );
+  mDiMuPUErrUp     -> Fill(mva.mDiMu, weightPUErrUp    );
+  mDiMuPUErrDown   -> Fill(mva.mDiMu, weightPUErrDown  );
+  mDiMuPUSystShift -> Fill(mva.mDiMu, weightPUSystShift);
 
-  mDiJet->Fill(mva.mDiJet, mva.weight);
-  ptDiJet->Fill(mva.ptDiJet, mva.weight);
-  ptJet1->Fill(mva.ptJet1, mva.weight);
-  ptJet2->Fill(mva.ptJet2, mva.weight);
-  etaJet1->Fill(mva.etaJet1, mva.weight);
-  etaJet2->Fill(mva.etaJet2, mva.weight);
-  deltaEtaJets->Fill(mva.deltaEtaJets, mva.weight);
-  deltaPhiJets->Fill(mva.deltaPhiJets, mva.weight);
-  deltaRJets->Fill(mva.deltaRJets, mva.weight);
-  nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, mva.weight);
-  htInRapidityGap->Fill(mva.htInRapidityGap, mva.weight);
-  nJets->Fill(mva.nJets, mva.weight);
-  ht->Fill(mva.ht, mva.weight);
-
-  puJetIDSimpleDiscJet1->Fill(mva.puJetIDSimpleDiscJet1,mva.weight);
-  puJetIDSimpleDiscJet2->Fill(mva.puJetIDSimpleDiscJet2,mva.weight);
-  puJetIDSimpleDiscJet3->Fill(mva.puJetIDSimpleDiscJet3,mva.weight);
-
-  puJetIDSimpleJet1->Fill(mva.puJetIDSimpleJet1,mva.weight);
-  puJetIDSimpleJet2->Fill(mva.puJetIDSimpleJet2,mva.weight);
-  puJetIDSimpleJet3->Fill(mva.puJetIDSimpleJet3,mva.weight);
-
-  if (!blind)
-  {
-    mDiMu->Fill(mva.mDiMu, mva.weight);
-    mDiMuResSigUp->Fill(mva.mDiMuResSigUp, mva.weight);
-    mDiMuResSigDown->Fill(mva.mDiMuResSigDown, mva.weight);
-    mDiMuResASigUp->Fill(mva.mDiMuResASigUp, mva.weight);
-    mDiMuResASigDown->Fill(mva.mDiMuResASigDown, mva.weight);
-
-    if(!mva.vbfPreselection)
-    {
-      BDTHistMuonOnly->Fill(mva.bdtValInc, mva.weight);
-      BDTHistMuonOnlyVMass->Fill(mva.mDiMu, mva.bdtValInc, mva.weight);
-    }
-    else
-    {
-      BDTHistVBF->Fill(mva.bdtValVBF, mva.weight);
-      BDTHistVBFVMass->Fill(mva.mDiMu, mva.bdtValVBF, mva.weight);
-    }
-  }
 }
+
