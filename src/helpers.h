@@ -3,6 +3,7 @@
 #include "DataFormats.h"
 #include <algorithm>
 #include "TRandom.h"
+#include "TLorentzVector.h"
 
 enum PUJetID
 {
@@ -10,6 +11,28 @@ enum PUJetID
   puJetMedium = 1,
   puJetLoose  = 2
 };
+
+enum SelectionCodes
+{
+  notSelected = 0,
+
+  vbfPresel = 1,
+  vbfPresel_passVBFBDTCut = 2,
+  vbfPresel_isBB_passVBFBDTCut = 4,
+  vbfPresel_isNotBB_passVBFBDTCut = 8,
+
+  incPresel = 16,
+  incPresel_passIncBDTCut = 32,
+  incPresel_isBB_passIncBDTCut = 64,
+  incPresel_isBO_passIncBDTCut = 128,
+  incPresel_isBE_passIncBDTCut = 256,
+  incPresel_isOO_passIncBDTCut = 512,
+  incPresel_isOE_passIncBDTCut = 1024,
+  incPresel_isEE_passIncBDTCut = 2048,
+  incPresel_isNotBB_passIncBDTCut = 4096
+};
+
+
 
 float getRelIso(_MuonInfo& muon);
 
@@ -23,5 +46,17 @@ float smearMC(float trueVal, float recoVal, float calib, float smearRatio,TRando
 
 bool isHltMatched(_MuonInfo& muon1, _MuonInfo& muon2, std::vector<int> allowedPaths);
 bool isHltMatched(_MuonInfo& muon1, std::vector<int> allowedPaths);
+
+float resolutionBias(float eta);
+float corrPtUp  (float ptold, float oldgenpt, float etaold);
+float corrPtDown(float ptold, float oldgenpt, float etaold);
+
+int whichSelection(_MuonInfo& mu1, _MuonInfo& mu2,
+                   std::vector<int> allowedHLTPaths,
+                   std::string& runPeriod,
+                   _PFJetInfo jets,
+                   bool passIncBDTCut,
+                   bool passVBFBDTCut,
+                   double sigmasJEC=0);
 
 #endif

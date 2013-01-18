@@ -15,12 +15,12 @@ typedef struct {
 typedef struct{
   int nVertices;
   int isValid[20];
-  float x[20];  
-  float y[20];  
-  float z[20];  
-  float xErr[20];   
-  float yErr[20];   
-  float zErr[20];   
+  float x[20];	
+  float y[20];	
+  float z[20];	
+  float xErr[20];	
+  float yErr[20];	
+  float zErr[20];	
   float chi2[20];
   int ndf[20];
   float normChi2[20];
@@ -208,6 +208,5 @@ typedef struct {
   float y;    // rapidity
   float phi;  // phi
 } _genPartInfo;
-
 
 #endif
