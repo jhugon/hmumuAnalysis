@@ -35,7 +35,7 @@
 
 #include "annaCalibCode/SmearingTool.h"
 
-//#define JETPUID
+#define JETPUID
 #define PUREWEIGHT
 //#define SMEARING
 #define ISMEAR 1
@@ -397,9 +397,9 @@ int main(int argc, char *argv[])
   tree->SetBranchAddress("puJetSimpleDisc",&puJetSimpleDisc);
   tree->SetBranchAddress("puJetCutDisc",&puJetCutDisc);
 
-  int puJetFullId[10];
-  int puJetSimpleId[10];
-  int puJetCutId[10];
+  float puJetFullId[10];
+  float puJetSimpleId[10];
+  float puJetCutId[10];
 
   tree->SetBranchAddress("puJetFullId",&puJetFullId);
   tree->SetBranchAddress("puJetSimpleId",&puJetSimpleId);
@@ -1000,16 +1000,11 @@ int main(int argc, char *argv[])
             mva.puJetIDSimpleDiscJet3 = puJetSimpleDisc[iJet];
 
           if (iJet==0)
-            mva.puJetIDSimpleJet1 = passPUJetID(puJetSimpleId[iJet],puJetLoose);
+            mva.puJetIDSimpleJet1 = passPUJetID(int(puJetSimpleId[iJet]),puJetLoose);
           else if (iJet==1)
-            mva.puJetIDSimpleJet2 = passPUJetID(puJetSimpleId[iJet],puJetLoose);
+            mva.puJetIDSimpleJet2 = passPUJetID(int(puJetSimpleId[iJet]),puJetLoose);
           else if (iJet==2)
-            mva.puJetIDSimpleJet3 = passPUJetID(puJetSimpleId[iJet],puJetLoose);
-
-            if (iJet==0)
-            {
-              std::cout << "Disc: " << puJetSimpleDisc[iJet] << " Raw Id: " << puJetSimpleId[iJet] << std::endl;
-            }
+            mva.puJetIDSimpleJet3 = passPUJetID(int(puJetSimpleId[iJet]),puJetLoose);
         }
       }
 #endif
