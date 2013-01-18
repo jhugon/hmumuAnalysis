@@ -93,6 +93,10 @@ struct HistStruct
   TH1F* nDiMuFullSelJECUp;  // Acc x Eff Jet Energy Corr. Up
   TH1F* nDiMuFullSelJECDown;// Acc x Eff Jet Energy Corr. Down
 
+  // JER
+  TH1F* nDiMuFullSelJERUp;  // Acc x Eff Jet Energy Corr. Up
+  TH1F* nDiMuFullSelJERDown;// Acc x Eff Jet Energy Corr. Down
+
 };
 
 int main(int argc, char *argv[])
@@ -1036,7 +1040,25 @@ int main(int argc, char *argv[])
                                               passIncBDTCut,
                                               passVBFBDTCut,
                                               -1); // JEC -1 sigma
+
+
+    int selectionMaskJERUp = whichSelection(muon1,muon2,
+                                            allowedHLTPaths,
+                                            runPeriod,
+                                            jets,
+                                            passIncBDTCut,
+                                            passVBFBDTCut,
+                                            0,1); // JER +1 sigma
     
+    int selectionMaskJERDown = whichSelection(muon1,muon2,
+                                              allowedHLTPaths,
+                                              runPeriod,
+                                              jets,
+                                              passIncBDTCut,
+                                              passVBFBDTCut,
+                                              0,-1); // JER -1 sigma
+
+
     if (selectionMask != 0) {
       std::cout << "\n\nprinting the mask\n";
      
@@ -1051,6 +1073,14 @@ int main(int argc, char *argv[])
       std::cout << "selectionMaskJECDown=" 
                 << selectionMaskJECDown 
                 << " = " << hex << selectionMaskJECDown << std::endl;
+
+      std::cout << "selectionMaskJERUp=" 
+                << selectionMaskJERUp 
+                << " = " << hex << selectionMaskJERUp << std::endl;
+
+      std::cout << "selectionMaskJERDown=" 
+                << selectionMaskJERDown 
+                << " = " << hex << selectionMaskJERDown << std::endl;
 
 //       std::cout << "selectionMask & vbfPresel = " << dec << (selectionMask & vbfPresel) << std::endl;
 //       std::cout << "selectionMask & incPresel = " << dec << (selectionMask & incPresel) << std::endl;
@@ -1083,6 +1113,9 @@ int main(int argc, char *argv[])
 
     if ( (selectionMaskJECUp   & vbfPresel) == vbfPresel ) histsPUVBFPresel.nDiMuFullSelJECUp  -> Fill(0.);  
     if ( (selectionMaskJECDown & vbfPresel) == vbfPresel ) histsPUVBFPresel.nDiMuFullSelJECDown-> Fill(0.);
+
+    if ( (selectionMaskJERUp   & vbfPresel) == vbfPresel ) histsPUVBFPresel.nDiMuFullSelJERUp  -> Fill(0.);  
+    if ( (selectionMaskJERDown & vbfPresel) == vbfPresel ) histsPUVBFPresel.nDiMuFullSelJERDown-> Fill(0.);
     // =========================================================================
 
 
@@ -1105,6 +1138,9 @@ int main(int argc, char *argv[])
 
     if ( (selectionMaskJECUp   & incPresel) == incPresel ) histsPUIncPresel.nDiMuFullSelJECUp  -> Fill(0.);  
     if ( (selectionMaskJECDown & incPresel) == incPresel ) histsPUIncPresel.nDiMuFullSelJECDown-> Fill(0.);
+
+    if ( (selectionMaskJERUp   & incPresel) == incPresel ) histsPUIncPresel.nDiMuFullSelJERUp  -> Fill(0.);  
+    if ( (selectionMaskJERDown & incPresel) == incPresel ) histsPUIncPresel.nDiMuFullSelJERDown-> Fill(0.);
     // =========================================================================
 
 
@@ -1127,6 +1163,9 @@ int main(int argc, char *argv[])
 
     if ( (selectionMaskJECUp   & vbfPresel_passVBFBDTCut) == vbfPresel_passVBFBDTCut ) histsPUVBFBDTCut.nDiMuFullSelJECUp  -> Fill(0.);  
     if ( (selectionMaskJECDown & vbfPresel_passVBFBDTCut) == vbfPresel_passVBFBDTCut ) histsPUVBFBDTCut.nDiMuFullSelJECDown-> Fill(0.);
+
+    if ( (selectionMaskJERUp   & vbfPresel_passVBFBDTCut) == vbfPresel_passVBFBDTCut ) histsPUVBFBDTCut.nDiMuFullSelJERUp  -> Fill(0.);  
+    if ( (selectionMaskJERDown & vbfPresel_passVBFBDTCut) == vbfPresel_passVBFBDTCut ) histsPUVBFBDTCut.nDiMuFullSelJERDown-> Fill(0.);
     // =========================================================================
 
 
@@ -1145,6 +1184,9 @@ int main(int argc, char *argv[])
 
     if ( (selectionMaskJECUp   & vbfPresel_isBB_passVBFBDTCut) == vbfPresel_isBB_passVBFBDTCut ) histsPUVBFBDTCutBB.nDiMuFullSelJECUp  -> Fill(0.);  
     if ( (selectionMaskJECDown & vbfPresel_isBB_passVBFBDTCut) == vbfPresel_isBB_passVBFBDTCut ) histsPUVBFBDTCutBB.nDiMuFullSelJECDown-> Fill(0.);
+
+    if ( (selectionMaskJERUp   & vbfPresel_isBB_passVBFBDTCut) == vbfPresel_isBB_passVBFBDTCut ) histsPUVBFBDTCutBB.nDiMuFullSelJERUp  -> Fill(0.);  
+    if ( (selectionMaskJERDown & vbfPresel_isBB_passVBFBDTCut) == vbfPresel_isBB_passVBFBDTCut ) histsPUVBFBDTCutBB.nDiMuFullSelJERDown-> Fill(0.);
     // =========================================================================
 
 
@@ -1164,6 +1206,9 @@ int main(int argc, char *argv[])
 
     if ( (selectionMaskJECUp   & vbfPresel_isNotBB_passVBFBDTCut) == vbfPresel_isNotBB_passVBFBDTCut ) histsPUVBFBDTCutNotBB.nDiMuFullSelJECUp  -> Fill(0.);  
     if ( (selectionMaskJECDown & vbfPresel_isNotBB_passVBFBDTCut) == vbfPresel_isNotBB_passVBFBDTCut ) histsPUVBFBDTCutNotBB.nDiMuFullSelJECDown-> Fill(0.);
+
+    if ( (selectionMaskJERUp   & vbfPresel_isNotBB_passVBFBDTCut) == vbfPresel_isNotBB_passVBFBDTCut ) histsPUVBFBDTCutNotBB.nDiMuFullSelJERUp  -> Fill(0.);  
+    if ( (selectionMaskJERDown & vbfPresel_isNotBB_passVBFBDTCut) == vbfPresel_isNotBB_passVBFBDTCut ) histsPUVBFBDTCutNotBB.nDiMuFullSelJERDown-> Fill(0.);
     // =========================================================================
 
 
@@ -1185,6 +1230,9 @@ int main(int argc, char *argv[])
 
     if ( (selectionMaskJECUp   & vbfPresel_passVBFBDTCut) == vbfPresel_passVBFBDTCut ) histsPUIncBDTCut.nDiMuFullSelJECUp  -> Fill(0.);  
     if ( (selectionMaskJECDown & vbfPresel_passVBFBDTCut) == vbfPresel_passVBFBDTCut ) histsPUIncBDTCut.nDiMuFullSelJECDown-> Fill(0.);
+
+    if ( (selectionMaskJERUp   & vbfPresel_passVBFBDTCut) == vbfPresel_passVBFBDTCut ) histsPUIncBDTCut.nDiMuFullSelJERUp  -> Fill(0.);  
+    if ( (selectionMaskJERDown & vbfPresel_passVBFBDTCut) == vbfPresel_passVBFBDTCut ) histsPUIncBDTCut.nDiMuFullSelJERDown-> Fill(0.);
     // =========================================================================
 
 
@@ -1205,6 +1253,9 @@ int main(int argc, char *argv[])
 
     if ( (selectionMaskJECUp   & incPresel_isBB_passIncBDTCut) == incPresel_isBB_passIncBDTCut ) histsPUIncBDTCutBB.nDiMuFullSelJECUp  -> Fill(0.);  
     if ( (selectionMaskJECDown & incPresel_isBB_passIncBDTCut) == incPresel_isBB_passIncBDTCut ) histsPUIncBDTCutBB.nDiMuFullSelJECDown-> Fill(0.);
+
+    if ( (selectionMaskJERUp   & incPresel_isBB_passIncBDTCut) == incPresel_isBB_passIncBDTCut ) histsPUIncBDTCutBB.nDiMuFullSelJERUp  -> Fill(0.);  
+    if ( (selectionMaskJERDown & incPresel_isBB_passIncBDTCut) == incPresel_isBB_passIncBDTCut ) histsPUIncBDTCutBB.nDiMuFullSelJERDown-> Fill(0.);
     // =========================================================================
 
 
@@ -1224,6 +1275,9 @@ int main(int argc, char *argv[])
 
     if ( (selectionMaskJECUp   & incPresel_isBO_passIncBDTCut) == incPresel_isBO_passIncBDTCut ) histsPUIncBDTCutBO.nDiMuFullSelJECUp  -> Fill(0.);  
     if ( (selectionMaskJECDown & incPresel_isBO_passIncBDTCut) == incPresel_isBO_passIncBDTCut ) histsPUIncBDTCutBO.nDiMuFullSelJECDown-> Fill(0.);
+
+    if ( (selectionMaskJERUp   & incPresel_isBO_passIncBDTCut) == incPresel_isBO_passIncBDTCut ) histsPUIncBDTCutBO.nDiMuFullSelJERUp  -> Fill(0.);  
+    if ( (selectionMaskJERDown & incPresel_isBO_passIncBDTCut) == incPresel_isBO_passIncBDTCut ) histsPUIncBDTCutBO.nDiMuFullSelJERDown-> Fill(0.);
     // =========================================================================
 
 
@@ -1243,6 +1297,9 @@ int main(int argc, char *argv[])
 
     if ( (selectionMaskJECUp   & incPresel_isBE_passIncBDTCut) == incPresel_isBE_passIncBDTCut ) histsPUIncBDTCutBE.nDiMuFullSelJECUp  -> Fill(0.);  
     if ( (selectionMaskJECDown & incPresel_isBE_passIncBDTCut) == incPresel_isBE_passIncBDTCut ) histsPUIncBDTCutBE.nDiMuFullSelJECDown-> Fill(0.);
+
+    if ( (selectionMaskJERUp   & incPresel_isBE_passIncBDTCut) == incPresel_isBE_passIncBDTCut ) histsPUIncBDTCutBE.nDiMuFullSelJERUp  -> Fill(0.);  
+    if ( (selectionMaskJERDown & incPresel_isBE_passIncBDTCut) == incPresel_isBE_passIncBDTCut ) histsPUIncBDTCutBE.nDiMuFullSelJERDown-> Fill(0.);
     // =========================================================================
 
 
@@ -1262,6 +1319,9 @@ int main(int argc, char *argv[])
 
     if ( (selectionMaskJECUp   & incPresel_isOO_passIncBDTCut) == incPresel_isOO_passIncBDTCut ) histsPUIncBDTCutOO.nDiMuFullSelJECUp  -> Fill(0.);  
     if ( (selectionMaskJECDown & incPresel_isOO_passIncBDTCut) == incPresel_isOO_passIncBDTCut ) histsPUIncBDTCutOO.nDiMuFullSelJECDown-> Fill(0.);
+
+    if ( (selectionMaskJERUp   & incPresel_isOO_passIncBDTCut) == incPresel_isOO_passIncBDTCut ) histsPUIncBDTCutOO.nDiMuFullSelJERUp  -> Fill(0.);  
+    if ( (selectionMaskJERDown & incPresel_isOO_passIncBDTCut) == incPresel_isOO_passIncBDTCut ) histsPUIncBDTCutOO.nDiMuFullSelJERDown-> Fill(0.);
     // =========================================================================
 
 
@@ -1281,6 +1341,9 @@ int main(int argc, char *argv[])
 
     if ( (selectionMaskJECUp   & incPresel_isOE_passIncBDTCut) == incPresel_isOE_passIncBDTCut ) histsPUIncBDTCutOE.nDiMuFullSelJECUp  -> Fill(0.);  
     if ( (selectionMaskJECDown & incPresel_isOE_passIncBDTCut) == incPresel_isOE_passIncBDTCut ) histsPUIncBDTCutOE.nDiMuFullSelJECDown-> Fill(0.);
+
+    if ( (selectionMaskJERUp   & incPresel_isOE_passIncBDTCut) == incPresel_isOE_passIncBDTCut ) histsPUIncBDTCutOE.nDiMuFullSelJERUp  -> Fill(0.);  
+    if ( (selectionMaskJERDown & incPresel_isOE_passIncBDTCut) == incPresel_isOE_passIncBDTCut ) histsPUIncBDTCutOE.nDiMuFullSelJERDown-> Fill(0.);
     // =========================================================================
 
 
@@ -1300,6 +1363,9 @@ int main(int argc, char *argv[])
 
     if ( (selectionMaskJECUp   & incPresel_isEE_passIncBDTCut) == incPresel_isEE_passIncBDTCut )  histsPUIncBDTCutEE.nDiMuFullSelJECUp  -> Fill(0.);  
     if ( (selectionMaskJECDown & incPresel_isEE_passIncBDTCut) == incPresel_isEE_passIncBDTCut )  histsPUIncBDTCutEE.nDiMuFullSelJECDown-> Fill(0.);
+
+    if ( (selectionMaskJERUp   & incPresel_isEE_passIncBDTCut) == incPresel_isEE_passIncBDTCut )  histsPUIncBDTCutEE.nDiMuFullSelJERUp  -> Fill(0.);  
+    if ( (selectionMaskJERDown & incPresel_isEE_passIncBDTCut) == incPresel_isEE_passIncBDTCut )  histsPUIncBDTCutEE.nDiMuFullSelJERDown-> Fill(0.);
     // =========================================================================
 
 
@@ -1319,6 +1385,9 @@ int main(int argc, char *argv[])
 
     if ( (selectionMaskJECUp   & incPresel_isNotBB_passIncBDTCut) == incPresel_isNotBB_passIncBDTCut ) histsPUIncBDTCutNotBB.nDiMuFullSelJECUp  -> Fill(0.);  
     if ( (selectionMaskJECDown & incPresel_isNotBB_passIncBDTCut) == incPresel_isNotBB_passIncBDTCut ) histsPUIncBDTCutNotBB.nDiMuFullSelJECDown-> Fill(0.);
+
+    if ( (selectionMaskJERUp   & incPresel_isNotBB_passIncBDTCut) == incPresel_isNotBB_passIncBDTCut ) histsPUIncBDTCutNotBB.nDiMuFullSelJERUp  -> Fill(0.);  
+    if ( (selectionMaskJERDown & incPresel_isNotBB_passIncBDTCut) == incPresel_isNotBB_passIncBDTCut ) histsPUIncBDTCutNotBB.nDiMuFullSelJERDown-> Fill(0.);
     // =========================================================================
 
 
@@ -1427,6 +1496,11 @@ HistStruct::HistStruct()
   nDiMuFullSelJECDown = new TH1F("nDiMuFullSelJECDown","Counting Reco Events after Full Sel. and JEC -1 sigma",nEffBins,minEff,maxEff);
   histVec.push_back(nDiMuFullSelJECDown);
 
+  // JER
+  nDiMuFullSelJERUp   = new TH1F("nDiMuFullSelJERUp","Counting Reco Events after Full Sel. and JER +1 sigma",nEffBins,minEff,maxEff);
+  histVec.push_back(nDiMuFullSelJERUp);
+  nDiMuFullSelJERDown = new TH1F("nDiMuFullSelJERDown","Counting Reco Events after Full Sel. and JER -1 sigma",nEffBins,minEff,maxEff);
+  histVec.push_back(nDiMuFullSelJERDown);
 
 }
 

@@ -139,8 +139,44 @@ float resolutionBias(float eta)
 }
 
 // from Michele for systematic uncertainty
-// the function below can be used to correct the jet resolution
-// as well
+float jerCorr(float ptold, float oldgenpt, float etaold){
+
+  float corrpt=ptold;
+  std::cout << "ptold=" << ptold << std::endl;
+  std::cout << "oldgenpt=" << oldgenpt << std::endl;
+  std::cout << "(fabs(ptold - oldgenpt)/ oldgenpt)= " << (fabs(ptold - oldgenpt)/ oldgenpt) << std::endl;
+
+  if (oldgenpt>15. && (fabs(ptold - oldgenpt)/ oldgenpt)<0.5) {
+    if (fabs(etaold)<1.1){
+      Float_t scale  = 0.05;
+      Float_t deltapt = (ptold - oldgenpt)*scale;
+      Float_t ptscale = TMath::Max(float(0.0),(ptold+deltapt)/ptold);
+      corrpt *= ptscale;
+      std::cout << " 1 ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;                                    
+
+    }
+    else if (fabs(etaold)>1.1 && fabs(etaold)<2.5){
+      Float_t scale  = 0.10;
+      Float_t deltapt = (ptold - oldgenpt)*scale;
+      Float_t ptscale = TMath::Max(float(0.0),(ptold+deltapt)/ptold);
+      corrpt *= ptscale;
+      std::cout << " 2 ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;                                    
+    } else  if (fabs(etaold)>2.5 && fabs(etaold)<5.0){
+      Float_t scale  = 0.30;
+      Float_t deltapt = (ptold - oldgenpt)*scale;
+      Float_t ptscale = TMath::Max(float(0.0),(ptold+deltapt)/ptold);
+      //Float_t ptscale =  (ptold+deltapt)/ptold;
+      corrpt *= ptscale;
+      std::cout << " 3 ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;
+    }
+    //std::cout << " final ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;
+  }
+
+  return corrpt;
+}
+
+
+
 float corrPtUp(float ptold, float oldgenpt, float etaold){
 
   float corrpt=ptold;
@@ -150,24 +186,23 @@ float corrPtUp(float ptold, float oldgenpt, float etaold){
       Float_t deltapt = (ptold- oldgenpt)*scale;
       Float_t ptscale = TMath::Max(float(0.0),(ptold+deltapt)/ptold);
       corrpt *= ptscale;
-      //std::cout << " 1 ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;                                    
-
+      //std::cout << " 1 ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;
     }
     else if (fabs(etaold)>1.1 && fabs(etaold)<2.5){
       Float_t scale  = 0.10;
       Float_t deltapt = (ptold- oldgenpt)*scale;
       Float_t ptscale = TMath::Max(float(0.0),(ptold+deltapt)/ptold);
       corrpt *= ptscale;
-      //std::cout << " 2 ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;                                    
+      //std::cout << " 2 ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl; 
     } else  if (fabs(etaold)>2.5 && fabs(etaold)<5.0){
       Float_t scale  = 0.20;
       Float_t deltapt = (ptold- oldgenpt)*scale;
       Float_t ptscale = TMath::Max(float(0.0),(ptold+deltapt)/ptold);
-      //Float_t ptscale =  (ptold+deltapt)/ptold;                                                                                                                           
+      //Float_t ptscale =  (ptold+deltapt)/ptold;
       corrpt *= ptscale;
-      //std::cout << " 3 ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;                                    
+      std::cout << " 3 ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;
     }
-    //std::cout << " final ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;                                  
+    //std::cout << " final ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;
   }
 
   return corrpt;
@@ -199,7 +234,7 @@ float corrPtDown(float ptold, float oldgenpt, float etaold){
       Float_t ptscale = TMath::Max(float(0.0),(ptold+deltapt)/ptold);
       //Float_t ptscale =  (ptold+deltapt)/ptold;                                                                                                                           
       corrpt *= ptscale;
-      //std::cout << " 3 ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;                                    
+      std::cout << " 3 ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;                                    
     }
     //std::cout << " final ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;                                  
   }
@@ -214,7 +249,8 @@ int whichSelection(_MuonInfo& mu1, _MuonInfo& mu2,
                    _PFJetInfo jets,
                    bool passIncBDTCut, // keeping the complication of the 
                    bool passVBFBDTCut, // BDT out of the function
-                   double  sigmasJEC
+                   double  sigmasJEC,
+                   double  jerUncertainty // 0 = no corr (default); +/-1 pos/neg corr.
                    )
 {
   
@@ -251,24 +287,47 @@ int whichSelection(_MuonInfo& mu1, _MuonInfo& mu2,
   
   bool goodJets = false;
 
-  double jetPt0 = jets.pt[0];//corrPtUp(jets.pt[0],jets.genPt[0],jets.eta[0]);
-  double jetPt1 = jets.pt[1];//corrPtUp(jets.pt[1],jets.genPt[1],jets.eta[1]);
+  // JER from corrPtUp
+  double jetPt0 = jerCorr(jets.pt[0],jets.genPt[0],jets.eta[0]);
+  double jetPt1 = jerCorr(jets.pt[1],jets.genPt[1],jets.eta[1]);
 
-  //
-  //
+  //jets.pt[0];//
+  //jets.pt[1];//
 
-  if (sigmasJEC != 0 && jets.jecUnc[0] > 0. && jets.jecUnc[0] < 1.) jetPt0 = jets.pt[0] + (sigmasJEC*jets.jecUnc[0]*jets.pt[0]);//jetPt0 += (sigmasJEC*jets.jecUnc[0]*jetPt0);
-  if (sigmasJEC != 0 && jets.jecUnc[1] > 0. && jets.jecUnc[1] < 1.) jetPt1 = jets.pt[1] + (sigmasJEC*jets.jecUnc[1]*jets.pt[1]);//jetPt1 += (sigmasJEC*jets.jecUnc[1]*jetPt1);
-  
-  //
-  //
-  
-  if (sigmasJEC > 0) {
-    std::cout << "jetPt0 = " << jets.pt[0] << ", jecUnc=" << jets.jecUnc[0] << ", corrected = " << jetPt0 << std::endl;
-    std::cout << "jetPt1 = " << jets.pt[1] << ", jecUnc=" << jets.jecUnc[1] << ", corrected = " << jetPt1 << std::endl;
+  if (jerUncertainty > 0.) {
+    jetPt0 = corrPtUp(jetPt0,jets.genPt[0],jets.eta[0]);
+    jetPt1 = corrPtUp(jetPt1,jets.genPt[1],jets.eta[1]);
   }
+  if (jerUncertainty < 0.) {
+     jetPt0 = corrPtDown(jetPt0,jets.genPt[0],jets.eta[0]);
+     jetPt1 = corrPtDown(jetPt1,jets.genPt[1],jets.eta[1]);
+  }
+  
+//   std::cout << "jetPt0 = " << jets.pt[0] 
+//             << ", jerCorr=" << jerCorr(jets.pt[0],jets.genPt[0],jets.eta[0]) 
+//             << ", jetGen=" << jets.genPt[0]
+//             << ", Up = " << corrPtUp(jets.pt[0],jets.genPt[0],jets.eta[0]) 
+//             << ", Down = " << corrPtDown(jets.pt[0],jets.genPt[0],jets.eta[0]) << std::endl;
 
-  if(jets.nJets>=2 && jetPt0>30.0 && jetPt1>30.0) goodJets = true;
+//   std::cout << "jetPt1 = " << jets.pt[1] 
+//             << ", jerCorr=" << jerCorr(jets.pt[1],jets.genPt[1],jets.eta[1]) 
+//             << ", jetGen=" << jets.genPt[1]
+//             << ", Up = " << corrPtUp(jets.pt[1],jets.genPt[1],jets.eta[1]) 
+//             << ", Down = " << corrPtDown(jets.pt[1],jets.genPt[1],jets.eta[1]) << std::endl;
+
+
+  if (sigmasJEC != 0 && jets.jecUnc[0] > 0. && jets.jecUnc[0] < 1.) jetPt0 += (sigmasJEC*jets.jecUnc[0]*jetPt0);
+  if (sigmasJEC != 0 && jets.jecUnc[1] > 0. && jets.jecUnc[1] < 1.) jetPt1 += (sigmasJEC*jets.jecUnc[1]*jetPt1);
+  
+  //jetPt0 = jets.pt[0] + (sigmasJEC*jets.jecUnc[0]*jets.pt[0]);//
+  //jetPt1 = jets.pt[1] + (sigmasJEC*jets.jecUnc[1]*jets.pt[1]);//
+  
+  //if (sigmasJEC > 0) {
+  //  std::cout << "jetPt0 = " << jets.pt[0] << ", jecUnc=" << jets.jecUnc[0] << ", corrected = " << jetPt0 << std::endl;
+  //  std::cout << "jetPt1 = " << jets.pt[1] << ", jecUnc=" << jets.jecUnc[1] << ", corrected = " << jetPt1 << std::endl;
+  //}
+
+  if(jets.nJets>=2 && jetPt0>30.0 && jetPt1>30.0 && jets.eta[0]<4.7 && jets.eta[1]<4.7) goodJets = true;
 
   
   double    deltaEtaJets = -999;
@@ -304,12 +363,21 @@ int whichSelection(_MuonInfo& mu1, _MuonInfo& mu2,
       for(unsigned iJet=2; (iJet < jets.nJets && iJet < 10);iJet++)
       {
 
-        double jetPt = jets.pt[iJet];//corrPtUp(jets.pt[iJet],jets.genPt[iJet],jets.eta[iJet]);
-        //
+        double jetPt = jerCorr(jets.pt[iJet],jets.genPt[iJet],jets.eta[iJet]);
+        //jets.pt[iJet];//
+
+        if (jerUncertainty > 0.) {
+          jetPt = corrPtUp(jetPt,jets.genPt[iJet],jets.eta[iJet]);
+        }
+        if (jerUncertainty < 0.) {
+          jetPt = corrPtDown(jetPt,jets.genPt[iJet],jets.eta[iJet]);
+        }
 
         if (sigmasJEC != 0        && 
             jets.jecUnc[iJet] > 0 &&
-            jets.jecUnc[iJet] < 1  ) jetPt = jets.pt[iJet] + (sigmasJEC*jets.jecUnc[iJet]*jets.pt[iJet]);//jetPt += (sigmasJEC*jets.jecUnc[iJet]*jetPt);
+            jets.jecUnc[iJet] < 1  ) jetPt += (sigmasJEC*jets.jecUnc[iJet]*jetPt);
+
+        //jetPt = jets.pt[iJet] + (sigmasJEC*jets.jecUnc[iJet]*jets.pt[iJet]);//
 
 //         if (sigmasJEC > 0) {
 //           std::cout << "jetPt+ = " << jets.pt[iJet] << ", jecUnc=" << jets.jecUnc[iJet] << ", corrected = " << jetPt << std::endl;
@@ -319,7 +387,7 @@ int whichSelection(_MuonInfo& mu1, _MuonInfo& mu2,
 //         }
 
 
-        if(jetPt > 30.0)
+        if(jetPt > 30.0 && jets.eta[iJet] < 4.7)
         {
           if(jets.eta[iJet] < etaMax && jets.eta[iJet] > etaMin)
           {
@@ -382,8 +450,8 @@ int whichSelection(_MuonInfo& mu1, _MuonInfo& mu2,
   bool isvbfPreselection = false;
   if ( diJetMass>300.0  && 
        deltaEtaJets>3.0 && 
-       productEtaJets<0.0 && 
-                            nJetsInRapidityGap == 0 ) isvbfPreselection = true;
+       productEtaJets<0.0 /*&& 
+                            nJetsInRapidityGap == 0 */) isvbfPreselection = true;
   
   if (isvbfPreselection) code += vbfPresel;
   else                   code += incPresel;
