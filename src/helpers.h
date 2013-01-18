@@ -50,6 +50,7 @@ bool isHltMatched(_MuonInfo& muon1, _MuonInfo& muon2, std::vector<int> allowedPa
 bool isHltMatched(_MuonInfo& muon1, std::vector<int> allowedPaths);
 
 float resolutionBias(float eta);
+float jerCorr   (float ptold, float oldgenpt, float etaold);
 float corrPtUp  (float ptold, float oldgenpt, float etaold);
 float corrPtDown(float ptold, float oldgenpt, float etaold);
 
@@ -59,6 +60,7 @@ int whichSelection(_MuonInfo& mu1, _MuonInfo& mu2,
                    _PFJetInfo jets,
                    bool passIncBDTCut,
                    bool passVBFBDTCut,
-                   double sigmasJEC=0);
+                   double sigmasJEC=0,
+                   double jerUncertainty=0);
 
 #endif
