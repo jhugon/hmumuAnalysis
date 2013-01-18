@@ -717,7 +717,7 @@ int main(int argc, char *argv[])
 
     hists.countsHist->Fill(1.0, weight);
 
-    if (!isHltMatched(reco1,reco2,allowedHLTPaths) && isData)
+    if (!isHltMatched(reco1,reco2,allowedHLTPaths))
         continue;
 
     hists.countsHist->Fill(2.0, weight);
