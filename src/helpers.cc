@@ -142,9 +142,9 @@ float resolutionBias(float eta)
 float jerCorr(float ptold, float oldgenpt, float etaold){
 
   float corrpt=ptold;
-  std::cout << "ptold=" << ptold << std::endl;
-  std::cout << "oldgenpt=" << oldgenpt << std::endl;
-  std::cout << "(fabs(ptold - oldgenpt)/ oldgenpt)= " << (fabs(ptold - oldgenpt)/ oldgenpt) << std::endl;
+  //std::cout << "ptold=" << ptold << std::endl;
+  //std::cout << "oldgenpt=" << oldgenpt << std::endl;
+  //std::cout << "(fabs(ptold - oldgenpt)/ oldgenpt)= " << (fabs(ptold - oldgenpt)/ oldgenpt) << std::endl;
 
   if (oldgenpt>15. && (fabs(ptold - oldgenpt)/ oldgenpt)<0.5) {
     if (fabs(etaold)<1.1){
@@ -152,7 +152,7 @@ float jerCorr(float ptold, float oldgenpt, float etaold){
       Float_t deltapt = (ptold - oldgenpt)*scale;
       Float_t ptscale = TMath::Max(float(0.0),(ptold+deltapt)/ptold);
       corrpt *= ptscale;
-      std::cout << " 1 ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;                                    
+//      std::cout << " 1 ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;                                    
 
     }
     else if (fabs(etaold)>1.1 && fabs(etaold)<2.5){
@@ -160,14 +160,14 @@ float jerCorr(float ptold, float oldgenpt, float etaold){
       Float_t deltapt = (ptold - oldgenpt)*scale;
       Float_t ptscale = TMath::Max(float(0.0),(ptold+deltapt)/ptold);
       corrpt *= ptscale;
-      std::cout << " 2 ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;                                    
+//      std::cout << " 2 ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;                                    
     } else  if (fabs(etaold)>2.5 && fabs(etaold)<5.0){
       Float_t scale  = 0.30;
       Float_t deltapt = (ptold - oldgenpt)*scale;
       Float_t ptscale = TMath::Max(float(0.0),(ptold+deltapt)/ptold);
       //Float_t ptscale =  (ptold+deltapt)/ptold;
       corrpt *= ptscale;
-      std::cout << " 3 ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;
+//      std::cout << " 3 ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;
     }
     //std::cout << " final ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;
   }

@@ -925,6 +925,8 @@ int main(int argc, char *argv[])
     // Jet Part
     for(unsigned iJet=0; (iJet < jets.nJets && iJet < 10);iJet++)
     {
+        if (jets.genPt[iJet]>0.0 && jets.pt[iJet]>15.)
+          jets.pt[iJet] = jerCorr(jets.pt[iJet],jets.genPt[iJet],jets.eta[iJet]);
         if(jets.pt[iJet] > 30.0 && fabs(jets.eta[iJet])<4.7)
         {
           mva.nJets++;
