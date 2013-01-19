@@ -141,6 +141,9 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
 #ifdef PTMISSINMVA
           ("ptmiss",program_options::value<int>(),"")
 #endif
+          ("puJetIDSimpleDiscJet1",program_options::value<int>(),"")
+          ("puJetIDSimpleDiscJet2",program_options::value<int>(),"")
+          ("puJetIDSimpleDiscJet3",program_options::value<int>(),"")
       ;
     
       program_options::variables_map optionMap;
@@ -316,6 +319,21 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
       else
         reader->AddSpectator("ptmiss",&ptmiss);
 #endif
+
+      if (optionMap.count("puJetIDSimpleDiscJet1") && optionMap["puJetIDSimpleDiscJet1"].as<int>() == 1)
+        reader->AddVariable("puJetIDSimpleDiscJet1",&puJetIDSimpleDiscJet1);
+      else
+        reader->AddSpectator("puJetIDSimpleDiscJet1",&puJetIDSimpleDiscJet1);
+
+      if (optionMap.count("puJetIDSimpleDiscJet2") && optionMap["puJetIDSimpleDiscJet2"].as<int>() == 1)
+        reader->AddVariable("puJetIDSimpleDiscJet2",&puJetIDSimpleDiscJet2);
+      else
+        reader->AddSpectator("puJetIDSimpleDiscJet2",&puJetIDSimpleDiscJet2);
+
+      if (optionMap.count("puJetIDSimpleDiscJet3") && optionMap["puJetIDSimpleDiscJet3"].as<int>() == 1)
+        reader->AddVariable("puJetIDSimpleDiscJet3",&puJetIDSimpleDiscJet3);
+      else
+        reader->AddSpectator("puJetIDSimpleDiscJet3",&puJetIDSimpleDiscJet3);
 
       std::string weightsDirName;
       if (optionMap.count("weightsDirName"))

@@ -229,6 +229,9 @@ int main(int argc, char *argv[])
 #ifdef PTMISSINMVA
         ("ptmiss",program_options::value<int>(),"")
 #endif
+        ("puJetIDSimpleDiscJet1",program_options::value<int>(),"")
+        ("puJetIDSimpleDiscJet2",program_options::value<int>(),"")
+        ("puJetIDSimpleDiscJet3",program_options::value<int>(),"")
     ;
 
     program_options::variables_map optionMap;
@@ -401,6 +404,21 @@ int main(int argc, char *argv[])
     else
       factory->AddSpectator("ptmiss","","",'F');
 #endif
+
+    if (optionMap.count("puJetIDSimpleDiscJet1") && optionMap["puJetIDSimpleDiscJet1"].as<int>() == 1)
+      factory->AddVariable("puJetIDSimpleDiscJet1","","",'F');
+    else
+      factory->AddSpectator("puJetIDSimpleDiscJet1","","",'F');
+
+    if (optionMap.count("puJetIDSimpleDiscJet2") && optionMap["puJetIDSimpleDiscJet2"].as<int>() == 1)
+      factory->AddVariable("puJetIDSimpleDiscJet2","","",'F');
+    else
+      factory->AddSpectator("puJetIDSimpleDiscJet2","","",'F');
+
+    if (optionMap.count("puJetIDSimpleDiscJet3") && optionMap["puJetIDSimpleDiscJet3"].as<int>() == 1)
+      factory->AddVariable("puJetIDSimpleDiscJet3","","",'F');
+    else
+      factory->AddSpectator("puJetIDSimpleDiscJet3","","",'F');
   
     std::string weightsDirName;
     if (optionMap.count("weightsDirName"))
