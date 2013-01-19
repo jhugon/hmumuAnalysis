@@ -37,10 +37,10 @@
 
 #define JETPUID
 #define PUREWEIGHT
-//#define SMEARING
+#define SMEARING
 #define ISMEAR 1
 //#define ROCHESTER
-//#define MUSCLEFIT
+#define MUSCLEFIT
 
 #ifdef ROCHESTER
 #include "rochester/rochcor2012.h"
@@ -500,22 +500,26 @@ int main(int argc, char *argv[])
   // Muon Momentum Corrections
 
 #ifdef MUSCLEFIT
-  std::string mfInFile;
+  MuScleFitCorrector* mfCorr;
+  TString mfInFile;
   if (isData)
   {
     if(runPeriod == "8TeV")
-      mfInFile = "musclefit/MuScleFit_2011_DATA_42X.txt";
-    else
       mfInFile = "musclefit/MuScleFit_2012_DATA_53X.txt";
-  }
-  else
-  {
-    if(runPeriod == "7TeV")
-      mfInFile = "musclefit/MuScleFit_2011_MC_42X.txt";
     else
-      mfInFile = "musclefit/MuScleFit_2012_MC_52X.txt";
+      mfInFile = "musclefit/MuScleFit_2011_DATA_42X.txt";
+
+    mfCorr = new MuScleFitCorrector(mfInFile);
   }
-  MuScleFitCorrector* mfCorr = new MuScleFitCorrector(mfInFile);
+//  else
+//  {
+//    if(runPeriod == "7TeV")
+//      mfInFile = "musclefit/MuScleFit_2011_MC_42X.txt";
+//    else
+//      mfInFile = "musclefit/MuScleFit_2012_MC_52X.txt";
+//
+//    mfCorr = new MuScleFitCorrector(mfInFile);
+//  }
 #endif
 #ifdef ROCHESTER
   rochcor2012* rCorr12 = new rochcor2012();
@@ -565,24 +569,27 @@ int main(int argc, char *argv[])
     reco1Vec.SetPtEtaPhiM(reco1.pt,reco1.eta,reco1.phi,0.105);
     reco2Vec.SetPtEtaPhiM(reco2.pt,reco2.eta,reco2.phi,0.105);
 #ifdef MUSCLEFIT
-    TLorentzVector reco1Cor;
-    TLorentzVector reco2Cor;
-    reco1Cor.SetPtEtaPhiM(reco1.pt,reco1.eta,reco1.phi,0.105);
-    reco2Cor.SetPtEtaPhiM(reco2.pt,reco2.eta,reco2.phi,0.105);
-    mfCorr->applyPtCorrection(reco1Cor,reco1.charge);
-    mfCorr->applyPtCorrection(reco2Cor,reco2.charge);
-    //if (!isData && runPeriod=="8TeV")
-    //  mfCorr->applyPtSmearing(reco1Cor,reco1.charge);
-    //  mfCorr->applyPtSmearing(reco2Cor,reco2.charge);
-    TLorentzVector diMuonCor = reco1Cor + reco2Cor;
-    reco1.pt = reco1Cor.Pt();
-    reco2.pt = reco2Cor.Pt();
-    recoCandMass = diMuonCor.M();
-    recoCandPt = diMuonCor.Pt();
-    recoCandY = diMuonCor.Rapidity();
-    recoCandPhi = diMuonCor.Phi();
-    reco1Vec = recoCor1;
-    reco2Vec = recoCor2;
+    if (isData && runPeriod == "8TeV")
+    {
+      TLorentzVector reco1Cor;
+      TLorentzVector reco2Cor;
+      reco1Cor.SetPtEtaPhiM(reco1.pt,reco1.eta,reco1.phi,0.105);
+      reco2Cor.SetPtEtaPhiM(reco2.pt,reco2.eta,reco2.phi,0.105);
+      mfCorr->applyPtCorrection(reco1Cor,reco1.charge);
+      mfCorr->applyPtCorrection(reco2Cor,reco2.charge);
+      //if (!isData && runPeriod=="8TeV")
+      //  mfCorr->applyPtSmearing(reco1Cor,reco1.charge);
+      //  mfCorr->applyPtSmearing(reco2Cor,reco2.charge);
+      TLorentzVector diMuonCor = reco1Cor + reco2Cor;
+      reco1.pt = reco1Cor.Pt();
+      reco2.pt = reco2Cor.Pt();
+      recoCandMass = diMuonCor.M();
+      recoCandPt = diMuonCor.Pt();
+      recoCandY = diMuonCor.Rapidity();
+      recoCandPhi = diMuonCor.Phi();
+      reco1Vec = reco1Cor;
+      reco2Vec = reco2Cor;
+    }
 #endif
 #ifdef ROCHESTER
     TLorentzVector reco1Cor;
@@ -635,7 +642,7 @@ int main(int argc, char *argv[])
     float mDiMuResASigDown = recoCandMass;
 
 #ifdef SMEARING
-    if(isSignal)
+    if(isSignal && runPeriod == "8TeV")
     {
       if(reco1GenPostFSR.pt<0.)
         cout << "Muon 1 Post FSR not valid!\n";
