@@ -1060,7 +1060,7 @@ int main(int argc, char *argv[])
     if (trainingTreeRun) //Skip Filling of histos when training Tree
         continue;
 
-    bool vbfPreselection = mva.mDiJet>300.0 && mva.deltaEtaJets>3.0 && mva.productEtaJets<0.0 && mva.nJetsInRapidityGap == 0;
+    bool vbfPreselection = mva.mDiJet>300.0 && mva.deltaEtaJets>3.0 && mva.productEtaJets<0.0;
     //if(vbfPreselection)
     //  std::cout << "VBF Preselected!!";
     mva.vbfPreselection = vbfPreselection;

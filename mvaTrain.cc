@@ -432,9 +432,9 @@ int main(int argc, char *argv[])
 
     std::string cuts;
     if (optionMap.count("vbfSelection") && optionMap["vbfSelection"].as<int>() == 1)
-      cuts = "mDiJet>300.0 && deltaEtaJets>3.0 && productEtaJets<0.0 && nJetsInRapidityGap == 0";
+      cuts = "mDiJet>300.0 && deltaEtaJets>3.0 && productEtaJets<0.0";
     else
-      cuts = "!(mDiJet>300.0 && deltaEtaJets>3.0 && productEtaJets<0.0 && nJetsInRapidityGap == 0)";
+      cuts = "!(mDiJet>300.0 && deltaEtaJets>3.0 && productEtaJets<0.0)";
 
    if (optionMap.count("sigFile")<1)
    {
