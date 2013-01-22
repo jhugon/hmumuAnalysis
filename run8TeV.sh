@@ -4,7 +4,7 @@ nice scons -j4
 
 TRAININGTREES="true"
 TRAIN="true"
-OPTIONS=" -m 1000"
+#OPTIONS=" -m 1000"
 
 DIR=/data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_3_patch3/V00-01-01/
 
