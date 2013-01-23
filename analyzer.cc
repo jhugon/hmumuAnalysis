@@ -569,6 +569,9 @@ int main(int argc, char *argv[])
     timeReadingAll += difftime(timeStopReading,timeStartReading);
     if (i % reportEach == 0) cout << "Event: " << i << endl;
 
+    if(reco1.pt<0. || reco2.pt<0.)
+        continue;
+
     double weight = 1.0;
     if (isSignal)
     {
