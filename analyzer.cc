@@ -35,6 +35,9 @@
 
 #include "annaCalibCode/SmearingTool.h"
 
+#include "src/ScaleFactors.h"
+#include "src/ScaleFactors_2011.h"
+
 #define JETPUID
 #define PUREWEIGHT
 #define SMEARING
@@ -535,6 +538,8 @@ int main(int argc, char *argv[])
 
   const double SQRT2 = sqrt(2);
 
+  TRandom3 randomForSF(123412845);
+
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -563,6 +568,16 @@ int main(int argc, char *argv[])
     time_t timeStopReading = time(NULL);
     timeReadingAll += difftime(timeStopReading,timeStartReading);
     if (i % reportEach == 0) cout << "Event: " << i << endl;
+
+    double weight = 1.0;
+    if (isSignal)
+    {
+        double randForSF = randomForSF.Rndm();
+        if (runPeriod == "7TeV")
+            weight *= weightFromSF_2011(randForSF,reco1,reco2,0.,0.,0.);
+        else
+            weight *= weightFromSF(randForSF,reco1,reco2,0.,0.,0.);
+    }
 
     TLorentzVector reco1Vec;
     TLorentzVector reco2Vec;
@@ -709,11 +724,10 @@ int main(int argc, char *argv[])
         blind = true;
 #endif
 
-    double weight = 1.0;
 #ifdef PUREWEIGHT
     if (!isData)
     {
-      weight = lumiWeights.weight(nPU);
+      weight *= lumiWeights.weight(nPU);
     }
 #endif
 
