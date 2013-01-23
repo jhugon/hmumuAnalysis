@@ -484,7 +484,7 @@ int main(int argc, char *argv[])
   //for PU reweighting
 
 #ifdef PUREWEIGHT
-  reweight::LumiReWeighting lumiWeights("pileupDists/PileUpHistMC2012Summer50nsPoissonOOTPU.root","pileupDists/PileUpHist2012ABC.root","pileup","pileup");
+  reweight::LumiReWeighting lumiWeights("pileupDists/PileUpHistMC2012Summer50nsPoissonOOTPU.root","pileupDists/PileUpHist2012ABCD.root","pileup","pileup");
   if (runPeriod == "7TeV")
   {
     cout << "Using 2011AB PU reweighting\n";
@@ -492,7 +492,7 @@ int main(int argc, char *argv[])
   }
   else
   {
-    cout << "Using 2012ABC PU reweighting\n";
+    cout << "Using 2012ABCD PU reweighting\n";
   }
 #endif
 

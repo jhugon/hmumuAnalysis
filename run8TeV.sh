@@ -76,7 +76,8 @@ nice ./analyzer SingleMuRun2012Av1.root $DIR/NtuplesDataSingleMuRun2012A-13Jul20
 nice ./analyzer SingleMuRun2012Av1Recover.root $DIR/NtuplesDataSingleMuRun2012A-recover-06Aug2012-v1/minimal/SingleMuRun2012A-recover-06Aug2012-v1_minimal.root -r 8TeV $OPTIONS 
 nice ./analyzer SingleMuRun2012Bv1.root $DIR/NtuplesDataSingleMuRun2012B-13Jul2012-v1/minimal/SingleMuRun2012B-13Jul2012-v1_minimal.root -r 8TeV $OPTIONS 
 nice ./analyzer SingleMuRun2012Cv1.root $DIR/NtuplesDataSingleMuRun2012C-24Aug2012-v1/minimal/SingleMuRun2012C-24Aug2012-v1_minimal.root -r 8TeV $OPTIONS 
-nice ./analyzer SingleMuRun2012Cv2.root $DIR/NtuplesDataSingleMuRun2012C-PromptReco-v2/minimal/SingleMuRun2012C-PromptReco-v2_minimal_2.root -r 8TeV $OPTIONS 
+nice ./analyzer SingleMuRun2012Cv2.root $DIR/NtuplesDataSingleMuRun2012C-PromptReco-v2/minimal/SingleMuRun2012C-PromptReco-v2_minimal.root -r 8TeV $OPTIONS 
+nice ./analyzer SingleMuRun2012D.root $DIR/NtuplesDataSingleMuRun2012D-PromptReco-v1/minimal/SingleMuRun2012D-PromptReco-v1_minimal.root -r 8TeV $OPTIONS 
 
 wait
 
