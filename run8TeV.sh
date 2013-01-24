@@ -20,7 +20,7 @@ echo "#######################"
 
 nice ./analyzer DYJetsToLL_8TeV.root $DIR/NtuplesMCDYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/DYJetsToLL_minimal.root --trainingTree backgroundTreeDY_8TeV.root -r 8TeV $OPTIONS >& log_DYJets < /dev/null &
 #nice ./analyzer DYToMuMu_8TeV.root $DIR/NtuplesMCDYToMuMu_M-20_CT10_TuneZ2star_v2_8TeV-powheg-pythia6_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/DYToMuMu_minimal.root --trainingTree backgroundTreeDY_8TeV.root -r 8TeV $OPTIONS  >& log2 &
-nice ./analyzer ttbar_8TeV.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_5/V00-01-10/NtuplesMCTTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola_Summer12_DR53X-PU_S10_START53_V7C-v1/minimal/TTJets_minimal.root --trainingTree backgroundTreeTT_8TeV.root -r 8TeV $OPTIONS  >& log_TTJets < /dev/null&
+nice ./analyzer ttbar_8TeV.root $DIR/NtuplesMCTTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola_Summer12_DR53X-PU_S10_START53_V7C-v1/minimal/TTJets_minimal.root --trainingTree backgroundTreeTT_8TeV.root -r 8TeV $OPTIONS  >& log_TTJets < /dev/null&
 
 nice ./analyzer ggHmumu125_8TeV.root $DIR/NtuplesMCPrivateSignal/ggHmumu8TeV125.root --trainingTree signalTreeGG_8TeV.root -r 8TeV $OPTIONS  >& log2 &
 nice ./analyzer vbfHmumu125_8TeV.root $DIR/NtuplesMCPrivateSignal/vbfHmumu8TeV125.root --trainingTree signalTreeVBF_8TeV.root -r 8TeV $OPTIONS 
@@ -58,7 +58,7 @@ fi
 # Run with full MVA
 nice ./analyzer DYJetsToLL_8TeV.root $DIR/NtuplesMCDYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/DYJetsToLL_minimal.root -r 8TeV $OPTIONS  >& log2 &
 #nice ./analyzer DYToMuMu_8TeV.root $DIR/NtuplesMCDYToMuMu_M-20_CT10_TuneZ2star_v2_8TeV-powheg-pythia6_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/DYToMuMu_minimal.root -r 8TeV $OPTIONS  >& log2 &
-nice ./analyzer ttbar_8TeV.root $DIR/NtuplesMCTTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/TTJets_minimal.root -r 8TeV $OPTIONS  >& log2 &
+nice ./analyzer ttbar_8TeV.root $DIR/NtuplesMCTTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola_Summer12_DR53X-PU_S10_START53_V7C-v1/minimal/TTJets_minimal.root -r 8TeV $OPTIONS  >& log2 &
 
 nice ./analyzer ggHmumu125_8TeV.root $DIR/NtuplesMCPrivateSignal/ggHmumu8TeV125.root -r 8TeV $OPTIONS  >& log2 &
 nice ./analyzer vbfHmumu125_8TeV.root $DIR/NtuplesMCPrivateSignal/vbfHmumu8TeV125.root -r 8TeV $OPTIONS 
