@@ -3,7 +3,7 @@
 nice scons -j4
 
 #TRAININGTREES="true"
-TRAIN="true"
+#TRAIN="true"
 #OPTIONS=" -m 1000"
 
 DIR=/data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_5/V00-01-10/

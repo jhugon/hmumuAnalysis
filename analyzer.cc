@@ -473,6 +473,8 @@ int main(int argc, char *argv[])
 
   HistStruct histsVBFPreselPtMiss50Veto;
 
+  HistStruct histsIncPreselPtG10;
+
   //////////////////////////
   //for MVA
 
@@ -1327,6 +1329,11 @@ int main(int argc, char *argv[])
       histsVBFPreselPtMiss50Veto.Fill(mva,blind);
     }
 
+    if (!vbfPreselection && mva.ptDiMu > 10.0)
+    {
+      histsIncPreselPtG10.Fill(mva,blind);
+    }
+
     timeReading += difftime(timeStopReading,timeStartReading);
     timeProcessing += difftime(timeStartFilling,timeStopReading);
     timeFilling += difftime(time(NULL),timeStartFilling);
@@ -1383,6 +1390,7 @@ int main(int argc, char *argv[])
   histsVBFPreselPUJETIDForVeto.Write(outFile,"VBFPreselPUJETIDForVeto");
 
   histsVBFPreselPtMiss50Veto.Write(outFile,"VBFPreselPtMiss50Veto");
+  histsIncPreselPtG10.Write(outFile,"IncPreselPtG10");
 
   ofstream testOutFile;
   testOutFile.open("testEventNums.txt");
@@ -1536,6 +1544,7 @@ HistStruct::HistStruct()
   ptVmDiMu = new TH2F("ptVmDiMu","DiMuon p_{T} v. Mass",nMassBins,minMass,maxMass,250,0,250);
   histVec2D.push_back(ptVmDiMu);
   yVmDiMu = new TH2F("yVmDiMu","DiMuon |y| v. Mass",nMassBins,minMass,maxMass,100,0,4);
+  histVec2D.push_back(yVmDiMu);
   phiVmDiMu = new TH2F("phiVmDiMu","DiMuon #phi v. Mass",nMassBins,minMass,maxMass,100,0,3.2);
   histVec2D.push_back(phiVmDiMu);
 
@@ -1747,6 +1756,8 @@ HistStruct::Fill(const MVA& mva, bool blind)
   puJetIDSimpleJet2->Fill(mva.puJetIDSimpleJet2,mva.weight);
   puJetIDSimpleJet3->Fill(mva.puJetIDSimpleJet3,mva.weight);
 
+  yVptDiMu->Fill(mva.ptDiMu,fabs(mva.yDiMu),mva.weight);
+
   if (!blind)
   {
     mDiMu->Fill(mva.mDiMu, mva.weight);
@@ -1754,6 +1765,9 @@ HistStruct::Fill(const MVA& mva, bool blind)
     mDiMuResSigDown->Fill(mva.mDiMuResSigDown, mva.weight);
     mDiMuResASigUp->Fill(mva.mDiMuResASigUp, mva.weight);
     mDiMuResASigDown->Fill(mva.mDiMuResASigDown, mva.weight);
+
+    yVmDiMu->Fill(mva.mDiMu,fabs(mva.yDiMu),mva.weight);
+    ptVmDiMu->Fill(mva.mDiMu,mva.ptDiMu,mva.weight);
 
     if(!mva.vbfPreselection)
     {
