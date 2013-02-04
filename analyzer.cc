@@ -474,6 +474,13 @@ int main(int argc, char *argv[])
   HistStruct histsVBFPreselPtMiss50Veto;
 
   HistStruct histsIncPreselPtG10;
+  HistStruct histsIncPreselPtG10BB;
+  HistStruct histsIncPreselPtG10BO;
+  HistStruct histsIncPreselPtG10BE;
+  HistStruct histsIncPreselPtG10OO;
+  HistStruct histsIncPreselPtG10OE;
+  HistStruct histsIncPreselPtG10EE;
+  HistStruct histsIncPreselPtG10NotBB;
 
   //////////////////////////
   //for MVA
@@ -1322,8 +1329,6 @@ int main(int argc, char *argv[])
       histsVBFPreselDiMuPtL20.Fill(mva,blind);
     }
 
-///////////////////////////////////////////
-
     if (vbfPreselection && mva.ptmiss < 50.0)
     {
       histsVBFPreselPtMiss50Veto.Fill(mva,blind);
@@ -1333,6 +1338,43 @@ int main(int argc, char *argv[])
     {
       histsIncPreselPtG10.Fill(mva,blind);
     }
+
+    if (!vbfPreselection && isBB && mva.ptDiMu > 10.0)
+    {
+      histsIncPreselPtG10BB.Fill(mva,blind);
+    }
+
+    if (!vbfPreselection && isBO && mva.ptDiMu > 10.0)
+    {
+      histsIncPreselPtG10BO.Fill(mva,blind);
+    }
+
+    if (!vbfPreselection && isBE && mva.ptDiMu > 10.0)
+    {
+      histsIncPreselPtG10BE.Fill(mva,blind);
+    }
+
+    if (!vbfPreselection && isOO && mva.ptDiMu > 10.0)
+    {
+      histsIncPreselPtG10OO.Fill(mva,blind);
+    }
+
+    if (!vbfPreselection && isOE && mva.ptDiMu > 10.0)
+    {
+      histsIncPreselPtG10OE.Fill(mva,blind);
+    }
+
+    if (!vbfPreselection && isEE && mva.ptDiMu > 10.0)
+    {
+      histsIncPreselPtG10EE.Fill(mva,blind);
+    }
+
+    if (!vbfPreselection && isNotBB && mva.ptDiMu > 10.0)
+    {
+      histsIncPreselPtG10NotBB.Fill(mva,blind);
+    }
+
+///////////////////////////////////////////
 
     timeReading += difftime(timeStopReading,timeStartReading);
     timeProcessing += difftime(timeStartFilling,timeStopReading);
@@ -1390,7 +1432,15 @@ int main(int argc, char *argv[])
   histsVBFPreselPUJETIDForVeto.Write(outFile,"VBFPreselPUJETIDForVeto");
 
   histsVBFPreselPtMiss50Veto.Write(outFile,"VBFPreselPtMiss50Veto");
+
   histsIncPreselPtG10.Write(outFile,"IncPreselPtG10");
+  histsIncPreselPtG10BB.Write(outFile,"IncPreselPtG10BB");
+  histsIncPreselPtG10BO.Write(outFile,"IncPreselPtG10BO");
+  histsIncPreselPtG10BE.Write(outFile,"IncPreselPtG10BE");
+  histsIncPreselPtG10OO.Write(outFile,"IncPreselPtG10OO");
+  histsIncPreselPtG10OE.Write(outFile,"IncPreselPtG10OE");
+  histsIncPreselPtG10EE.Write(outFile,"IncPreselPtG10EE");
+  histsIncPreselPtG10NotBB.Write(outFile,"IncPreselPtG10NotBB");
 
   ofstream testOutFile;
   testOutFile.open("testEventNums.txt");
