@@ -65,6 +65,11 @@ nice ./analyzer vbfHmumu125_8TeV.root $DIR/NtuplesMCPrivateSignal/vbfHmumu8TeV12
 nice ./analyzer zHmumu125_8TeV.root $DIR/NtuplesMCPrivateSignal/zHmumu8TeV125.root -r 8TeV $OPTIONS  >& log2 &
 nice ./analyzer wHmumu125_8TeV.root $DIR/NtuplesMCPrivateSignal/wHmumu8TeV125.root -r 8TeV $OPTIONS 
 
+nice ./analyzer ggHmumu123_8TeV.root $DIR/NtuplesMCPrivateSignal/ggHmumu8TeV123.root -r 8TeV $OPTIONS  >& log2 &
+nice ./analyzer vbfHmumu123_8TeV.root $DIR/NtuplesMCPrivateSignal/vbfHmumu8TeV123.root -r 8TeV $OPTIONS 
+nice ./analyzer ggHmumu127_8TeV.root $DIR/NtuplesMCPrivateSignal/ggHmumu8TeV127.root -r 8TeV $OPTIONS  >& log2 &
+nice ./analyzer vbfHmumu127_8TeV.root $DIR/NtuplesMCPrivateSignal/vbfHmumu8TeV127.root -r 8TeV $OPTIONS 
+
 #nice ./analyzer DYToTauTau_8TeV.root $DIR/NtuplesMCDYToMuMu_M-20_CT10_TuneZ2star_v2_8TeV-powheg-pythia6_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/DYToMuMu_minimal.root -r 8TeV $OPTIONS  >& log2 &
 nice ./analyzer WW_8TeV.root $DIR/NtuplesMCWW_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/WW_minimal.root -r 8TeV $OPTIONS 
 nice ./analyzer WZ_8TeV.root $DIR/NtuplesMCWZ_TuneZ2star_8TeV_pythia6_tauola_Summer12_DR53X-PU_S10_START53_V7A-v1/minimal/WZ_minimal.root -r 8TeV $OPTIONS   >& log2 &
