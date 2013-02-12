@@ -61,4 +61,6 @@ int whichSelection(_MuonInfo& mu1, _MuonInfo& mu2,
                    double sigmasJEC=0,
                    double jerUncertainty=0);
 
+void setStyle();
+
 #endif
