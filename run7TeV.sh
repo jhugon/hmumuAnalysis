@@ -4,7 +4,7 @@ nice scons -j4
 
 TRAININGTREES="true"
 TRAIN="true"
-OPTIONS=" -m 1000"
+#OPTIONS=" -m 1000"
 
 DIR=/data/uftrig01b/digiovan/root/higgs/CMSSW_4_4_5/V00-01-10/
 
@@ -72,7 +72,7 @@ nice ./analyzer ZZ_7TeV.root $DIR/NtuplesMCZZ_TuneZ2_7TeV_pythia6_tauola_Fall11-
 #nice ./analyzer WJetsToLNu_7TeV.root $DIR/NtuplesMCWJetsToLNu_TuneZ2_7TeV-madgraph-tauola_Fall11-PU_S6_START44_V9B-v1/minimal/WJetsToLNu_minimal.root -r 7TeV $OPTIONS >& log7TeV2 &
 #nice ./analyzer QCD_7TeV.root $DIR/NtuplesMCQCD_Pt-20_MuEnrichedPt-15_TuneZ2_7TeV-pythia6_Fall11-PU_S6_START44_V9B-v1/minimal/QCD_Pt_20_MuEnrichedPt_15_minimal.root -r 7TeV $OPTIONS >& log7TeV2 &
 
-nice ./analyzer SingleMuRun2011Av1.root $DIR/NtuplesDataSingleMuRun2011A-08Nov2011-v1/minimal/SingleMuRun2011A-08Nov2011-v1_minimal.root -r 7TeV $OPTIONS 
+nice ./analyzer SingleMuRun2011Av1.root $DIR/NtuplesDataSingleMuRun2011A-08Nov2011-v1/minimal/SingleMuRun2011A-08Nov2011-v1_minimal.root -r 7TeV $OPTIONS >& log7TeV2 &
 nice ./analyzer SingleMuRun2011Bv1.root $DIR/NtuplesDataSingleMuRun2011B-19Nov2011-v1/minimal/SingleMuRun2011B-19Nov2011-v1_minimal.root -r 7TeV $OPTIONS 
 
 wait
