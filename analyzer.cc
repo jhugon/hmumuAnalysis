@@ -804,6 +804,7 @@ int main(int argc, char *argv[])
     float mDiMuResUp = smearMC(trueMass,recoCandMass,calib,resSmear+resSysSmear,random);
     float mDiMuResDown = smearMC(trueMass,recoCandMass,calib,resSmear-resSysSmear,random);
 
+    bool inTrainingWindow = (mva.mDiMu < 160. && mva.mDiMu > 70.);
     bool isBB = false;
     bool isBO = false;
     bool isBE = false;
@@ -1087,7 +1088,7 @@ int main(int argc, char *argv[])
 //of the subleading jet), and a di-jet invariant mass m12 > 400 GeV/c2 , with no other
 //jet with pT > 30 GeV/c in the rapidity region between the two jets.
 
-    if (!(inBlindWindow && isData))
+    if (!(inBlindWindow && isData) && inTrainingWindow)
       mva.writeEvent();
 
     if (trainingTreeRun) //Skip Filling of histos when training Tree
