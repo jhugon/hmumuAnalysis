@@ -53,6 +53,8 @@
 #include "musclefit/MuScleFitCorrector.h"
 #endif
 
+Double_t MASS_MUON = 0.105658367;    //GeV/c2
+
 using namespace std;
 using namespace boost;
 
@@ -593,15 +595,54 @@ int main(int argc, char *argv[])
 
     TLorentzVector reco1Vec;
     TLorentzVector reco2Vec;
-    reco1Vec.SetPtEtaPhiM(reco1.pt,reco1.eta,reco1.phi,0.105);
-    reco2Vec.SetPtEtaPhiM(reco2.pt,reco2.eta,reco2.phi,0.105);
+    reco1Vec.SetPtEtaPhiM(reco1.pt,reco1.eta,reco1.phi,MASS_MUON);
+    reco2Vec.SetPtEtaPhiM(reco2.pt,reco2.eta,reco2.phi,MASS_MUON);
+
+    //Matching gen muons to reco muons
+    TLorentzVector reco1GenVec;
+    TLorentzVector reco2GenVec;
+    float recoGenDR1 = -999.;
+    float recoGenDR2 = -999.;
+    float recoOrigRes1 = -999.;
+    float recoOrigRes2 = -999.;
+    if (reco1GenPostFSR.pt > 0.0 && reco2GenPostFSR.pt > 0.0)
+    {
+      reco1GenVec.SetPtEtaPhiM(reco1GenPostFSR.pt,reco1GenPostFSR.eta,reco1GenPostFSR.phi,MASS_MUON);
+      reco2GenVec.SetPtEtaPhiM(reco2GenPostFSR.pt,reco2GenPostFSR.eta,reco2GenPostFSR.phi,MASS_MUON);
+      float deltaR_t1r1 = reco1GenVec.DeltaR(reco1Vec);
+      float deltaR_t1r2 = reco1GenVec.DeltaR(reco2Vec);
+      float deltaR_t2r1 = reco2GenVec.DeltaR(reco1Vec);
+      float deltaR_t2r2 = reco2GenVec.DeltaR(reco2Vec);
+      _TrackInfo tmpTrue1 = reco1GenPostFSR;
+      _TrackInfo tmpTrue2 = reco2GenPostFSR;
+      TLorentzVector tmpVec1 = reco1GenVec;
+      TLorentzVector tmpVec2 = reco2GenVec;
+      if (deltaR_t1r1 > deltaR_t1r2)
+      {
+        tmpTrue1 = reco2GenPostFSR;
+        tmpVec1 = reco2GenVec;
+      }
+      if (deltaR_t2r2 > deltaR_t2r1)
+      {
+        tmpTrue2 = reco1GenPostFSR;
+        tmpVec2 = reco1GenVec;
+      }
+      reco1GenPostFSR=tmpTrue1;
+      reco2GenPostFSR=tmpTrue2;
+      reco1GenVec = tmpVec1;
+      reco2GenVec = tmpVec2;
+      recoGenDR1 = reco1GenVec.DeltaR(reco1Vec);
+      recoGenDR2 = reco2GenVec.DeltaR(reco2Vec);
+      recoOrigRes1 = (reco1.pt-reco1GenPostFSR.pt)/reco1.pt;
+      recoOrigRes2 = (reco2.pt-reco2GenPostFSR.pt)/reco2.pt;
+    }
 #ifdef MUSCLEFIT
     if (isData && runPeriod == "8TeV")
     {
       TLorentzVector reco1Cor;
       TLorentzVector reco2Cor;
-      reco1Cor.SetPtEtaPhiM(reco1.pt,reco1.eta,reco1.phi,0.105);
-      reco2Cor.SetPtEtaPhiM(reco2.pt,reco2.eta,reco2.phi,0.105);
+      reco1Cor.SetPtEtaPhiM(reco1.pt,reco1.eta,reco1.phi,MASS_MUON);
+      reco2Cor.SetPtEtaPhiM(reco2.pt,reco2.eta,reco2.phi,MASS_MUON);
       mfCorr->applyPtCorrection(reco1Cor,reco1.charge);
       mfCorr->applyPtCorrection(reco2Cor,reco2.charge);
       //if (!isData && runPeriod=="8TeV")
@@ -621,8 +662,8 @@ int main(int argc, char *argv[])
 #ifdef ROCHESTER
     TLorentzVector reco1Cor;
     TLorentzVector reco2Cor;
-    reco1Cor.SetPtEtaPhiM(reco1.pt,reco1.eta,reco1.phi,0.105);
-    reco2Cor.SetPtEtaPhiM(reco2.pt,reco2.eta,reco2.phi,0.105);
+    reco1Cor.SetPtEtaPhiM(reco1.pt,reco1.eta,reco1.phi,MASS_MUON);
+    reco2Cor.SetPtEtaPhiM(reco2.pt,reco2.eta,reco2.phi,MASS_MUON);
     float rochesterError=1.0; //1.0 if you don't care
     if (runPeriod == "7TeV")
     {
@@ -679,8 +720,8 @@ int main(int argc, char *argv[])
       float ptReco2 = smearPT -> PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge, reco2.pt, ISMEAR);
       TLorentzVector reco1Vec;
       TLorentzVector reco2Vec;
-      reco1Vec.SetPtEtaPhiM(ptReco1,reco1.eta,reco1.phi,0.105);
-      reco2Vec.SetPtEtaPhiM(ptReco2,reco2.eta,reco2.phi,0.105);
+      reco1Vec.SetPtEtaPhiM(ptReco1,reco1.eta,reco1.phi,MASS_MUON);
+      reco2Vec.SetPtEtaPhiM(ptReco2,reco2.eta,reco2.phi,MASS_MUON);
       TLorentzVector diMuonVec = reco1Vec + reco2Vec;
 
       reco1.pt = ptReco1;
@@ -693,29 +734,29 @@ int main(int argc, char *argv[])
       //Systematics Time
       ptReco1 = smearPT->PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge, reco1.pt, ISMEAR, "sig1",1.0);
       ptReco2 = smearPT->PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge, reco2.pt, ISMEAR,"sig1",1.0);
-      reco1Vec.SetPtEtaPhiM(ptReco1,reco1.eta,reco1.phi,0.105);
-      reco2Vec.SetPtEtaPhiM(ptReco2,reco2.eta,reco2.phi,0.105);
+      reco1Vec.SetPtEtaPhiM(ptReco1,reco1.eta,reco1.phi,MASS_MUON);
+      reco2Vec.SetPtEtaPhiM(ptReco2,reco2.eta,reco2.phi,MASS_MUON);
       diMuonVec = reco1Vec + reco2Vec;
       mDiMuResSigUp = diMuonVec.M();
 
       ptReco1 = smearPT->PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge, reco1.pt, ISMEAR,"sig1",-1.0);
       ptReco2 = smearPT->PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge, reco2.pt, ISMEAR,"sig1",-1.0);
-      reco1Vec.SetPtEtaPhiM(ptReco1,reco1.eta,reco1.phi,0.105);
-      reco2Vec.SetPtEtaPhiM(ptReco2,reco2.eta,reco2.phi,0.105);
+      reco1Vec.SetPtEtaPhiM(ptReco1,reco1.eta,reco1.phi,MASS_MUON);
+      reco2Vec.SetPtEtaPhiM(ptReco2,reco2.eta,reco2.phi,MASS_MUON);
       diMuonVec = reco1Vec + reco2Vec;
       mDiMuResSigDown = diMuonVec.M();
 
       ptReco1 = smearPT->PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge, reco1.pt, ISMEAR,"Asig2Var",1.0);
       ptReco2 = smearPT->PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge, reco2.pt, ISMEAR,"Asig2Var",1.0);
-      reco1Vec.SetPtEtaPhiM(ptReco1,reco1.eta,reco1.phi,0.105);
-      reco2Vec.SetPtEtaPhiM(ptReco2,reco2.eta,reco2.phi,0.105);
+      reco1Vec.SetPtEtaPhiM(ptReco1,reco1.eta,reco1.phi,MASS_MUON);
+      reco2Vec.SetPtEtaPhiM(ptReco2,reco2.eta,reco2.phi,MASS_MUON);
       diMuonVec = reco1Vec + reco2Vec;
       mDiMuResASigUp = diMuonVec.M();
 
       ptReco1 = smearPT->PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge, reco1.pt, ISMEAR,"Asig2Var",-1.0);
       ptReco2 = smearPT->PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge, reco2.pt, ISMEAR,"Asig2Var",-1.0);
-      reco1Vec.SetPtEtaPhiM(ptReco1,reco1.eta,reco1.phi,0.105);
-      reco2Vec.SetPtEtaPhiM(ptReco2,reco2.eta,reco2.phi,0.105);
+      reco1Vec.SetPtEtaPhiM(ptReco1,reco1.eta,reco1.phi,MASS_MUON);
+      reco2Vec.SetPtEtaPhiM(ptReco2,reco2.eta,reco2.phi,MASS_MUON);
       diMuonVec = reco1Vec + reco2Vec;
       mDiMuResASigDown = diMuonVec.M();
       
@@ -852,8 +893,8 @@ int main(int argc, char *argv[])
 
     TLorentzVector pMuon1;
     TLorentzVector pMuon2;
-    pMuon1.SetPtEtaPhiM(muon1.pt,muon1.eta,muon1.phi,0.105);
-    pMuon2.SetPtEtaPhiM(muon2.pt,muon2.eta,muon2.phi,0.105);
+    pMuon1.SetPtEtaPhiM(muon1.pt,muon1.eta,muon1.phi,MASS_MUON);
+    pMuon2.SetPtEtaPhiM(muon2.pt,muon2.eta,muon2.phi,MASS_MUON);
     TLorentzVector diMuon = pMuon1+pMuon2;
 
     mva.deltaPhiMuons = pMuon1.DeltaPhi(pMuon2);

@@ -32,8 +32,6 @@ enum SelectionCodes
   incPresel_isNotBB_passIncBDTCut = 4096
 };
 
-
-
 float getRelIso(_MuonInfo& muon);
 
 bool isKinTight_2012(_MuonInfo& muon);

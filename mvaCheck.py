@@ -78,7 +78,7 @@ gStyle.SetPadBottomMargin   (0.20)
 gStyle.SetPadLeftMargin  (0.22)
 gStyle.SetPadRightMargin  (0.10)
 
-def printSeparations(infilename):
+def printSeparations(infilename,option="twiki"):
   separations = {}
   fileNameMatch = re.match("TMVA_(.+)_(.+).root",infilename)
   infile = root.TFile(infilename)
@@ -116,24 +116,37 @@ def printSeparations(infilename):
       fileTitle = "Non-VBF"
     energyStr = fileNameMatch.group(2)
     fileTitle += " "+energyStr.replace("TeV"," TeV")
-  print(fileTitle)
-  print("-"*40)
-  for i in reversed(sorted(separations.keys(),key=lambda x: separations[x])):
-    print("%-20s: %g" % (i,separations[i]))
-  print
+  if option=="twiki":
+    print("|  *%s*  ||" % fileTitle)
+    print("|  %-20s  |  %20s  |" % ("*Variable*","*<S^2>*"))
+    for i in reversed(sorted(separations.keys(),key=lambda x: separations[x])):
+      print("|  %-20s  |  %20.3g  |" % (i,separations[i]))
+    print
+  else:
+    print(fileTitle)
+    print("-"*40)
+    for i in reversed(sorted(separations.keys(),key=lambda x: separations[x])):
+      print("%-20s: %g" % (i,separations[i]))
+    print
   canvas = root.TCanvas()
   fileTitleSave = fileTitle.replace(" ","")
   fileTitleSave = fileTitleSave.replace("-","")
+  tlatex = root.TLatex()
+  tlatex.SetNDC()
+  tlatex.SetTextFont(root.gStyle.GetLabelFont())
+  tlatex.SetTextSize(root.gStyle.GetLabelSize()*1.5)
+  tlatex.SetTextAlign(21)
   for i,iLong in zip(["S","B"],["Signal","Background"]):
     objName = "CorrelationMatrix"+i
     corMat = infile.Get(objName)
-    corMat.SetTitle(fileTitle+" "+iLong)
+    corMat.SetTitle(fileTitle+" "+iLong+": Correlation in %")
     #corMat.Scale(0.01)
     corMat.Draw("coltext")
-    canvas.SaveAs(fileTitle+"_"+objName+".png")
-    canvas.SaveAs(fileTitle+"_"+objName+".pdf")
-    #canvas.SaveAs(fileTitle+"_"+objName+".root")
-    #canvas.SaveAs(fileTitle+"_"+objName+".eps")
+    #tlatex.DrawLatex(0.5,0.02,"Correlation in %")
+    canvas.SaveAs(fileTitleSave+"_"+objName+".png")
+    canvas.SaveAs(fileTitleSave+"_"+objName+".pdf")
+    #canvas.SaveAs(fileTitleSave+"_"+objName+".root")
+    #canvas.SaveAs(fileTitleSave+"_"+objName+".eps")
 
 if __name__ == "__main__":
   for i in glob.glob("TMVA*.root"):
