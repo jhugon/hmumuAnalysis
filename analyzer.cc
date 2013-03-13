@@ -482,6 +482,8 @@ int main(int argc, char *argv[])
   HistStruct histsIncPreselPtG10EE;
   HistStruct histsIncPreselPtG10NotBB;
 
+  HistStruct histsVBFMJJG550;
+
   //////////////////////////
   //for MVA
 
@@ -1374,6 +1376,11 @@ int main(int argc, char *argv[])
       histsIncPreselPtG10NotBB.Fill(mva,blind);
     }
 
+    if (vbfPreselection && mva.mDiJet > 550.)
+    {
+      histsVBFMJJG550.Fill(mva,blind);
+    }
+
 ///////////////////////////////////////////
 
     timeReading += difftime(timeStopReading,timeStartReading);
@@ -1441,6 +1448,8 @@ int main(int argc, char *argv[])
   histsIncPreselPtG10OE.Write(outFile,"IncPreselPtG10OE");
   histsIncPreselPtG10EE.Write(outFile,"IncPreselPtG10EE");
   histsIncPreselPtG10NotBB.Write(outFile,"IncPreselPtG10NotBB");
+
+  histsVBFMJJG550.Write(outFile,"VBFMJJG550");
 
   ofstream testOutFile;
   testOutFile.open("testEventNums.txt");
