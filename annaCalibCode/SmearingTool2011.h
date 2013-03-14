@@ -12,11 +12,11 @@
 #include <stdio.h>
 #include <math.h>
 // class init
-class SmearingTool {
+class SmearingTool2011 {
  public:
-  //SmearingTool();
-  //SmearingTool(int seed);
-  SmearingTool();
+  //SmearingTool2011();
+  //SmearingTool2011(int seed);
+  SmearingTool2011();
   float PTsmear(float PTmuonGen, float ETAmuonGen, float CHARGEmuonGen, float PTmuonReco, int Ismear, TString ParVar = "null",float ParSig = 0);
 
  private:

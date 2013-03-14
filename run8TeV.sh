@@ -71,9 +71,9 @@ nice ./analyzer ZZ_8TeV.root $DIR/NtuplesMCZZ_TuneZ2star_8TeV_pythia6_tauola_Sum
 #nice ./analyzer QCD_8TeV.root $DIR/NtuplesMCQCD_Pt_20_MuEnrichedPt_15_TuneZ2star_8TeV_pythia6_Summer12_DR53X-PU_S10_START53_V7A-v3/minimal/QCD_Pt_20_MuEnrichedPt_15_minimal.root -r 8TeV $OPTIONS >& log2 &
 
 nice ./analyzer SingleMuRun2012Av1.root $DIR/NtuplesDataSingleMuRun2012A-13Jul2012-v1/minimal/SingleMuRun2012A-13Jul2012-v1_minimal.root -r 8TeV $OPTIONS  >& log2 &
-nice ./analyzer SingleMuRun2012Av1Recover.root $DIR/NtuplesDataSingleMuRun2012A-recover-06Aug2012-v1/minimal/SingleMuRun2012A-recover-06Aug2012-v1_minimal.root -r 8TeV $OPTIONS 
-nice ./analyzer SingleMuRun2012Bv1.root $DIR/NtuplesDataSingleMuRun2012B-13Jul2012-v1/minimal/SingleMuRun2012B-13Jul2012-v1_minimal.root -r 8TeV $OPTIONS 
-nice ./analyzer SingleMuRun2012Cv1.root $DIR/NtuplesDataSingleMuRun2012C-24Aug2012-v1/minimal/SingleMuRun2012C-24Aug2012-v1_minimal.root -r 8TeV $OPTIONS  >& log2 &
+nice ./analyzer SingleMuRun2012Av1Recover.root $DIR/NtuplesDataSingleMuRun2012A-recover-06Aug2012-v1/minimal/SingleMuRun2012A-recover-06Aug2012-v1_minimal.root -r 8TeV $OPTIONS >& log2 &
+nice ./analyzer SingleMuRun2012Bv1.root $DIR/NtuplesDataSingleMuRun2012B-13Jul2012-v1/minimal/SingleMuRun2012B-13Jul2012-v1_minimal.root -r 8TeV $OPTIONS >& log2 &
+nice ./analyzer SingleMuRun2012Cv1.root $DIR/NtuplesDataSingleMuRun2012C-24Aug2012-v1/minimal/SingleMuRun2012C-24Aug2012-v1_minimal.root -r 8TeV $OPTIONS
 nice ./analyzer SingleMuRun2012Cv2.root $DIR/NtuplesDataSingleMuRun2012C-PromptReco-v2/minimal/SingleMuRun2012C-PromptReco-v2_minimal.root -r 8TeV $OPTIONS  >& log2 &
 nice ./analyzer SingleMuRun2012D.root $DIR/NtuplesDataSingleMuRun2012D-PromptReco-v1/minimal/SingleMuRun2012D-PromptReco-v1_minimal.root -r 8TeV $OPTIONS 
 

@@ -40,10 +40,22 @@ libs.append("XMLIO")
 libs.append("MLP")
 libs.append("TreePlayer")
 
-#Anna's Calibration Code
-#annaSmearFile = "annaCalibCode/FuncSmearingZmumu2012PtCorr0.C" #For Vanilla 2012
-#annaSmearFile = "annaCalibCode/FuncSmearingZmumu2012PtCorr1.C" #For Rochester 2012
-annaSmearFile = "annaCalibCode/FuncSmearingZmumu2012PtCorr2.C" #For Muscle 2012
+#Anna's Calibration Code & Corrections
+doSmearing = True
+doMuScleFit = True
+doRochester = False
+assert(not (doMuScleFit and doRochester))
+smearFiles = ["annaCalibCode/FuncSmearingZmumu2012PtCorr0.C"] #For Vanilla 2012
+smearFiles += ["annaCalibCode/FuncSmearingZmumu2011ChargePtCorr0.C"] #For Vanilla 2011
+if doSmearing:
+  env.MergeFlags("-D SMEARING")
+if doMuScleFit:
+  env.MergeFlags("-D MUSCLEFIT")
+  smearFiles = ["annaCalibCode/FuncSmearingZmumu2012PtCorr2.C"] #For Muscle 2012
+  smearFiles += ["annaCalibCode/FuncSmearingZmumu2011ChargePtCorr2.C"] #For Muscle 2011
+if doRochester:
+  env.MergeFlags("-D ROCHESTER")
+  smearFiles = ["annaCalibCode/FuncSmearingZmumu2012PtCorr1.C"] #For Rochester 2012
 includes.append("annaCalibCode/")
 
 #Muon Corrections
@@ -97,9 +109,9 @@ if not env.GetOption("clean"):
  
 env.Library(targer="src/mva",source=["src/mva.cc"])
 env.Library(targer="src/helpers",source=["src/helpers.cc"])
-env.Program(target="analyzer", source=["analyzer.cc","src/libmva.a","src/libhelpers.a",annaSmearFile]+corrFiles)
-#env.Program(target="systematics", source=["systematics.cc","src/libmva.a","src/libhelpers.a",annaSmearFile]+corrFiles)
-env.Program(target="systematicsJets", source=["systematicsJets.cc","src/libmva.a","src/libhelpers.a",annaSmearFile]+corrFiles)
+env.Program(target="analyzer", source=["analyzer.cc","src/libmva.a","src/libhelpers.a"]+corrFiles+smearFiles)
+#env.Program(target="systematics", source=["systematics.cc","src/libmva.a","src/libhelpers.a"]+corrFiles+smearFiles)
+env.Program(target="systematicsJets", source=["systematicsJets.cc","src/libmva.a","src/libhelpers.a"]+corrFiles+smearFiles)
 env.Program(target="mvaTrain", source=["mvaTrain.cc"])
 
 env.Program(target="testVertex", source=["testVertex.cc","src/libmva.a","src/libhelpers.a"])

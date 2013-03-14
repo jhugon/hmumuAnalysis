@@ -42,10 +42,7 @@
 
 #define JETPUID
 #define PUREWEIGHT
-//#define SMEARING
 #define ISMEAR 1
-//#define ROCHESTER
-//#define MUSCLEFIT
 
 #ifdef ROCHESTER
 #include "rochester/rochcor2012.h"
