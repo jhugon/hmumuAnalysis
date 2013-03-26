@@ -521,7 +521,7 @@ int main(int argc, char *argv[])
     if(runPeriod == "8TeV")
       mfInFile = "musclefit/MuScleFit_2012_DATA_53X.txt";
     else
-      mfInFile = "musclefit/MuScleFit_2011_DATA_42X.txt";
+      mfInFile = "musclefit/MuScleFit_2011_DATA_44X.txt";
 
     mfCorr = new MuScleFitCorrector(mfInFile);
   }
