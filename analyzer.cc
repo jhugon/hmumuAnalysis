@@ -818,7 +818,7 @@ int main(int argc, char *argv[])
     float mDiMuResASigDown = recoCandMass;
 
 #ifdef SMEARING
-    if(!isData) // ISMEAR = 1 is very slow for DY 
+    if(isSignal) // ISMEAR = 1 is very slow for DY 
     {
       if(reco1GenPostFSR.pt<0.)
         cout << "Muon 1 Post FSR not valid!\n";

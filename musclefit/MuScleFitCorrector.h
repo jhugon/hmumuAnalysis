@@ -74,7 +74,7 @@ class MuScleFitCorrector
     double pt = lorentzVector.Pt();
     double eta = lorentzVector.Eta();
     double squaredDiff = getSigmaPtDiffSquared(pt,eta);
-    double Cfact = 0.4;
+    double Cfact = 0.8;
     double sPar = Cfact*sqrt(squaredDiff);
     double curv = ((double)chg/pt);
     double smearedCurv = curv + fabs(curv)*(gRandom_->Gaus(0,sPar));
@@ -132,6 +132,8 @@ class MuScleFitCorrector
   // Pointer for TRandom3 access
   TRandom3 * gRandom_;
 
+  // Bool for using resolution function or not (value depends from the information on the parameters txt file)
+  bool useResol_;
 };
 
 void MuScleFitCorrector::convertToArrays()
@@ -144,18 +146,21 @@ void MuScleFitCorrector::convertToArrays()
   int resolMCParVecSize = resolMCParVec_.size();
   int scaleParVecSize = scaleParVec_.size();
 
-  if( resolParNum != resolDataParVecSize ) {
-    std::cout << "Error: inconsistent number of parameters: resolFunct has "<<resolParNum<<"parameters but "<<resolDataParVecSize<<" have been read from file" << std::endl;
+  useResol_ = false;
+  if (resolDataParVecSize!=0 && resolMCParVecSize!=0)  useResol_ = true;
+
+  if( resolParNum != resolDataParVecSize && useResol_) {
+    std::cout << "Error: inconsistent number of parameters: resolFunct has "<<resolParNum<<" parameters but "<<resolDataParVecSize<<" have been read from file" << std::endl;
     exit(1);
   }
 
-  if( resolParNum != resolMCParVecSize ) {
-    std::cout << "Error: inconsistent number of parameters: resolFunct has "<<resolParNum<<"parameters but "<<resolMCParVecSize<<" have been read from file" << std::endl;
+  if( resolParNum != resolMCParVecSize && useResol_) {
+    std::cout << "Error: inconsistent number of parameters: resolFunct has "<<resolParNum<<" parameters but "<<resolMCParVecSize<<" have been read from file" << std::endl;
     exit(1);
   }
 
   if( scaleParNum != scaleParVecSize ) {
-    std::cout << "Error: inconsistent number of parameters: resolFunct has "<<resolParNum<<"parameters but "<<scaleParVecSize<<" have been read from file" << std::endl;
+    std::cout << "Error: inconsistent number of parameters: scaleFunct has "<<scaleParNum<<" parameters but "<<scaleParVecSize<<" have been read from file" << std::endl;
     exit(1);
   }
 
@@ -174,16 +179,18 @@ void MuScleFitCorrector::convertToArrays()
     ++scaleParIt;
   }
 
-  for ( int iPar=0; iPar<resolParNum; ++iPar) {
-    double parameter = *resolDataParIt;
-    resolDataParArray_[iPar] = parameter;
-    ++resolDataParIt;
-  }
-
-  for ( int iPar=0; iPar<resolParNum; ++iPar) {
-    double parameter = *resolMCParIt;
-    resolMCParArray_[iPar] = parameter;
-    ++resolMCParIt;
+  if (useResol_){
+    for ( int iPar=0; iPar<resolParNum; ++iPar) {
+      double parameter = *resolDataParIt;
+      resolDataParArray_[iPar] = parameter;
+      ++resolDataParIt;
+    }
+    
+    for ( int iPar=0; iPar<resolParNum; ++iPar) {
+      double parameter = *resolMCParIt;
+      resolMCParArray_[iPar] = parameter;
+      ++resolMCParIt;
+    }
   }
   
 }
@@ -240,9 +247,9 @@ void MuScleFitCorrector::readParameters(const TString& fileName )
       resolFunctId_ = resolFunctNum;
       resolFunct_ = resolutionFunctService(resolFunctNum);
 
-//       std::cout<<"Function IDs: "<<std::endl;
-//       std::cout<<"     scale function number "<<scaleFunctId_<<std::endl;
-//       std::cout<<"     resolution function number "<<resolFunctId_<<std::endl;
+      std::cout<<"Function IDs: "<<std::endl;
+      std::cout<<"     scale function number "<<scaleFunctId_<<std::endl;
+      std::cout<<"     resolution function number "<<resolFunctId_<<std::endl;
 
   }
         
@@ -269,6 +276,27 @@ void MuScleFitCorrector::readParameters(const TString& fileName )
     }
   }
   convertToArrays();
+
+  std::cout<<"Scale function n. "<<scaleFunctId_<<" has "<<scaleFunct_->parNum()<<"parameters:"<<std::endl;
+  for (int ii=0; ii<scaleFunct_->parNum(); ++ii){
+    std::cout<<"par["<<ii<<"] = "<<scaleParArray_[ii]<<std::endl;
+  }
+
+  if (useResol_){
+
+    std::cout<<"Resolution data function n. "<<resolFunctId_<<" has "<<resolFunct_->parNum()<<"parameters:"<<std::endl;
+    for (int ii=0; ii<resolFunct_->parNum(); ++ii){
+      std::cout<<"par["<<ii<<"] = "<<resolDataParArray_[ii]<<std::endl;
+    }
+    
+    std::cout<<"Resolution MC function n. "<<resolFunctId_<<" has "<<resolFunct_->parNum()<<"parameters:"<<std::endl;
+    for (int ii=0; ii<resolFunct_->parNum(); ++ii){
+      std::cout<<"par["<<ii<<"] = "<<resolMCParArray_[ii]<<std::endl;
+    }
+    
+  }
+  
+  
 }
 
 
