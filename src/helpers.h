@@ -32,11 +32,14 @@ enum SelectionCodes
   incPresel_isNotBB_passIncBDTCut = 4096
 };
 
-float getRelIso(_MuonInfo& muon);
+float getPFRelIso(_MuonInfo& muon);
+float getTrkRelIso(_MuonInfo& muon);
 
 bool isKinTight_2012(_MuonInfo& muon);
+bool isKinTight_2012_noIso(_MuonInfo& muon);
 
 bool isKinTight_2011(_MuonInfo& muon);
+bool isKinTight_2011_noIso(_MuonInfo& muon);
 
 bool passPUJetID(int flag, PUJetID desiredLevel);
 
@@ -58,6 +61,12 @@ int whichSelection(_MuonInfo& mu1, _MuonInfo& mu2,
                    bool passVBFBDTCut,
                    double sigmasJEC=0,
                    double jerUncertainty=0);
+
+int whichSelection(_MuonInfo& mu1, _MuonInfo& mu2,
+                   std::string& runPeriod,
+                   _PFJetInfo jets,
+                   bool passIncBDTCut,
+                   bool passVBFBDTCut);
 
 void setStyle();
 

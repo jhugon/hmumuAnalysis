@@ -750,8 +750,8 @@ int main(int argc, char *argv[])
     mva.etaMu1=muon1.eta;
     mva.etaMu2=muon2.eta;
     mva.deltaEtaMuons=fabs(muon1.eta-muon2.eta);
-    mva.relIsoMu1 = getRelIso(muon1);
-    mva.relIsoMu2 = getRelIso(muon2);
+    mva.relIsoMu1 = getPFRelIso(muon1);
+    mva.relIsoMu2 = getPFRelIso(muon2);
 
     mva.ptDiMu = recoCandPt;
     mva.yDiMu = recoCandY;

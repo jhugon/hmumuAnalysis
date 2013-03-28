@@ -43,6 +43,9 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
 
     outTree_->Branch("relIsoMu1",&relIsoMu1,"relIsoMu1/F");
     outTree_->Branch("relIsoMu2",&relIsoMu2,"relIsoMu2/F");
+    outTree_->Branch("trkRelIsoMu1",&trkRelIsoMu1,"trkRelIsoMu1/F");
+    outTree_->Branch("trkRelIsoMu2",&trkRelIsoMu2,"trkRelIsoMu2/F");
+
     outTree_->Branch("ht",&ht,"ht/F");
     outTree_->Branch("nJets",&nJets,"nJets/F");
     outTree_->Branch("htInRapidityGap",&htInRapidityGap,"htInRapidityGap/F");
@@ -61,6 +64,9 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
     outTree_->Branch("mDiMuResSigDown",&mDiMuResSigDown,"mDiMuResSigDown/F");
     outTree_->Branch("mDiMuResASigUp",&mDiMuResASigUp,"mDiMuResASigUp/F");
     outTree_->Branch("mDiMuResASigDown",&mDiMuResASigDown,"mDiMuResASigDown/F");
+
+    outTree_->Branch("RelMassRes",   &RelMassRes,   "RelMassRes/F");   
+    outTree_->Branch("RelMassResCov",&RelMassResCov,"RelMassResCov/F");
 
     outTree_->Branch("puJetIDSimpleDiscJet1",&puJetIDSimpleDiscJet1,"puJetIDSimgpleDiscJet1/F");
     outTree_->Branch("puJetIDSimpleDiscJet2",&puJetIDSimpleDiscJet2,"puJetIDSimgpleDiscJet2/F");
@@ -118,6 +124,9 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
       
           ("relIsoMu1",program_options::value<int>(),"")
           ("relIsoMu2",program_options::value<int>(),"")
+          ("trkRelIsoMu1",program_options::value<int>(),"")
+          ("trkRelIsoMu2",program_options::value<int>(),"")
+
           ("ht",program_options::value<int>(),"")
           ("nJets",program_options::value<int>(),"")
           ("htInRapidityGap",program_options::value<int>(),"")
@@ -431,6 +440,9 @@ MVA::resetValues()
 
   relIsoMu1=-10.0;
   relIsoMu2=-10.0;
+  trkRelIsoMu1=-10.0;
+  trkRelIsoMu2=-10.0;
+
   ht=0.0;
   nJets=0.0;
   htInRapidityGap=0.0;
@@ -460,6 +472,9 @@ MVA::resetValues()
 
   bdtValInc=-10.0;
   bdtValVBF=-10.0;
+
+  RelMassRes=-10;
+  RelMassResCov=-10;
 }
 
 float

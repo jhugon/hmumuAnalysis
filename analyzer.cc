@@ -41,7 +41,8 @@
 
 #define JETPUID
 #define PUREWEIGHT
-#define ISMEAR 1
+//#define ISMEAR 1
+#define ISMEAR 2
 
 #ifdef ROCHESTER
 #include "rochester/rochcor2012.h"
@@ -57,7 +58,10 @@ using namespace std;
 using namespace boost;
 
 void fillMuonHist(TH1F* hist, _MuonInfo& mu1, _MuonInfo& mu2);
-void printStationMiss(_MuonInfo& mu1, _MuonInfo& mu2, _EventInfo& eventInfo, std::string & testString, unsigned & testCounter);
+void printStationMiss(_MuonInfo& mu1, _MuonInfo& mu2, 
+                      _EventInfo& eventInfo, std::string & testString, 
+                      unsigned & testCounter);
+double GetMassRes(_MuonInfo& mu1, _MuonInfo& mu2);
 
 struct HistStruct
 {
@@ -68,12 +72,16 @@ struct HistStruct
 
   std::vector<TH1F*> histVec;
   std::vector<TH2F*> histVec2D;
-
-  TH1F* mDiMu;
+ 
+  TH1F* mDiMu; // default is PFIso
+  TH1F* mDiMuTrkRelIso;
   TH1F* mDiMuResSigUp;
   TH1F* mDiMuResSigDown;
   TH1F* mDiMuResASigUp;
   TH1F* mDiMuResASigDown;
+
+  TH1F* RelMassRes;
+  TH1F* RelMassResCov;
 
   TH1F* mDiJet;
   TH1F* ptDiMu;
@@ -128,6 +136,9 @@ struct HistStruct
 
   TH1F* relIsoMu1;
   TH1F* relIsoMu2;
+
+  TH1F* trkRelIsoMu1;
+  TH1F* trkRelIsoMu2;
 
   TH1F* nJets;
   TH1F* ht;
@@ -329,12 +340,12 @@ int main(int argc, char *argv[])
   if (runPeriod == "7TeV")
   {
     cout << "Using 2011 Tight Muon Selection\n";
-    muonIdFuncPtr = &isKinTight_2011;
+    muonIdFuncPtr = &isKinTight_2011_noIso;
   }
   else
   {
     cout << "Using 2012 Tight Muon Selection\n";
-    muonIdFuncPtr = &isKinTight_2012;
+    muonIdFuncPtr = &isKinTight_2012_noIso;
   }
 
   ////////////
@@ -370,11 +381,14 @@ int main(int argc, char *argv[])
   tree->SetBranchAddress("reco2", &reco2);
 
   float recoCandMass, recoCandPt, recoCandY, recoCandPhi;
+  float recoCandMassRes, recoCandMassResCov;
 
-  tree->SetBranchAddress("recoCandMass", &recoCandMass);
-  tree->SetBranchAddress("recoCandPt"  , &recoCandPt );
-  tree->SetBranchAddress("recoCandY"  , &recoCandY );
-  tree->SetBranchAddress("recoCandPhi"  , &recoCandPhi );
+  tree->SetBranchAddress("recoCandMass",       &recoCandMass);
+  tree->SetBranchAddress("recoCandPt",         &recoCandPt);
+  tree->SetBranchAddress("recoCandY",          &recoCandY);
+  tree->SetBranchAddress("recoCandPhi",        &recoCandPhi);
+  tree->SetBranchAddress("recoCandMassRes",    &recoCandMassRes);
+  tree->SetBranchAddress("recoCandMassResCov", &recoCandMassResCov);
 
   float trueMass=-99999.0;
   if(!isData && tree->GetBranchStatus("trueMass"))
@@ -481,8 +495,17 @@ int main(int argc, char *argv[])
   HistStruct histsIncPreselPtG10OE;
   HistStruct histsIncPreselPtG10EE;
   HistStruct histsIncPreselPtG10NotBB;
+  HistStruct histsIncPreselPtG10BBres1;
+  HistStruct histsIncPreselPtG10BBres2;
+  HistStruct histsIncPreselPtG10BOres1;
+  HistStruct histsIncPreselPtG10BOres2;
+  HistStruct histsIncPreselPtG10BBres1Cov;
+  HistStruct histsIncPreselPtG10BBres2Cov;
 
   HistStruct histsVBFMJJG550;
+  // couple of VBF CiC optimization points
+  HistStruct histsVBFDeJJG3p5MJJG550pTmissL100;
+  HistStruct histsVBFDeJJG3p4MJJG500pTmissL25;
 
   //////////////////////////
   //for MVA
@@ -522,18 +545,15 @@ int main(int argc, char *argv[])
       mfInFile = "musclefit/MuScleFit_2012_DATA_53X.txt";
     else
       mfInFile = "musclefit/MuScleFit_2011_DATA_44X.txt";
-
-    mfCorr = new MuScleFitCorrector(mfInFile);
   }
-//  else
-//  {
-//    if(runPeriod == "7TeV")
-//      mfInFile = "musclefit/MuScleFit_2011_MC_42X.txt";
-//    else
-//      mfInFile = "musclefit/MuScleFit_2012_MC_52X.txt";
-//
-//    mfCorr = new MuScleFitCorrector(mfInFile);
-//  }
+  else
+  {
+    if(runPeriod == "8TeV")
+      mfInFile = "musclefit/MuScleFit_2012_MC_52X.txt";
+    else
+      mfInFile = "musclefit/MuScleFit_2011_MC_44X.txt";
+  }
+  mfCorr = new MuScleFitCorrector(mfInFile);
 #endif
 #ifdef ROCHESTER
   rochcor2012* rCorr12 = new rochcor2012();
@@ -551,6 +571,88 @@ int main(int argc, char *argv[])
   const double SQRT2 = sqrt(2);
 
   TRandom3 randomForSF(123412845);
+
+  //////////////////////////
+  // Defining the outTree
+  TTree* _outTree = new TTree("outtree", "myTree");
+  _outTree->SetDirectory(0);
+
+  int _eventInfo_run;
+  int _eventInfo_lumi;
+  int _eventInfo_event;
+
+  float _nPU;
+  float _puWeight;
+  int _eventType;
+
+  float _dimuonMass; 
+  float _dimuonPt; 
+  float _dimuonY;    
+  float _cosThetaStar;
+
+  int   _muonLead_charge;      
+  float _muonLead_pt;          
+  float _muonLead_ptErr;       
+  float _muonLead_eta;         
+  float _muonLead_phi;         
+  int   _muonLead_passTrkRelIso;
+  int   _muonLead_passPFRelIso;
+  int   _muonLead_isHltMatched;
+
+  int   _muonSub_charge;      
+  float _muonSub_pt;          
+  float _muonSub_ptErr;       
+  float _muonSub_eta;         
+  float _muonSub_phi;         
+  int   _muonSub_passTrkRelIso;
+  int   _muonSub_passPFRelIso;
+  int   _muonSub_isHltMatched;
+                                                                    
+  float _nJets;
+  float _ptMiss;
+  float _deltaEtaJets;
+  float _massJJ;
+
+     
+  // eventInfo;
+  _outTree->Branch("eventInfo_run",    &_eventInfo_run,   "eventInfo_run/I");
+  _outTree->Branch("eventInfo_lumi",   &_eventInfo_lumi,  "eventInfo_lumi/I");
+  _outTree->Branch("eventInfo_event",  &_eventInfo_event, "eventInfo_event/I");
+
+  _outTree->Branch("nPU",          &_nPU,         "nPU/F");
+  _outTree->Branch("puWeight",     &_puWeight,    "puWeight/F");
+  _outTree->Branch("eventType",    &_eventType,   "eventType/I");
+
+  _outTree->Branch("dimuonMass",   &_dimuonMass,   "dimuonMass/F");
+  _outTree->Branch("dimuonPt"  ,   &_dimuonPt  ,   "dimuonPt/F");
+  _outTree->Branch("dimuonY",      &_dimuonY,      "dimuonY/F");
+  _outTree->Branch("cosThetaStar", &_cosThetaStar, "cosThetaStar/F");
+
+  _outTree->Branch("muonLead_charge",       &_muonLead_charge,         "muonLead_charge/I");
+  _outTree->Branch("muonLead_pt",           &_muonLead_pt,             "muonLead_pt/F");          
+  _outTree->Branch("muonLead_ptErr",        &_muonLead_ptErr,          "muonLead_ptErr/F");       
+  _outTree->Branch("muonLead_eta",          &_muonLead_eta,            "muonLead_eta/F");         
+  _outTree->Branch("muonLead_phi",          &_muonLead_phi,            "muonLead_phi/F");         
+  _outTree->Branch("muonLead_passTrkRelIso",&_muonLead_passTrkRelIso,  "muonLead_passTrkRelIso/I"); 
+  _outTree->Branch("muonLead_passPFRelIso", &_muonLead_passPFRelIso,   "muonLead_passPFRelIso/I");
+  _outTree->Branch("muonLead_isHltMatched", &_muonLead_isHltMatched,   "muonLead_isHltMatched/I");
+  
+  
+  _outTree->Branch("muonSub_charge",       &_muonSub_charge,         "muonSub_charge/I");
+  _outTree->Branch("muonSub_pt",           &_muonSub_pt,             "muonSub_pt/F");          
+  _outTree->Branch("muonSub_ptErr",        &_muonSub_ptErr,          "muonSub_ptErr/F");       
+  _outTree->Branch("muonSub_eta",          &_muonSub_eta,            "muonSub_eta/F");         
+  _outTree->Branch("muonSub_phi",          &_muonSub_phi,            "muonSub_phi/F");         
+  _outTree->Branch("muonSub_passTrkRelIso",&_muonSub_passTrkRelIso,  "muonSub_passTrkRelIso/I"); 
+  _outTree->Branch("muonSub_passPFRelIso", &_muonSub_passPFRelIso,   "muonSub_passPFRelIso/I");
+  _outTree->Branch("muonSub_isHltMatched", &_muonSub_isHltMatched,   "muonSub_isHltMatched/I");
+
+
+  _outTree->Branch("nJets",        &_nJets,        "nJets/F");
+  _outTree->Branch("ptMiss",       &_ptMiss,       "ptMiss/F");
+  _outTree->Branch("deltaEtaJets", &_deltaEtaJets, "deltaEtaJets/F");
+  _outTree->Branch("massJJ",       &_massJJ,       "massJJ/F");
+
 
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -594,6 +696,7 @@ int main(int argc, char *argv[])
             weight *= weightFromSF(randForSF,reco1,reco2,0.,0.,0.);
     }
 
+    float recoCandMassOrig = recoCandMass;
     TLorentzVector reco1Vec;
     TLorentzVector reco2Vec;
     reco1Vec.SetPtEtaPhiM(reco1.pt,reco1.eta,reco1.phi,MASS_MUON);
@@ -638,27 +741,31 @@ int main(int argc, char *argv[])
       recoOrigRes2 = (reco2.pt-reco2GenPostFSR.pt)/reco2.pt;
     }
 #ifdef MUSCLEFIT
-    if (isData)
-    {
-      TLorentzVector reco1Cor;
-      TLorentzVector reco2Cor;
-      reco1Cor.SetPtEtaPhiM(reco1.pt,reco1.eta,reco1.phi,MASS_MUON);
-      reco2Cor.SetPtEtaPhiM(reco2.pt,reco2.eta,reco2.phi,MASS_MUON);
-      mfCorr->applyPtCorrection(reco1Cor,reco1.charge);
-      mfCorr->applyPtCorrection(reco2Cor,reco2.charge);
-      //if (!isData && runPeriod=="8TeV")
-      //  mfCorr->applyPtSmearing(reco1Cor,reco1.charge);
-      //  mfCorr->applyPtSmearing(reco2Cor,reco2.charge);
-      TLorentzVector diMuonCor = reco1Cor + reco2Cor;
-      reco1.pt = reco1Cor.Pt();
-      reco2.pt = reco2Cor.Pt();
-      recoCandMass = diMuonCor.M();
-      recoCandPt = diMuonCor.Pt();
-      recoCandY = diMuonCor.Rapidity();
-      recoCandPhi = diMuonCor.Phi();
-      reco1Vec = reco1Cor;
-      reco2Vec = reco2Cor;
+    TLorentzVector reco1Cor;
+    TLorentzVector reco2Cor;
+    reco1Cor.SetPtEtaPhiM(reco1.pt,reco1.eta,reco1.phi,MASS_MUON);
+    reco2Cor.SetPtEtaPhiM(reco2.pt,reco2.eta,reco2.phi,MASS_MUON);
+    mfCorr->applyPtCorrection(reco1Cor,reco1.charge);
+    mfCorr->applyPtCorrection(reco2Cor,reco2.charge);
+
+    if (!isData && runPeriod=="8TeV"){
+      mfCorr->applyPtSmearing(reco1Cor,reco1.charge);
+      mfCorr->applyPtSmearing(reco2Cor,reco2.charge);
     }
+
+    TLorentzVector diMuonCor = reco1Cor + reco2Cor;
+    // recalculate ptErr which come from curverture of magnetic field:
+    if(reco1.pt > 0)reco1.ptErr = reco1.ptErr*reco1Cor.Pt()/reco1.pt;
+    if(reco2.pt > 0)reco2.ptErr = reco2.ptErr*reco2Cor.Pt()/reco2.pt;
+    // fill corr  pT:
+    reco1.pt = reco1Cor.Pt();
+    reco2.pt = reco2Cor.Pt();
+    recoCandMass = diMuonCor.M();
+    recoCandPt = diMuonCor.Pt();
+    recoCandY = diMuonCor.Rapidity();
+    recoCandPhi = diMuonCor.Phi();
+    reco1Vec = reco1Cor;
+    reco2Vec = reco2Cor;
 #endif
 #ifdef ROCHESTER
     TLorentzVector reco1Cor;
@@ -711,7 +818,7 @@ int main(int argc, char *argv[])
     float mDiMuResASigDown = recoCandMass;
 
 #ifdef SMEARING
-    if(isSignal)
+    if(!isData) // ISMEAR = 1 is very slow for DY 
     {
       if(reco1GenPostFSR.pt<0.)
         cout << "Muon 1 Post FSR not valid!\n";
@@ -811,6 +918,15 @@ int main(int argc, char *argv[])
 
     mva.resetValues();
     mva.mDiMu = recoCandMass;
+    mva.RelMassRes = 0.;
+    mva.RelMassResCov = 0.;
+    //if(recoCandMassResCov < 0.0001) cout << "recoCandMassResCov = " << recoCandMassResCov << endl;
+    if(recoCandMass > 0) 
+          mva.RelMassRes = GetMassRes(reco1,reco2)/recoCandMass;
+    if(recoCandMassOrig > 0) 
+          mva.RelMassResCov = recoCandMassResCov/recoCandMassOrig;
+
+
     bool inBlindWindow = mva.mDiMu < maxBlind && mva.mDiMu > minBlind;
 
     bool blind = false;
@@ -829,13 +945,15 @@ int main(int argc, char *argv[])
 
     hists.countsHist->Fill(0.0, weight);
 
+    // this selection does NOT contain ISO anymore!!!
     if (!((*muonIdFuncPtr)(reco1)) || !((*muonIdFuncPtr)(reco2)))
           continue;
 
     hists.countsHist->Fill(1.0, weight);
 
-    if (!isHltMatched(reco1,reco2,allowedHLTPaths))
-        continue;
+    // moved below
+    //if (!isHltMatched(reco1,reco2,allowedHLTPaths))
+    //    continue;
 
     hists.countsHist->Fill(2.0, weight);
 
@@ -876,8 +994,11 @@ int main(int argc, char *argv[])
     mva.etaMu1=muon1.eta;
     mva.etaMu2=muon2.eta;
     mva.deltaEtaMuons=fabs(muon1.eta-muon2.eta);
-    mva.relIsoMu1 = getRelIso(muon1);
-    mva.relIsoMu2 = getRelIso(muon2);
+    
+    mva.relIsoMu1    = getPFRelIso (muon1);
+    mva.relIsoMu2    = getPFRelIso (muon2);
+    mva.trkRelIsoMu1 = getTrkRelIso(muon1);
+    mva.trkRelIsoMu2 = getTrkRelIso(muon2);
 
     mva.ptDiMu = recoCandPt;
     mva.yDiMu = recoCandY;
@@ -1016,6 +1137,9 @@ int main(int argc, char *argv[])
       hists.yVmDiMu->Fill(mva.mDiMu,fabs(mva.yDiMu), weight);
       hists.ptVmDiMu->Fill(mva.mDiMu,mva.ptDiMu, weight);
       hists.phiVmDiMu->Fill(mva.mDiMu,recoCandPhi, weight);
+
+      hists.RelMassRes->Fill(mva.RelMassRes, weight);
+      hists.RelMassResCov->Fill(mva.RelMassResCov, weight);
     }
 
     hists.yDiMu->Fill(mva.yDiMu, weight);
@@ -1034,6 +1158,8 @@ int main(int argc, char *argv[])
 
     hists.relIsoMu1->Fill(mva.relIsoMu1, weight);
     hists.relIsoMu2->Fill(mva.relIsoMu2, weight);
+    hists.trkRelIsoMu1->Fill(mva.trkRelIsoMu1, weight);
+    hists.trkRelIsoMu2->Fill(mva.trkRelIsoMu2, weight);
 
     hists.nPU->Fill(nPU, weight);
     hists.nVtx->Fill(mva.nVtx, weight);
@@ -1242,6 +1368,59 @@ int main(int argc, char *argv[])
       }
     }
 
+
+    ///////////////////////////////////////////
+    // Fill the outTree
+    _eventInfo_run   = eventInfo.run  ;
+    _eventInfo_lumi  = eventInfo.lumi ;
+    _eventInfo_event = eventInfo.event;
+
+    _nPU = mva.nPU;
+    _puWeight = mva.weight;
+    _eventType = whichSelection(muon1,muon2,
+                                runPeriod,
+                                jets,
+                                passIncBDTCut,
+                                passVBFBDTCut);
+    
+    
+    _dimuonMass   = mva.mDiMu;
+    _dimuonPt     = mva.ptDiMu;
+    _dimuonY      = mva.yDiMu;
+    _cosThetaStar = mva.cosThetaStar;
+
+    _muonLead_charge = muon1.charge;
+    _muonLead_pt     = muon1.pt;
+    _muonLead_ptErr  = muon1.ptErr;
+    _muonLead_eta    = muon1.eta;
+    _muonLead_phi    = muon1.eta;
+    _muonLead_passPFRelIso  = getPFRelIso (muon1) < 0.12 ? 1 : 0;
+    _muonLead_passTrkRelIso = getTrkRelIso(muon1) < 0.10 ? 1 : 0;
+    _muonLead_isHltMatched  = muon1.isHltMatched[0];
+
+    _muonSub_charge = muon2.charge;
+    _muonSub_pt     = muon2.pt;
+    _muonSub_ptErr  = muon2.ptErr;
+    _muonSub_eta    = muon2.eta;
+    _muonSub_phi    = muon2.eta;
+    _muonSub_passPFRelIso  = getPFRelIso (muon2) < 0.12 ? 1 : 0;
+    _muonSub_passTrkRelIso = getTrkRelIso(muon2) < 0.10 ? 1 : 0;
+    _muonSub_isHltMatched  = muon2.isHltMatched[0];
+    
+    _nJets = mva.nJets;
+    _ptMiss = mva.ptmiss;
+    _deltaEtaJets = mva.deltaEtaJets;
+    _massJJ       = mva.mDiJet;
+
+    if (_eventType != 0) _outTree -> Fill();
+
+    ///////////////////////////////////////////
+
+
+    if (!isHltMatched(reco1,reco2,allowedHLTPaths))
+      continue;
+
+
     //4 GeV Window Plots
     if (mva.mDiMu < 127.0 && mva.mDiMu > 123.0)
     {
@@ -1427,11 +1606,17 @@ int main(int argc, char *argv[])
     if (!vbfPreselection && isBB && mva.ptDiMu > 10.0)
     {
       histsIncPreselPtG10BB.Fill(mva,blind);
+      if(mva.RelMassRes < 0.009) {histsIncPreselPtG10BBres1.Fill(mva,blind);}
+      else{histsIncPreselPtG10BBres2.Fill(mva,blind);}
+      if(mva.RelMassResCov < 0.010) {histsIncPreselPtG10BBres1Cov.Fill(mva,blind);}
+      else{histsIncPreselPtG10BBres2Cov.Fill(mva,blind);}
     }
 
     if (!vbfPreselection && isBO && mva.ptDiMu > 10.0)
     {
       histsIncPreselPtG10BO.Fill(mva,blind);
+      if(mva.RelMassRes < 0.011) {histsIncPreselPtG10BOres1.Fill(mva,blind);}
+      else{histsIncPreselPtG10BOres2.Fill(mva,blind);}
     }
 
     if (!vbfPreselection && isBE && mva.ptDiMu > 10.0)
@@ -1464,6 +1649,22 @@ int main(int argc, char *argv[])
       histsVBFMJJG550.Fill(mva,blind);
     }
 
+    if (vbfPreselection        && 
+        mva.mDiJet > 550.      && 
+        mva.deltaEtaJets > 3.5 && 
+        mva.ptmiss<100. )
+    {
+      histsVBFDeJJG3p5MJJG550pTmissL100.Fill(mva,blind);
+    }
+
+    if (vbfPreselection        && 
+        mva.mDiJet > 500.      && 
+        mva.deltaEtaJets > 3.4 && 
+        mva.ptmiss<25. )
+    {
+      histsVBFDeJJG3p4MJJG500pTmissL25.Fill(mva,blind);
+    }
+
 ///////////////////////////////////////////
 
     timeReading += difftime(timeStopReading,timeStartReading);
@@ -1475,6 +1676,10 @@ int main(int argc, char *argv[])
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+
+  // write the ttree
+  outFile->cd();
+  _outTree->Write();
 
   hists.Write(outFile,"");
   histsBB.Write(outFile,"BB");
@@ -1531,8 +1736,17 @@ int main(int argc, char *argv[])
   histsIncPreselPtG10OE.Write(outFile,"IncPreselPtG10OE");
   histsIncPreselPtG10EE.Write(outFile,"IncPreselPtG10EE");
   histsIncPreselPtG10NotBB.Write(outFile,"IncPreselPtG10NotBB");
+  histsIncPreselPtG10BBres1.Write(outFile,"IncPreselPtG10BBres1");
+  histsIncPreselPtG10BBres2.Write(outFile,"IncPreselPtG10BBres2");
+  histsIncPreselPtG10BOres1.Write(outFile,"IncPreselPtG10BOres1");
+  histsIncPreselPtG10BOres2.Write(outFile,"IncPreselPtG10BOres2");
+  histsIncPreselPtG10BBres1Cov.Write(outFile,"IncPreselPtG10BBres1Cov");
+  histsIncPreselPtG10BBres2Cov.Write(outFile,"IncPreselPtG10BBres2Cov");
 
   histsVBFMJJG550.Write(outFile,"VBFMJJG550");
+  histsVBFDeJJG3p5MJJG550pTmissL100.Write(outFile,"histsVBFDeJJG3p5MJJG550pTmissL100");
+  histsVBFDeJJG3p4MJJG500pTmissL25 .Write(outFile,"histsVBFDeJJG3p4MJJG500pTmissL25");
+
 
   ofstream testOutFile;
   testOutFile.open("testEventNums.txt");
@@ -1577,9 +1791,9 @@ fillMuonHist(TH1F* hist, _MuonInfo& mu1, _MuonInfo& mu2)
   if (mu1.numTrackerLayers < 6 || mu2.numTrackerLayers < 6) return; // # hits in tracker
   hist->Fill(6.0);
 
-  if(getRelIso(mu1) > 0.12 || getRelIso(mu2) > 0.12)
+  if(getPFRelIso(mu1) > 0.12 || getPFRelIso(mu2) > 0.12)
   {
-      //cout << "Iso 1: "<< getRelIso(mu1) << "    Iso 2: " << getRelIso(mu2) << endl;
+      //cout << "Iso 1: "<< getPFRelIso(mu1) << "    Iso 2: " << getPFRelIso(mu2) << endl;
       return;
   }
   hist->Fill(7.0);
@@ -1618,9 +1832,9 @@ printStationMiss(_MuonInfo& mu1, _MuonInfo& mu2, _EventInfo& eventInfo, std::str
   // kinematic cuts
   if (mu1.numTrackerLayers < 6 || mu2.numTrackerLayers < 6) return; // # hits in tracker
 
-  if(getRelIso(mu1) > 0.12 || getRelIso(mu2) > 0.12)
+  if(getPFRelIso(mu1) > 0.12 || getPFRelIso(mu2) > 0.12)
   {
-      //cout << "Iso 1: "<< getRelIso(mu1) << "    Iso 2: " << getRelIso(mu2) << endl;
+      //cout << "Iso 1: "<< getPFRelIso(mu1) << "    Iso 2: " << getPFRelIso(mu2) << endl;
       return;
   }
 
@@ -1655,8 +1869,12 @@ HistStruct::HistStruct()
   float minMass = 0.;
   float maxMass = 400.;
   unsigned nMVABins = 200;
+
   mDiMu = new TH1F("mDiMu","DiMuon Mass",nMassBins,minMass,maxMass);
   histVec.push_back(mDiMu);
+
+  mDiMuTrkRelIso = new TH1F("mDiMuTrkRelIso","DiMuon Mass w/ TrkRelIso",nMassBins,minMass,maxMass);
+  histVec.push_back(mDiMuTrkRelIso);
 
   mDiMuResSigUp = new TH1F("mDiMuResSigUp","DiMuon Mass Systematic Shift Up: Sigma",nMassBins,minMass,maxMass);
   histVec.push_back(mDiMuResSigUp);
@@ -1666,6 +1884,11 @@ HistStruct::HistStruct()
   histVec.push_back(mDiMuResASigUp);
   mDiMuResASigDown = new TH1F("mDiMuResASigDown","DiMuon Mass Systematic Shift Down: ASigma",nMassBins,minMass,maxMass);
   histVec.push_back(mDiMuResASigDown);
+
+  RelMassRes = new TH1F("RelMassRes","Mass Resoluton",100,0.,0.05);
+  histVec.push_back(RelMassRes);
+  RelMassResCov = new TH1F("RelMassResCov","Mass Resoluton",100,0.,0.05);
+  histVec.push_back(RelMassResCov);
 
   mDiJet = new TH1F("mDiJet","DiJet Mass",500,0,2000);
   histVec.push_back(mDiJet);
@@ -1792,6 +2015,11 @@ HistStruct::HistStruct()
   relIsoMu2 = new TH1F("relIsoMu2","",1000,0,10.0);
   histVec.push_back(relIsoMu2);
 
+  trkRelIsoMu1 = new TH1F("trkRelIsoMu1","",1000,0,10.0);
+  histVec.push_back(trkRelIsoMu1);
+  trkRelIsoMu2 = new TH1F("trkRelIsoMu2","",1000,0,10.0);
+  histVec.push_back(trkRelIsoMu2);
+
   nJets = new TH1F("nJets","",11,0,11);
   histVec.push_back(nJets);
   ht = new TH1F("ht","",200,0,2000);
@@ -1856,70 +2084,122 @@ HistStruct::Write(TFile* outfile, std::string directory)
 void 
 HistStruct::Fill(const MVA& mva, bool blind)
 {
-  yDiMu->Fill(mva.yDiMu, mva.weight);
-  ptDiMu->Fill(mva.ptDiMu, mva.weight);
-  ptMu1->Fill(mva.ptMu1, mva.weight);
-  ptMu2->Fill(mva.ptMu2, mva.weight);
-  etaMu1->Fill(mva.etaMu1, mva.weight);
-  etaMu2->Fill(mva.etaMu2, mva.weight);
-  cosThetaStar->Fill(mva.cosThetaStar, mva.weight);
-  cosThetaStarCS->Fill(mva.cosThetaStarCS, mva.weight);
-  deltaPhiMuons->Fill(mva.deltaPhiMuons, mva.weight);
-  deltaEtaMuons->Fill(mva.deltaEtaMuons, mva.weight);
-  deltaRMuons->Fill(mva.deltaRMuons, mva.weight);
-  relIsoMu1->Fill(mva.relIsoMu1, mva.weight);
-  relIsoMu2->Fill(mva.relIsoMu2, mva.weight);
-  nPU->Fill(mva.nPU, mva.weight);
-  nVtx->Fill(mva.nVtx, mva.weight);
-  met->Fill(mva.met, mva.weight);
-  ptmiss->Fill(mva.ptmiss, mva.weight);
 
-  mDiJet->Fill(mva.mDiJet, mva.weight);
-  ptDiJet->Fill(mva.ptDiJet, mva.weight);
-  yDiJet->Fill(mva.yDiJet, mva.weight);
-  ptJet1->Fill(mva.ptJet1, mva.weight);
-  ptJet2->Fill(mva.ptJet2, mva.weight);
-  etaJet1->Fill(mva.etaJet1, mva.weight);
-  etaJet2->Fill(mva.etaJet2, mva.weight);
-  deltaEtaJets->Fill(mva.deltaEtaJets, mva.weight);
-  deltaPhiJets->Fill(mva.deltaPhiJets, mva.weight);
-  deltaRJets->Fill(mva.deltaRJets, mva.weight);
-  deltaPhiHJ1->Fill(mva.deltaPhiHJ1, mva.weight);
-  nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, mva.weight);
-  htInRapidityGap->Fill(mva.htInRapidityGap, mva.weight);
-  nJets->Fill(mva.nJets, mva.weight);
-  ht->Fill(mva.ht, mva.weight);
+  if (mva.trkRelIsoMu1 < 0.1 && mva.trkRelIsoMu2 < 0.1) {
+    trkRelIsoMu1->Fill(mva.trkRelIsoMu1, mva.weight);
+    trkRelIsoMu2->Fill(mva.trkRelIsoMu2, mva.weight);
+ 
+    if (!blind) mDiMuTrkRelIso->Fill(mva.mDiMu, mva.weight);
+  } // is Trk Rel Iso passed on both muons
 
-  puJetIDSimpleDiscJet1->Fill(mva.puJetIDSimpleDiscJet1,mva.weight);
-  puJetIDSimpleDiscJet2->Fill(mva.puJetIDSimpleDiscJet2,mva.weight);
-  puJetIDSimpleDiscJet3->Fill(mva.puJetIDSimpleDiscJet3,mva.weight);
+    
+  if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
 
-  puJetIDSimpleJet1->Fill(mva.puJetIDSimpleJet1,mva.weight);
-  puJetIDSimpleJet2->Fill(mva.puJetIDSimpleJet2,mva.weight);
-  puJetIDSimpleJet3->Fill(mva.puJetIDSimpleJet3,mva.weight);
+    yDiMu->Fill(mva.yDiMu, mva.weight);
+    ptDiMu->Fill(mva.ptDiMu, mva.weight);
+    ptMu1->Fill(mva.ptMu1, mva.weight);
+    ptMu2->Fill(mva.ptMu2, mva.weight);
+    etaMu1->Fill(mva.etaMu1, mva.weight);
+    etaMu2->Fill(mva.etaMu2, mva.weight);
+    cosThetaStar->Fill(mva.cosThetaStar, mva.weight);
+    cosThetaStarCS->Fill(mva.cosThetaStarCS, mva.weight);
+    deltaPhiMuons->Fill(mva.deltaPhiMuons, mva.weight);
+    deltaEtaMuons->Fill(mva.deltaEtaMuons, mva.weight);
+    deltaRMuons->Fill(mva.deltaRMuons, mva.weight);
+    relIsoMu1->Fill(mva.relIsoMu1, mva.weight);
+    relIsoMu2->Fill(mva.relIsoMu2, mva.weight);
+    nPU->Fill(mva.nPU, mva.weight);
+    nVtx->Fill(mva.nVtx, mva.weight);
+    met->Fill(mva.met, mva.weight);
+    ptmiss->Fill(mva.ptmiss, mva.weight);
+    
+    mDiJet->Fill(mva.mDiJet, mva.weight);
+    ptDiJet->Fill(mva.ptDiJet, mva.weight);
+    yDiJet->Fill(mva.yDiJet, mva.weight);
+    ptJet1->Fill(mva.ptJet1, mva.weight);
+    ptJet2->Fill(mva.ptJet2, mva.weight);
+    etaJet1->Fill(mva.etaJet1, mva.weight);
+    etaJet2->Fill(mva.etaJet2, mva.weight);
+    deltaEtaJets->Fill(mva.deltaEtaJets, mva.weight);
+    deltaPhiJets->Fill(mva.deltaPhiJets, mva.weight);
+    deltaRJets->Fill(mva.deltaRJets, mva.weight);
+    deltaPhiHJ1->Fill(mva.deltaPhiHJ1, mva.weight);
+    nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, mva.weight);
+    htInRapidityGap->Fill(mva.htInRapidityGap, mva.weight);
+    nJets->Fill(mva.nJets, mva.weight);
+    ht->Fill(mva.ht, mva.weight);
+    
+    puJetIDSimpleDiscJet1->Fill(mva.puJetIDSimpleDiscJet1,mva.weight);
+    puJetIDSimpleDiscJet2->Fill(mva.puJetIDSimpleDiscJet2,mva.weight);
+    puJetIDSimpleDiscJet3->Fill(mva.puJetIDSimpleDiscJet3,mva.weight);
+    
+    puJetIDSimpleJet1->Fill(mva.puJetIDSimpleJet1,mva.weight);
+    puJetIDSimpleJet2->Fill(mva.puJetIDSimpleJet2,mva.weight);
+    puJetIDSimpleJet3->Fill(mva.puJetIDSimpleJet3,mva.weight);
+    
+    yVptDiMu->Fill(mva.ptDiMu,fabs(mva.yDiMu),mva.weight);
+    
+    if (!blind)
+      {
 
-  yVptDiMu->Fill(mva.ptDiMu,fabs(mva.yDiMu),mva.weight);
+        mDiMu->Fill(mva.mDiMu, mva.weight);
+        mDiMuResSigUp->Fill(mva.mDiMuResSigUp, mva.weight);
+        mDiMuResSigDown->Fill(mva.mDiMuResSigDown, mva.weight);
+        mDiMuResASigUp->Fill(mva.mDiMuResASigUp, mva.weight);
+        mDiMuResASigDown->Fill(mva.mDiMuResASigDown, mva.weight);
 
-  if (!blind)
-  {
-    mDiMu->Fill(mva.mDiMu, mva.weight);
-    mDiMuResSigUp->Fill(mva.mDiMuResSigUp, mva.weight);
-    mDiMuResSigDown->Fill(mva.mDiMuResSigDown, mva.weight);
-    mDiMuResASigUp->Fill(mva.mDiMuResASigUp, mva.weight);
-    mDiMuResASigDown->Fill(mva.mDiMuResASigDown, mva.weight);
+        RelMassRes->Fill(mva.RelMassRes, mva.weight);
+        RelMassResCov->Fill(mva.RelMassResCov, mva.weight);
 
-    yVmDiMu->Fill(mva.mDiMu,fabs(mva.yDiMu),mva.weight);
-    ptVmDiMu->Fill(mva.mDiMu,mva.ptDiMu,mva.weight);
+        yVmDiMu->Fill(mva.mDiMu,fabs(mva.yDiMu),mva.weight);
+        ptVmDiMu->Fill(mva.mDiMu,mva.ptDiMu,mva.weight);
+        
+        if(!mva.vbfPreselection)
+          {
+            BDTHistMuonOnly->Fill(mva.bdtValInc, mva.weight);
+            BDTHistMuonOnlyVMass->Fill(mva.mDiMu, mva.bdtValInc, mva.weight);
+          }
+        else
+          {
+            BDTHistVBF->Fill(mva.bdtValVBF, mva.weight);
+            BDTHistVBFVMass->Fill(mva.mDiMu, mva.bdtValVBF, mva.weight);
+          }
+      }
+  } // is PF Rel Iso passed on both muons
+  
+}
 
-    if(!mva.vbfPreselection)
-    {
-      BDTHistMuonOnly->Fill(mva.bdtValInc, mva.weight);
-      BDTHistMuonOnlyVMass->Fill(mva.mDiMu, mva.bdtValInc, mva.weight);
-    }
-    else
-    {
-      BDTHistVBF->Fill(mva.bdtValVBF, mva.weight);
-      BDTHistVBFVMass->Fill(mva.mDiMu, mva.bdtValVBF, mva.weight);
-    }
-  }
+double GetMassRes(_MuonInfo& mu1, _MuonInfo& mu2) {
+
+  //double const MASS_MUON = 0.105658367;    //GeV/c2
+
+  // get the dimuon candidate
+  //TLorentzVector dimuon = GetLorentzVector(pair);
+  TLorentzVector mu1Vec;
+  TLorentzVector mu2Vec;
+  mu1Vec.SetPtEtaPhiM(mu1.pt,mu1.eta,mu1.phi,MASS_MUON);
+  mu2Vec.SetPtEtaPhiM(mu2.pt,mu2.eta,mu2.phi,MASS_MUON);
+  TLorentzVector dimuon = mu1Vec + mu2Vec;
+
+  // get the dimuon mass
+  
+  double dimuonMass = dimuon.M();
+
+
+  TLorentzVector muon1withError, muon2, dimuon_var1; 
+  muon1withError.SetPtEtaPhiM(mu1.pt+mu1.ptErr, 
+                              mu1.eta, mu1.phi, MASS_MUON);
+  muon2.SetPtEtaPhiM(mu2.pt, mu2.eta, mu2.phi, MASS_MUON);
+  dimuon_var1 = muon1withError+muon2;
+  double deltaM1 = fabs(dimuon_var1.M() - dimuonMass );
+
+  TLorentzVector muon1, muon2withError, dimuon_var2; 
+  muon1.SetPtEtaPhiM(mu1.pt, mu1.eta, mu1.phi, MASS_MUON);
+  muon2withError.SetPtEtaPhiM(mu2.pt+mu2.ptErr, 
+                              mu2.eta, mu2.phi, MASS_MUON);
+  dimuon_var2 = muon1+muon2withError;
+  double deltaM2 = fabs(dimuon_var2.M() - dimuonMass );
+
+  return sqrt( (deltaM1*deltaM1) + (deltaM2*deltaM2) );
+
 }

@@ -3,7 +3,7 @@
 #include <iostream>
 #include "TStyle.h"
 
-float getRelIso(_MuonInfo& muon)
+float getPFRelIso(_MuonInfo& muon)
 {
   // tracker iso cut
   //if (muon.trackIsoSumPt/muon.pt>0.1) return isKinTight_2012;  
@@ -12,6 +12,13 @@ float getRelIso(_MuonInfo& muon)
     std::max(0.0,muon.sumNeutralHadronEtR04 + muon.sumPhotonEtR04 - 0.5*muon.sumPUPtR04);
 
   return result/muon.pt;
+}
+
+float getTrkRelIso(_MuonInfo& muon)
+{
+  // tracker iso cut
+  return muon.trackIsoSumPt/muon.pt;
+
 }
 
 bool isKinTight_2012(_MuonInfo& muon) 
@@ -29,7 +36,7 @@ bool isKinTight_2012(_MuonInfo& muon)
   // kinematic cuts
   if (muon.numTrackerLayers < 6) return isKinTight_2012; // # hits in tracker
 
-  if(getRelIso(muon) > 0.12)
+  if(getPFRelIso(muon) > 0.12)
       return isKinTight_2012;
 
   if (fabs(muon.d0_PV) > 0.2) return isKinTight_2012;
@@ -59,7 +66,7 @@ bool isKinTight_2011(_MuonInfo& muon)
   // kinematic cuts
   if (muon.numTrackerLayers < 9) return isKinTight_2011; // # hits in tracker
 
-  if(getRelIso(muon) > 0.12)
+  if(getPFRelIso(muon) > 0.12)
       return isKinTight_2011;
 
   if (fabs(muon.d0_PV) > 0.2) return isKinTight_2011;
@@ -73,6 +80,68 @@ bool isKinTight_2011(_MuonInfo& muon)
   isKinTight_2011=true;
   return isKinTight_2011;
 }
+
+bool isKinTight_2012_noIso(_MuonInfo& muon) 
+{
+
+  bool isKinTight_2012=false;
+
+  if (!muon.isGlobal)  return isKinTight_2012;
+  if (!muon.isPFMuon) return isKinTight_2012;
+
+  // acceptance cuts
+  if (muon.pt < 25)         return isKinTight_2012; // pt cut
+  if (fabs(muon.eta) > 2.1) return isKinTight_2012; // eta cut
+
+  // kinematic cuts
+  if (muon.numTrackerLayers < 6) return isKinTight_2012; // # hits in tracker
+
+  //if(getPFRelIso(muon) > 0.12)
+  //return isKinTight_2012;
+
+  if (fabs(muon.d0_PV) > 0.2) return isKinTight_2012;
+  if (fabs(muon.dz_PV) > 0.5) return isKinTight_2012;
+
+  if ( muon.numValidMuonHits  < 1 ) return isKinTight_2012;
+  if ( muon.numValidPixelHits < 1 ) return isKinTight_2012;
+  if ( muon.numOfMatchedStations < 2 ) return isKinTight_2012;
+  if ( muon.normChiSquare > 10)     return isKinTight_2012;
+
+  isKinTight_2012=true;
+  return isKinTight_2012;
+}
+
+bool isKinTight_2011_noIso(_MuonInfo& muon) 
+{
+
+  bool isKinTight_2011=false;
+
+  if (!muon.isGlobal)  return isKinTight_2011;
+  if (!muon.isTracker) return isKinTight_2011;
+
+  // acceptance cuts
+  if (muon.pt < 25)         return isKinTight_2011; // pt cut
+  if (fabs(muon.eta) > 2.1) return isKinTight_2011; // eta cut
+
+  // kinematic cuts
+  if (muon.numTrackerLayers < 9) return isKinTight_2011; // # hits in tracker
+
+  //if(getPFRelIso(muon) > 0.12)
+  //  return isKinTight_2011;
+
+  if (fabs(muon.d0_PV) > 0.2) return isKinTight_2011;
+  //if (fabs(muon.dz_PV) > 0.5) return isKinTight_2011;
+
+  if ( muon.numValidMuonHits  < 1 ) return isKinTight_2011;
+  if ( muon.numValidPixelHits < 1 ) return isKinTight_2011;
+  if ( muon.numOfMatchedStations < 2 ) return isKinTight_2011;
+  if ( muon.normChiSquare > 10)     return isKinTight_2011;
+
+  isKinTight_2011=true;
+  return isKinTight_2011;
+}
+
+
 
 bool passPUJetID(int flag, PUJetID desiredLevel)
 {
@@ -477,6 +546,177 @@ int whichSelection(_MuonInfo& mu1, _MuonInfo& mu2,
 
   return code;
 }
+
+
+int whichSelection(_MuonInfo& mu1, _MuonInfo& mu2,   
+                   std::string& runPeriod,
+                   _PFJetInfo jets,
+                   bool passIncBDTCut, // keeping the complication of the 
+                   bool passVBFBDTCut) // BDT out of the function
+  
+{
+  
+  ////////////////////////////////////////////////////////////////////////
+  // dimuon selection
+  ////////////////////////////////////////////////////////////////////////
+
+  bool pass = true;
+
+  // muon ID
+  if    (runPeriod == "7TeV") {
+    if ( !isKinTight_2011_noIso(mu1) || !isKinTight_2011_noIso(mu2) ) pass = false;
+  }
+  else if (runPeriod == "8TeV"){
+    if ( !isKinTight_2012_noIso(mu1) || !isKinTight_2012_noIso(mu2) ) pass = false;
+  }
+  else{
+    return notSelected;
+  }
+
+  // trigger matching
+  //if (!isHltMatched(mu1,mu2,allowedHLTPaths)) pass = false;
+
+  // opposite charge
+  if (mu1.charge*mu2.charge != -1) pass = false;
+  
+  if (!pass) return notSelected;
+  ////////////////////////////////////////////////////////////////////////
+
+
+  ////////////////////////////////////////////////////////////////////////
+  // Jet Part
+  ////////////////////////////////////////////////////////////////////////
+  
+  // Jet Part
+  for(unsigned iJet=0; (iJet < jets.nJets && iJet < 10);iJet++)
+    {
+      if (jets.genPt[iJet]>0.0 && jets.pt[iJet]>15.)
+        jets.pt[iJet] = jerCorr(jets.pt[iJet],jets.genPt[iJet],jets.eta[iJet]);
+    }
+
+  bool goodJets = false;
+  if(jets.nJets>=2 && jets.pt[0]>30.0 && jets.pt[1]>30.0 && fabs(jets.eta[0])<4.7 && fabs(jets.eta[1])<4.7)
+    goodJets = true;
+
+  double deltaEtaJets = -999;
+  double productEtaJets = -999;
+  double diJetMass = -999;
+
+  if(goodJets)
+    {
+      TLorentzVector pJet1;
+      TLorentzVector pJet2;
+      pJet1.SetXYZM(jets.px[0],jets.py[0],jets.pz[0],jets.mass[0]);
+      pJet2.SetXYZM(jets.px[1],jets.py[1],jets.pz[1],jets.mass[1]);
+      TLorentzVector diJet = pJet1+pJet2;
+
+      deltaEtaJets   = fabs(jets.eta[0]-jets.eta[1]);
+      productEtaJets = jets.eta[0]*jets.eta[1];
+      diJetMass = diJet.M();
+
+//       // Seeing if there are jets in the rapidity gap
+//       float etaMax = jets.eta[0];
+//       float etaMin = 9999999.0;
+//       if(etaMax < jets.eta[1])
+//         {
+//           etaMax = jets.eta[1];
+//           etaMin = jets.eta[0];
+//         }
+//       else
+//         {
+//           etaMin = jets.eta[1];
+//         }
+      
+//      bool jetInRapidityGap=false;
+//      for(unsigned iJet=2; (iJet < jets.nJets && iJet < 10);iJet++)
+//      {
+//        if(jets.pt[iJet] > 30.0)
+//        {
+//          if(jets.eta[iJet] < etaMax && jets.eta[iJet] > etaMin)
+//          {
+//            jetInRapidityGap = true;
+//            mva.nJetsInRapidityGap++;
+//            mva.htInRapidityGap += jets.pt[iJet];
+//          }
+//        }
+//      }
+//
+    }
+
+  
+  // muon-muon categories
+  bool isBB = false;
+  bool isBO = false;
+  bool isBE = false;
+  bool isOO = false;
+  bool isOE = false;
+  bool isEE = false;
+  if(fabs(mu1.eta)<0.8 && fabs(mu2.eta)<0.8)
+    {
+      isBB=true;
+    }
+  else if(
+          (fabs(mu1.eta)<0.8 && fabs(mu2.eta)<1.6)
+          || (fabs(mu1.eta)<1.6 && fabs(mu2.eta)<0.8)
+          )
+    {
+      isBO=true;
+    }
+  else if(
+          fabs(mu1.eta)<0.8 || fabs(mu2.eta)<0.8
+          )
+    {
+      isBE=true;
+    }
+    else if(
+            fabs(mu1.eta)<1.6 && fabs(mu2.eta)<1.6
+            )
+      {
+        isOO=true;
+      }
+    else if(
+            fabs(mu1.eta)<1.6 || fabs(mu2.eta)<1.6
+            )
+    {
+      isOE=true;
+    }
+    else
+      {
+        isEE=true;
+      }
+  bool isNotBB = !isBB;
+
+  int code = 0;
+ 
+  bool isvbfPreselection = false;
+  if ( diJetMass>300.0   && 
+       deltaEtaJets>3.0  && 
+       productEtaJets<0.0 ) isvbfPreselection = true;
+  
+  if (isvbfPreselection) code += vbfPresel;
+  else                   code += incPresel;
+
+  
+
+  //VBF BDT Cut Plots
+  if (isvbfPreselection             && passVBFBDTCut) code += vbfPresel_passVBFBDTCut;
+  if (isvbfPreselection && isBB     && passVBFBDTCut) code += vbfPresel_isBB_passVBFBDTCut;
+  if (isvbfPreselection && isNotBB  && passVBFBDTCut) code += vbfPresel_isNotBB_passVBFBDTCut;
+                                              
+  //Inc BDT Cut Plots                                       
+  if (!isvbfPreselection            && passIncBDTCut) code += incPresel_passIncBDTCut;
+  if (!isvbfPreselection && isBB    && passIncBDTCut) code += incPresel_isBB_passIncBDTCut;
+  if (!isvbfPreselection && isBO    && passIncBDTCut) code += incPresel_isBO_passIncBDTCut;
+  if (!isvbfPreselection && isBE    && passIncBDTCut) code += incPresel_isBE_passIncBDTCut;
+  if (!isvbfPreselection && isOO    && passIncBDTCut) code += incPresel_isOO_passIncBDTCut;
+  if (!isvbfPreselection && isOE    && passIncBDTCut) code += incPresel_isOE_passIncBDTCut;
+  if (!isvbfPreselection && isEE    && passIncBDTCut) code += incPresel_isEE_passIncBDTCut;
+  if (!isvbfPreselection && isNotBB && passIncBDTCut) code += incPresel_isNotBB_passIncBDTCut;
+
+
+  return code;
+}
+
 
 void setStyle()
 {

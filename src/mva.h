@@ -72,6 +72,9 @@ class MVA
 
   float relIsoMu1;
   float relIsoMu2;
+  float trkRelIsoMu1;
+  float trkRelIsoMu2;
+
   float ht;
   float nJets;
   float htInRapidityGap;
@@ -101,6 +104,9 @@ class MVA
 
   float bdtValInc;
   float bdtValVBF;
+
+  float RelMassRes;
+  float RelMassResCov;
 
   //////////////////////
   
