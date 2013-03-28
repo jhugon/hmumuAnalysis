@@ -1298,7 +1298,11 @@ int main(int argc, char *argv[])
 //of the subleading jet), and a di-jet invariant mass m12 > 400 GeV/c2 , with no other
 //jet with pT > 30 GeV/c in the rapidity region between the two jets.
 
-    if (!(inBlindWindow && isData) && inTrainingWindow)
+    if (
+           !(inBlindWindow && isData) && inTrainingWindow
+           && isHltMatched(reco1,reco2,allowedHLTPaths)
+           && mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12
+        )
       mva.writeEvent();
 
     if (trainingTreeRun) //Skip Filling of histos when training Tree
