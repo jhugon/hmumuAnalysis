@@ -39,6 +39,8 @@
 #include "src/ScaleFactors.h"
 #include "src/ScaleFactors_2011.h"
 
+#include "MEKD_Wrapper.h"
+
 #define JETPUID
 #define PUREWEIGHT
 //#define ISMEAR 1
@@ -613,6 +615,9 @@ int main(int argc, char *argv[])
   float _deltaEtaJets;
   float _massJJ;
 
+  float _kd;
+  float _sigME;
+  float _bakME;
      
   // eventInfo;
   _outTree->Branch("eventInfo_run",    &_eventInfo_run,   "eventInfo_run/I");
@@ -653,6 +658,17 @@ int main(int argc, char *argv[])
   _outTree->Branch("deltaEtaJets", &_deltaEtaJets, "deltaEtaJets/F");
   _outTree->Branch("massJJ",       &_massJJ,       "massJJ/F");
 
+  _outTree->Branch("kd",           &_kd,           "kd/F");
+  _outTree->Branch("sigME",        &_sigME,        "sigME/F");
+  _outTree->Branch("bakME",        &_bakME,        "bakME/F");
+
+  //////////////////////////
+  // Creating the MEKD
+
+  double nTeV = 8.;
+  if (runPeriod == "7TeV")
+    nTeV = 7.;
+  MEKD_Wrapper mekd(nTeV);
 
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -1051,6 +1067,15 @@ int main(int argc, char *argv[])
     }
     bool isNotBB = !isBB;
     
+    //////////////////////////////////////////
+    // MEKD
+
+    int kdStatus = mekd.getKD(reco1Vec, reco2Vec, 
+                            reco1.charge, 
+                            _kd, _sigME, _bakME);
+    if (kdStatus != 0)
+      cout << "Error: MEKD: " << _kd << " Status: "<<kdStatus 
+        << " sigME: " << _sigME << " bakME: "<< _bakME<<endl;
 
     //////////////////////////////////////////
     //Computing CosTheta*

@@ -65,6 +65,11 @@ corrFiles = ["rochester/rochcor2012.C",
 includes.append("rochester/")
 includes.append("musclefit/")
 
+#MEKD
+mekdSources = ["src/MEKD_Wrapper.cc"]+glob.glob("mekd/src/*.cpp")+glob.glob("mekd/src/*/*.cpp")+glob.glob("mekd/src/*/*.cc")+glob.glob("mekd/src/*/*.c")
+includes += ["mekd/interface","mekd/src"]#,"mekd/Extra_code/","mekd/MadGraphSrc/","mekd/PDFTables/","mekd/higgs_properties/"]
+env.MergeFlags("-D MEKD_STANDALONE")
+
 env.Append(CPPPATH=includes)
 env.Append(LIBPATH=libpath)
 env.Append(LIBS=libs)
@@ -107,15 +112,16 @@ if not env.GetOption("clean"):
     Exit(1)
   env = conf.Finish()
  
-env.Library(targer="src/mva",source=["src/mva.cc"])
-env.Library(targer="src/helpers",source=["src/helpers.cc"])
-env.Program(target="analyzer", source=["analyzer.cc","src/libmva.a","src/libhelpers.a"]+corrFiles+smearFiles)
-#env.Program(target="systematics", source=["systematics.cc","src/libmva.a","src/libhelpers.a"]+corrFiles+smearFiles)
-env.Program(target="systematicsJets", source=["systematicsJets.cc","src/libmva.a","src/libhelpers.a"]+corrFiles+smearFiles)
+env.Library(target="src/mva",source=["src/mva.cc"])
+env.Library(target="src/helpers",source=["src/helpers.cc"])
+mekd = env.Library(target="mekd/MEKD",source=mekdSources)
+env.Program(target="analyzer", source=["analyzer.cc","src/libmva.a","src/libhelpers.a",mekd]+corrFiles+smearFiles)
+#env.Program(target="systematics", source=["systematics.cc","src/libmva.a","src/libhelpers.a",mekd]+corrFiles+smearFiles)
+env.Program(target="systematicsJets", source=["systematicsJets.cc","src/libmva.a","src/libhelpers.a",mekd]+corrFiles+smearFiles)
 env.Program(target="mvaTrain", source=["mvaTrain.cc"])
 
-env.Program(target="testVertex", source=["testVertex.cc","src/libmva.a","src/libhelpers.a"])
-env.Program(target="eventPrinter", source=["eventPrinter.cc","src/libmva.a","src/libhelpers.a"])
+env.Program(target="testVertex", source=["testVertex.cc","src/libmva.a","src/libhelpers.a",mekd])
+env.Program(target="eventPrinter", source=["eventPrinter.cc","src/libmva.a","src/libhelpers.a",mekd])
 env.Program(target="endpoint", source=["endpoint.cc","src/libhelpers.a"])
 env.Program(target="skim", source=["skim.cc"])
 
