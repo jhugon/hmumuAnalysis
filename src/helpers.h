@@ -14,22 +14,19 @@ enum PUJetID
 
 enum SelectionCodes
 {
-  notSelected = 0,
+  notSelected_Code = 0,
 
-  vbfPresel = 1,
-  vbfPresel_passVBFBDTCut = 2,
-  vbfPresel_isBB_passVBFBDTCut = 4,
-  vbfPresel_isNotBB_passVBFBDTCut = 8,
-
-  incPresel = 16,
-  incPresel_passIncBDTCut = 32,
-  incPresel_isBB_passIncBDTCut = 64,
-  incPresel_isBO_passIncBDTCut = 128,
-  incPresel_isBE_passIncBDTCut = 256,
-  incPresel_isOO_passIncBDTCut = 512,
-  incPresel_isOE_passIncBDTCut = 1024,
-  incPresel_isEE_passIncBDTCut = 2048,
-  incPresel_isNotBB_passIncBDTCut = 4096
+  vbfPresel_Code = 1,
+  vbfBDTCut_Code = 2,
+  incPresel_Code = 4,
+  incBDTCut_Code = 8,
+  isBB_Code = 16,
+  isBO_Code = 32,
+  isBE_Code = 64,
+  isOO_Code = 128,
+  isOE_Code = 256,
+  isEE_Code = 512,
+  isNotBB_Code = 1024,
 };
 
 float getPFRelIso(_MuonInfo& muon);

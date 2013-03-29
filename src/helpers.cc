@@ -338,7 +338,7 @@ int whichSelection(_MuonInfo& mu1, _MuonInfo& mu2,
     if ( !isKinTight_2012(mu1) || !isKinTight_2012(mu2) ) pass = false;
   }
   else{
-    return notSelected;
+    return notSelected_Code;
   }
 
   // trigger matching
@@ -347,7 +347,7 @@ int whichSelection(_MuonInfo& mu1, _MuonInfo& mu2,
   // opposite charge
   if (mu1.charge*mu2.charge != -1) pass = false;
   
-  if (!pass) return notSelected;
+  if (!pass) return notSelected_Code;
   ////////////////////////////////////////////////////////////////////////
 
 
@@ -471,51 +471,50 @@ int whichSelection(_MuonInfo& mu1, _MuonInfo& mu2,
       
       diJetMass = diJet.M();
     }
+
+  int code = 0;
   
   // muon-muon categories
   bool isBB = false;
-  bool isBO = false;
-  bool isBE = false;
-  bool isOO = false;
-  bool isOE = false;
-  bool isEE = false;
   if(fabs(mu1.eta)<0.8 && fabs(mu2.eta)<0.8)
     {
-      isBB=true;
+      code += isBB_Code;
+      isBB = true;
     }
   else if(
           (fabs(mu1.eta)<0.8 && fabs(mu2.eta)<1.6)
           || (fabs(mu1.eta)<1.6 && fabs(mu2.eta)<0.8)
           )
     {
-      isBO=true;
+      code += isBO_Code;
     }
   else if(
           fabs(mu1.eta)<0.8 || fabs(mu2.eta)<0.8
           )
     {
-      isBE=true;
+      code += isBE_Code;
     }
   else if(
           fabs(mu1.eta)<1.6 && fabs(mu2.eta)<1.6
           )
     {
-      isOO=true;
+      code += isOO_Code;
     }
   else if(
           fabs(mu1.eta)<1.6 || fabs(mu2.eta)<1.6
           )
     {
-      isOE=true;
+      code += isOE_Code;
     }
   else
     {
-      isEE=true;
+      code += isEE_Code;
     }
-  bool isNotBB = !isBB;
+  if(!isBB)
+    {
+      code += isNotBB_Code;
+    }
 
-
-  int code = 0;
 
   bool isvbfPreselection = false;
   if ( diJetMass>300.0  && 
@@ -523,26 +522,16 @@ int whichSelection(_MuonInfo& mu1, _MuonInfo& mu2,
        productEtaJets<0.0 /*&& 
                             nJetsInRapidityGap == 0 */) isvbfPreselection = true;
   
-  if (isvbfPreselection) code += vbfPresel;
-  else                   code += incPresel;
+  if (isvbfPreselection) code += vbfPresel_Code;
+  else                   code += incPresel_Code;
 
   
 
   //VBF BDT Cut Plots
-  if (isvbfPreselection             && passVBFBDTCut) code += vbfPresel_passVBFBDTCut;
-  if (isvbfPreselection && isBB     && passVBFBDTCut) code += vbfPresel_isBB_passVBFBDTCut;
-  if (isvbfPreselection && isNotBB  && passVBFBDTCut) code += vbfPresel_isNotBB_passVBFBDTCut;
+  if (isvbfPreselection             && passVBFBDTCut) code += vbfBDTCut_Code;
                                               
   //Inc BDT Cut Plots                                       
-  if (!isvbfPreselection            && passIncBDTCut) code += incPresel_passIncBDTCut;
-  if (!isvbfPreselection && isBB    && passIncBDTCut) code += incPresel_isBB_passIncBDTCut;
-  if (!isvbfPreselection && isBO    && passIncBDTCut) code += incPresel_isBO_passIncBDTCut;
-  if (!isvbfPreselection && isBE    && passIncBDTCut) code += incPresel_isBE_passIncBDTCut;
-  if (!isvbfPreselection && isOO    && passIncBDTCut) code += incPresel_isOO_passIncBDTCut;
-  if (!isvbfPreselection && isOE    && passIncBDTCut) code += incPresel_isOE_passIncBDTCut;
-  if (!isvbfPreselection && isEE    && passIncBDTCut) code += incPresel_isEE_passIncBDTCut;
-  if (!isvbfPreselection && isNotBB && passIncBDTCut) code += incPresel_isNotBB_passIncBDTCut;
-
+  if (!isvbfPreselection            && passIncBDTCut) code += incBDTCut_Code;
 
   return code;
 }
@@ -570,7 +559,7 @@ int whichSelection(_MuonInfo& mu1, _MuonInfo& mu2,
     if ( !isKinTight_2012_noIso(mu1) || !isKinTight_2012_noIso(mu2) ) pass = false;
   }
   else{
-    return notSelected;
+    return notSelected_Code;
   }
 
   // trigger matching
@@ -579,7 +568,7 @@ int whichSelection(_MuonInfo& mu1, _MuonInfo& mu2,
   // opposite charge
   if (mu1.charge*mu2.charge != -1) pass = false;
   
-  if (!pass) return notSelected;
+  if (!pass) return notSelected_Code;
   ////////////////////////////////////////////////////////////////////////
 
 
@@ -643,76 +632,63 @@ int whichSelection(_MuonInfo& mu1, _MuonInfo& mu2,
 //
     }
 
+  int code = 0;
   
   // muon-muon categories
   bool isBB = false;
-  bool isBO = false;
-  bool isBE = false;
-  bool isOO = false;
-  bool isOE = false;
-  bool isEE = false;
   if(fabs(mu1.eta)<0.8 && fabs(mu2.eta)<0.8)
     {
-      isBB=true;
+      code += isBB_Code;
+      isBB = true;
     }
   else if(
           (fabs(mu1.eta)<0.8 && fabs(mu2.eta)<1.6)
           || (fabs(mu1.eta)<1.6 && fabs(mu2.eta)<0.8)
           )
     {
-      isBO=true;
+      code += isBO_Code;
     }
   else if(
           fabs(mu1.eta)<0.8 || fabs(mu2.eta)<0.8
           )
     {
-      isBE=true;
+      code += isBE_Code;
     }
-    else if(
-            fabs(mu1.eta)<1.6 && fabs(mu2.eta)<1.6
-            )
-      {
-        isOO=true;
-      }
-    else if(
-            fabs(mu1.eta)<1.6 || fabs(mu2.eta)<1.6
-            )
+  else if(
+          fabs(mu1.eta)<1.6 && fabs(mu2.eta)<1.6
+          )
     {
-      isOE=true;
+      code += isOO_Code;
     }
-    else
-      {
-        isEE=true;
-      }
-  bool isNotBB = !isBB;
+  else if(
+          fabs(mu1.eta)<1.6 || fabs(mu2.eta)<1.6
+          )
+    {
+      code += isOE_Code;
+    }
+  else
+    {
+      code += isEE_Code;
+    }
+  if(!isBB)
+    {
+      code += isNotBB_Code;
+    }
 
-  int code = 0;
  
   bool isvbfPreselection = false;
   if ( diJetMass>300.0   && 
        deltaEtaJets>3.0  && 
        productEtaJets<0.0 ) isvbfPreselection = true;
   
-  if (isvbfPreselection) code += vbfPresel;
-  else                   code += incPresel;
-
-  
+  if (isvbfPreselection) code += vbfPresel_Code;
+  else                   code += incPresel_Code;
 
   //VBF BDT Cut Plots
-  if (isvbfPreselection             && passVBFBDTCut) code += vbfPresel_passVBFBDTCut;
-  if (isvbfPreselection && isBB     && passVBFBDTCut) code += vbfPresel_isBB_passVBFBDTCut;
-  if (isvbfPreselection && isNotBB  && passVBFBDTCut) code += vbfPresel_isNotBB_passVBFBDTCut;
+  if (isvbfPreselection             && passVBFBDTCut) code += vbfBDTCut_Code;
                                               
   //Inc BDT Cut Plots                                       
-  if (!isvbfPreselection            && passIncBDTCut) code += incPresel_passIncBDTCut;
-  if (!isvbfPreselection && isBB    && passIncBDTCut) code += incPresel_isBB_passIncBDTCut;
-  if (!isvbfPreselection && isBO    && passIncBDTCut) code += incPresel_isBO_passIncBDTCut;
-  if (!isvbfPreselection && isBE    && passIncBDTCut) code += incPresel_isBE_passIncBDTCut;
-  if (!isvbfPreselection && isOO    && passIncBDTCut) code += incPresel_isOO_passIncBDTCut;
-  if (!isvbfPreselection && isOE    && passIncBDTCut) code += incPresel_isOE_passIncBDTCut;
-  if (!isvbfPreselection && isEE    && passIncBDTCut) code += incPresel_isEE_passIncBDTCut;
-  if (!isvbfPreselection && isNotBB && passIncBDTCut) code += incPresel_isNotBB_passIncBDTCut;
-
+  if (!isvbfPreselection            && passIncBDTCut) code += incBDTCut_Code;
 
   return code;
 }

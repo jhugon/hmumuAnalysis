@@ -1081,21 +1081,21 @@ int main(int argc, char *argv[])
 
 //       std::cout << "selectionMask & vbfPresel = " << dec << (selectionMask & vbfPresel) << std::endl;
 //       std::cout << "selectionMask & incPresel = " << dec << (selectionMask & incPresel) << std::endl;
-//       std::cout << "selectionMask & vbfPresel_passVBFBDTCut = " << dec << (selectionMask & vbfPresel_passVBFBDTCut) << std::endl;
-//       std::cout << "selectionMask & vbfPresel_isBB_passVBFBDTCut = " << dec << (selectionMask & vbfPresel_isBB_passVBFBDTCut) << std::endl;
-//       std::cout << "selectionMask & vbfPresel_isNotBB_passVBFBDTCut = " << dec << (selectionMask & vbfPresel_isNotBB_passVBFBDTCut) << std::endl;
-//       std::cout << "selectionMask & incPresel_passIncBDTCut = " << dec << (selectionMask & incPresel_passIncBDTCut) << std::endl;
-//       std::cout << "selectionMask & incPresel_isBB_passIncBDTCut = " << dec << (selectionMask & incPresel_isBB_passIncBDTCut) << std::endl;
-//       std::cout << "selectionMask & incPresel_isBO_passIncBDTCut = " << dec << (selectionMask & incPresel_isBO_passIncBDTCut) << std::endl;
-//       std::cout << "selectionMask & incPresel_isBE_passIncBDTCut = " << dec << (selectionMask & incPresel_isBE_passIncBDTCut) << std::endl;
-//       std::cout << "selectionMask & incPresel_isOO_passIncBDTCut = " << dec << (selectionMask & incPresel_isOO_passIncBDTCut) << std::endl;
-//       std::cout << "selectionMask & incPresel_isOE_passIncBDTCut = " << dec << (selectionMask & incPresel_isOE_passIncBDTCut) << std::endl;
-//       std::cout << "selectionMask & incPresel_isEE_passIncBDTCut = " << dec << (selectionMask & incPresel_isEE_passIncBDTCut) << std::endl;
-//       std::cout << "selectionMask & incPresel_isNotBB_passIncBDTCut = " << dec << (selectionMask & incPresel_isNotBB_passIncBDTCut) << std::endl;
+//       std::cout << "selectionMask & vbfBDTCut_Code = " << dec << (selectionMask & vbfBDTCut_Code) << std::endl;
+//       std::cout << "selectionMask & vbfBDTCut_Code && isBB_Code = " << dec << (selectionMask & vbfBDTCut_Code && isBB_Code) << std::endl;
+//       std::cout << "selectionMask & vbfBDTCut_Code && isNotBB_Code = " << dec << (selectionMask & vbfBDTCut_Code && isNotBB_Code) << std::endl;
+//       std::cout << "selectionMask & incBDTCut_Code = " << dec << (selectionMask & incBDTCut_Code) << std::endl;
+//       std::cout << "selectionMask & incBDTCut_Code && isBB_Code = " << dec << (selectionMask & incBDTCut_Code && isBB_Code) << std::endl;
+//       std::cout << "selectionMask & incBDTCut_Code && isBO_Code = " << dec << (selectionMask & incBDTCut_Code && isBO_Code) << std::endl;
+//       std::cout << "selectionMask & incBDTCut_Code && isBE_Code = " << dec << (selectionMask & incBDTCut_Code && isBE_Code) << std::endl;
+//       std::cout << "selectionMask & incBDTCut_Code && isOO_Code = " << dec << (selectionMask & incBDTCut_Code && isOO_Code) << std::endl;
+//       std::cout << "selectionMask & incBDTCut_Code && isOE_Code = " << dec << (selectionMask & incBDTCut_Code && isOE_Code) << std::endl;
+//       std::cout << "selectionMask & incBDTCut_Code && isEE_Code = " << dec << (selectionMask & incBDTCut_Code && isEE_Code) << std::endl;
+//       std::cout << "selectionMask & incBDTCut_Code && isNotBB_Code = " << dec << (selectionMask & incBDTCut_Code && isNotBB_Code) << std::endl;
     }
 
     //VBF Preselected Plots
-    if ( (selectionMask & vbfPresel) == vbfPresel)
+    if ( (selectionMask & vbfPresel_Code) == vbfPresel_Code)
     {
       histsPUVBFPresel.FillPU(mva,
                               weight,weightPUErrUp,
@@ -1108,11 +1108,11 @@ int main(int argc, char *argv[])
       histsPUVBFPresel.nDiMuFullSelSFDown-> Fill(0.,effWeightDown);
     }
 
-    if ( (selectionMaskJECUp   & vbfPresel) == vbfPresel ) histsPUVBFPresel.nDiMuFullSelJECUp  -> Fill(0.);  
-    if ( (selectionMaskJECDown & vbfPresel) == vbfPresel ) histsPUVBFPresel.nDiMuFullSelJECDown-> Fill(0.);
+    if ( (selectionMaskJECUp   & vbfPresel_Code) == vbfPresel_Code ) histsPUVBFPresel.nDiMuFullSelJECUp  -> Fill(0.);  
+    if ( (selectionMaskJECDown & vbfPresel_Code) == vbfPresel_Code ) histsPUVBFPresel.nDiMuFullSelJECDown-> Fill(0.);
 
-    if ( (selectionMaskJERUp   & vbfPresel) == vbfPresel ) histsPUVBFPresel.nDiMuFullSelJERUp  -> Fill(0.);  
-    if ( (selectionMaskJERDown & vbfPresel) == vbfPresel ) histsPUVBFPresel.nDiMuFullSelJERDown-> Fill(0.);
+    if ( (selectionMaskJERUp   & vbfPresel_Code) == vbfPresel_Code ) histsPUVBFPresel.nDiMuFullSelJERUp  -> Fill(0.);  
+    if ( (selectionMaskJERDown & vbfPresel_Code) == vbfPresel_Code ) histsPUVBFPresel.nDiMuFullSelJERDown-> Fill(0.);
     // =========================================================================
 
 
@@ -1120,7 +1120,7 @@ int main(int argc, char *argv[])
 
 
     //Inc Preselected Plots
-    if ( (selectionMask & incPresel) == incPresel)
+    if ( (selectionMask & incPresel_Code) == incPresel_Code)
     {
       histsPUIncPresel.FillPU(mva,
                               weight,weightPUErrUp,
@@ -1133,11 +1133,11 @@ int main(int argc, char *argv[])
       histsPUIncPresel.nDiMuFullSelSFDown-> Fill(0.,effWeightDown);
     }
 
-    if ( (selectionMaskJECUp   & incPresel) == incPresel ) histsPUIncPresel.nDiMuFullSelJECUp  -> Fill(0.);  
-    if ( (selectionMaskJECDown & incPresel) == incPresel ) histsPUIncPresel.nDiMuFullSelJECDown-> Fill(0.);
+    if ( (selectionMaskJECUp   & incPresel_Code) == incPresel_Code ) histsPUIncPresel.nDiMuFullSelJECUp  -> Fill(0.);  
+    if ( (selectionMaskJECDown & incPresel_Code) == incPresel_Code ) histsPUIncPresel.nDiMuFullSelJECDown-> Fill(0.);
 
-    if ( (selectionMaskJERUp   & incPresel) == incPresel ) histsPUIncPresel.nDiMuFullSelJERUp  -> Fill(0.);  
-    if ( (selectionMaskJERDown & incPresel) == incPresel ) histsPUIncPresel.nDiMuFullSelJERDown-> Fill(0.);
+    if ( (selectionMaskJERUp   & incPresel_Code) == incPresel_Code ) histsPUIncPresel.nDiMuFullSelJERUp  -> Fill(0.);  
+    if ( (selectionMaskJERDown & incPresel_Code) == incPresel_Code ) histsPUIncPresel.nDiMuFullSelJERDown-> Fill(0.);
     // =========================================================================
 
 
@@ -1145,7 +1145,7 @@ int main(int argc, char *argv[])
 
 
     //VBF BDT Cut Plots
-    if ( (selectionMask & vbfPresel_passVBFBDTCut) == vbfPresel_passVBFBDTCut )
+    if ( (selectionMask & vbfBDTCut_Code) == vbfBDTCut_Code )
     {
       histsPUVBFBDTCut.FillPU(mva,
                               weight,weightPUErrUp,
@@ -1158,15 +1158,15 @@ int main(int argc, char *argv[])
       histsPUVBFBDTCut.nDiMuFullSelSFDown-> Fill(0.,effWeightDown);
     }
 
-    if ( (selectionMaskJECUp   & vbfPresel_passVBFBDTCut) == vbfPresel_passVBFBDTCut ) histsPUVBFBDTCut.nDiMuFullSelJECUp  -> Fill(0.);  
-    if ( (selectionMaskJECDown & vbfPresel_passVBFBDTCut) == vbfPresel_passVBFBDTCut ) histsPUVBFBDTCut.nDiMuFullSelJECDown-> Fill(0.);
+    if ( (selectionMaskJECUp   & vbfBDTCut_Code) == vbfBDTCut_Code ) histsPUVBFBDTCut.nDiMuFullSelJECUp  -> Fill(0.);  
+    if ( (selectionMaskJECDown & vbfBDTCut_Code) == vbfBDTCut_Code ) histsPUVBFBDTCut.nDiMuFullSelJECDown-> Fill(0.);
 
-    if ( (selectionMaskJERUp   & vbfPresel_passVBFBDTCut) == vbfPresel_passVBFBDTCut ) histsPUVBFBDTCut.nDiMuFullSelJERUp  -> Fill(0.);  
-    if ( (selectionMaskJERDown & vbfPresel_passVBFBDTCut) == vbfPresel_passVBFBDTCut ) histsPUVBFBDTCut.nDiMuFullSelJERDown-> Fill(0.);
+    if ( (selectionMaskJERUp   & vbfBDTCut_Code) == vbfBDTCut_Code ) histsPUVBFBDTCut.nDiMuFullSelJERUp  -> Fill(0.);  
+    if ( (selectionMaskJERDown & vbfBDTCut_Code) == vbfBDTCut_Code ) histsPUVBFBDTCut.nDiMuFullSelJERDown-> Fill(0.);
     // =========================================================================
 
 
-    if ( (selectionMask & vbfPresel_isBB_passVBFBDTCut) == vbfPresel_isBB_passVBFBDTCut )
+    if ( (selectionMask & vbfBDTCut_Code && isBB_Code) == vbfBDTCut_Code && isBB_Code )
     {
       histsPUVBFBDTCutBB.FillPU(mva,
                                 weight,weightPUErrUp,
@@ -1179,16 +1179,16 @@ int main(int argc, char *argv[])
       histsPUVBFBDTCutBB.nDiMuFullSelSFDown-> Fill(0.,effWeightDown);
     }
 
-    if ( (selectionMaskJECUp   & vbfPresel_isBB_passVBFBDTCut) == vbfPresel_isBB_passVBFBDTCut ) histsPUVBFBDTCutBB.nDiMuFullSelJECUp  -> Fill(0.);  
-    if ( (selectionMaskJECDown & vbfPresel_isBB_passVBFBDTCut) == vbfPresel_isBB_passVBFBDTCut ) histsPUVBFBDTCutBB.nDiMuFullSelJECDown-> Fill(0.);
+    if ( (selectionMaskJECUp   & vbfBDTCut_Code && isBB_Code) == vbfBDTCut_Code && isBB_Code ) histsPUVBFBDTCutBB.nDiMuFullSelJECUp  -> Fill(0.);  
+    if ( (selectionMaskJECDown & vbfBDTCut_Code && isBB_Code) == vbfBDTCut_Code && isBB_Code ) histsPUVBFBDTCutBB.nDiMuFullSelJECDown-> Fill(0.);
 
-    if ( (selectionMaskJERUp   & vbfPresel_isBB_passVBFBDTCut) == vbfPresel_isBB_passVBFBDTCut ) histsPUVBFBDTCutBB.nDiMuFullSelJERUp  -> Fill(0.);  
-    if ( (selectionMaskJERDown & vbfPresel_isBB_passVBFBDTCut) == vbfPresel_isBB_passVBFBDTCut ) histsPUVBFBDTCutBB.nDiMuFullSelJERDown-> Fill(0.);
+    if ( (selectionMaskJERUp   & vbfBDTCut_Code && isBB_Code) == vbfBDTCut_Code && isBB_Code ) histsPUVBFBDTCutBB.nDiMuFullSelJERUp  -> Fill(0.);  
+    if ( (selectionMaskJERDown & vbfBDTCut_Code && isBB_Code) == vbfBDTCut_Code && isBB_Code ) histsPUVBFBDTCutBB.nDiMuFullSelJERDown-> Fill(0.);
     // =========================================================================
 
 
 
-    if ( (selectionMask & vbfPresel_isNotBB_passVBFBDTCut) == vbfPresel_isNotBB_passVBFBDTCut )
+    if ( (selectionMask & vbfBDTCut_Code && isNotBB_Code) == vbfBDTCut_Code && isNotBB_Code )
     {
       histsPUVBFBDTCutNotBB.FillPU(mva,
                                    weight,weightPUErrUp,
@@ -1201,18 +1201,18 @@ int main(int argc, char *argv[])
       histsPUVBFBDTCutNotBB.nDiMuFullSelSFDown-> Fill(0.,effWeightDown);
     }
 
-    if ( (selectionMaskJECUp   & vbfPresel_isNotBB_passVBFBDTCut) == vbfPresel_isNotBB_passVBFBDTCut ) histsPUVBFBDTCutNotBB.nDiMuFullSelJECUp  -> Fill(0.);  
-    if ( (selectionMaskJECDown & vbfPresel_isNotBB_passVBFBDTCut) == vbfPresel_isNotBB_passVBFBDTCut ) histsPUVBFBDTCutNotBB.nDiMuFullSelJECDown-> Fill(0.);
+    if ( (selectionMaskJECUp   & vbfBDTCut_Code && isNotBB_Code) == vbfBDTCut_Code && isNotBB_Code ) histsPUVBFBDTCutNotBB.nDiMuFullSelJECUp  -> Fill(0.);  
+    if ( (selectionMaskJECDown & vbfBDTCut_Code && isNotBB_Code) == vbfBDTCut_Code && isNotBB_Code ) histsPUVBFBDTCutNotBB.nDiMuFullSelJECDown-> Fill(0.);
 
-    if ( (selectionMaskJERUp   & vbfPresel_isNotBB_passVBFBDTCut) == vbfPresel_isNotBB_passVBFBDTCut ) histsPUVBFBDTCutNotBB.nDiMuFullSelJERUp  -> Fill(0.);  
-    if ( (selectionMaskJERDown & vbfPresel_isNotBB_passVBFBDTCut) == vbfPresel_isNotBB_passVBFBDTCut ) histsPUVBFBDTCutNotBB.nDiMuFullSelJERDown-> Fill(0.);
+    if ( (selectionMaskJERUp   & vbfBDTCut_Code && isNotBB_Code) == vbfBDTCut_Code && isNotBB_Code ) histsPUVBFBDTCutNotBB.nDiMuFullSelJERUp  -> Fill(0.);  
+    if ( (selectionMaskJERDown & vbfBDTCut_Code && isNotBB_Code) == vbfBDTCut_Code && isNotBB_Code ) histsPUVBFBDTCutNotBB.nDiMuFullSelJERDown-> Fill(0.);
     // =========================================================================
 
 
 
 
     //Inc BDT Cut Plots
-    if ( (selectionMask & incPresel_passIncBDTCut) == incPresel_passIncBDTCut )
+    if ( (selectionMask & incBDTCut_Code) == incBDTCut_Code )
     {
       histsPUIncBDTCut.FillPU(mva,
                               weight,weightPUErrUp,
@@ -1225,17 +1225,17 @@ int main(int argc, char *argv[])
       histsPUIncBDTCut.nDiMuFullSelSFDown-> Fill(0.,effWeightDown);
     }
 
-    if ( (selectionMaskJECUp   & vbfPresel_passVBFBDTCut) == vbfPresel_passVBFBDTCut ) histsPUIncBDTCut.nDiMuFullSelJECUp  -> Fill(0.);  
-    if ( (selectionMaskJECDown & vbfPresel_passVBFBDTCut) == vbfPresel_passVBFBDTCut ) histsPUIncBDTCut.nDiMuFullSelJECDown-> Fill(0.);
+    if ( (selectionMaskJECUp   & vbfBDTCut_Code) == vbfBDTCut_Code ) histsPUIncBDTCut.nDiMuFullSelJECUp  -> Fill(0.);  
+    if ( (selectionMaskJECDown & vbfBDTCut_Code) == vbfBDTCut_Code ) histsPUIncBDTCut.nDiMuFullSelJECDown-> Fill(0.);
 
-    if ( (selectionMaskJERUp   & vbfPresel_passVBFBDTCut) == vbfPresel_passVBFBDTCut ) histsPUIncBDTCut.nDiMuFullSelJERUp  -> Fill(0.);  
-    if ( (selectionMaskJERDown & vbfPresel_passVBFBDTCut) == vbfPresel_passVBFBDTCut ) histsPUIncBDTCut.nDiMuFullSelJERDown-> Fill(0.);
+    if ( (selectionMaskJERUp   & vbfBDTCut_Code) == vbfBDTCut_Code ) histsPUIncBDTCut.nDiMuFullSelJERUp  -> Fill(0.);  
+    if ( (selectionMaskJERDown & vbfBDTCut_Code) == vbfBDTCut_Code ) histsPUIncBDTCut.nDiMuFullSelJERDown-> Fill(0.);
     // =========================================================================
 
 
 
 
-    if ( (selectionMask & incPresel_isBB_passIncBDTCut) == incPresel_isBB_passIncBDTCut )
+    if ( (selectionMask & incBDTCut_Code && isBB_Code) == incBDTCut_Code && isBB_Code )
     {
       histsPUIncBDTCutBB.FillPU(mva,
                                 weight,weightPUErrUp,
@@ -1248,16 +1248,16 @@ int main(int argc, char *argv[])
       histsPUIncBDTCutBB.nDiMuFullSelSFDown-> Fill(0.,effWeightDown);
     }
 
-    if ( (selectionMaskJECUp   & incPresel_isBB_passIncBDTCut) == incPresel_isBB_passIncBDTCut ) histsPUIncBDTCutBB.nDiMuFullSelJECUp  -> Fill(0.);  
-    if ( (selectionMaskJECDown & incPresel_isBB_passIncBDTCut) == incPresel_isBB_passIncBDTCut ) histsPUIncBDTCutBB.nDiMuFullSelJECDown-> Fill(0.);
+    if ( (selectionMaskJECUp   & incBDTCut_Code && isBB_Code) == incBDTCut_Code && isBB_Code ) histsPUIncBDTCutBB.nDiMuFullSelJECUp  -> Fill(0.);  
+    if ( (selectionMaskJECDown & incBDTCut_Code && isBB_Code) == incBDTCut_Code && isBB_Code ) histsPUIncBDTCutBB.nDiMuFullSelJECDown-> Fill(0.);
 
-    if ( (selectionMaskJERUp   & incPresel_isBB_passIncBDTCut) == incPresel_isBB_passIncBDTCut ) histsPUIncBDTCutBB.nDiMuFullSelJERUp  -> Fill(0.);  
-    if ( (selectionMaskJERDown & incPresel_isBB_passIncBDTCut) == incPresel_isBB_passIncBDTCut ) histsPUIncBDTCutBB.nDiMuFullSelJERDown-> Fill(0.);
+    if ( (selectionMaskJERUp   & incBDTCut_Code && isBB_Code) == incBDTCut_Code && isBB_Code ) histsPUIncBDTCutBB.nDiMuFullSelJERUp  -> Fill(0.);  
+    if ( (selectionMaskJERDown & incBDTCut_Code && isBB_Code) == incBDTCut_Code && isBB_Code ) histsPUIncBDTCutBB.nDiMuFullSelJERDown-> Fill(0.);
     // =========================================================================
 
 
 
-    if ( (selectionMask & incPresel_isBO_passIncBDTCut) == incPresel_isBO_passIncBDTCut )
+    if ( (selectionMask & incBDTCut_Code && isBO_Code) == incBDTCut_Code && isBO_Code )
     {
       histsPUIncBDTCutBO.FillPU(mva,
                                 weight,weightPUErrUp,
@@ -1270,16 +1270,16 @@ int main(int argc, char *argv[])
       histsPUIncBDTCutBO.nDiMuFullSelSFDown-> Fill(0.,effWeightDown);
     }
 
-    if ( (selectionMaskJECUp   & incPresel_isBO_passIncBDTCut) == incPresel_isBO_passIncBDTCut ) histsPUIncBDTCutBO.nDiMuFullSelJECUp  -> Fill(0.);  
-    if ( (selectionMaskJECDown & incPresel_isBO_passIncBDTCut) == incPresel_isBO_passIncBDTCut ) histsPUIncBDTCutBO.nDiMuFullSelJECDown-> Fill(0.);
+    if ( (selectionMaskJECUp   & incBDTCut_Code && isBO_Code) == incBDTCut_Code && isBO_Code ) histsPUIncBDTCutBO.nDiMuFullSelJECUp  -> Fill(0.);  
+    if ( (selectionMaskJECDown & incBDTCut_Code && isBO_Code) == incBDTCut_Code && isBO_Code ) histsPUIncBDTCutBO.nDiMuFullSelJECDown-> Fill(0.);
 
-    if ( (selectionMaskJERUp   & incPresel_isBO_passIncBDTCut) == incPresel_isBO_passIncBDTCut ) histsPUIncBDTCutBO.nDiMuFullSelJERUp  -> Fill(0.);  
-    if ( (selectionMaskJERDown & incPresel_isBO_passIncBDTCut) == incPresel_isBO_passIncBDTCut ) histsPUIncBDTCutBO.nDiMuFullSelJERDown-> Fill(0.);
+    if ( (selectionMaskJERUp   & incBDTCut_Code && isBO_Code) == incBDTCut_Code && isBO_Code ) histsPUIncBDTCutBO.nDiMuFullSelJERUp  -> Fill(0.);  
+    if ( (selectionMaskJERDown & incBDTCut_Code && isBO_Code) == incBDTCut_Code && isBO_Code ) histsPUIncBDTCutBO.nDiMuFullSelJERDown-> Fill(0.);
     // =========================================================================
 
 
 
-    if ( (selectionMask & incPresel_isBE_passIncBDTCut) == incPresel_isBE_passIncBDTCut )
+    if ( (selectionMask & incBDTCut_Code && isBE_Code) == incBDTCut_Code && isBE_Code )
     {
       histsPUIncBDTCutBE.FillPU(mva,
                                 weight,weightPUErrUp,
@@ -1292,16 +1292,16 @@ int main(int argc, char *argv[])
       histsPUIncBDTCutBE.nDiMuFullSelSFDown-> Fill(0.,effWeightDown);
     }
 
-    if ( (selectionMaskJECUp   & incPresel_isBE_passIncBDTCut) == incPresel_isBE_passIncBDTCut ) histsPUIncBDTCutBE.nDiMuFullSelJECUp  -> Fill(0.);  
-    if ( (selectionMaskJECDown & incPresel_isBE_passIncBDTCut) == incPresel_isBE_passIncBDTCut ) histsPUIncBDTCutBE.nDiMuFullSelJECDown-> Fill(0.);
+    if ( (selectionMaskJECUp   & incBDTCut_Code && isBE_Code) == incBDTCut_Code && isBE_Code ) histsPUIncBDTCutBE.nDiMuFullSelJECUp  -> Fill(0.);  
+    if ( (selectionMaskJECDown & incBDTCut_Code && isBE_Code) == incBDTCut_Code && isBE_Code ) histsPUIncBDTCutBE.nDiMuFullSelJECDown-> Fill(0.);
 
-    if ( (selectionMaskJERUp   & incPresel_isBE_passIncBDTCut) == incPresel_isBE_passIncBDTCut ) histsPUIncBDTCutBE.nDiMuFullSelJERUp  -> Fill(0.);  
-    if ( (selectionMaskJERDown & incPresel_isBE_passIncBDTCut) == incPresel_isBE_passIncBDTCut ) histsPUIncBDTCutBE.nDiMuFullSelJERDown-> Fill(0.);
+    if ( (selectionMaskJERUp   & incBDTCut_Code && isBE_Code) == incBDTCut_Code && isBE_Code ) histsPUIncBDTCutBE.nDiMuFullSelJERUp  -> Fill(0.);  
+    if ( (selectionMaskJERDown & incBDTCut_Code && isBE_Code) == incBDTCut_Code && isBE_Code ) histsPUIncBDTCutBE.nDiMuFullSelJERDown-> Fill(0.);
     // =========================================================================
 
 
 
-    if ( (selectionMask & incPresel_isOO_passIncBDTCut) == incPresel_isOO_passIncBDTCut ) 
+    if ( (selectionMask & incBDTCut_Code && isOO_Code) == incBDTCut_Code && isOO_Code ) 
     {
       histsPUIncBDTCutOO.FillPU(mva,
                                 weight,weightPUErrUp,
@@ -1314,16 +1314,16 @@ int main(int argc, char *argv[])
       histsPUIncBDTCutOO.nDiMuFullSelSFDown-> Fill(0.,effWeightDown);
     }
 
-    if ( (selectionMaskJECUp   & incPresel_isOO_passIncBDTCut) == incPresel_isOO_passIncBDTCut ) histsPUIncBDTCutOO.nDiMuFullSelJECUp  -> Fill(0.);  
-    if ( (selectionMaskJECDown & incPresel_isOO_passIncBDTCut) == incPresel_isOO_passIncBDTCut ) histsPUIncBDTCutOO.nDiMuFullSelJECDown-> Fill(0.);
+    if ( (selectionMaskJECUp   & incBDTCut_Code && isOO_Code) == incBDTCut_Code && isOO_Code ) histsPUIncBDTCutOO.nDiMuFullSelJECUp  -> Fill(0.);  
+    if ( (selectionMaskJECDown & incBDTCut_Code && isOO_Code) == incBDTCut_Code && isOO_Code ) histsPUIncBDTCutOO.nDiMuFullSelJECDown-> Fill(0.);
 
-    if ( (selectionMaskJERUp   & incPresel_isOO_passIncBDTCut) == incPresel_isOO_passIncBDTCut ) histsPUIncBDTCutOO.nDiMuFullSelJERUp  -> Fill(0.);  
-    if ( (selectionMaskJERDown & incPresel_isOO_passIncBDTCut) == incPresel_isOO_passIncBDTCut ) histsPUIncBDTCutOO.nDiMuFullSelJERDown-> Fill(0.);
+    if ( (selectionMaskJERUp   & incBDTCut_Code && isOO_Code) == incBDTCut_Code && isOO_Code ) histsPUIncBDTCutOO.nDiMuFullSelJERUp  -> Fill(0.);  
+    if ( (selectionMaskJERDown & incBDTCut_Code && isOO_Code) == incBDTCut_Code && isOO_Code ) histsPUIncBDTCutOO.nDiMuFullSelJERDown-> Fill(0.);
     // =========================================================================
 
 
 
-    if ( (selectionMask & incPresel_isOE_passIncBDTCut) == incPresel_isOE_passIncBDTCut )
+    if ( (selectionMask & incBDTCut_Code && isOE_Code) == incBDTCut_Code && isOE_Code )
     {
       histsPUIncBDTCutOE.FillPU(mva,
                                 weight,weightPUErrUp,
@@ -1336,16 +1336,16 @@ int main(int argc, char *argv[])
       histsPUIncBDTCutOE.nDiMuFullSelSFDown-> Fill(0.,effWeightDown);
     }
 
-    if ( (selectionMaskJECUp   & incPresel_isOE_passIncBDTCut) == incPresel_isOE_passIncBDTCut ) histsPUIncBDTCutOE.nDiMuFullSelJECUp  -> Fill(0.);  
-    if ( (selectionMaskJECDown & incPresel_isOE_passIncBDTCut) == incPresel_isOE_passIncBDTCut ) histsPUIncBDTCutOE.nDiMuFullSelJECDown-> Fill(0.);
+    if ( (selectionMaskJECUp   & incBDTCut_Code && isOE_Code) == incBDTCut_Code && isOE_Code ) histsPUIncBDTCutOE.nDiMuFullSelJECUp  -> Fill(0.);  
+    if ( (selectionMaskJECDown & incBDTCut_Code && isOE_Code) == incBDTCut_Code && isOE_Code ) histsPUIncBDTCutOE.nDiMuFullSelJECDown-> Fill(0.);
 
-    if ( (selectionMaskJERUp   & incPresel_isOE_passIncBDTCut) == incPresel_isOE_passIncBDTCut ) histsPUIncBDTCutOE.nDiMuFullSelJERUp  -> Fill(0.);  
-    if ( (selectionMaskJERDown & incPresel_isOE_passIncBDTCut) == incPresel_isOE_passIncBDTCut ) histsPUIncBDTCutOE.nDiMuFullSelJERDown-> Fill(0.);
+    if ( (selectionMaskJERUp   & incBDTCut_Code && isOE_Code) == incBDTCut_Code && isOE_Code ) histsPUIncBDTCutOE.nDiMuFullSelJERUp  -> Fill(0.);  
+    if ( (selectionMaskJERDown & incBDTCut_Code && isOE_Code) == incBDTCut_Code && isOE_Code ) histsPUIncBDTCutOE.nDiMuFullSelJERDown-> Fill(0.);
     // =========================================================================
 
 
 
-    if ( (selectionMask & incPresel_isEE_passIncBDTCut) == incPresel_isEE_passIncBDTCut )
+    if ( (selectionMask & incBDTCut_Code && isEE_Code) == incBDTCut_Code && isEE_Code )
     {
       histsPUIncBDTCutEE.FillPU(mva,
                                 weight,weightPUErrUp,
@@ -1358,16 +1358,16 @@ int main(int argc, char *argv[])
       histsPUIncBDTCutEE.nDiMuFullSelSFDown-> Fill(0.,effWeightDown);
     }
 
-    if ( (selectionMaskJECUp   & incPresel_isEE_passIncBDTCut) == incPresel_isEE_passIncBDTCut )  histsPUIncBDTCutEE.nDiMuFullSelJECUp  -> Fill(0.);  
-    if ( (selectionMaskJECDown & incPresel_isEE_passIncBDTCut) == incPresel_isEE_passIncBDTCut )  histsPUIncBDTCutEE.nDiMuFullSelJECDown-> Fill(0.);
+    if ( (selectionMaskJECUp   & incBDTCut_Code && isEE_Code) == incBDTCut_Code && isEE_Code )  histsPUIncBDTCutEE.nDiMuFullSelJECUp  -> Fill(0.);  
+    if ( (selectionMaskJECDown & incBDTCut_Code && isEE_Code) == incBDTCut_Code && isEE_Code )  histsPUIncBDTCutEE.nDiMuFullSelJECDown-> Fill(0.);
 
-    if ( (selectionMaskJERUp   & incPresel_isEE_passIncBDTCut) == incPresel_isEE_passIncBDTCut )  histsPUIncBDTCutEE.nDiMuFullSelJERUp  -> Fill(0.);  
-    if ( (selectionMaskJERDown & incPresel_isEE_passIncBDTCut) == incPresel_isEE_passIncBDTCut )  histsPUIncBDTCutEE.nDiMuFullSelJERDown-> Fill(0.);
+    if ( (selectionMaskJERUp   & incBDTCut_Code && isEE_Code) == incBDTCut_Code && isEE_Code )  histsPUIncBDTCutEE.nDiMuFullSelJERUp  -> Fill(0.);  
+    if ( (selectionMaskJERDown & incBDTCut_Code && isEE_Code) == incBDTCut_Code && isEE_Code )  histsPUIncBDTCutEE.nDiMuFullSelJERDown-> Fill(0.);
     // =========================================================================
 
 
 
-    if ( (selectionMask & incPresel_isNotBB_passIncBDTCut) == incPresel_isNotBB_passIncBDTCut )
+    if ( (selectionMask & incBDTCut_Code && isNotBB_Code) == incBDTCut_Code && isNotBB_Code )
     {
       histsPUIncBDTCutNotBB.FillPU(mva,
                                    weight,weightPUErrUp,
@@ -1380,11 +1380,11 @@ int main(int argc, char *argv[])
       histsPUIncBDTCutNotBB.nDiMuFullSelSFDown-> Fill(0.,effWeightDown);
     }
 
-    if ( (selectionMaskJECUp   & incPresel_isNotBB_passIncBDTCut) == incPresel_isNotBB_passIncBDTCut ) histsPUIncBDTCutNotBB.nDiMuFullSelJECUp  -> Fill(0.);  
-    if ( (selectionMaskJECDown & incPresel_isNotBB_passIncBDTCut) == incPresel_isNotBB_passIncBDTCut ) histsPUIncBDTCutNotBB.nDiMuFullSelJECDown-> Fill(0.);
+    if ( (selectionMaskJECUp   & incBDTCut_Code && isNotBB_Code) == incBDTCut_Code && isNotBB_Code ) histsPUIncBDTCutNotBB.nDiMuFullSelJECUp  -> Fill(0.);  
+    if ( (selectionMaskJECDown & incBDTCut_Code && isNotBB_Code) == incBDTCut_Code && isNotBB_Code ) histsPUIncBDTCutNotBB.nDiMuFullSelJECDown-> Fill(0.);
 
-    if ( (selectionMaskJERUp   & incPresel_isNotBB_passIncBDTCut) == incPresel_isNotBB_passIncBDTCut ) histsPUIncBDTCutNotBB.nDiMuFullSelJERUp  -> Fill(0.);  
-    if ( (selectionMaskJERDown & incPresel_isNotBB_passIncBDTCut) == incPresel_isNotBB_passIncBDTCut ) histsPUIncBDTCutNotBB.nDiMuFullSelJERDown-> Fill(0.);
+    if ( (selectionMaskJERUp   & incBDTCut_Code && isNotBB_Code) == incBDTCut_Code && isNotBB_Code ) histsPUIncBDTCutNotBB.nDiMuFullSelJERUp  -> Fill(0.);  
+    if ( (selectionMaskJERDown & incBDTCut_Code && isNotBB_Code) == incBDTCut_Code && isNotBB_Code ) histsPUIncBDTCutNotBB.nDiMuFullSelJERDown-> Fill(0.);
     // =========================================================================
 
 
