@@ -239,9 +239,11 @@ int main(int argc, char *argv[])
 
   if (optionMap.count("dataMC"))
   {
+    cout << "Only Running in Data/MC Mass range\n";
     minMmm = dataMCMinMass;
     maxMmm = dataMCMaxMass;
   }
+  cout << std::string("Cutting on m_{\\mu\\mu} in [").appendAny(minMmm).append(",").appendAny(maxMmm).append("] \n");
 
   /////////////////////////////
   //////////// Setup //////////
