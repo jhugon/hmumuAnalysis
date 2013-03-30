@@ -156,12 +156,19 @@ struct HistStruct
 
 int main(int argc, char *argv[])
 {
-  /////////////////////////////////////////////
-  //////////// Configuration Options //////////
-  /////////////////////////////////////////////
+  float minMmm = 70.0;
+  float maxMmm = 400.0;
+  static const float dataMCMinMass = 110.;
+  static const float dataMCMaxMass = 150.;
+  float minBlind = 120;
+  float maxBlind = 130;
 
   gErrorIgnoreLevel = kError;
   time_t timeStart = time(NULL);
+
+  /////////////////////////////////////////////
+  //////////// Configuration Options //////////
+  /////////////////////////////////////////////
 
   const char* optionIntro = "H->MuMu Analyzer\n\nUsage: ./analyzer [--help] [--train] [--maxEvents N] <outputFileName.root> <inputFileName.root> [<inputFileName2.root>...]\n\nAllowed Options";
   program_options::options_description optionDesc(optionIntro);
@@ -171,6 +178,7 @@ int main(int argc, char *argv[])
       ("filenames",program_options::value<vector<string> >(), "Input & Output File Names, put output name first followed by all input file names")
       ("maxEvents,m",program_options::value<int>(), "Maximum Number of Events to Process")
       ("runPeriod,r",program_options::value<string>(), "Running Periods e.g. 7TeV, 8TeV")
+      ("dataMC,d", (std::string("Flag to only keep events in mass range: ").appendAny(dataMCMinMass).append(" to ").appendAny(dataMCMaxMass)).c_str())
   ;
   
   program_options::positional_options_description optionPos;
@@ -229,17 +237,15 @@ int main(int argc, char *argv[])
   //}
   cout << "Run Period: " << runPeriod << endl;
 
+  if (optionMap.count("dataMC"))
+  {
+    minMmm = dataMCMinMass;
+    maxMmm = dataMCMaxMass;
+  }
+
   /////////////////////////////
   //////////// Setup //////////
   /////////////////////////////
-
-  float minMmm = 70.0;
-  float maxMmm = 400.0;
-  //float minMmm = 110.0;
-  //float maxMmm = 150.0;
-
-  float minBlind = 120;
-  float maxBlind = 130;
 
   float calib = -0.1;
   float calibSysSmear = 0.2;
