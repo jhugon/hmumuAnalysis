@@ -621,11 +621,26 @@ int main(int argc, char *argv[])
   float _nJets;
   float _ptMiss;
   float _deltaEtaJets;
-  float _massJJ;
+  float _dijetMass;
+  float _dijetPt;
+  float _dijetY;
+
+  float _jetLead_pt;          
+  float _jetLead_eta;         
+  float _jetLead_PUIDDisc;         
+  int   _jetLead_PUIDFlag;         
+
+  float _jetSub_pt;          
+  float _jetSub_eta;         
+  float _jetSub_PUIDDisc;         
+  int   _jetSub_PUIDFlag;         
 
   float _kd;
   float _sigME;
   float _bakME;
+  float _kdPdf;
+  float _sigMEPdf;
+  float _bakMEPdf;
      
   // eventInfo;
   _outTree->Branch("eventInfo_run",    &_eventInfo_run,   "eventInfo_run/I");
@@ -660,15 +675,29 @@ int main(int argc, char *argv[])
   _outTree->Branch("muonSub_passPFRelIso", &_muonSub_passPFRelIso,   "muonSub_passPFRelIso/I");
   _outTree->Branch("muonSub_isHltMatched", &_muonSub_isHltMatched,   "muonSub_isHltMatched/I");
 
-
   _outTree->Branch("nJets",        &_nJets,        "nJets/F");
   _outTree->Branch("ptMiss",       &_ptMiss,       "ptMiss/F");
   _outTree->Branch("deltaEtaJets", &_deltaEtaJets, "deltaEtaJets/F");
-  _outTree->Branch("massJJ",       &_massJJ,       "massJJ/F");
+  _outTree->Branch("dijetMass",       &_dijetMass,       "dijetMass/F");
+  _outTree->Branch("dijetPt",       &_dijetPt,       "dijetPt/F");
+  _outTree->Branch("dijetY",       &_dijetY,       "dijetY/F");
+
+  _outTree->Branch("jetLead_pt",           &_jetLead_pt,             "jetLead_pt/F");          
+  _outTree->Branch("jetLead_eta",          &_jetLead_eta,            "jetLead_eta/F");         
+  _outTree->Branch("jetLead_PUIDDisc",          &_jetLead_PUIDDisc,            "jetLead_PUIDDisc/F");         
+  _outTree->Branch("jetLead_PUIDFlag",          &_jetLead_PUIDFlag,            "jetLead_PUIDFlag/I");         
+
+  _outTree->Branch("jetSub_pt",           &_jetSub_pt,             "jetSub_pt/F");          
+  _outTree->Branch("jetSub_eta",          &_jetSub_eta,            "jetSub_eta/F");         
+  _outTree->Branch("jetSub_PUIDDisc",          &_jetSub_PUIDDisc,            "jetSub_PUIDDisc/F");         
+  _outTree->Branch("jetSub_PUIDFlag",          &_jetSub_PUIDFlag,            "jetSub_PUIDFlag/I");         
 
   _outTree->Branch("kd",           &_kd,           "kd/F");
   _outTree->Branch("sigME",        &_sigME,        "sigME/F");
   _outTree->Branch("bakME",        &_bakME,        "bakME/F");
+  _outTree->Branch("kdPdf",           &_kdPdf,           "kdPdf/F");
+  _outTree->Branch("sigMEPdf",        &_sigMEPdf,        "sigMEPdf/F");
+  _outTree->Branch("bakMEPdf",        &_bakMEPdf,        "bakMEPdf/F");
 
   //////////////////////////
   // Creating the MEKD
@@ -676,7 +705,8 @@ int main(int argc, char *argv[])
   double nTeV = 8.;
   if (runPeriod == "7TeV")
     nTeV = 7.;
-  MEKD_Wrapper mekd(nTeV);
+  MEKD_Wrapper mekd(nTeV,false);
+  MEKD_Wrapper mekdPdf(nTeV,true);
 
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -1078,12 +1108,20 @@ int main(int argc, char *argv[])
     //////////////////////////////////////////
     // MEKD
 
-    int kdStatus = mekd.getKD(reco1Vec, reco2Vec, 
+    int kdStatus = 0;
+    kdStatus = mekd.getKD(reco1Vec, reco2Vec, 
                             reco1.charge, 
                             _kd, _sigME, _bakME);
     if (kdStatus != 0)
       cout << "Error: MEKD: " << _kd << " Status: "<<kdStatus 
         << " sigME: " << _sigME << " bakME: "<< _bakME<<endl;
+
+    kdStatus = mekdPdf.getKD(reco1Vec, reco2Vec, 
+                            reco1.charge, 
+                            _kdPdf, _sigMEPdf, _bakMEPdf);
+    if (kdStatus != 0)
+      cout << "Error: MEKD w/ PDF: " << _kdPdf << " Status: "<<kdStatus 
+        << " sigME: " << _sigMEPdf << " bakME: "<< _bakMEPdf<<endl;
 
     //////////////////////////////////////////
     //Computing CosTheta*
@@ -1447,7 +1485,19 @@ int main(int argc, char *argv[])
     _nJets = mva.nJets;
     _ptMiss = mva.ptmiss;
     _deltaEtaJets = mva.deltaEtaJets;
-    _massJJ       = mva.mDiJet;
+    _dijetMass       = mva.mDiJet;
+    _dijetPt       = mva.ptDiJet;
+    _dijetY       = mva.yDiJet;
+
+    _jetLead_pt = mva.ptJet1;
+    _jetLead_eta = mva.etaJet1;
+    _jetLead_PUIDDisc = mva.puJetIDSimpleDiscJet1;
+    _jetLead_PUIDFlag = mva.puJetIDSimpleJet1;
+
+    _jetSub_pt = mva.ptJet1;
+    _jetSub_eta = mva.etaJet1;
+    _jetSub_PUIDDisc = mva.puJetIDSimpleDiscJet2;
+    _jetSub_PUIDFlag = mva.puJetIDSimpleJet2;
 
     if (_eventType != 0) _outTree -> Fill();
 

@@ -1,11 +1,11 @@
 #include "MEKD_Wrapper.h"
 #include <iostream>
 
-MEKD_Wrapper::MEKD_Wrapper(double collisionEnergy /*in TeV*/ )
+MEKD_Wrapper::MEKD_Wrapper(double collisionEnergy /*in TeV*/, bool usePDF )
   : _collisionEnergy(collisionEnergy), _mekd()
 {
   _mekd.Sqrt_s = collisionEnergy*1000.; //in GeV
-  _mekd.Use_PDF_w_pT0 = false;
+  _mekd.Use_PDF_w_pT0 = usePDF;
   _mekd.Resonance_decay_mode = "2mu";
   _signalProcessName = "ggSpin0SMH";
   _backgroundProcessName = "DY";

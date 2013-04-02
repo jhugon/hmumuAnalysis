@@ -7,7 +7,7 @@
 class MEKD_Wrapper
 {
   public:
-    MEKD_Wrapper(double collisionEnergy /*in TeV*/);
+    MEKD_Wrapper(double collisionEnergy /*in TeV*/, bool usePDF);
     int getKD(const TLorentzVector& mu1, const TLorentzVector& mu2, 
                             int mu1Charge, 
                             float& kd, float& sigME, float& bakME);
