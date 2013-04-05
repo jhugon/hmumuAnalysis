@@ -577,11 +577,11 @@ int whichSelection(_MuonInfo& mu1, _MuonInfo& mu2,
   ////////////////////////////////////////////////////////////////////////
   
   // Jet Part
-  for(unsigned iJet=0; (iJet < jets.nJets && iJet < 10);iJet++)
-    {
-      if (jets.genPt[iJet]>0.0 && jets.pt[iJet]>15.)
-        jets.pt[iJet] = jerCorr(jets.pt[iJet],jets.genPt[iJet],jets.eta[iJet]);
-    }
+  //for(unsigned iJet=0; (iJet < jets.nJets && iJet < 10);iJet++)
+  //  {
+  //    if (jets.genPt[iJet]>0.0 && jets.pt[iJet]>15.)
+  //      jets.pt[iJet] = jerCorr(jets.pt[iJet],jets.genPt[iJet],jets.eta[iJet]);
+  //  }
 
   bool goodJets = false;
   if(jets.nJets>=2 && jets.pt[0]>30.0 && jets.pt[1]>30.0 && fabs(jets.eta[0])<4.7 && fabs(jets.eta[1])<4.7)
