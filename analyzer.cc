@@ -1494,8 +1494,8 @@ int main(int argc, char *argv[])
     _jetLead_PUIDDisc = mva.puJetIDSimpleDiscJet1;
     _jetLead_PUIDFlag = mva.puJetIDSimpleJet1;
 
-    _jetSub_pt = mva.ptJet1;
-    _jetSub_eta = mva.etaJet1;
+    _jetSub_pt = mva.ptJet2;
+    _jetSub_eta = mva.etaJet2;
     _jetSub_PUIDDisc = mva.puJetIDSimpleDiscJet2;
     _jetSub_PUIDFlag = mva.puJetIDSimpleJet2;
 
