@@ -629,11 +629,17 @@ int main(int argc, char *argv[])
   float _jetLead_eta;         
   float _jetLead_PUIDDisc;         
   int   _jetLead_PUIDFlag;         
+  float _jetLead_FullPUIDDisc;         
+  int   _jetLead_FullPUIDFlag;         
+  float _jetLead_CutPUIDDisc;         
 
   float _jetSub_pt;          
   float _jetSub_eta;         
   float _jetSub_PUIDDisc;         
   int   _jetSub_PUIDFlag;         
+  float _jetSub_FullPUIDDisc;         
+  int   _jetSub_FullPUIDFlag;         
+  float _jetSub_CutPUIDDisc;         
 
   float _kd;
   float _sigME;
@@ -686,11 +692,17 @@ int main(int argc, char *argv[])
   _outTree->Branch("jetLead_eta",          &_jetLead_eta,            "jetLead_eta/F");         
   _outTree->Branch("jetLead_PUIDDisc",          &_jetLead_PUIDDisc,            "jetLead_PUIDDisc/F");         
   _outTree->Branch("jetLead_PUIDFlag",          &_jetLead_PUIDFlag,            "jetLead_PUIDFlag/I");         
+  _outTree->Branch("jetLead_FullPUIDDisc",          &_jetLead_FullPUIDDisc,            "jetLead_FullPUIDDisc/F");         
+  _outTree->Branch("jetLead_FullPUIDFlag",          &_jetLead_FullPUIDFlag,            "jetLead_FullPUIDFlag/I");         
+  _outTree->Branch("jetLead_CutPUIDDisc",          &_jetLead_CutPUIDDisc,            "jetLead_CutPUIDDisc/F");         
 
   _outTree->Branch("jetSub_pt",           &_jetSub_pt,             "jetSub_pt/F");          
   _outTree->Branch("jetSub_eta",          &_jetSub_eta,            "jetSub_eta/F");         
   _outTree->Branch("jetSub_PUIDDisc",          &_jetSub_PUIDDisc,            "jetSub_PUIDDisc/F");         
   _outTree->Branch("jetSub_PUIDFlag",          &_jetSub_PUIDFlag,            "jetSub_PUIDFlag/I");         
+  _outTree->Branch("jetSub_FullPUIDDisc",          &_jetSub_FullPUIDDisc,            "jetSub_FullPUIDDisc/F");         
+  _outTree->Branch("jetSub_FullPUIDFlag",          &_jetSub_FullPUIDFlag,            "jetSub_FullPUIDFlag/I");         
+  _outTree->Branch("jetSub_CutPUIDDisc",          &_jetSub_CutPUIDDisc,            "jetSub_CutPUIDDisc/F");         
 
   _outTree->Branch("kd",           &_kd,           "kd/F");
   _outTree->Branch("sigME",        &_sigME,        "sigME/F");
@@ -1493,11 +1505,17 @@ int main(int argc, char *argv[])
     _jetLead_eta = mva.etaJet1;
     _jetLead_PUIDDisc = mva.puJetIDSimpleDiscJet1;
     _jetLead_PUIDFlag = mva.puJetIDSimpleJet1;
+    _jetLead_FullPUIDDisc = mva.puJetIDFullDiscJet1;
+    _jetLead_FullPUIDFlag = mva.puJetIDFullJet1;
+    _jetLead_CutPUIDDisc = mva.puJetIDCutDiscJet1;
 
     _jetSub_pt = mva.ptJet2;
     _jetSub_eta = mva.etaJet2;
     _jetSub_PUIDDisc = mva.puJetIDSimpleDiscJet2;
     _jetSub_PUIDFlag = mva.puJetIDSimpleJet2;
+    _jetSub_FullPUIDDisc = mva.puJetIDFullDiscJet2;
+    _jetSub_FullPUIDFlag = mva.puJetIDFullJet2;
+    _jetSub_CutPUIDDisc = mva.puJetIDCutDiscJet2;
 
     if (_eventType != 0) _outTree -> Fill();
 

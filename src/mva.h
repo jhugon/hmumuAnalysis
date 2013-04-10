@@ -98,9 +98,21 @@ class MVA
   float puJetIDSimpleDiscJet2;
   float puJetIDSimpleDiscJet3;
 
+  float puJetIDFullDiscJet1;
+  float puJetIDFullDiscJet2;
+  float puJetIDFullDiscJet3;
+
+  float puJetIDCutDiscJet1;
+  float puJetIDCutDiscJet2;
+  float puJetIDCutDiscJet3;
+
   int puJetIDSimpleJet1;
   int puJetIDSimpleJet2;
   int puJetIDSimpleJet3;
+
+  int puJetIDFullJet1;
+  int puJetIDFullJet2;
+  int puJetIDFullJet3;
 
   float bdtValInc;
   float bdtValVBF;

@@ -466,9 +466,21 @@ MVA::resetValues()
   puJetIDSimpleDiscJet2=-10.;
   puJetIDSimpleDiscJet3=-10.;
 
+  puJetIDFullDiscJet1=-10.;
+  puJetIDFullDiscJet2=-10.;
+  puJetIDFullDiscJet3=-10.;
+
+  puJetIDCutDiscJet1=-10.;
+  puJetIDCutDiscJet2=-10.;
+  puJetIDCutDiscJet3=-10.;
+
   puJetIDSimpleJet1=-10;
   puJetIDSimpleJet2=-10;
   puJetIDSimpleJet3=-10;
+
+  puJetIDFullJet1=-10;
+  puJetIDFullJet2=-10;
+  puJetIDFullJet3=-10;
 
   bdtValInc=-10.0;
   bdtValVBF=-10.0;
