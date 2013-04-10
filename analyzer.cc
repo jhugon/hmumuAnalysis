@@ -1317,11 +1317,11 @@ int main(int argc, char *argv[])
             mva.puJetIDSimpleDiscJet3 = puJetSimpleDisc[iJet];
 
           if (iJet==0)
-            mva.puJetIDSimpleJet1 = passPUJetID(int(puJetSimpleId[iJet]),puJetLoose);
+            mva.puJetIDSimpleJet1 = puJetSimpleId[iJet];
           else if (iJet==1)
-            mva.puJetIDSimpleJet2 = passPUJetID(int(puJetSimpleId[iJet]),puJetLoose);
+            mva.puJetIDSimpleJet2 = puJetSimpleId[iJet];
           else if (iJet==2)
-            mva.puJetIDSimpleJet3 = passPUJetID(int(puJetSimpleId[iJet]),puJetLoose);
+            mva.puJetIDSimpleJet3 = puJetSimpleId[iJet];
         }
       }
 #endif
