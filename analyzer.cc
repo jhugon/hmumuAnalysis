@@ -647,6 +647,8 @@ int main(int argc, char *argv[])
   float _kdPdf;
   float _sigMEPdf;
   float _bakMEPdf;
+  float _bdtNonVBF;
+  float _bdtVBF;
      
   // eventInfo;
   _outTree->Branch("eventInfo_run",    &_eventInfo_run,   "eventInfo_run/I");
@@ -710,6 +712,8 @@ int main(int argc, char *argv[])
   _outTree->Branch("kdPdf",           &_kdPdf,           "kdPdf/F");
   _outTree->Branch("sigMEPdf",        &_sigMEPdf,        "sigMEPdf/F");
   _outTree->Branch("bakMEPdf",        &_bakMEPdf,        "bakMEPdf/F");
+  _outTree->Branch("bdtVBF",        &_bdtVBF,        "bdtVBF/F");
+  _outTree->Branch("bdtNonVBF",        &_bdtNonVBF,        "bdtNonVBF/F");
 
   //////////////////////////
   // Creating the MEKD
@@ -1516,6 +1520,8 @@ int main(int argc, char *argv[])
     _jetSub_FullPUIDDisc = mva.puJetIDFullDiscJet2;
     _jetSub_FullPUIDFlag = mva.puJetIDFullJet2;
     _jetSub_CutPUIDDisc = mva.puJetIDCutDiscJet2;
+    _bdtVBF = mva.bdtValVBF;
+    _bdtNonVBF = mva.bdtValInc;
 
     if (_eventType != 0) _outTree -> Fill();
 
