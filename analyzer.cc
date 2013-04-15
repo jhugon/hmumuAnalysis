@@ -2263,7 +2263,7 @@ HistStruct::Fill(const MVA& mva, bool blind)
         yVmDiMu->Fill(mva.mDiMu,fabs(mva.yDiMu),mva.weight);
         ptVmDiMu->Fill(mva.mDiMu,mva.ptDiMu,mva.weight);
         
-        if(!mva.vbfPreselection)
+        if(mva.nJets < 2)
           {
             BDTHistMuonOnly->Fill(mva.bdtValInc, mva.weight);
             BDTHistMuonOnlyVMass->Fill(mva.mDiMu, mva.bdtValInc, mva.weight);

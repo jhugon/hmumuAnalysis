@@ -2,8 +2,8 @@
 
 nice scons -j4
 
-#TRAININGTREES="true"
-#TRAIN="true"
+TRAININGTREES="true"
+TRAIN="true"
 # Makes each analyzer only run on 1k events:
 #OPTIONS=" -m 1000"
 # Makes each analyzer only run on the data/MC comparison range in m_mumu:
