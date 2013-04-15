@@ -41,7 +41,6 @@
 
 #include "MEKD_Wrapper.h"
 
-#define JETPUID
 #define PUREWEIGHT
 //#define ISMEAR 1
 #define ISMEAR 2
@@ -415,7 +414,6 @@ int main(int argc, char *argv[])
   _PFJetInfo jets;
   tree->SetBranchAddress("pfJets",&jets);
 
-#ifdef JETPUID
   float puJetFullDisc[10];
   float puJetSimpleDisc[10];
   float puJetCutDisc[10];
@@ -431,7 +429,6 @@ int main(int argc, char *argv[])
   tree->SetBranchAddress("puJetFullId",&puJetFullId);
   tree->SetBranchAddress("puJetSimpleId",&puJetSimpleId);
   tree->SetBranchAddress("puJetCutId",&puJetCutId);
-#endif
 
   int nPU=0;
 #ifdef PUREWEIGHT
@@ -1254,100 +1251,108 @@ int main(int argc, char *argv[])
     hists.weight->Fill(weight);
 
     // Jet Part
+    float jetPtCut = 30.;
+    float jetPtCutC = 30.;
+    std::vector<unsigned> goodJetIndices;
     for(unsigned iJet=0; (iJet < jets.nJets && iJet < 10);iJet++)
     {
         if (jets.genPt[iJet]>0.0 && jets.pt[iJet]>15.)
           jets.pt[iJet] = jerCorr(jets.pt[iJet],jets.genPt[iJet],jets.eta[iJet]);
-        if(jets.pt[iJet] > 30.0 && fabs(jets.eta[iJet])<4.7)
+        bool goodPt = jets.pt[iJet]>jetPtCut || (fabs(jets.eta[iJet < 2.4]) && jets.pt[iJet]>jetPtCutC);
+        bool goodPUID = puJetFullId[iJet] >= 7;
+        if (goodPt && goodPUID)
         {
           mva.nJets++;
           mva.ht += jets.pt[iJet];
+          goodJetIndices.push_back(iJet);
         }
     }
 
-    bool goodJets = false;
-    if(jets.nJets>=2 && jets.pt[0]>30.0 && jets.pt[1]>30.0 && fabs(jets.eta[0])<4.7 && fabs(jets.eta[1])<4.7)
-        goodJets = true;
-
-//    if (mva.mDiMu > 140. && mva.mDiMu < 150. && goodJets)
-//    {
-//        testCounter++;
-//        //std::cout <<eventInfo.run <<":"<<eventInfo.event <<"\n"<< std::endl;
-//        testString.appendAny(eventInfo.run);
-//        testString.append(":");
-//        testString.appendAny(eventInfo.event);
-//        testString.append("\n");
-//    }
-
-
-    if(goodJets)
+    if (mva.nJets>=1)
     {
+      unsigned iJet1 = goodJetIndices[0];
+      TLorentzVector pJet1;
+      pJet1.SetXYZM(jets.px[iJet1],jets.py[iJet1],jets.pz[iJet1],jets.mass[iJet1]);
+
+      mva.ptJet1 = pJet1.Pt();
+      mva.etaJet1 = pJet1.Eta();
+      hists.ptJet1->Fill(mva.ptJet1, weight);
+      hists.etaJet1->Fill(mva.etaJet1, weight);
+
+      mva.puJetIDSimpleDiscJet1 = puJetSimpleDisc[iJet1];
+      mva.puJetIDFullDiscJet1 = puJetFullDisc[iJet1];
+      mva.puJetIDSimpleJet1 = puJetSimpleId[iJet1];
+      mva.puJetIDFullJet1 = puJetFullId[iJet1];
+      hists.puJetIDSimpleDiscJet1->Fill(mva.puJetIDSimpleDiscJet1,weight);
+      hists.puJetIDSimpleJet1->Fill(mva.puJetIDSimpleJet1,weight);
+
+      mva.deltaPhiHJ1 = pJet1.DeltaPhi(diMuon);
+      hists.deltaPhiHJ1->Fill(mva.deltaPhiHJ1, weight);
+      if (mva.nJets < 2)
+      {
+        mva.ptmiss = (pJet1+recoCandVec).Pt();
+      }
+    }
+
+    if(mva.nJets>=2)
+    {
+      unsigned iJet1 = goodJetIndices[0];
+      unsigned iJet2 = goodJetIndices[1];
       TLorentzVector pJet1;
       TLorentzVector pJet2;
-      pJet1.SetXYZM(jets.px[0],jets.py[0],jets.pz[0],jets.mass[0]);
-      pJet2.SetXYZM(jets.px[1],jets.py[1],jets.pz[1],jets.mass[1]);
+      pJet1.SetXYZM(jets.px[iJet1],jets.py[iJet1],jets.pz[iJet1],jets.mass[iJet1]);
+      pJet2.SetXYZM(jets.px[iJet2],jets.py[iJet2],jets.pz[iJet2],jets.mass[iJet2]);
       TLorentzVector diJet = pJet1+pJet2;
 
-      double dEtaJets = fabs(jets.eta[0]-jets.eta[1]);
-      double etaJetProduct = jets.eta[0]*jets.eta[1];
+      double dEtaJets = fabs(jets.eta[iJet1]-jets.eta[iJet2]);
+      double etaJetProduct = jets.eta[iJet1]*jets.eta[iJet2];
       mva.deltaPhiJets = pJet1.DeltaPhi(pJet2);
       mva.deltaRJets = pJet1.DeltaR(pJet2);
-      mva.deltaPhiHJ1 = pJet1.DeltaPhi(diMuon);
 
       // Seeing if there are jets in the rapidity gap
-      float etaMax = jets.eta[0];
+      float etaMax = jets.eta[iJet1];
       float etaMin = 9999999.0;
-      if(etaMax < jets.eta[1])
+      if(etaMax < jets.eta[iJet2])
       {
-          etaMax = jets.eta[1];
-          etaMin = jets.eta[0];
+          etaMax = jets.eta[iJet2];
+          etaMin = jets.eta[iJet1];
       }
       else
       {
-          etaMin = jets.eta[1];
+          etaMin = jets.eta[iJet2];
       }
       bool jetInRapidityGap=false;
-      for(unsigned iJet=2; (iJet < jets.nJets && iJet < 10);iJet++)
+      for(std::vector<unsigned>::const_iterator iGoodJet=goodJetIndices.begin();
+                                      iGoodJet != goodJetIndices.end();iGoodJet++)
       {
-        if(jets.pt[iJet] > 30.0)
-        {
-          if(jets.eta[iJet] < etaMax && jets.eta[iJet] > etaMin)
+          if(jets.eta[*iGoodJet] < etaMax && jets.eta[*iGoodJet] > etaMin)
           {
             jetInRapidityGap = true;
             mva.nJetsInRapidityGap++;
-            mva.htInRapidityGap += jets.pt[iJet];
+            mva.htInRapidityGap += jets.pt[*iGoodJet];
           }
-        }
       }
 
-#ifdef JETPUID
-      for(unsigned iJet=0; (iJet < jets.nJets && iJet < 10);iJet++)
+      mva.puJetIDSimpleDiscJet2 = puJetSimpleDisc[iJet2];
+      mva.puJetIDFullDiscJet2 = puJetFullDisc[iJet2];
+      mva.puJetIDSimpleJet2 = puJetSimpleId[iJet2];
+      mva.puJetIDFullJet2 = puJetFullId[iJet2];
+
+      if (mva.nJets>=3)
       {
-        if(jets.pt[iJet]>30.0)
-        {
-          if (iJet==0)
-            mva.puJetIDSimpleDiscJet1 = puJetSimpleDisc[iJet];
-          else if (iJet==1)
-            mva.puJetIDSimpleDiscJet2 = puJetSimpleDisc[iJet];
-          else if (iJet==2)
-            mva.puJetIDSimpleDiscJet3 = puJetSimpleDisc[iJet];
-
-          if (iJet==0)
-            mva.puJetIDSimpleJet1 = puJetSimpleId[iJet];
-          else if (iJet==1)
-            mva.puJetIDSimpleJet2 = puJetSimpleId[iJet];
-          else if (iJet==2)
-            mva.puJetIDSimpleJet3 = puJetSimpleId[iJet];
-        }
+        unsigned iJet3 = goodJetIndices[2];
+        mva.puJetIDSimpleDiscJet3 = puJetSimpleDisc[iJet3];
+        mva.puJetIDFullDiscJet3 = puJetFullDisc[iJet3];
+        mva.puJetIDSimpleJet3 = puJetSimpleId[iJet3];
+        mva.puJetIDFullJet3 = puJetFullId[iJet3];
+        hists.puJetIDSimpleDiscJet3->Fill(mva.puJetIDSimpleDiscJet3,weight);
+        hists.puJetIDSimpleJet3->Fill(mva.puJetIDSimpleJet3,weight);
       }
-#endif
 
       mva.mDiJet = diJet.M();
       mva.yDiJet = diJet.Rapidity();
       mva.ptDiJet = diJet.Pt();
-      mva.ptJet1 = pJet1.Pt();
       mva.ptJet2 = pJet2.Pt();
-      mva.etaJet1 = pJet1.Eta();
       mva.etaJet2 = pJet2.Eta();
       mva.productEtaJets = etaJetProduct;
       mva.deltaEtaJets = dEtaJets;
@@ -1356,27 +1361,20 @@ int main(int argc, char *argv[])
       hists.mDiJet->Fill(mva.mDiJet, weight);
       hists.ptDiJet->Fill(mva.ptDiJet, weight);
       hists.yDiJet->Fill(mva.yDiJet, weight);
-      hists.ptJet1->Fill(mva.ptJet1, weight);
       hists.ptJet2->Fill(mva.ptJet2, weight);
-      hists.etaJet1->Fill(mva.etaJet1, weight);
       hists.etaJet2->Fill(mva.etaJet2, weight);
       hists.deltaEtaJets->Fill(mva.deltaEtaJets, weight);
       hists.deltaPhiJets->Fill(mva.deltaPhiJets, weight);
       hists.deltaRJets->Fill(mva.deltaRJets, weight);
-      hists.deltaPhiHJ1->Fill(mva.deltaPhiHJ1, weight);
       hists.nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, weight);
       hists.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
       hists.nJets->Fill(mva.nJets, weight);
       hists.ht->Fill(mva.ht, weight);
       hists.ptmiss->Fill(mva.ptmiss, weight);
 
-      hists.puJetIDSimpleDiscJet1->Fill(mva.puJetIDSimpleDiscJet1,weight);
       hists.puJetIDSimpleDiscJet2->Fill(mva.puJetIDSimpleDiscJet2,weight);
-      hists.puJetIDSimpleDiscJet3->Fill(mva.puJetIDSimpleDiscJet3,weight);
 
-      hists.puJetIDSimpleJet1->Fill(mva.puJetIDSimpleJet1,weight);
       hists.puJetIDSimpleJet2->Fill(mva.puJetIDSimpleJet2,weight);
-      hists.puJetIDSimpleJet3->Fill(mva.puJetIDSimpleJet3,weight);
     }
   
 //HIG-12-007 PAS H->tautau
