@@ -1281,8 +1281,8 @@ int main(int argc, char *argv[])
 
       mva.puJetIDSimpleDiscJet1 = puJetSimpleDisc[iJet1];
       mva.puJetIDFullDiscJet1 = puJetFullDisc[iJet1];
-      mva.puJetIDSimpleJet1 = puJetSimpleId[iJet1];
-      mva.puJetIDFullJet1 = puJetFullId[iJet1];
+      mva.puJetIDSimpleJet1 = (int) puJetSimpleId[iJet1];
+      mva.puJetIDFullJet1 = (int) puJetFullId[iJet1];
       hists.puJetIDSimpleDiscJet1->Fill(mva.puJetIDSimpleDiscJet1,weight);
       hists.puJetIDSimpleJet1->Fill(mva.puJetIDSimpleJet1,weight);
 
@@ -1335,16 +1335,16 @@ int main(int argc, char *argv[])
 
       mva.puJetIDSimpleDiscJet2 = puJetSimpleDisc[iJet2];
       mva.puJetIDFullDiscJet2 = puJetFullDisc[iJet2];
-      mva.puJetIDSimpleJet2 = puJetSimpleId[iJet2];
-      mva.puJetIDFullJet2 = puJetFullId[iJet2];
+      mva.puJetIDSimpleJet2 = (int) puJetSimpleId[iJet2];
+      mva.puJetIDFullJet2 = (int) puJetFullId[iJet2];
 
       if (mva.nJets>=3)
       {
         unsigned iJet3 = goodJetIndices[2];
         mva.puJetIDSimpleDiscJet3 = puJetSimpleDisc[iJet3];
         mva.puJetIDFullDiscJet3 = puJetFullDisc[iJet3];
-        mva.puJetIDSimpleJet3 = puJetSimpleId[iJet3];
-        mva.puJetIDFullJet3 = puJetFullId[iJet3];
+        mva.puJetIDSimpleJet3 = (int) puJetSimpleId[iJet3];
+        mva.puJetIDFullJet3 = (int) puJetFullId[iJet3];
         hists.puJetIDSimpleDiscJet3->Fill(mva.puJetIDSimpleDiscJet3,weight);
         hists.puJetIDSimpleJet3->Fill(mva.puJetIDSimpleJet3,weight);
       }
