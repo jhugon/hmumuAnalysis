@@ -41,9 +41,13 @@
 
 #include "MEKD_Wrapper.h"
 
+#include "TEfficiency.h"
+#include <algorithm>    // std::min
+
 #define PUREWEIGHT
 //#define ISMEAR 1
 #define ISMEAR 2
+//#define EFFTEST
 
 #ifdef ROCHESTER
 #include "rochester/rochcor2012.h"
@@ -53,10 +57,46 @@
 #include "musclefit/MuScleFitCorrector.h"
 #endif
 
-Double_t MASS_MUON = 0.105658367;    //GeV/c2
+// for check doublets in Gen level:
+#include <set>
+typedef std::pair<float,float> pairOfDouble;
 
 using namespace std;
 using namespace boost;
+
+  // 7 subcategories in the analysis + 3 useful selections 
+  //const int NsubCat = 17;
+  const int NsubCat = 23;
+  TString subCategory[NsubCat] = {"IncPreselPtG10BB             ",
+                                  "IncPreselPtG10BO             ",
+                                  "IncPreselPtG10BE             ",
+                                  "IncPreselPtG10OO             ",
+                                  "IncPreselPtG10OE             ",
+                                  "IncPreselPtG10EE             ",
+                                  "IncPresel                    ",
+                                  "IncPreselPtG10               ",
+                                  "VBFPresel                    ",
+                                  "VBFBDTCut                    ",
+                                  "IncPreselBB                  ",
+                                  "IncPreselBO                  ",
+                                  "IncPreselBE                  ",
+                                  "IncPreselOO                  ",
+                                  "IncPreselOE                  ",
+                                  "IncPreselEE                  ",
+                                  "VBFMJJG550                   ", 
+                                  "IncPreselPtG10BBres1         ",
+                                  "IncPreselPtG10BBres2         ",
+                                  "IncPreselPtG10BOres1         ",
+                                  "IncPreselPtG10BOres2         ",
+                                  "VBFDeJJG3p5MJJG550pTmissL100 ",
+                                  "VBFDeJJG3p4MJJG500pTmissL25  "};
+  int Flag_subCat = 1; // 1 make sub category eff and don't split on Nsample <- used
+                       // 0 don't make sub category and split on Nsample <- not used now
+  const int Nsample = 1; // devide event on subsamples <- not used now 
+
+Double_t MASS_MUON = 0.105658367;    //GeV/c2
+
+
 
 void fillMuonHist(TH1F* hist, _MuonInfo& mu1, _MuonInfo& mu2);
 void printStationMiss(_MuonInfo& mu1, _MuonInfo& mu2, 
@@ -159,11 +199,17 @@ int main(int argc, char *argv[])
   float maxMmm = 400.0;
   static const float dataMCMinMass = 110.;
   static const float dataMCMaxMass = 150.;
+  static const float MinMassEff = 110.;
+  static const float MaxMassEff = 160.;
+  //static const float MaxMassEff = 150.;
   float minBlind = 120;
   float maxBlind = 130;
 
   gErrorIgnoreLevel = kError;
   time_t timeStart = time(NULL);
+
+
+  set<pairOfDouble> uniqueGeneratedEvents;
 
   /////////////////////////////////////////////
   //////////// Configuration Options //////////
@@ -402,6 +448,11 @@ int main(int argc, char *argv[])
   float trueMass=-99999.0;
   if(!isData && tree->GetBranchStatus("trueMass"))
     tree->SetBranchAddress("trueMass", &trueMass);
+
+   /// Higgs Boson 
+  _genPartInfo genHpostFSR;
+  if(!isData && tree->GetBranchStatus("genHpostFSR"))
+    tree->SetBranchAddress("genHpostFSR", &genHpostFSR);
 
   _TrackInfo reco1GenPostFSR;
   if(!isData && tree->GetBranchStatus("genM1HpostFSR"))
@@ -724,9 +775,85 @@ int main(int argc, char *argv[])
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+  int Nbin;
+  if(Flag_subCat == 1) Nbin = NsubCat;
+  else Nbin = Nsample;
+//////////////////////////////////////////////////////////////////////
+  int counterGenBoson  [Nbin]; // mass cut only
+  int counterMinimCuts [Nbin]; // mass, charge, vertex, cosmic
+  int counterAccCuts   [Nbin]; // pt, eta
+  int counterIDCuts    [Nbin]; // tight muon id
+  int counterIsoCuts   [Nbin]; // trk Iso
+  int counterTrigCuts  [Nbin]; // iso mu 24_eta2p1
+  int counterJetSel    [Nbin]; // jet selection
+  int counterBDTvbfCut [Nbin]; // VBF BDT cut
+  int counterNonJetSel [Nbin]; // jet selection
+  int counterDiPt10GeV [Nbin]; // jet selection
+
+  float EffMinimCuts [Nbin]; // mass, charge, vertex, cosmic
+  float EffAccCuts   [Nbin]; // pt, eta
+  float EffIDCuts    [Nbin]; // tight muon id
+  float EffIsoCuts   [Nbin]; // trk Iso
+  float EffTrigCuts  [Nbin]; // iso mu 24_eta2p1
+  float EffJetSel    [Nbin]; // jet selection
+  float EffBDTvbfCut [Nbin]; // VBF BDT cut
+  float EffNonJetSel [Nbin]; // jet selection
+  float EffDiPt10GeV [Nbin]; // pt(mumu) > = 10 GeV/c 
+
+  float dEffMinimCuts [Nbin]; // mass, charge, vertex, cosmic
+  float dEffAccCuts   [Nbin]; // pt, eta
+  float dEffIDCuts    [Nbin]; // tight muon id
+  float dEffIsoCuts   [Nbin]; // trk Iso
+  float dEffTrigCuts  [Nbin]; // iso mu 24_eta2p1
+  float dEffJetSel    [Nbin]; // jet selection
+  float dEffBDTvbfCut [Nbin]; // VBF BDT cut
+  float dEffNonJetSel [Nbin]; // jet selection
+  float dEffDiPt10GeV [Nbin]; // pt(mumu) > = 10 GeV/c 
+
+//reset them
+  for(unsigned iS=0; iS < Nbin;iS++){
+   counterGenBoson  [iS] = 0;
+   counterMinimCuts [iS] = 0;
+   counterAccCuts   [iS] = 0;
+   counterIDCuts    [iS] = 0;
+   counterIsoCuts   [iS] = 0; // trk Iso
+   counterTrigCuts  [iS] = 0; // iso mu 24_eta2p1
+   counterJetSel    [iS] = 0; // jet selection
+   counterBDTvbfCut [iS] = 0; // VBF BDT cut
+   counterNonJetSel [iS] = 0; // jet selection
+   counterDiPt10GeV [iS] = 0; // jet selection
+
+   EffMinimCuts [iS] = 0; // mass, charge, vertex, cosmic
+   EffAccCuts   [iS] = 0; // pt, eta
+   EffIDCuts    [iS] = 0; // tight muon id
+   EffIsoCuts   [iS] = 0; // trk Iso
+   EffTrigCuts  [iS] = 0; // iso mu 24_eta2p1
+   EffJetSel    [iS] = 0; // jet selection
+   EffBDTvbfCut [iS] = 0; // VBF BDT cut
+   EffNonJetSel [iS] = 0; // jet selection
+   EffDiPt10GeV [iS] = 0; // pt(mumu) > = 10 GeV/c 
+
+   dEffMinimCuts [iS] = 0; // mass, charge, vertex, cosmic
+   dEffAccCuts   [iS] = 0; // pt, eta
+   dEffIDCuts    [iS] = 0; // tight muon id
+   dEffIsoCuts   [iS] = 0; // trk Iso
+   dEffTrigCuts  [iS] = 0; // iso mu 24_eta2p1
+   dEffJetSel    [iS] = 0; // jet selection
+   dEffBDTvbfCut [iS] = 0; // VBF BDT cut
+   dEffNonJetSel [iS] = 0; // jet selection
+   dEffDiPt10GeV [iS] = 0; // pt(mumu) > = 10 GeV/c 
+  }
+
+//////////////////////////////////////////////////////////////////////
+        //create txt file with fit output
+        ofstream myfile ("EffInfo.txt");
+        ofstream myfileSubCat ("EffInfoSubCat.txt");
+//////////////////////////////////////////////////////////////////////
+
 
   unsigned nEvents = tree->GetEntries();
-  cout << "nEvents: " << nEvents << endl;
+  unsigned nSubEven = unsigned(min(int(maxEvents),int(nEvents))/Nbin);
+  cout << "nEvents: " << nEvents  << " and size of nSubEvents = " << nSubEven << endl;
 
   unsigned reportEach=1000;
   if (nEvents/1000>reportEach)
@@ -744,14 +871,49 @@ int main(int argc, char *argv[])
   {
     if(i >= maxEvents)
       continue;
+
     time_t timeStartReading = time(NULL);
     tree->GetEvent(i);
     time_t timeStopReading = time(NULL);
     timeReadingAll += difftime(timeStopReading,timeStartReading);
     if (i % reportEach == 0) cout << "Event: " << i << endl;
 
-    if(reco1.pt<0. || reco2.pt<0.)
-        continue;
+    //for efficiency:
+   //find sub sample
+    int IsampleGen = -1;
+    if(Flag_subCat != 1){
+       for(unsigned iS = 0; iS<Nbin ;iS++){
+           if(i >= nSubEven*iS && i < nSubEven*(iS+1)){
+                IsampleGen = iS;
+           }
+           if(iS == (Nbin -1) && i >= nSubEven*iS){
+                IsampleGen = iS;
+           }
+       }
+    }
+    if(Flag_subCat == 1)IsampleGen = 0;
+   //cout << "subcategory = " << IsampleGen << " for iEvent = " << i << " and Nbin = " << Nbin << " nSubEven = " << nSubEven << endl;  
+    if (IsampleGen < 0) cout << " IsampleGen = -1 for Event = " << i << endl;
+    if (IsampleGen < 0) continue;
+    //end: find sub sample
+    // calculate check for gen Mass
+    float MassGenBoson = genHpostFSR.mass;
+    //if (counterGenBoson>= 10000) continue;
+    //if (counterGenBoson>= 50000) continue;
+    // check for fhe doublets:
+                pairOfDouble massPt(genHpostFSR.mass,genHpostFSR.pt);
+                //if(MassGenBoson >= MinMassEff && MassGenBoson < MaxMassEff && uniqueGeneratedEvents.insert(massPt).second){
+                if(uniqueGeneratedEvents.insert(massPt).second){ // no mass cuts at all for gen level only
+                    counterGenBoson[IsampleGen]++;
+                    //hMassGenBoson ->Fill(MassGenBoson);
+                }
+    //if (counterGenBoson <= 40000) continue;
+    // additional selection cuts
+    //cout << "TEST iEVENT =  " << i  << " reco1.pt = " << reco1.pt << endl;
+    if (reco1.charge == reco2.charge) continue;
+    if(reco1.pt < 0. || reco2.pt < 0.) continue;//rejection fake in reco level 
+    if(reco1.eta < -900. || reco2.eta < -900) continue;//rejection fake in reco level
+
 
     double weight = 1.0;
     if (isSignal)
@@ -807,6 +969,11 @@ int main(int argc, char *argv[])
       recoOrigRes1 = (reco1.pt-reco1GenPostFSR.pt)/reco1.pt;
       recoOrigRes2 = (reco2.pt-reco2GenPostFSR.pt)/reco2.pt;
     }
+    // reject fake muon matches to gen level for signal only : very loose rejection DR < 0.5 and Resolution < 40%!
+    //if(isSignal){
+    //   if(recoGenDR1 > 0.5 || recoGenDR2 > 0.5) continue;
+    //   if(fabs(recoOrigRes1) > 0.4 || fabs(recoOrigRes2) > 0.4) continue;
+    //}
 #ifdef MUSCLEFIT
     TLorentzVector reco1Cor;
     TLorentzVector reco2Cor;
@@ -885,7 +1052,7 @@ int main(int argc, char *argv[])
     float mDiMuResASigDown = recoCandMass;
 
 #ifdef SMEARING
-    if(isSignal) // ISMEAR = 1 is very slow for DY 
+    if(isSignal) // smear only signal because it has muons from higgs 
     {
       if(reco1GenPostFSR.pt<0.)
         cout << "Muon 1 Post FSR not valid!\n";
@@ -980,6 +1147,38 @@ int main(int argc, char *argv[])
     }
 #endif
 
+// EFFTEST:
+#ifdef EFFTEST 
+
+// 1st EFFTEST
+
+if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.eta)<2.4 && recoCandMass > 50){
+
+   cout << "info1: " << eventInfo.run <<  " " << eventInfo.lumi << " " << eventInfo.event << " "
+        << reco1.pt << " " << reco1.eta << " " << reco1.phi << " "
+        << reco2.pt << " " << reco2.eta << " " << reco2.phi << " "
+    << endl;
+
+   if(isKinTight_2012_noIso_noPF(reco1) && isKinTight_2012_noIso_noPF(reco2)){
+
+   cout << "info2 tight noPFIso, noPF: " << eventInfo.run <<  " " << eventInfo.lumi << " " << eventInfo.event << " "
+        << reco1.pt << " " << reco1.eta << " " << reco1.phi << " "
+        << reco2.pt << " " << reco2.eta << " " << reco2.phi << " "
+    << endl;
+
+   }
+   if( (isKinTight_2012_noIso_noPF(reco1) && isKinTight_2012_noIso_noPF(reco2))
+       && reco1.isPFMuon && reco1.isPFMuon  ){
+   cout << "info3 tight noPFIso: " << eventInfo.run <<  " " << eventInfo.lumi << " " << eventInfo.event << " "
+        << reco1.pt << " " << reco1.eta << " " << reco1.phi << " "
+        << reco2.pt << " " << reco2.eta << " " << reco2.phi << " "
+    << endl;
+
+   }
+}
+// END EFFTEST
+#endif
+
     fillMuonHist(hists.countsHist2, reco1, reco2);
     //printStationMiss(reco1,reco2,eventInfo,testString,testCounter);
 
@@ -1012,28 +1211,7 @@ int main(int argc, char *argv[])
 
     hists.countsHist->Fill(0.0, weight);
 
-    // this selection does NOT contain ISO anymore!!!
-    if (!((*muonIdFuncPtr)(reco1)) || !((*muonIdFuncPtr)(reco2)))
-          continue;
-
-    hists.countsHist->Fill(1.0, weight);
-
-    // moved below
-    //if (!isHltMatched(reco1,reco2,allowedHLTPaths))
-    //    continue;
-
-    hists.countsHist->Fill(2.0, weight);
-
-    if (reco1.charge*reco2.charge != -1)
-        continue;
-
-    hists.countsHist->Fill(3.0, weight);
-
-    if (mva.mDiMu < minMmm || mva.mDiMu > maxMmm)
-        continue;
-
-    hists.countsHist->Fill(4.0, weight);
-
+    // make order in pt for muons
     _MuonInfo muon1;
     _MuonInfo muon2;
     if(reco1.pt>reco2.pt)
@@ -1046,37 +1224,7 @@ int main(int argc, char *argv[])
         muon1 = reco2;
         muon2 = reco1;
     }
-
-    mva.weight = weight;
-    mva.met = met.pt;
-    mva.nPU = nPU;
-
-    mva.mDiMuResSigUp = mDiMuResSigUp;
-    mva.mDiMuResSigDown = mDiMuResSigDown;
-    mva.mDiMuResASigUp = mDiMuResASigUp;
-    mva.mDiMuResASigDown = mDiMuResASigDown;
-
-    mva.ptMu1=muon1.pt;
-    mva.ptMu2=muon2.pt;
-    mva.etaMu1=muon1.eta;
-    mva.etaMu2=muon2.eta;
-    mva.deltaEtaMuons=fabs(muon1.eta-muon2.eta);
-    
-    mva.relIsoMu1    = getPFRelIso (muon1);
-    mva.relIsoMu2    = getPFRelIso (muon2);
-    mva.trkRelIsoMu1 = getTrkRelIso(muon1);
-    mva.trkRelIsoMu2 = getTrkRelIso(muon2);
-
-    mva.ptDiMu = recoCandPt;
-    mva.yDiMu = recoCandY;
-
-    float mDiMuCalibUp = mva.mDiMu+calibSysSmear;
-    float mDiMuCalibDown = mva.mDiMu-calibSysSmear;
-
-    float mDiMuResUp = smearMC(trueMass,recoCandMass,calib,resSmear+resSysSmear,random);
-    float mDiMuResDown = smearMC(trueMass,recoCandMass,calib,resSmear-resSysSmear,random);
-
-    bool inTrainingWindow = (mva.mDiMu < 160. && mva.mDiMu > 70.);
+    // define geometrical categories: 
     bool isBB = false;
     bool isBO = false;
     bool isBE = false;
@@ -1117,6 +1265,99 @@ int main(int argc, char *argv[])
         isEE=true;
     }
     bool isNotBB = !isBB;
+
+   // for efficiency:
+    //find sub sample
+    int Isample = -1;
+    if(Flag_subCat != 1){
+       for(unsigned iS = 0; iS<Nbin ;iS++){
+           if(i >= nSubEven*iS && i < nSubEven*(iS+1)){
+                Isample = iS;
+           }
+           if(iS == (Nbin -1) && i >= nSubEven*iS){
+                Isample = iS;
+           }
+       }
+    }
+    if(Flag_subCat == 1){
+       if(isBB) Isample = 0;
+       if(isBO) Isample = 1;
+       if(isBE) Isample = 2;
+       if(isOO) Isample = 3;
+       if(isOE) Isample = 4;
+       if(isEE) Isample = 5;
+    }
+    //cout << "subcategory = " << Isample << " for iEvent = " << i << " and Nbin = " << Nbin << " nSubEven = " << nSubEven << endl;  
+    if (Isample < 0) cout << " Isample = -1 for Event = " << i << endl;
+    if (Isample < 0) continue;
+    //end: find sub sample
+
+   bool IFMinimCuts = mva.mDiMu >= MinMassEff && mva.mDiMu <= MaxMassEff;
+   bool IFAccCuts   = reco1.pt >= 25 && reco2.pt >= 25 && fabs(reco1.eta) <= 2.1 && fabs(reco2.eta) <= 2.1; 
+   bool IFIDCuts    = ((*muonIdFuncPtr)(reco1)) && ((*muonIdFuncPtr)(reco2)); // NOT contain ISO anymore
+   bool IFPFIsoCuts   = getPFRelIso(reco1) <= 0.12 && getPFRelIso(reco2) <= 0.12;
+   bool IFTrigCuts  = isHltMatched(reco1,reco2,allowedHLTPaths);
+   bool IFAllTrigCuts  = IFMinimCuts && IFAccCuts && IFIDCuts && IFPFIsoCuts && IFTrigCuts;
+
+   if(IFMinimCuts)                                          counterMinimCuts[Isample]++;
+   if(IFMinimCuts && IFAccCuts)                             counterAccCuts[Isample]++;
+   if(IFMinimCuts && IFAccCuts && IFIDCuts)                 counterIDCuts[Isample]++;
+   if(IFMinimCuts && IFAccCuts && IFIDCuts && IFPFIsoCuts)  counterIsoCuts[Isample]++;
+   if(IFAllTrigCuts)                                        counterTrigCuts[Isample]++; 
+
+    // this selection does NOT contain ISO anymore!!!
+    if (!((*muonIdFuncPtr)(reco1)) || !((*muonIdFuncPtr)(reco2)))
+          continue;
+
+    hists.countsHist->Fill(1.0, weight);
+
+    // moved below
+    //if (!isHltMatched(reco1,reco2,allowedHLTPaths))
+    //    continue;
+
+    hists.countsHist->Fill(2.0, weight);
+
+    if (reco1.charge*reco2.charge != -1)
+        continue;
+
+    hists.countsHist->Fill(3.0, weight);
+
+    if (mva.mDiMu < minMmm || mva.mDiMu > maxMmm)
+        continue;
+
+    hists.countsHist->Fill(4.0, weight);
+
+
+    mva.weight = weight;
+    mva.met = met.pt;
+    mva.nPU = nPU;
+
+    mva.mDiMuResSigUp = mDiMuResSigUp;
+    mva.mDiMuResSigDown = mDiMuResSigDown;
+    mva.mDiMuResASigUp = mDiMuResASigUp;
+    mva.mDiMuResASigDown = mDiMuResASigDown;
+
+    mva.ptMu1=muon1.pt;
+    mva.ptMu2=muon2.pt;
+    mva.etaMu1=muon1.eta;
+    mva.etaMu2=muon2.eta;
+    mva.deltaEtaMuons=fabs(muon1.eta-muon2.eta);
+    
+    mva.relIsoMu1    = getPFRelIso (muon1);
+    mva.relIsoMu2    = getPFRelIso (muon2);
+    mva.trkRelIsoMu1 = getTrkRelIso(muon1);
+    mva.trkRelIsoMu2 = getTrkRelIso(muon2);
+
+    mva.ptDiMu = recoCandPt;
+    mva.yDiMu = recoCandY;
+
+    float mDiMuCalibUp = mva.mDiMu+calibSysSmear;
+    float mDiMuCalibDown = mva.mDiMu-calibSysSmear;
+
+    float mDiMuResUp = smearMC(trueMass,recoCandMass,calib,resSmear+resSysSmear,random);
+    float mDiMuResDown = smearMC(trueMass,recoCandMass,calib,resSmear-resSysSmear,random);
+
+    bool inTrainingWindow = (mva.mDiMu < 160. && mva.mDiMu > 70.);
     
     //////////////////////////////////////////
     // MEKD
@@ -1403,6 +1644,34 @@ int main(int argc, char *argv[])
     else
         hists.countsHist->Fill(5);
     
+    // for efficiency:
+    if(Flag_subCat != 1){
+       if((!vbfPreselection) && IFAllTrigCuts ) counterNonJetSel[Isample]++;
+       if ((!vbfPreselection) && mva.ptDiMu >= 10. && IFAllTrigCuts) counterDiPt10GeV[Isample]++;
+       if(vbfPreselection && IFAllTrigCuts) counterJetSel[Isample]++;
+    }
+    if(Flag_subCat == 1){
+       if((!vbfPreselection) && IFAllTrigCuts){
+                counterNonJetSel[Isample]++;
+                counterNonJetSel[6]++;
+       }
+       if ((!vbfPreselection) && mva.ptDiMu >= 10. && IFAllTrigCuts) {
+                counterDiPt10GeV[Isample]++;
+                counterDiPt10GeV[7]++;
+                if(mva.RelMassRes < 0.009 && isBB) counterDiPt10GeV[8]++; //BB res1
+                if(mva.RelMassRes >= 0.009 && isBB) counterDiPt10GeV[9]++; //BB res2 
+                if(mva.RelMassRes < 0.011 && isBO) counterDiPt10GeV[10]++; //BO res1 
+                if(mva.RelMassRes >= 0.011 && isBO) counterDiPt10GeV[11]++; //BO res2
+       }
+       if(vbfPreselection && IFAllTrigCuts){
+                counterJetSel[Isample]++;
+                counterJetSel[8]++;
+                if(mva.mDiJet> 550.)counterJetSel[9]++;
+                if(mva.mDiJet> 550. && mva.deltaEtaJets>3.5 && mva.ptmiss < 100)counterJetSel[10]++;
+                if(mva.mDiJet> 500. && mva.deltaEtaJets>3.4 && mva.ptmiss < 25)counterJetSel[11]++;
+       }
+    }
+    // 
 
     bool vbfVeryTight = false;
     bool vbfTight = false;
@@ -1437,6 +1706,14 @@ int main(int argc, char *argv[])
     float likeValVBF =  mva.getMVA(cfgNameVBF,"Likelihood");
     bool passIncBDTCut = mva.getMVAPassBDTCut(cfgNameInc);
     bool passVBFBDTCut = mva.getMVAPassBDTCut(cfgNameVBF);
+    // for efficiency:
+    if(IFAllTrigCuts && vbfPreselection && passVBFBDTCut && (Flag_subCat != 1)) counterBDTvbfCut[Isample]++;
+    if(IFAllTrigCuts && vbfPreselection && passVBFBDTCut && (Flag_subCat == 1)){
+          counterBDTvbfCut[Isample]++;
+          counterBDTvbfCut[9]++;
+    }
+    //
+
     mva.bdtValInc = bdtValInc;
     mva.bdtValVBF = bdtValVBF;
 
@@ -1781,6 +2058,198 @@ int main(int argc, char *argv[])
     timeFilling += difftime(time(NULL),timeStartFilling);
   }// end event loop
   time_t timeEndEventLoop = time(NULL);
+
+// for efficiency:
+//////////////////////////////////////////////////////////////////////
+  for(unsigned iS = 0; iS<Nbin ;iS++){
+     if(Flag_subCat == 1) counterGenBoson[iS] = counterGenBoson[0]; // the same dominator for sub catergories
+     std::cout << " ########################################## \n";
+     std::cout << " ########################################## \n";
+     std::cout << " For subcategory = " << iS << " Events after: \n\n";
+     //counterGenBoson = counterGenBoson - 40000;
+     std::cout << " Gen Mass   Cuts = " << counterGenBoson[iS] << std::endl;
+     std::cout << " Minimal    Cuts = " << counterMinimCuts[iS] << std::endl;
+     std::cout << " pT/eta     Cuts = " << counterAccCuts[iS]   << std::endl;
+     std::cout << " Muon ID    Cuts = " << counterIDCuts[iS]    << std::endl;
+     std::cout << " Muon Iso   Cuts = " << counterIsoCuts[iS]   << std::endl;
+     std::cout << " Trigger    Cuts = " << counterTrigCuts[iS]  << std::endl;
+     std::cout << " VBF pres.  Cuts = " << counterJetSel[iS]  << std::endl;
+     std::cout << " VBF BDT    Cuts = " << counterBDTvbfCut[iS]  << std::endl;
+     std::cout << " non VBF pres.  Cuts = " << counterNonJetSel[iS]  << std::endl;
+     std::cout << " pt(mumu)>10 GeV = " << counterDiPt10GeV[iS]  << std::endl;
+     // calculate efficiency and binom. error:
+     // calculate efficiency and binom. error:
+     EffMinimCuts[iS] = float(counterMinimCuts[iS])/float(counterGenBoson[iS]);
+     EffAccCuts[iS] = float(counterAccCuts[iS])/float(counterGenBoson[iS]);
+     EffIDCuts[iS] = float(counterIDCuts[iS])/float(counterGenBoson[iS]);
+     EffIsoCuts[iS] = float(counterIsoCuts[iS])/float(counterGenBoson[iS]);
+     EffTrigCuts[iS] = float(counterTrigCuts[iS])/float(counterGenBoson[iS]);
+     EffJetSel[iS] = float(counterJetSel[iS])/float(counterGenBoson[iS]);
+     EffBDTvbfCut[iS] = float(counterBDTvbfCut[iS])/float(counterGenBoson[iS]);
+     EffNonJetSel[iS] = float(counterNonJetSel[iS])/float(counterGenBoson[iS]);
+     EffDiPt10GeV[iS] = float(counterDiPt10GeV[iS])/float(counterGenBoson[iS]);
+
+     int iTypeDEff = 1;// 1 - TEfficiency, 2 - Benomial  
+     if(iTypeDEff == 2){
+      dEffMinimCuts[iS] = sqrt( EffMinimCuts[iS]*(1-EffMinimCuts[iS])/float(counterGenBoson[iS]) );
+      dEffAccCuts[iS] = sqrt( EffAccCuts[iS]*(1-EffAccCuts[iS])/float(counterGenBoson[iS]) );
+      dEffIDCuts[iS] = sqrt( EffIDCuts[iS]*(1-EffIDCuts[iS])/float(counterGenBoson[iS]) );
+      dEffIsoCuts[iS] = sqrt( EffIsoCuts[iS]*(1-EffIsoCuts[iS])/float(counterGenBoson[iS]) );
+      dEffTrigCuts[iS] = sqrt( EffTrigCuts[iS]*(1-EffTrigCuts[iS])/float(counterGenBoson[iS]) );
+      dEffJetSel[iS] = sqrt( EffJetSel[iS]*(1-EffJetSel[iS])/float(counterGenBoson[iS]) );
+      dEffBDTvbfCut[iS] = sqrt( EffBDTvbfCut[iS]*(1-EffBDTvbfCut[iS])/float(counterGenBoson[iS]) );
+      dEffNonJetSel[iS] = sqrt( EffNonJetSel[iS]*(1-EffNonJetSel[iS])/float(counterGenBoson[iS]) );
+      dEffDiPt10GeV[iS] = sqrt( EffDiPt10GeV[iS]*(1-EffDiPt10GeV[iS])/float(counterGenBoson[iS]) );
+     }
+     if(iTypeDEff == 1){
+      //0.683 - 1 sigma, true - upper, false - lower boundary
+      bool upper = true;
+      dEffMinimCuts[iS] = TEfficiency::ClopperPearson( counterGenBoson[iS], counterMinimCuts[iS], 0.683, upper ) - EffMinimCuts[iS];
+      dEffAccCuts[iS]   = TEfficiency::ClopperPearson( counterGenBoson[iS], counterAccCuts[iS],   0.683, upper ) - EffAccCuts[iS];
+      dEffIDCuts[iS]    = TEfficiency::ClopperPearson( counterGenBoson[iS], counterIDCuts[iS],    0.683, upper ) - EffIDCuts[iS];
+      dEffIsoCuts[iS]   = TEfficiency::ClopperPearson( counterGenBoson[iS], counterIsoCuts[iS],   0.683, upper ) - EffIsoCuts[iS];
+      dEffTrigCuts[iS]  = TEfficiency::ClopperPearson( counterGenBoson[iS], counterTrigCuts[iS],  0.683, upper ) - EffTrigCuts[iS];
+      dEffJetSel[iS]    = TEfficiency::ClopperPearson( counterGenBoson[iS], counterJetSel[iS],    0.683, upper ) - EffJetSel[iS];
+      dEffBDTvbfCut[iS] = TEfficiency::ClopperPearson( counterGenBoson[iS], counterBDTvbfCut[iS], 0.683, upper ) - EffBDTvbfCut[iS];
+      dEffNonJetSel[iS] = TEfficiency::ClopperPearson( counterGenBoson[iS], counterNonJetSel[iS], 0.683, upper ) - EffNonJetSel[iS];
+      dEffDiPt10GeV[iS] = TEfficiency::ClopperPearson( counterGenBoson[iS], counterDiPt10GeV[iS], 0.683, upper ) - EffDiPt10GeV[iS];
+     }
+     std::cout << " ########################################## \n";
+     std::cout << " Efficiency after selection: \n\n";
+     cout.unsetf(ios::floatfield);            // floatfield not set
+     cout.precision(3);
+     std::cout << " Opposit charge, M_RECO = 110-150 GeV  = " << EffMinimCuts[iS] <<" +/- ";
+     cout.precision(1);
+     std::cout << dEffMinimCuts[iS] << std::endl;
+     cout.precision(3);
+     std::cout << " + pT > 25 GeV,|eta| < 2.1         Cut = " << EffAccCuts[iS]   <<" +/- ";
+     cout.precision(1);
+     std::cout << dEffAccCuts[iS]   << std::endl;
+     cout.precision(3);
+     std::cout << " + Tight Muon ID                   Cut = " << EffIDCuts[iS]    <<" +/- " ;
+     cout.precision(1);
+     std::cout <<  dEffIDCuts[iS]    << std::endl;
+     cout.precision(3);
+     std::cout << " + Muon Relative PF Isolation      Cut = " << EffIsoCuts[iS]   <<" +/- " ;
+     cout.precision(1);
+     std::cout << dEffIsoCuts[iS]   << std::endl;
+     cout.precision(3);
+     std::cout << " + Trigger HLT_Mu24Iso_eta2p1      Cut = " << EffTrigCuts[iS]  <<" +/- " ;
+     cout.precision(1);
+     std::cout << dEffTrigCuts[iS]  << std::endl;
+     cout.precision(3);
+     std::cout << " + VBF Jet preselection            Cut = " << EffJetSel[iS]    <<" +/- " ;
+     cout.precision(1);
+     std::cout << dEffJetSel[iS] << std::endl;
+     cout.precision(3);
+     std::cout << " + VBF BDT                         Cut = " << EffBDTvbfCut[iS]    <<" +/- " ;
+     cout.precision(1);
+     std::cout << dEffBDTvbfCut[iS] << std::endl;
+     cout.precision(3);
+     std::cout << " + non VBF Jet preselection         Cut = " << EffNonJetSel[iS]    <<" +/- " ;
+     cout.precision(1);
+     std::cout << dEffNonJetSel[iS] << std::endl;
+     cout.precision(3);
+     std::cout << " + pt(mumu)> 10 GeV/c, no VBF pres. and no BDT  Cut = " << EffDiPt10GeV[iS]    <<" +/- " ;
+     cout.precision(1);
+     std::cout << dEffDiPt10GeV[iS] << std::endl;
+
+  } // end for 
+
+
+  // write BDT cut efficiency to myfile
+  myfile << "EffBDT{}  = {";
+  myfile.precision(3);
+  for(unsigned iS = 0; iS<Nbin ;iS++){
+     myfile << EffBDTvbfCut[iS] << ", ";
+  }
+  myfile << "};\n\n";
+
+  myfile << "dEffBDT{} = {";
+  myfile.precision(1);
+  for(unsigned iS = 0; iS<Nbin ;iS++){
+     myfile << dEffBDTvbfCut[iS] << ", ";
+  }
+  myfile << "};\n\n";
+
+
+  myfile.close();
+
+  // write efficiency for sub categories to myfileSubCat
+  for(unsigned iS = 0; iS < 6 ;iS++){
+     myfileSubCat.precision(4);
+     myfileSubCat << subCategory[iS] << EffDiPt10GeV[iS];
+     myfileSubCat.precision(2);
+     myfileSubCat << "   " << dEffDiPt10GeV[iS] << "\n";
+  }
+  myfileSubCat.precision(4);
+  myfileSubCat << subCategory[6] << EffNonJetSel[6];
+     myfileSubCat.precision(2);
+     myfileSubCat << "   " << dEffNonJetSel[6] << "\n";
+
+  myfileSubCat.precision(4);
+  myfileSubCat << subCategory[7] << EffDiPt10GeV[7];
+     myfileSubCat.precision(2);
+     myfileSubCat << "   " << dEffDiPt10GeV[7] << "\n";
+
+  myfileSubCat.precision(4);
+  myfileSubCat << subCategory[8] << EffJetSel[8];
+     myfileSubCat.precision(2);
+     myfileSubCat << "   " << dEffJetSel[8] << "\n";
+
+  myfileSubCat.precision(4);
+  myfileSubCat << subCategory[9] << EffBDTvbfCut[9];
+     myfileSubCat.precision(2);
+     myfileSubCat << "   " << dEffBDTvbfCut[9] << "\n";
+
+  for(unsigned iS = 0; iS < 6 ;iS++){
+     myfileSubCat.precision(4);
+     myfileSubCat << subCategory[iS+10] << EffNonJetSel[iS];
+     myfileSubCat.precision(2);
+     myfileSubCat << "   " << dEffNonJetSel[iS] << "\n";
+  }
+
+  myfileSubCat.precision(4);
+  myfileSubCat << subCategory[16] << EffJetSel[9];
+     myfileSubCat.precision(2);
+     myfileSubCat << "   " << dEffJetSel[9] << "\n";
+
+  // resolution categories for BB and BO
+
+  myfileSubCat.precision(4);
+  myfileSubCat << subCategory[17] << EffDiPt10GeV[8];
+     myfileSubCat.precision(2);
+     myfileSubCat << "   " << dEffDiPt10GeV[8] << "\n";
+ 
+  myfileSubCat.precision(4);
+  myfileSubCat << subCategory[18] << EffDiPt10GeV[9];
+     myfileSubCat.precision(2);
+     myfileSubCat << "   " << dEffDiPt10GeV[9] << "\n";
+ 
+  myfileSubCat.precision(4);
+  myfileSubCat << subCategory[19] << EffDiPt10GeV[10];
+     myfileSubCat.precision(2);
+     myfileSubCat << "   " << dEffDiPt10GeV[10] << "\n";
+ 
+  myfileSubCat.precision(4);
+  myfileSubCat << subCategory[20] << EffDiPt10GeV[11];
+     myfileSubCat.precision(2);
+     myfileSubCat << "   " << dEffDiPt10GeV[11] << "\n";
+ 
+  // VBF cutbased efficiency
+
+  myfileSubCat.precision(4);
+  myfileSubCat << subCategory[21] << EffJetSel[10];
+     myfileSubCat.precision(2);
+     myfileSubCat << "   " << dEffJetSel[10] << "\n";
+
+  myfileSubCat.precision(4);
+  myfileSubCat << subCategory[22] << EffJetSel[11];
+     myfileSubCat.precision(2);
+     myfileSubCat << "   " << dEffJetSel[11] << "\n";
+
+  myfileSubCat.close();
+
 
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
