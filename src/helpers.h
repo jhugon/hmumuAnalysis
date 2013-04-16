@@ -34,6 +34,7 @@ float getTrkRelIso(_MuonInfo& muon);
 
 bool isKinTight_2012(_MuonInfo& muon);
 bool isKinTight_2012_noIso(_MuonInfo& muon);
+bool isKinTight_2012_noIso_noPF(_MuonInfo& muon);
 
 bool isKinTight_2011(_MuonInfo& muon);
 bool isKinTight_2011_noIso(_MuonInfo& muon);

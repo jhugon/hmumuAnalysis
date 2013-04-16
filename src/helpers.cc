@@ -111,6 +111,34 @@ bool isKinTight_2012_noIso(_MuonInfo& muon)
   return isKinTight_2012;
 }
 
+bool isKinTight_2012_noIso_noPF(_MuonInfo& muon)
+{
+
+  bool isKinTight_2012=false;
+  if (!muon.isGlobal)  return isKinTight_2012;
+
+  // acceptance cuts
+  if (muon.pt < 25)         return isKinTight_2012; // pt cut
+  if (fabs(muon.eta) > 2.1) return isKinTight_2012; // eta cut
+
+  // kinematic cuts
+  if (muon.numTrackerLayers < 6) return isKinTight_2012; // # hits in tracker
+
+  //if(getPFRelIso(muon) > 0.12)
+  //return isKinTight_2012;
+
+  if (fabs(muon.d0_PV) > 0.2) return isKinTight_2012;
+  if (fabs(muon.dz_PV) > 0.5) return isKinTight_2012;
+
+  if ( muon.numValidMuonHits  < 1 ) return isKinTight_2012;
+  if ( muon.numValidPixelHits < 1 ) return isKinTight_2012;
+  if ( muon.numOfMatchedStations < 2 ) return isKinTight_2012;
+  if ( muon.normChiSquare > 10)     return isKinTight_2012;
+
+  isKinTight_2012=true;
+  return isKinTight_2012;
+}
+
 bool isKinTight_2011_noIso(_MuonInfo& muon) 
 {
 
