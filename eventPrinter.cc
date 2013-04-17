@@ -189,6 +189,18 @@ int main(int argc, char *argv[])
   if(tree->GetBranchStatus("trueMass"))
     tree->SetBranchAddress("trueMass", &trueMass);
 
+  _genPartInfo genHpostFSR;
+  if(tree->GetBranchStatus("genHpostFSR"))
+    tree->SetBranchAddress("genHpostFSR", &genHpostFSR);
+
+  _TrackInfo reco1GenPostFSR;
+  if(tree->GetBranchStatus("genM1HpostFSR"))
+    tree->SetBranchAddress("genM1HpostFSR", &reco1GenPostFSR);
+
+  _TrackInfo reco2GenPostFSR;
+  if(tree->GetBranchStatus("genM2HpostFSR"))
+    tree->SetBranchAddress("genM2HpostFSR", &reco2GenPostFSR);
+
   _PFJetInfo jets;
   tree->SetBranchAddress("pfJets",&jets);
 
@@ -242,6 +254,8 @@ cout.precision(5);
   for(unsigned i=0; i<nEvents;i++)
   {
     tree->GetEvent(i);
+    if(recoCandPt<0. && recoCandPt>-900.)
+      cout << recoCandPt << '\n';
     if(events.size()!=0)
     {
       bool wantedEvent = false;
@@ -259,10 +273,14 @@ cout.precision(5);
 
     _MuonInfo muon1=reco1;
     _MuonInfo muon2=reco2;
+    _TrackInfo muon1GenPostFSR=reco1GenPostFSR;
+    _TrackInfo muon2GenPostFSR=reco2GenPostFSR;
     if(reco1.pt<reco2.pt)
     {
         muon1 = reco2;
         muon2 = reco1;
+        muon1GenPostFSR = reco2GenPostFSR;
+        muon2GenPostFSR = reco1GenPostFSR;
     }
 
     unsigned nJets = 0;
@@ -277,9 +295,15 @@ cout.precision(5);
 
     cout << "Run:Event (Lumi) = "<<eventInfo.run<<":"<<eventInfo.event<<" ("<<eventInfo.lumi<<")\n"
          << "  Dimuon M = "<<recoCandMass<<" \t Pt = "<<recoCandPt << " \t Y = "<<recoCandY <<"\n"
-         << "   Lead Mu Pt = "<< muon1.pt << " \t Eta = "<<muon1.eta << " \t Phi = "<<muon1.phi << " \t Q = "<<muon1.charge <<"\n"
-         << "   2nd Mu Pt  = "<< muon2.pt << " \t Eta = "<<muon2.eta << " \t Phi = "<<muon2.phi << " \t Q = "<<muon2.charge <<"\n"
-         << "     Nvtx = "<< vertexInfo.nVertices <<" \t nJets = "<<nJets<<"\n"
+         << "   Lead Mu Pt     = "<< muon1.pt << " \t Eta = "<<muon1.eta << " \t Phi = "<<muon1.phi << " \t Q = "<<muon1.charge <<"\n"
+         << "   2nd Mu Pt      = "<< muon2.pt << " \t Eta = "<<muon2.eta << " \t Phi = "<<muon2.phi << " \t Q = "<<muon2.charge <<"\n";
+
+    if (genHpostFSR.mass > 0.)
+    {
+      cout << "   Lead Mu Pt Gen = "<< muon1GenPostFSR.pt << "\n"
+           << "   2nd Mu Pt Gen  = "<< muon2GenPostFSR.pt << "\n";
+    }
+    cout << "     Nvtx = "<< vertexInfo.nVertices <<" \t nJets = "<<nJets<<"\n"
 #ifdef VERBOSE
          << "   Lead Mu Trg = "<< isHltMatched(muon1,allowedHLTPaths) << " \t 2nd Mu Trg = "<< isHltMatched(muon2,allowedHLTPaths) <<"\n"
          << "   Lead Mu ID = "<< isKinTight_2012(muon1) << "\n"
@@ -301,13 +325,20 @@ cout.precision(5);
          << "   Lead Jet Pt = "<< jets.pt[0] << " \t Eta = "<<jets.eta[0] << " \t Phi = "<<jets.phi[0] << " \t CSV = "<<-999 <<"\n"
          << "   2nd Jet Pt  = "<< jets.pt[1] << " \t Eta = "<<jets.eta[1] << " \t Phi = "<<jets.phi[1] << " \t CSV = "<<-999 <<"\n"
          << "   MET  = "<< met.pt << " \t MET Phi = "<<met.phi <<"\n"
+         << "   trueMass  = "<< trueMass << " \t genHpostFSR.mass = "<<genHpostFSR.mass <<"\n"
          << endl;
 
   outTxt << "Run:Event (Lumi) = "<<eventInfo.run<<":"<<eventInfo.event<<" ("<<eventInfo.lumi<<")\n"
          << "  Dimuon M = "<<recoCandMass<<" \t Pt = "<<recoCandPt << " \t Y = "<<recoCandY <<"\n"
-         << "   Lead Mu Pt = "<< muon1.pt << " \t Eta = "<<muon1.eta << " \t Phi = "<<muon1.phi << " \t Q = "<<muon1.charge <<"\n"
-         << "   2nd Mu Pt  = "<< muon2.pt << " \t Eta = "<<muon2.eta << " \t Phi = "<<muon2.phi << " \t Q = "<<muon2.charge <<"\n"
-         << "     Nvtx = "<< vertexInfo.nVertices <<" \t nJets = "<<nJets<<"\n"
+         << "   Lead Mu Pt     = "<< muon1.pt << " \t Eta = "<<muon1.eta << " \t Phi = "<<muon1.phi << " \t Q = "<<muon1.charge <<"\n"
+         << "   2nd Mu Pt      = "<< muon2.pt << " \t Eta = "<<muon2.eta << " \t Phi = "<<muon2.phi << " \t Q = "<<muon2.charge <<"\n";
+
+    if (genHpostFSR.mass > 0.)
+    {
+      outTxt << "   Lead Mu Pt Gen = "<< muon1GenPostFSR.pt << "\n"
+             << "   2nd Mu Pt Gen  = "<< muon2GenPostFSR.pt << "\n";
+    }
+    outTxt << "     Nvtx = "<< vertexInfo.nVertices <<" \t nJets = "<<nJets<<"\n"
 #ifdef VERBOSE
          << "   Lead Mu Trg = "<< isHltMatched(muon1,allowedHLTPaths) << " \t 2nd Mu Trg = "<< isHltMatched(muon2,allowedHLTPaths) <<"\n"
          << "   Lead Mu ID = "<< isKinTight_2012(muon1) << "\n"
@@ -329,6 +360,7 @@ cout.precision(5);
          << "   Lead Jet Pt = "<< jets.pt[0] << " \t Eta = "<<jets.eta[0] << " \t Phi = "<<jets.phi[0] << " \t CSV = "<<-999 <<"\n"
          << "   2nd Jet Pt  = "<< jets.pt[1] << " \t Eta = "<<jets.eta[1] << " \t Phi = "<<jets.phi[1] << " \t CSV = "<<-999 <<"\n"
          << "   MET  = "<< met.pt << " \t MET Phi = "<<met.phi<<"\n"
+         << "   trueMass  = "<< trueMass << " \t genHpostFSR.mass. = "<<genHpostFSR.mass <<"\n"
          << endl;
 
     foundCounter++;
