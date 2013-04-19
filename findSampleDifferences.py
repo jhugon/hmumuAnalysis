@@ -59,8 +59,8 @@ for mi,t in zip([missingIndex2,missingIndex1],[t1,t2]):
     print "Event: %i:%i" % (t.eventInfo_run,t.eventInfo_event)
     for b in t.GetListOfBranches():
       bName = b.GetName()
-      #if "dimuon" not in bName:
-      if "dijet" not in bName:
+      if "dimuon" not in bName and bName != "muonSub_pt" and bName != "muonLead_pt":
+      #if "dijet" not in bName:
         continue
       print "  %25s %10.4g" % (bName,getattr(t,bName))
 

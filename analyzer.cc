@@ -907,13 +907,9 @@ int main(int argc, char *argv[])
                     counterGenBoson[IsampleGen]++;
                     //hMassGenBoson ->Fill(MassGenBoson);
                 }
-    //if (counterGenBoson <= 40000) continue;
-    // additional selection cuts
-    //cout << "TEST iEVENT =  " << i  << " reco1.pt = " << reco1.pt << endl;
-    if (reco1.charge == reco2.charge) continue;
-    if(reco1.pt < 0. || reco2.pt < 0.) continue;//rejection fake in reco level 
-    if(reco1.eta < -900. || reco2.eta < -900) continue;//rejection fake in reco level
 
+    if(reco1.pt<0. || reco2.pt<0.)
+        continue;
 
     double weight = 1.0;
     if (isSignal)
@@ -1146,6 +1142,14 @@ int main(int argc, char *argv[])
       
     }
 #endif
+
+    // Anna's Extra Checks on Muons; Moved To After Corrections
+    //if (counterGenBoson <= 40000) continue;
+    // additional selection cuts
+    //cout << "TEST iEVENT =  " << i  << " reco1.pt = " << reco1.pt << endl;
+    if (reco1.charge == reco2.charge) continue;
+    if(reco1.eta < -900. || reco2.eta < -900) continue;//rejection fake in reco level
+
 
 // EFFTEST:
 #ifdef EFFTEST 
