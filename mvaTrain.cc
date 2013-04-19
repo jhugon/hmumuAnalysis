@@ -430,7 +430,7 @@ int main(int argc, char *argv[])
 
     std::string cuts;
     if (optionMap.count("vbfSelection") && optionMap["vbfSelection"].as<int>() == 1)
-      cuts = "nJets >= 2";
+      cuts = "nJets >= 2 && ptmiss < 100.";
     else
       cuts = "nJets < 2";
 
