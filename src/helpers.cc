@@ -30,7 +30,7 @@ bool isKinTight_2012(_MuonInfo& muon)
   if (!muon.isPFMuon) return isKinTight_2012;
 
   // acceptance cuts
-  if (muon.pt < 25)         return isKinTight_2012; // pt cut
+  if (muon.pt < 15)         return isKinTight_2012; // pt cut
   if (fabs(muon.eta) > 2.1) return isKinTight_2012; // eta cut
 
   // kinematic cuts
@@ -60,7 +60,7 @@ bool isKinTight_2011(_MuonInfo& muon)
   if (!muon.isTracker) return isKinTight_2011;
 
   // acceptance cuts
-  if (muon.pt < 25)         return isKinTight_2011; // pt cut
+  if (muon.pt < 15)         return isKinTight_2011; // pt cut
   if (fabs(muon.eta) > 2.1) return isKinTight_2011; // eta cut
 
   // kinematic cuts
@@ -90,7 +90,7 @@ bool isKinTight_2012_noIso(_MuonInfo& muon)
   if (!muon.isPFMuon) return isKinTight_2012;
 
   // acceptance cuts
-  if (muon.pt < 25)         return isKinTight_2012; // pt cut
+  if (muon.pt < 15)         return isKinTight_2012; // pt cut
   if (fabs(muon.eta) > 2.1) return isKinTight_2012; // eta cut
 
   // kinematic cuts
@@ -118,7 +118,7 @@ bool isKinTight_2012_noIso_noPF(_MuonInfo& muon)
   if (!muon.isGlobal)  return isKinTight_2012;
 
   // acceptance cuts
-  if (muon.pt < 25)         return isKinTight_2012; // pt cut
+  if (muon.pt < 15)         return isKinTight_2012; // pt cut
   if (fabs(muon.eta) > 2.1) return isKinTight_2012; // eta cut
 
   // kinematic cuts
@@ -148,7 +148,7 @@ bool isKinTight_2011_noIso(_MuonInfo& muon)
   if (!muon.isTracker) return isKinTight_2011;
 
   // acceptance cuts
-  if (muon.pt < 25)         return isKinTight_2011; // pt cut
+  if (muon.pt < 15)         return isKinTight_2011; // pt cut
   if (fabs(muon.eta) > 2.1) return isKinTight_2011; // eta cut
 
   // kinematic cuts
