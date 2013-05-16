@@ -123,6 +123,6 @@ env.Program(target="mvaTrain", source=["mvaTrain.cc"])
 env.Program(target="testVertex", source=["testVertex.cc","src/libmva.a","src/libhelpers.a",mekd])
 env.Program(target="eventPrinter", source=["eventPrinter.cc","src/libmva.a","src/libhelpers.a",mekd])
 env.Program(target="endpoint", source=["endpoint.cc","src/libhelpers.a"])
-env.Program(target="skim", source=["skim.cc"])
+env.Program(target="skim", source=["skim.cc","src/libhelpers.a"])
 
 #print env.Dump()

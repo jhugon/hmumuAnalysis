@@ -27,6 +27,9 @@
 
 #include "LumiReweightingStandAlone.h"
 
+#include "DataFormats.h"
+#include "helpers.h"
+
 using namespace std;
 using namespace boost;
 
@@ -41,12 +44,13 @@ int main(int argc, char *argv[])
   gErrorIgnoreLevel = kError;
   time_t timeStart = time(NULL);
 
-  const char* optionIntro = "UF Skimmer\n\nUsage: ./skim [--help] [-c \"Cut string\"] [-m MaxEvents] <outputFileName.root> <inputFileName.root> [<inputFileName2.root>...]\n\nAllowed Options";
+  const char* optionIntro = "UF Skimmer\n\nUsage: ./skim [--help] [-c \"Cut string\"] [-m MaxEvents] [-s] <outputFileName.root> <inputFileName.root> [<inputFileName2.root>...]\n\nAllowed Options";
   program_options::options_description optionDesc(optionIntro);
   optionDesc.add_options()
       ("help,h", "Produce Help Message")
       ("filenames",program_options::value<vector<string> >(), "Input & Output File Names, put output name first followed by all input file names")
       ("cut,c",program_options::value<string>(), "ROOT Cut String")
+      ("simple,s", "Perform Simple Muon Quality Cuts and Write out only muon branches")
       ("maxEvents,m",program_options::value<Long64_t>(), "Max Number of Events")
       ("dataPUHist",program_options::value<std::string>(), "Data PU Histogram")
       ("mcPUHist",program_options::value<std::string>(), "MC PU Histogram")
@@ -84,6 +88,10 @@ int main(int argc, char *argv[])
      std::string mcPUHistFN = optionMap["mcPUHist"].as<std::string>();
      lumiWeights = new reweight::LumiReWeighting(mcPUHistFN.c_str(),dataPUHistFN.c_str(),"pileup","pileup");
   }
+
+  bool simple=false;
+  if (optionMap.count("simple"))
+    simple = true;
 
   std::vector<std::string> filenames;
   vector<string>::const_iterator filename;
@@ -124,31 +132,116 @@ int main(int argc, char *argv[])
   cout << "Output File Name: " << outputFileName << endl;
   TFile * outFile = new TFile(outputFileName.c_str(),"RECREATE");
 
-  TTree *newtree = tree->CopyTree(cut.c_str(),"",maxEvents);
-  newtree->SetAutoSave(true);
-
   unsigned totalEvents = std::min(maxEvents,tree->GetEntries());
-  std::cout <<"Done with Skim"<<std::endl;
+  unsigned newEntries;
 
-  unsigned newEntries = newtree->GetEntries();
-  if(lumiWeights != NULL)
+  if(simple)
   {
-    std::cout <<"Adding puWeight Branch"<<std::endl;
-    float weight = 0.0;
-    int nPU = 5;
-    TBranch* nPUBranch = newtree->GetBranch("nPU");
-    TBranch* weightBranch = newtree->Branch("puWeight",&weight,"puWeight/F");
-    nPUBranch->SetAddress(&nPU);
+    float dimuonMass;
+    float dimuonPt;
+    float dimuonY;
+    float dimuonPhi;
+    float muLeadPt;
+    float muLeadEta;
+    float muLeadPhi;
+    float muSubPt;
+    float muSubEta;
+    float muSubPhi;
 
-    for(unsigned iEvent=0;iEvent<newEntries;iEvent++)
+    TTree* simpleTree = new TTree("tree","tree");
+    simpleTree->SetAutoSave(true);
+    simpleTree->Branch("dimuonMass",&dimuonMass, "dimuonMass/F");
+    simpleTree->Branch("dimuonPt",&dimuonPt, "dimuonPt/F");
+    simpleTree->Branch("dimuonY",&dimuonY, "dimuonY/F");
+    simpleTree->Branch("dimuonPhi",&dimuonPhi, "dimuonPhi/F");
+
+    simpleTree->Branch("muLeadPt",&muLeadPt, "muLeadPt/F");
+    simpleTree->Branch("muLeadEta",&muLeadEta, "muLeadEta/F");
+    simpleTree->Branch("muLeadPhi",&muLeadPhi, "muLeadPhi/F");
+
+    simpleTree->Branch("muSubPt",&muSubPt, "muSubPt/F");
+    simpleTree->Branch("muSubEta",&muSubEta, "muSubEta/F");
+    simpleTree->Branch("muSubPhi",&muSubPhi, "muSubPhi/F");
+
+    _MuonInfo reco1, reco2;
+  
+    tree->SetBranchAddress("reco1", &reco1);
+    tree->SetBranchAddress("reco2", &reco2);
+  
+    float recoCandMass, recoCandPt, recoCandY, recoCandPhi;
+    float recoCandMassRes, recoCandMassResCov;
+  
+    tree->SetBranchAddress("recoCandMass",       &recoCandMass);
+    tree->SetBranchAddress("recoCandPt",         &recoCandPt);
+    tree->SetBranchAddress("recoCandY",          &recoCandY);
+    tree->SetBranchAddress("recoCandPhi",        &recoCandPhi);
+
+    for(unsigned iEvent=0;iEvent<totalEvents;iEvent++)
     {
-        nPUBranch->GetEntry(iEvent);
-        weight = lumiWeights->weight(nPU);
-        weightBranch->Fill();
-        //std::cout << nPU << "    "<<weight<< std::endl;
+    
+        tree->GetEntry(iEvent);
+
+        if(recoCandMass<100.)
+            continue;
+
+        if(!isKinTight_2012(reco1))
+            continue;
+        if(!isKinTight_2012(reco2))
+            continue;
+    
+        _MuonInfo muLead = reco1;
+        _MuonInfo muSub = reco2;
+        if(muLead.pt < muSub.pt)
+        {
+          _MuonInfo muLead = reco2;
+          _MuonInfo muSub = reco1;
+        }
+
+        muLeadPt = muLead.pt;
+        muLeadEta = muLead.eta;
+        muLeadPhi = muLead.phi;
+
+        muSubPt = muSub.pt;
+        muSubEta = muSub.eta;
+        muSubPhi = muSub.phi;
+
+        dimuonMass = recoCandMass;
+        dimuonPt = recoCandPt;
+        dimuonY = recoCandY;
+        dimuonPhi = recoCandPhi;
+
+        simpleTree->Fill();
     }
-    std::cout <<"Done with puWeight Branch"<<std::endl;
+    std::cout <<"Done with Skim"<<std::endl;
+    newEntries = simpleTree->GetEntries();
   }
+  else // not simple
+  {
+    TTree *newtree = tree->CopyTree(cut.c_str(),"",maxEvents);
+    newtree->SetAutoSave(true);
+  
+    std::cout <<"Done with Skim"<<std::endl;
+  
+    newEntries = newtree->GetEntries();
+    if(lumiWeights != NULL)
+    {
+      std::cout <<"Adding puWeight Branch"<<std::endl;
+      float weight = 0.0;
+      int nPU = 5;
+      TBranch* nPUBranch = newtree->GetBranch("nPU");
+      TBranch* weightBranch = newtree->Branch("puWeight",&weight,"puWeight/F");
+      nPUBranch->SetAddress(&nPU);
+  
+      for(unsigned iEvent=0;iEvent<newEntries;iEvent++)
+      {
+          nPUBranch->GetEntry(iEvent);
+          weight = lumiWeights->weight(nPU);
+          weightBranch->Fill();
+          //std::cout << nPU << "    "<<weight<< std::endl;
+      }
+      std::cout <<"Done with puWeight Branch"<<std::endl;
+    }
+  } //end not simple
 
   outFile->Write();
 
