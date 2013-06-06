@@ -115,6 +115,7 @@ struct HistStruct
   std::vector<TH2F*> histVec2D;
  
   TH1F* mDiMu; // default is PFIso
+  TH1F* mDiMu110to160; 
   TH1F* mDiMuTrkRelIso;
   TH1F* mDiMuResSigUp;
   TH1F* mDiMuResSigDown;
@@ -195,8 +196,8 @@ struct HistStruct
 
 int main(int argc, char *argv[])
 {
-  float minMmm = 70.0;
-  float maxMmm = 400.0;
+  float minMmm = 70.0;  // 110;//
+  float maxMmm = 400.0; // 160;//
   static const float dataMCMinMass = 110.;
   static const float dataMCMaxMass = 150.;
   static const float MinMassEff = 110.;
@@ -564,6 +565,31 @@ int main(int argc, char *argv[])
   // couple of VBF CiC optimization points
   HistStruct histsVBFDeJJG3p5MJJG550pTmissL100;
   HistStruct histsVBFDeJJG3p4MJJG500pTmissL25;
+
+  // baseline++
+  HistStruct histsJets01PassPtG10;
+  HistStruct histsJets01PassPtG10BB;
+  HistStruct histsJets01PassPtG10BO;
+  HistStruct histsJets01PassPtG10BE;
+  HistStruct histsJets01PassPtG10OO;
+  HistStruct histsJets01PassPtG10OE;
+  HistStruct histsJets01PassPtG10EE;
+  HistStruct histsJets01PassPtG10CC; // BE+OO
+  HistStruct histsJets01PassPtG10FF; // OE+EE
+
+  HistStruct histsJets01FailPtG10;
+  HistStruct histsJets01FailPtG10BB;
+  HistStruct histsJets01FailPtG10BO;
+  HistStruct histsJets01FailPtG10BE;
+  HistStruct histsJets01FailPtG10OO;
+  HistStruct histsJets01FailPtG10OE;
+  HistStruct histsJets01FailPtG10EE;
+  HistStruct histsJets01FailPtG10CC; // BE+OO
+  HistStruct histsJets01FailPtG10FF; // OE+EE
+
+  HistStruct histsJet2CutsVBFPass;
+  HistStruct histsJet2CutsGFPass;
+  HistStruct histsJet2CutsFailVBFGF;
 
   //////////////////////////
   //for MVA
@@ -1806,6 +1832,87 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
 
     ///////////////////////////////////////////
 
+    // baseline++
+    bool atLeastOneMuonFired = false;
+    if ( reco1.pt>25 && isHltMatched(reco1,allowedHLTPaths) ) atLeastOneMuonFired = true;
+    if ( reco2.pt>25 && isHltMatched(reco2,allowedHLTPaths) ) atLeastOneMuonFired = true;
+
+    if ( atLeastOneMuonFired ) {
+
+      //std::cout << "test" << std::endl;
+      
+      bool Jet2PtCuts = false;
+
+      if ( mva.ptJet1 > 40. &&
+           mva.ptJet2 > 30. &&
+           mva.ptmiss < 40.  ) Jet2PtCuts = true;
+
+      // #########################################
+      // 2 JETS CATEGORIES
+      // #########################################
+      if (Jet2PtCuts) {
+
+        bool Jet2CutsVBFPass = false;
+        if (mva.mDiJet > 650. && mva.deltaEtaJets > 3.5) Jet2CutsVBFPass = true;
+        
+        bool Jet2CutsGFPass = false;
+        if (Jet2CutsVBFPass == false &&
+            mva.mDiJet > 250. && mva.ptDiMu > 50. ) Jet2CutsGFPass = true;
+
+        if      (Jet2CutsVBFPass) histsJet2CutsVBFPass  .Fill(mva,blind);
+        else if (Jet2CutsGFPass ) histsJet2CutsGFPass   .Fill(mva,blind);
+        else                      histsJet2CutsFailVBFGF.Fill(mva,blind);
+      } //if (Jet2PtCuts)
+      
+
+      // #########################################
+      // 0+1 JET CATEGORIES
+      // #########################################
+      else {
+
+        // pt(mm)> 10 GeV/c
+        if (mva.ptDiMu > 10. ) {
+          
+          // inclusive
+          histsJets01PassPtG10.Fill(mva,blind);
+
+          // geom. categories
+          if (isBB) histsJets01PassPtG10BB.Fill(mva,blind);
+          if (isBO) histsJets01PassPtG10BO.Fill(mva,blind);
+          if (isBE) histsJets01PassPtG10BE.Fill(mva,blind);
+          if (isOO) histsJets01PassPtG10OO.Fill(mva,blind);
+          if (isOE) histsJets01PassPtG10OE.Fill(mva,blind);
+          if (isEE) histsJets01PassPtG10EE.Fill(mva,blind);
+
+          if (isBE || isOO ) histsJets01PassPtG10CC.Fill(mva,blind);
+          if (isOE || isEE ) histsJets01PassPtG10FF.Fill(mva,blind);
+
+        }//if (mva.ptDiMu > 10. ) 
+
+        else {
+          
+          // inclusive
+          histsJets01FailPtG10.Fill(mva,blind);
+          
+          // geom. categories
+          if (isBB) histsJets01FailPtG10BB.Fill(mva,blind);
+          if (isBO) histsJets01FailPtG10BO.Fill(mva,blind);
+          if (isBE) histsJets01FailPtG10BE.Fill(mva,blind);
+          if (isOO) histsJets01FailPtG10OO.Fill(mva,blind);
+          if (isOE) histsJets01FailPtG10OE.Fill(mva,blind);
+          if (isEE) histsJets01FailPtG10EE.Fill(mva,blind);
+
+          if (isBE || isOO ) histsJets01FailPtG10CC.Fill(mva,blind);
+          if (isOE || isEE ) histsJets01FailPtG10FF.Fill(mva,blind);
+
+        }
+
+      }
+      
+    } //atLeastOneMuonFired
+    
+    ///////////////////////////////////////////
+
 
     if (!isHltMatched(reco1,reco2,allowedHLTPaths))
       continue;
@@ -2329,7 +2436,32 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
   histsVBFDeJJG3p5MJJG550pTmissL100.Write(outFile,"histsVBFDeJJG3p5MJJG550pTmissL100");
   histsVBFDeJJG3p4MJJG500pTmissL25 .Write(outFile,"histsVBFDeJJG3p4MJJG500pTmissL25");
 
+  // baseline++
+  histsJets01PassPtG10  .Write(outFile,"Jets01PassPtG10");
+  histsJets01PassPtG10BB.Write(outFile,"Jets01PassPtG10BB");
+  histsJets01PassPtG10BO.Write(outFile,"Jets01PassPtG10BO");
+  histsJets01PassPtG10BE.Write(outFile,"Jets01PassPtG10BE");
+  histsJets01PassPtG10OO.Write(outFile,"Jets01PassPtG10OO");
+  histsJets01PassPtG10OE.Write(outFile,"Jets01PassPtG10OE");
+  histsJets01PassPtG10EE.Write(outFile,"Jets01PassPtG10EE");
+  histsJets01PassPtG10CC.Write(outFile,"Jets01PassPtG10CC");
+  histsJets01PassPtG10FF.Write(outFile,"Jets01PassPtG10FF");
 
+  histsJets01FailPtG10  .Write(outFile,"Jets01FailPtG10");
+  histsJets01FailPtG10BB.Write(outFile,"Jets01FailPtG10BB");
+  histsJets01FailPtG10BO.Write(outFile,"Jets01FailPtG10BO");
+  histsJets01FailPtG10BE.Write(outFile,"Jets01FailPtG10BE");
+  histsJets01FailPtG10OO.Write(outFile,"Jets01FailPtG10OO");
+  histsJets01FailPtG10OE.Write(outFile,"Jets01FailPtG10OE");
+  histsJets01FailPtG10EE.Write(outFile,"Jets01FailPtG10EE");
+  histsJets01FailPtG10CC.Write(outFile,"Jets01FailPtG10CC");
+  histsJets01FailPtG10FF.Write(outFile,"Jets01FailPtG10FF");
+
+  histsJet2CutsVBFPass.Write(outFile,"Jet2CutsVBFPass");
+  histsJet2CutsGFPass.Write(outFile,"Jet2CutsGFPass");
+  histsJet2CutsFailVBFGF.Write(outFile,"Jet2CutsFailVBFGF");
+
+  //
   ofstream testOutFile;
   testOutFile.open("testEventNums.txt");
   testOutFile << testString;
@@ -2454,6 +2586,9 @@ HistStruct::HistStruct()
 
   mDiMu = new TH1F("mDiMu","DiMuon Mass",nMassBins,minMass,maxMass);
   histVec.push_back(mDiMu);
+
+  mDiMu110to160 = new TH1F("mDiMu110to160","DiMuon Mass in [110,160]",100,110.,160.);
+  histVec.push_back(mDiMu110to160);
 
   mDiMuTrkRelIso = new TH1F("mDiMuTrkRelIso","DiMuon Mass w/ TrkRelIso",nMassBins,minMass,maxMass);
   histVec.push_back(mDiMuTrkRelIso);
@@ -2725,6 +2860,10 @@ HistStruct::Fill(const MVA& mva, bool blind)
       {
 
         mDiMu->Fill(mva.mDiMu, mva.weight);
+
+        if (mva.mDiMu >= 110. && mva.mDiMu <= 160.)
+          mDiMu110to160 ->Fill(mva.mDiMu, mva.weight);
+
         mDiMuResSigUp->Fill(mva.mDiMuResSigUp, mva.weight);
         mDiMuResSigDown->Fill(mva.mDiMuResSigDown, mva.weight);
         mDiMuResASigUp->Fill(mva.mDiMuResASigUp, mva.weight);
