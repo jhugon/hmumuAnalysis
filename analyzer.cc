@@ -806,6 +806,82 @@ int main(int argc, char *argv[])
   _outTree->Branch("muonSub_passTrkRelIso_noMuscle",&_muonSub_passTrkRelIso_noMuscle,  "muonSub_passTrkRelIso_noMuscle/I"); 
   _outTree->Branch("muonSub_passPFRelIso_noMuscle", &_muonSub_passPFRelIso_noMuscle,   "muonSub_passPFRelIso_noMuscle/I");
 
+  float _nJets_JESUp;
+  float _ptMiss_JESUp;
+  float _deltaEtaJets_JESUp;
+  float _dijetMass_JESUp;
+
+  float _jetLead_pt_JESUp;          
+  float _jetLead_eta_JESUp;         
+  float _jetSub_pt_JESUp;          
+  float _jetSub_eta_JESUp;         
+
+  _outTree->Branch("nJets_JESUp",        &_nJets_JESUp,        "nJets_JESUp/F");
+  _outTree->Branch("ptMiss_JESUp",       &_ptMiss_JESUp,       "ptMiss_JESUp/F");
+  _outTree->Branch("deltaEtaJets_JESUp", &_deltaEtaJets_JESUp, "deltaEtaJets_JESUp/F");
+  _outTree->Branch("dijetMass_JESUp",       &_dijetMass_JESUp,       "dijetMass_JESUp/F");
+  _outTree->Branch("jetLead_pt_JESUp",           &_jetLead_pt_JESUp,             "jetLead_pt_JESUp/F");          
+  _outTree->Branch("jetLead_eta_JESUp",          &_jetLead_eta_JESUp,            "jetLead_eta_JESUp/F");         
+  _outTree->Branch("jetSub_pt_JESUp",           &_jetSub_pt_JESUp,             "jetSub_pt_JESUp/F");          
+  _outTree->Branch("jetSub_eta_JESUp",          &_jetSub_eta_JESUp,            "jetSub_eta_JESUp/F");         
+
+  float _nJets_JESDown;
+  float _ptMiss_JESDown;
+  float _deltaEtaJets_JESDown;
+  float _dijetMass_JESDown;
+
+  float _jetLead_pt_JESDown;          
+  float _jetLead_eta_JESDown;         
+  float _jetSub_pt_JESDown;          
+  float _jetSub_eta_JESDown;         
+
+  _outTree->Branch("nJets_JESDown",        &_nJets_JESDown,        "nJets_JESDown/F");
+  _outTree->Branch("ptMiss_JESDown",       &_ptMiss_JESDown,       "ptMiss_JESDown/F");
+  _outTree->Branch("deltaEtaJets_JESDown", &_deltaEtaJets_JESDown, "deltaEtaJets_JESDown/F");
+  _outTree->Branch("dijetMass_JESDown",       &_dijetMass_JESDown,       "dijetMass_JESDown/F");
+  _outTree->Branch("jetLead_pt_JESDown",           &_jetLead_pt_JESDown,             "jetLead_pt_JESDown/F");          
+  _outTree->Branch("jetLead_eta_JESDown",          &_jetLead_eta_JESDown,            "jetLead_eta_JESDown/F");         
+  _outTree->Branch("jetSub_pt_JESDown",           &_jetSub_pt_JESDown,             "jetSub_pt_JESDown/F");          
+  _outTree->Branch("jetSub_eta_JESDown",          &_jetSub_eta_JESDown,            "jetSub_eta_JESDown/F");         
+
+  float _nJets_JERUp;
+  float _ptMiss_JERUp;
+  float _deltaEtaJets_JERUp;
+  float _dijetMass_JERUp;
+
+  float _jetLead_pt_JERUp;          
+  float _jetLead_eta_JERUp;         
+  float _jetSub_pt_JERUp;          
+  float _jetSub_eta_JERUp;         
+
+  _outTree->Branch("nJets_JERUp",        &_nJets_JERUp,        "nJets_JERUp/F");
+  _outTree->Branch("ptMiss_JERUp",       &_ptMiss_JERUp,       "ptMiss_JERUp/F");
+  _outTree->Branch("deltaEtaJets_JERUp", &_deltaEtaJets_JERUp, "deltaEtaJets_JERUp/F");
+  _outTree->Branch("dijetMass_JERUp",       &_dijetMass_JERUp,       "dijetMass_JERUp/F");
+  _outTree->Branch("jetLead_pt_JERUp",           &_jetLead_pt_JERUp,             "jetLead_pt_JERUp/F");          
+  _outTree->Branch("jetLead_eta_JERUp",          &_jetLead_eta_JERUp,            "jetLead_eta_JERUp/F");         
+  _outTree->Branch("jetSub_pt_JERUp",           &_jetSub_pt_JERUp,             "jetSub_pt_JERUp/F");          
+  _outTree->Branch("jetSub_eta_JERUp",          &_jetSub_eta_JERUp,            "jetSub_eta_JERUp/F");         
+
+  float _nJets_JERDown;
+  float _ptMiss_JERDown;
+  float _deltaEtaJets_JERDown;
+  float _dijetMass_JERDown;
+
+  float _jetLead_pt_JERDown;          
+  float _jetLead_eta_JERDown;         
+  float _jetSub_pt_JERDown;          
+  float _jetSub_eta_JERDown;         
+
+  _outTree->Branch("nJets_JERDown",        &_nJets_JERDown,        "nJets_JERDown/F");
+  _outTree->Branch("ptMiss_JERDown",       &_ptMiss_JERDown,       "ptMiss_JERDown/F");
+  _outTree->Branch("deltaEtaJets_JERDown", &_deltaEtaJets_JERDown, "deltaEtaJets_JERDown/F");
+  _outTree->Branch("dijetMass_JERDown",       &_dijetMass_JERDown,       "dijetMass_JERDown/F");
+  _outTree->Branch("jetLead_pt_JERDown",           &_jetLead_pt_JERDown,             "jetLead_pt_JERDown/F");          
+  _outTree->Branch("jetLead_eta_JERDown",          &_jetLead_eta_JERDown,            "jetLead_eta_JERDown/F");         
+  _outTree->Branch("jetSub_pt_JERDown",           &_jetSub_pt_JERDown,             "jetSub_pt_JERDown/F");          
+  _outTree->Branch("jetSub_eta_JERDown",          &_jetSub_eta_JERDown,            "jetSub_eta_JERDown/F");         
+
   //////////////////////////
   // Creating the MEKD
 
@@ -1685,6 +1761,233 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
 
       hists.puJetIDSimpleJet2->Fill(mva.puJetIDSimpleJet2,weight);
     }
+
+    /////////////////////////////////////////////
+    // JES Uncertainties
+  
+    _nJets_JESUp = 0.0;
+    _ptMiss_JESUp = -1.0;
+    _deltaEtaJets_JESUp = -1.0;
+    _dijetMass_JESUp = -1.0;
+  
+    _jetLead_pt_JESUp = -1.0;          
+    _jetLead_eta_JESUp = -999.0;         
+    _jetSub_pt_JESUp = -1.0;          
+    _jetSub_eta_JESUp = -999.0;         
+  
+    _nJets_JESDown = 0.0;
+    _ptMiss_JESDown = -1.0;
+    _deltaEtaJets_JESDown = -1.0;
+    _dijetMass_JESDown = -1.0;
+  
+    _jetLead_pt_JESDown = -1.0;          
+    _jetLead_eta_JESDown = -999.0;         
+    _jetSub_pt_JESDown = -1.0;          
+    _jetSub_eta_JESDown = -999.0;         
+  
+    // JES Up
+    _PFJetInfo jetsJESUp = jets;
+    goodJetIndices.clear();
+    for(unsigned iJet=0; (iJet < jetsJESUp.nJets && iJet < 10);iJet++)
+    {
+        if (jetsJESUp.jecUnc[iJet]>0.0 && jetsJESUp.jecUnc[iJet]<1.)
+        {
+          jetsJESUp.pt[iJet] += jetsJESUp.jecUnc[iJet]*jetsJESUp.pt[iJet];
+        }
+        bool goodPt = jetsJESUp.pt[iJet]>jetPtCut || (fabs(jetsJESUp.eta[iJet < 2.4]) && jetsJESUp.pt[iJet]>jetPtCutC);
+        bool goodPUID = puJetFullId[iJet] >= 7;
+        if (goodPt && goodPUID)
+        {
+          _nJets_JESUp++;
+          goodJetIndices.push_back(iJet);
+        }
+    }
+
+    if (goodJetIndices.size()>=1)
+    {
+      unsigned iJet1 = goodJetIndices[0];
+      _jetLead_pt_JESUp = jetsJESUp.pt[iJet1];
+      _jetLead_eta_JESUp = jetsJESUp.eta[iJet1];
+    }
+
+    if(goodJetIndices.size()>=2)
+    {
+      unsigned iJet1 = goodJetIndices[0];
+      unsigned iJet2 = goodJetIndices[1];
+      TLorentzVector pJet1;
+      TLorentzVector pJet2;
+      pJet1.SetXYZM(jetsJESUp.px[iJet1],jetsJESUp.py[iJet1],jetsJESUp.pz[iJet1],jetsJESUp.mass[iJet1]);
+      pJet2.SetXYZM(jetsJESUp.px[iJet2],jetsJESUp.py[iJet2],jetsJESUp.pz[iJet2],jetsJESUp.mass[iJet2]);
+      TLorentzVector diJet = pJet1+pJet2;
+
+      double dEtaJets = fabs(jetsJESUp.eta[iJet1]-jetsJESUp.eta[iJet2]);
+      double etaJetProduct = jetsJESUp.eta[iJet1]*jetsJESUp.eta[iJet2];
+
+      _dijetMass_JESUp = diJet.M();
+      _jetSub_pt_JESUp = pJet2.Pt();
+      _jetSub_eta_JESUp = pJet2.Eta();
+      _deltaEtaJets_JESUp = dEtaJets;
+      _ptMiss_JESUp = (diJet+recoCandVec).Pt();
+    }
+
+    // JES Down
+    _PFJetInfo jetsJESDown = jets;
+    goodJetIndices.clear();
+    for(unsigned iJet=0; (iJet < jetsJESDown.nJets && iJet < 10);iJet++)
+    {
+        if (jetsJESDown.jecUnc[iJet]>0.0 && jetsJESDown.jecUnc[iJet]<1.)
+        {
+          jetsJESDown.pt[iJet] -= jetsJESDown.jecUnc[iJet]*jetsJESDown.pt[iJet];
+        }
+        bool goodPt = jetsJESDown.pt[iJet]>jetPtCut || (fabs(jetsJESDown.eta[iJet < 2.4]) && jetsJESDown.pt[iJet]>jetPtCutC);
+        bool goodPUID = puJetFullId[iJet] >= 7;
+        if (goodPt && goodPUID)
+        {
+          _nJets_JESDown++;
+          goodJetIndices.push_back(iJet);
+        }
+    }
+
+    if (goodJetIndices.size()>=1)
+    {
+      unsigned iJet1 = goodJetIndices[0];
+      _jetLead_pt_JESDown = jetsJESDown.pt[iJet1];
+      _jetLead_eta_JESDown = jetsJESDown.eta[iJet1];
+    }
+
+    if(goodJetIndices.size()>=2)
+    {
+      unsigned iJet1 = goodJetIndices[0];
+      unsigned iJet2 = goodJetIndices[1];
+      TLorentzVector pJet1;
+      TLorentzVector pJet2;
+      pJet1.SetXYZM(jetsJESDown.px[iJet1],jetsJESDown.py[iJet1],jetsJESDown.pz[iJet1],jetsJESDown.mass[iJet1]);
+      pJet2.SetXYZM(jetsJESDown.px[iJet2],jetsJESDown.py[iJet2],jetsJESDown.pz[iJet2],jetsJESDown.mass[iJet2]);
+      TLorentzVector diJet = pJet1+pJet2;
+
+      double dEtaJets = fabs(jetsJESDown.eta[iJet1]-jetsJESDown.eta[iJet2]);
+      double etaJetProduct = jetsJESDown.eta[iJet1]*jetsJESDown.eta[iJet2];
+
+      _dijetMass_JESDown = diJet.M();
+      _jetSub_pt_JESDown = pJet2.Pt();
+      _jetSub_eta_JESDown = pJet2.Eta();
+      _deltaEtaJets_JESDown = dEtaJets;
+      _ptMiss_JESDown = (diJet+recoCandVec).Pt();
+    }
+
+    /////////////////////////////////////////////
+    // JER Uncertainties
+  
+    _nJets_JERUp = 0.0;
+    _ptMiss_JERUp = -1.0;
+    _deltaEtaJets_JERUp = -1.0;
+    _dijetMass_JERUp = -1.0;
+  
+    _jetLead_pt_JERUp = -1.0;          
+    _jetLead_eta_JERUp = -999.0;         
+    _jetSub_pt_JERUp = -1.0;          
+    _jetSub_eta_JERUp = -999.0;         
+  
+    _nJets_JERDown = 0.0;
+    _ptMiss_JERDown = -1.0;
+    _deltaEtaJets_JERDown = -1.0;
+    _dijetMass_JERDown = -1.0;
+  
+    _jetLead_pt_JERDown = -1.0;          
+    _jetLead_eta_JERDown = -999.0;         
+    _jetSub_pt_JERDown = -1.0;          
+    _jetSub_eta_JERDown = -999.0;         
+  
+    // JER Up
+    _PFJetInfo jetsJERUp = jets;
+    goodJetIndices.clear();
+    for(unsigned iJet=0; (iJet < jetsJERUp.nJets && iJet < 10);iJet++)
+    {
+        if (jetsJERUp.genPt[iJet]>0.0 && jetsJERUp.pt[iJet]>15.)
+        {
+          jetsJERUp.pt[iJet] = corrPtUp(jetsJERUp.pt[iJet],jetsJERUp.genPt[iJet],jetsJERUp.eta[iJet]);
+        }
+        bool goodPt = jetsJERUp.pt[iJet]>jetPtCut || (fabs(jetsJERUp.eta[iJet < 2.4]) && jetsJERUp.pt[iJet]>jetPtCutC);
+        bool goodPUID = puJetFullId[iJet] >= 7;
+        if (goodPt && goodPUID)
+        {
+          _nJets_JERUp++;
+          goodJetIndices.push_back(iJet);
+        }
+    }
+
+    if (goodJetIndices.size()>=1)
+    {
+      unsigned iJet1 = goodJetIndices[0];
+      _jetLead_pt_JERUp = jetsJERUp.pt[iJet1];
+      _jetLead_eta_JERUp = jetsJERUp.eta[iJet1];
+    }
+
+    if(goodJetIndices.size()>=2)
+    {
+      unsigned iJet1 = goodJetIndices[0];
+      unsigned iJet2 = goodJetIndices[1];
+      TLorentzVector pJet1;
+      TLorentzVector pJet2;
+      pJet1.SetXYZM(jetsJERUp.px[iJet1],jetsJERUp.py[iJet1],jetsJERUp.pz[iJet1],jetsJERUp.mass[iJet1]);
+      pJet2.SetXYZM(jetsJERUp.px[iJet2],jetsJERUp.py[iJet2],jetsJERUp.pz[iJet2],jetsJERUp.mass[iJet2]);
+      TLorentzVector diJet = pJet1+pJet2;
+
+      double dEtaJets = fabs(jetsJERUp.eta[iJet1]-jetsJERUp.eta[iJet2]);
+      double etaJetProduct = jetsJERUp.eta[iJet1]*jetsJERUp.eta[iJet2];
+
+      _dijetMass_JERUp = diJet.M();
+      _jetSub_pt_JERUp = pJet2.Pt();
+      _jetSub_eta_JERUp = pJet2.Eta();
+      _deltaEtaJets_JERUp = dEtaJets;
+      _ptMiss_JERUp = (diJet+recoCandVec).Pt();
+    }
+
+    // JER Down
+    _PFJetInfo jetsJERDown = jets;
+    goodJetIndices.clear();
+    for(unsigned iJet=0; (iJet < jetsJERDown.nJets && iJet < 10);iJet++)
+    {
+        if (jetsJERDown.genPt[iJet]>0.0 && jetsJERDown.pt[iJet]>15.)
+        {
+          jetsJERDown.pt[iJet] = corrPtDown(jetsJERDown.pt[iJet],jetsJERDown.genPt[iJet],jetsJERDown.eta[iJet]);
+        }
+        bool goodPt = jetsJERDown.pt[iJet]>jetPtCut || (fabs(jetsJERDown.eta[iJet < 2.4]) && jetsJERDown.pt[iJet]>jetPtCutC);
+        bool goodPUID = puJetFullId[iJet] >= 7;
+        if (goodPt && goodPUID)
+        {
+          _nJets_JERDown++;
+          goodJetIndices.push_back(iJet);
+        }
+    }
+
+    if (goodJetIndices.size()>=1)
+    {
+      unsigned iJet1 = goodJetIndices[0];
+      _jetLead_pt_JERDown = jetsJERDown.pt[iJet1];
+      _jetLead_eta_JERDown = jetsJERDown.eta[iJet1];
+    }
+
+    if(goodJetIndices.size()>=2)
+    {
+      unsigned iJet1 = goodJetIndices[0];
+      unsigned iJet2 = goodJetIndices[1];
+      TLorentzVector pJet1;
+      TLorentzVector pJet2;
+      pJet1.SetXYZM(jetsJERDown.px[iJet1],jetsJERDown.py[iJet1],jetsJERDown.pz[iJet1],jetsJERDown.mass[iJet1]);
+      pJet2.SetXYZM(jetsJERDown.px[iJet2],jetsJERDown.py[iJet2],jetsJERDown.pz[iJet2],jetsJERDown.mass[iJet2]);
+      TLorentzVector diJet = pJet1+pJet2;
+
+      double dEtaJets = fabs(jetsJERDown.eta[iJet1]-jetsJERDown.eta[iJet2]);
+      double etaJetProduct = jetsJERDown.eta[iJet1]*jetsJERDown.eta[iJet2];
+
+      _dijetMass_JERDown = diJet.M();
+      _jetSub_pt_JERDown = pJet2.Pt();
+      _jetSub_eta_JERDown = pJet2.Eta();
+      _deltaEtaJets_JERDown = dEtaJets;
+      _ptMiss_JERDown = (diJet+recoCandVec).Pt();
+    }
+  
   
 //HIG-12-007 PAS H->tautau
 //The VBF category requires at least two jets with pT > 30 GeV/c, |η1 − η2 | > 4.0 and
