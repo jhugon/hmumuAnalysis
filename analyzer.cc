@@ -720,8 +720,7 @@ int main(int argc, char *argv[])
   _outTree->Branch("muonLead_passTrkRelIso",&_muonLead_passTrkRelIso,  "muonLead_passTrkRelIso/I"); 
   _outTree->Branch("muonLead_passPFRelIso", &_muonLead_passPFRelIso,   "muonLead_passPFRelIso/I");
   _outTree->Branch("muonLead_isHltMatched", &_muonLead_isHltMatched,   "muonLead_isHltMatched/I");
-  
-  
+
   _outTree->Branch("muonSub_charge",       &_muonSub_charge,         "muonSub_charge/I");
   _outTree->Branch("muonSub_pt",           &_muonSub_pt,             "muonSub_pt/F");          
   _outTree->Branch("muonSub_ptErr",        &_muonSub_ptErr,          "muonSub_ptErr/F");       
@@ -762,6 +761,24 @@ int main(int argc, char *argv[])
   _outTree->Branch("bakMEPdf",        &_bakMEPdf,        "bakMEPdf/F");
   _outTree->Branch("bdtVBF",        &_bdtVBF,        "bdtVBF/F");
   _outTree->Branch("bdtNonVBF",        &_bdtNonVBF,        "bdtNonVBF/F");
+
+  float _dimuonMass_noMuscle;
+  float _dimuonPt_noMuscle;
+  float _muonLead_pt_noMuscle;
+  float _muonSub_pt_noMuscle;
+  int   _muonLead_passTrkRelIso_noMuscle;
+  int   _muonLead_passPFRelIso_noMuscle;
+  int   _muonSub_passTrkRelIso_noMuscle;
+  int   _muonSub_passPFRelIso_noMuscle;
+
+  _outTree->Branch("dimuonMass_noMuscle",   &_dimuonMass_noMuscle,   "dimuonMass_noMuscle/F");
+  _outTree->Branch("dimuonPt_noMuscle"  ,   &_dimuonPt_noMuscle  ,   "dimuonPt_noMuscle/F");
+  _outTree->Branch("muonLead_pt_noMuscle",           &_muonLead_pt_noMuscle,             "muonLead_pt_noMuscle/F");          
+  _outTree->Branch("muonSub_pt_noMuscle",           &_muonSub_pt_noMuscle,             "muonSub_pt_noMuscle/F");          
+  _outTree->Branch("muonLead_passTrkRelIso_noMuscle",&_muonLead_passTrkRelIso_noMuscle,  "muonLead_passTrkRelIso_noMuscle/I"); 
+  _outTree->Branch("muonLead_passPFRelIso_noMuscle", &_muonLead_passPFRelIso_noMuscle,   "muonLead_passPFRelIso_noMuscle/I");
+  _outTree->Branch("muonSub_passTrkRelIso_noMuscle",&_muonSub_passTrkRelIso_noMuscle,  "muonSub_passTrkRelIso_noMuscle/I"); 
+  _outTree->Branch("muonSub_passPFRelIso_noMuscle", &_muonSub_passPFRelIso_noMuscle,   "muonSub_passPFRelIso_noMuscle/I");
 
   //////////////////////////
   // Creating the MEKD
@@ -919,6 +936,27 @@ int main(int argc, char *argv[])
             weight *= weightFromSF_2011(randForSF,reco1,reco2,0.,0.,0.);
         else
             weight *= weightFromSF(randForSF,reco1,reco2,0.,0.,0.);
+    }
+
+    _dimuonMass_noMuscle=recoCandMass;
+    _dimuonPt_noMuscle=recoCandPt;
+    if (reco1.pt>reco2.pt)
+    {
+      _muonLead_pt_noMuscle=reco1.pt;
+      _muonSub_pt_noMuscle=reco2.pt;
+      _muonLead_passPFRelIso_noMuscle  = getPFRelIso (reco1) < 0.12 ? 1 : 0;
+      _muonLead_passTrkRelIso_noMuscle = getTrkRelIso(reco1) < 0.10 ? 1 : 0;
+      _muonSub_passPFRelIso_noMuscle  = getPFRelIso (reco2) < 0.12 ? 1 : 0;
+      _muonSub_passTrkRelIso_noMuscle = getTrkRelIso(reco2) < 0.10 ? 1 : 0;
+    }
+    else
+    {
+      _muonLead_pt_noMuscle=reco2.pt;
+      _muonSub_pt_noMuscle=reco1.pt;
+      _muonLead_passPFRelIso_noMuscle  = getPFRelIso (reco2) < 0.12 ? 1 : 0;
+      _muonLead_passTrkRelIso_noMuscle = getTrkRelIso(reco2) < 0.10 ? 1 : 0;
+      _muonSub_passPFRelIso_noMuscle  = getPFRelIso (reco1) < 0.12 ? 1 : 0;
+      _muonSub_passTrkRelIso_noMuscle = getTrkRelIso(reco1) < 0.10 ? 1 : 0;
     }
 
     float recoCandMassOrig = recoCandMass;
@@ -1763,7 +1801,7 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
     _muonLead_pt     = muon1.pt;
     _muonLead_ptErr  = muon1.ptErr;
     _muonLead_eta    = muon1.eta;
-    _muonLead_phi    = muon1.eta;
+    _muonLead_phi    = muon1.phi;
     _muonLead_passPFRelIso  = getPFRelIso (muon1) < 0.12 ? 1 : 0;
     _muonLead_passTrkRelIso = getTrkRelIso(muon1) < 0.10 ? 1 : 0;
     _muonLead_isHltMatched  = muon1.isHltMatched[0];
@@ -1772,7 +1810,7 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
     _muonSub_pt     = muon2.pt;
     _muonSub_ptErr  = muon2.ptErr;
     _muonSub_eta    = muon2.eta;
-    _muonSub_phi    = muon2.eta;
+    _muonSub_phi    = muon2.phi;
     _muonSub_passPFRelIso  = getPFRelIso (muon2) < 0.12 ? 1 : 0;
     _muonSub_passTrkRelIso = getTrkRelIso(muon2) < 0.10 ? 1 : 0;
     _muonSub_isHltMatched  = muon2.isHltMatched[0];

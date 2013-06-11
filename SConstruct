@@ -124,5 +124,7 @@ env.Program(target="testVertex", source=["testVertex.cc","src/libmva.a","src/lib
 env.Program(target="eventPrinter", source=["eventPrinter.cc","src/libmva.a","src/libhelpers.a",mekd])
 env.Program(target="endpoint", source=["endpoint.cc","src/libhelpers.a"])
 env.Program(target="skim", source=["skim.cc","src/libhelpers.a"])
+env.Program(target="eventMatcher", source=["eventMatcher.cc","src/libhelpers.a"])
+env.Program(target="runPrinter", source=["runPrinter.cc","src/libhelpers.a"])
 
 #print env.Dump()
