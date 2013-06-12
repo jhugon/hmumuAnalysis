@@ -3,6 +3,11 @@
 #include <iostream>
 #include "TStyle.h"
 
+inline float quadsum(float x, float y)
+{
+  return TMath::Sqrt(x*x+y*y);
+};
+
 float getPFRelIso(_MuonInfo& muon)
 {
   // tracker iso cut
@@ -225,121 +230,72 @@ bool isHltMatched(_MuonInfo& muon1, std::vector<int> allowedPaths)
   return false;
 }
 
-
-// useful for Jet Energy Resolution
-float resolutionBias(float eta)
+// from Michele for Jet Energy Resolution
+void resolutionBiasAndErr(float eta, float& res, float& resErr)
 {
-  // return 0;//Nominal!
-  if(eta< 1.1) return 0.05; 
-  if(eta< 2.5) return 0.10; 
-  if(eta< 5) return 0.30;
-  return 0;
+    eta = fabs(eta);
+    res    = 1.0;
+    resErr = 0.0;
+    // from https://twiki.cern.ch/twiki/bin/view/CMS/JetResolution
+    if (eta <= 0.5) {
+        res    = 1.052;
+        resErr = quadsum(0.012, 0.062);
+    } else if (0.5 < eta && eta <= 1.1) {
+        res    = 1.057;
+        resErr = quadsum(0.012, 0.062);
+    } else if (1.1 < eta && eta <= 1.7) {
+        res    = 1.096;
+        resErr = quadsum(0.017, 0.063);
+    } else if (1.7 < eta && eta <= 2.3) {
+        res    = 1.134;
+        resErr = quadsum(0.035, 0.087);
+    } else {
+        res    = 1.288;
+        resErr = quadsum(0.127, 0.155);
+    }
 }
 
-// from Michele for systematic uncertainty
+
+
 float jerCorr(float ptold, float oldgenpt, float etaold){
 
   float corrpt=ptold;
-  //std::cout << "ptold=" << ptold << std::endl;
-  //std::cout << "oldgenpt=" << oldgenpt << std::endl;
-  //std::cout << "(fabs(ptold - oldgenpt)/ oldgenpt)= " << (fabs(ptold - oldgenpt)/ oldgenpt) << std::endl;
-
   if (oldgenpt>15. && (fabs(ptold - oldgenpt)/ oldgenpt)<0.5) {
-    if (fabs(etaold)<1.1){
-      Float_t scale  = 0.05;
-      Float_t deltapt = (ptold - oldgenpt)*scale;
-      Float_t ptscale = TMath::Max(float(0.0),(ptold+deltapt)/ptold);
-      corrpt *= ptscale;
-//      std::cout << " 1 ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;                                    
-
-    }
-    else if (fabs(etaold)>1.1 && fabs(etaold)<2.5){
-      Float_t scale  = 0.10;
-      Float_t deltapt = (ptold - oldgenpt)*scale;
-      Float_t ptscale = TMath::Max(float(0.0),(ptold+deltapt)/ptold);
-      corrpt *= ptscale;
-//      std::cout << " 2 ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;                                    
-    } else  if (fabs(etaold)>2.5 && fabs(etaold)<5.0){
-      Float_t scale  = 0.30;
-      Float_t deltapt = (ptold - oldgenpt)*scale;
-      Float_t ptscale = TMath::Max(float(0.0),(ptold+deltapt)/ptold);
-      //Float_t ptscale =  (ptold+deltapt)/ptold;
-      corrpt *= ptscale;
-//      std::cout << " 3 ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;
-    }
-    //std::cout << " final ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;
+    float res=1.;
+    float resErr=0.;
+    resolutionBiasAndErr(etaold,res,resErr);
+    corrpt = TMath::Max(float(0.0),oldgenpt+(ptold-oldgenpt)*res);
   }
-
+  //std::cout << " final etaold, ptold, genpt, deltapt, corrpt" << etaold  << ", " << ptold<< ", "<<oldgenpt << ", " <<  (corrpt-ptold)  << ", " << corrpt << std::endl;
+  //std::cout << "   final resCorFactor: " << (corrpt-oldgenpt)/(ptold-oldgenpt)  << std::endl;
   return corrpt;
 }
-
-
 
 float corrPtUp(float ptold, float oldgenpt, float etaold){
-
   float corrpt=ptold;
   if (oldgenpt>15. && (fabs(ptold - oldgenpt)/ oldgenpt)<0.5) {
-    if (fabs(etaold)<1.1){
-      Float_t scale  = 0.05;
-      Float_t deltapt = (ptold- oldgenpt)*scale;
-      Float_t ptscale = TMath::Max(float(0.0),(ptold+deltapt)/ptold);
-      corrpt *= ptscale;
-      //std::cout << " 1 ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;
-    }
-    else if (fabs(etaold)>1.1 && fabs(etaold)<2.5){
-      Float_t scale  = 0.10;
-      Float_t deltapt = (ptold- oldgenpt)*scale;
-      Float_t ptscale = TMath::Max(float(0.0),(ptold+deltapt)/ptold);
-      corrpt *= ptscale;
-      //std::cout << " 2 ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl; 
-    } else  if (fabs(etaold)>2.5 && fabs(etaold)<5.0){
-      Float_t scale  = 0.20;
-      Float_t deltapt = (ptold- oldgenpt)*scale;
-      Float_t ptscale = TMath::Max(float(0.0),(ptold+deltapt)/ptold);
-      //Float_t ptscale =  (ptold+deltapt)/ptold;
-      corrpt *= ptscale;
-      //std::cout << " 3 ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;
-    }
-    //std::cout << " final ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;
+    float res=1.;
+    float resErr=0.;
+    resolutionBiasAndErr(etaold,res,resErr);
+    corrpt = TMath::Max(float(0.0),oldgenpt+(ptold-oldgenpt)*(res+resErr));
   }
-
+  //std::cout << " UP final etaold, ptold, genpt, deltapt, corrpt" << etaold  << ", " << ptold<< ", "<<oldgenpt << ", " <<  (corrpt-ptold)  << ", " << corrpt << std::endl;
+  //std::cout << "   final resCorFactor: " << (corrpt-oldgenpt)/(ptold-oldgenpt)  << std::endl;
   return corrpt;
 }
-
   
-// from Michele for systematic uncertainty
 float corrPtDown(float ptold, float oldgenpt, float etaold){
-
   float corrpt=ptold;
   if (oldgenpt>15. && (fabs(ptold - oldgenpt)/ oldgenpt)<0.5) {
-    if (fabs(etaold)<1.1){
-      Float_t scale  = -0.05;
-      Float_t deltapt = (ptold- oldgenpt)*scale;
-      Float_t ptscale = TMath::Max(float(0.0),(ptold+deltapt)/ptold);
-      corrpt *= ptscale;
-      //std::cout << " 1 ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;                                    
-
-    }
-    else if (fabs(etaold)>1.1 && fabs(etaold)<2.5){
-      Float_t scale  = -0.10;
-      Float_t deltapt = (ptold- oldgenpt)*scale;
-      Float_t ptscale = TMath::Max(float(0.0),(ptold+deltapt)/ptold);
-      corrpt *= ptscale;
-      //std::cout << " 2 ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;                                    
-    } else  if (fabs(etaold)>2.5 && fabs(etaold)<5.0){
-      Float_t scale  = -0.20;
-      Float_t deltapt = (ptold- oldgenpt)*scale;
-      Float_t ptscale = TMath::Max(float(0.0),(ptold+deltapt)/ptold);
-      //Float_t ptscale =  (ptold+deltapt)/ptold;                                                                                                                           
-      corrpt *= ptscale;
-      //std::cout << " 3 ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;                                    
-    }
-    //std::cout << " final ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;                                  
+    float res=1.;
+    float resErr=0.;
+    resolutionBiasAndErr(etaold,res,resErr);
+    corrpt = TMath::Max(float(0.0),oldgenpt+(ptold-oldgenpt)*(res-resErr));
   }
-
+  //std::cout << " DOWN final etaold, ptold, genpt, deltapt, corrpt" << etaold  << ", " << ptold<< ", "<<oldgenpt << ", " <<  (corrpt-ptold)  << ", " << corrpt << std::endl;
+  //std::cout << "   final resCorFactor: " << (corrpt-oldgenpt)/(ptold-oldgenpt)  << std::endl;
   return corrpt;
 }
-
 
 int whichSelection(_MuonInfo& mu1, _MuonInfo& mu2,   
                    std::vector<int> allowedHLTPaths,

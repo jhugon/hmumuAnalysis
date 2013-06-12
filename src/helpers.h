@@ -46,7 +46,7 @@ float smearMC(float trueVal, float recoVal, float calib, float smearRatio,TRando
 bool isHltMatched(_MuonInfo& muon1, _MuonInfo& muon2, std::vector<int> allowedPaths);
 bool isHltMatched(_MuonInfo& muon1, std::vector<int> allowedPaths);
 
-float resolutionBias(float eta);
+void resolutionBias(float eta, float& res, float& resErr);
 float jerCorr   (float ptold, float oldgenpt, float etaold);
 float corrPtUp  (float ptold, float oldgenpt, float etaold);
 float corrPtDown(float ptold, float oldgenpt, float etaold);

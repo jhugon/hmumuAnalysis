@@ -1636,6 +1636,7 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
     hists.weight->Fill(weight);
 
     // Jet Part
+    _PFJetInfo originalJets = jets;
     float jetPtCut = 30.;
     float jetPtCutC = 30.;
     std::vector<unsigned> goodJetIndices;
@@ -1899,7 +1900,7 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
     _jetSub_eta_JERDown = -999.0;         
   
     // JER Up
-    _PFJetInfo jetsJERUp = jets;
+    _PFJetInfo jetsJERUp = originalJets;
     goodJetIndices.clear();
     for(unsigned iJet=0; (iJet < jetsJERUp.nJets && iJet < 10);iJet++)
     {
@@ -1944,7 +1945,7 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
     }
 
     // JER Down
-    _PFJetInfo jetsJERDown = jets;
+    _PFJetInfo jetsJERDown = originalJets;
     goodJetIndices.clear();
     for(unsigned iJet=0; (iJet < jetsJERDown.nJets && iJet < 10);iJet++)
     {
