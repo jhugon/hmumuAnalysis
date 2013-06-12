@@ -298,7 +298,7 @@ float corrPtUp(float ptold, float oldgenpt, float etaold){
       Float_t ptscale = TMath::Max(float(0.0),(ptold+deltapt)/ptold);
       //Float_t ptscale =  (ptold+deltapt)/ptold;
       corrpt *= ptscale;
-      std::cout << " 3 ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;
+      //std::cout << " 3 ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;
     }
     //std::cout << " final ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;
   }
@@ -332,7 +332,7 @@ float corrPtDown(float ptold, float oldgenpt, float etaold){
       Float_t ptscale = TMath::Max(float(0.0),(ptold+deltapt)/ptold);
       //Float_t ptscale =  (ptold+deltapt)/ptold;                                                                                                                           
       corrpt *= ptscale;
-      std::cout << " 3 ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;                                    
+      //std::cout << " 3 ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;                                    
     }
     //std::cout << " final ptold, deltapt, ptcor, etaold" << ptold << ", " <<  deltapt  << ", " << corrpt  << ", " << etaold << std::endl;                                  
   }
