@@ -44,7 +44,10 @@ libs.append("TreePlayer")
 doSmearing = True
 doMuScleFit = True
 doRochester = False
+doRochesterReReco = False
 assert(not (doMuScleFit and doRochester))
+assert(not (doMuScleFit and doRochesterReReco))
+assert(not (doRochester and doRochesterReReco))
 smearFiles = ["annaCalibCode/FuncSmearingZmumu2012PtCorr0.C"] #For Vanilla 2012
 smearFiles += ["annaCalibCode/FuncSmearingZmumu2011ChargePtCorr0.C"] #For Vanilla 2011
 if doSmearing:
@@ -56,11 +59,14 @@ if doMuScleFit:
 if doRochester:
   env.MergeFlags("-D ROCHESTER")
   smearFiles = ["annaCalibCode/FuncSmearingZmumu2012PtCorr1.C"] #For Rochester 2012
+if doRochesterReReco:
+  env.MergeFlags("-D ROCHESTER2012ReReco")
 includes.append("annaCalibCode/")
 
 #Muon Corrections
 corrFiles = ["rochester/rochcor2012.C",
-            "rochester/rochcor.C"
+            "rochester/rochcor.C",
+            "rochester/rochcor2012jan22.C"
         ]
 includes.append("rochester/")
 includes.append("musclefit/")

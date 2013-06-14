@@ -1,0 +1,10 @@
+init:
+rochcor2012jan22 *rmcor2012jan22 = new rochcor2012jan22();
+
+for MC:
+rmcor2012jan22->momcor_mc(MuReco1, float(reco1.charge), 0, err_corr);
+rmcor2012jan22->momcor_mc(MuReco2, float(reco2.charge), 0, err_corr);
+
+for data:
+rmcor2012jan22->momcor_data(MuReco1, float(reco1_data.charge), 0, err_corr);
+rmcor2012jan22->momcor_data(MuReco2, 0float(reco2_data.charge), 0, err_corr);
