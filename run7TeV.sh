@@ -2,10 +2,10 @@
 
 nice scons -j4
 
-TRAININGTREES="true"
-TRAIN="true"
+#TRAININGTREES="true"
+#TRAIN="true"
 # Makes each analyzer only run on 1k events:
-#OPTIONS=" -m 1000"
+OPTIONS=" -m 1000"
 # Makes each analyzer only run on the data/MC comparison range in m_mumu:
 #OPTIONS=$OPTIONS" -d"
 
@@ -21,9 +21,9 @@ echo "#######################"
 echo "Creating Training Trees"
 echo "#######################"
 
-nice ./analyzer DYJetsToLL_7TeV.root $DIR/NtuplesMCDYJetsToLL_TuneZ2_M-50_7TeV-madgraph-tauola_Fall11-PU_S6_START44_V9B-v1/minimal/DYJetsToLL_minimal.root --trainingTree backgroundTreeDY_7TeV.root -r 7TeV $OPTIONS >& log7TeV2 &
-#nice ./analyzer DYToMuMu_7TeV.root $DIR/NtuplesMCDYToMuMu_M-20_CT10_TuneZ2_7TeV-powheg-pythia_Fall11-PU_S6_START44_V9B-v1/minimal/DYToMuMu_minimal.root --trainingTree backgroundTreeDY_7TeV.root -r 7TeV $OPTIONS  >& log7TeV2 &
-nice ./analyzer ttbar_7TeV.root $DIR/NtuplesMCTTJets_TuneZ2_7TeV-madgraph-tauola_Fall11-PU_S6_START44_V9B-v1/minimal/TTJets_minimal.root --trainingTree backgroundTreeTT_7TeV.root -r 7TeV $OPTIONS  >& log7TeV2 &
+nice ./analyzer DYJetsToLL_7TeV.root $DIR/NtuplesMCDYJetsToLL_TuneZ2_M-50_7TeV-madgraph-tauola_Fall11-PU_S6_START44_V9B-v1/minimal/DYJetsToLL_minimal.root --trainingTree backgroundTreeDY_7TeV.root -r 7TeV $OPTIONS 2>&1 >> log7TeV2 &
+#nice ./analyzer DYToMuMu_7TeV.root $DIR/NtuplesMCDYToMuMu_M-20_CT10_TuneZ2_7TeV-powheg-pythia_Fall11-PU_S6_START44_V9B-v1/minimal/DYToMuMu_minimal.root --trainingTree backgroundTreeDY_7TeV.root -r 7TeV $OPTIONS  2>&1 >> log7TeV2 &
+nice ./analyzer ttbar_7TeV.root $DIR/NtuplesMCTTJets_TuneZ2_7TeV-madgraph-tauola_Fall11-PU_S6_START44_V9B-v1/minimal/TTJets_minimal.root --trainingTree backgroundTreeTT_7TeV.root -r 7TeV $OPTIONS  2>&1 >> log7TeV2 &
 
 nice ./analyzer ggHmumu125_7TeV.root $DIR/NtuplesMCPrivateSignal/testForIvan/ggHmumu7TeV125/ggHmmu7TeV125_fortraining_big.root --trainingTree signalTreeGG_7TeV.root -r 7TeV $OPTIONS 
 nice ./analyzer vbfHmumu125_7TeV.root $DIR/NtuplesMCPrivateSignal/testForIvan/vbfHmumu7TeV125/vbfHmmu7TeV125_fortraining_big.root --trainingTree signalTreeVBF_7TeV.root -r 7TeV $OPTIONS 
@@ -44,22 +44,22 @@ if [ "$TRAIN" = "true" ]; then
 echo "#######################"
 echo "    Training MVAs"
 echo "#######################"
-echo "#######################" >& log7TeV2
-echo "    Training MVAs" >& log7TeV2
-echo "#######################" >& log7TeV2
+echo "#######################" 2>&1 >> log7TeV2
+echo "    Training MVAs" 2>&1 >> log7TeV2
+echo "#######################" 2>&1 >> log7TeV2
 echo "training Inclusive..."
-nice ./mvaTrain inclusive_7TeV.cfg >& logMVAInc7TeV
+nice ./mvaTrain inclusive_7TeV.cfg 2>&1 >> logMVAInc7TeV
 echo "training VBF..."
-nice ./mvaTrain vbf_7TeV.cfg >& logMVAVBF7TeV
+nice ./mvaTrain vbf_7TeV.cfg 2>&1 >> logMVAVBF7TeV
 echo "done training."
 echo "#######################"
 echo "#######################"
 fi
 
 # Run with full MVA
-nice ./analyzer DYJetsToLL_7TeV.root $DIR/NtuplesMCDYJetsToLL_TuneZ2_M-50_7TeV-madgraph-tauola_Fall11-PU_S6_START44_V9B-v1/minimal/DYJetsToLL_minimal.root -r 7TeV $OPTIONS  >& log7TeV2 &
-#nice ./analyzer DYToMuMu_7TeV.root $DIR/NtuplesMCDYToMuMu_M-20_CT10_TuneZ2_7TeV-powheg-pythia_Fall11-PU_S6_START44_V9B-v1/minimal/DYToMuMu_minimal.root -r 7TeV $OPTIONS  >& log7TeV2 &
-nice ./analyzer ttbar_7TeV.root $DIR/NtuplesMCTTJets_TuneZ2_7TeV-madgraph-tauola_Fall11-PU_S6_START44_V9B-v1/minimal/TTJets_minimal.root -r 7TeV $OPTIONS  >& log7TeV2 &
+nice ./analyzer DYJetsToLL_7TeV.root $DIR/NtuplesMCDYJetsToLL_TuneZ2_M-50_7TeV-madgraph-tauola_Fall11-PU_S6_START44_V9B-v1/minimal/DYJetsToLL_minimal.root -r 7TeV $OPTIONS  2>&1 >> log7TeV2 &
+#nice ./analyzer DYToMuMu_7TeV.root $DIR/NtuplesMCDYToMuMu_M-20_CT10_TuneZ2_7TeV-powheg-pythia_Fall11-PU_S6_START44_V9B-v1/minimal/DYToMuMu_minimal.root -r 7TeV $OPTIONS  2>&1 >> log7TeV2 &
+nice ./analyzer ttbar_7TeV.root $DIR/NtuplesMCTTJets_TuneZ2_7TeV-madgraph-tauola_Fall11-PU_S6_START44_V9B-v1/minimal/TTJets_minimal.root -r 7TeV $OPTIONS  2>&1 >> log7TeV2 &
 
 nice ./analyzer ggHmumu125_7TeV.root $DIR/NtuplesMCPrivateSignal/testForIvan/ggHmumu7TeV125/ggHmmu7TeV125_forxcheck_big.root -r 7TeV $OPTIONS 
 nice ./analyzer vbfHmumu125_7TeV.root $DIR/NtuplesMCPrivateSignal/testForIvan/vbfHmumu7TeV125/vbfHmmu7TeV125_forxcheck_big.root -r 7TeV $OPTIONS 
@@ -70,13 +70,13 @@ nice ./analyzer wHmumu125_7TeV.root $DIR/NtuplesMCPrivateSignal/wHmumu7TeV125.ro
 nice ./analyzer WW_7TeV.root $DIR/NtuplesMCWW_TuneZ2_7TeV_pythia6_tauola_Fall11-PU_S6_START44_V9B-v1/minimal/WW_minimal.root -r 7TeV $OPTIONS 
 nice ./analyzer WZ_7TeV.root $DIR/NtuplesMCWZ_TuneZ2_7TeV_pythia6_tauola_Fall11-PU_S6_START44_V9B-v1/minimal/WZ_minimal.root -r 7TeV $OPTIONS  
 nice ./analyzer ZZ_7TeV.root $DIR/NtuplesMCZZ_TuneZ2_7TeV_pythia6_tauola_Fall11-PU_S6_START44_V9B-v1/minimal/ZZ_minimal.root -r 7TeV $OPTIONS  
-#nice ./analyzer WJetsToLNu_7TeV.root $DIR/NtuplesMCWJetsToLNu_TuneZ2_7TeV-madgraph-tauola_Fall11-PU_S6_START44_V9B-v1/minimal/WJetsToLNu_minimal.root -r 7TeV $OPTIONS >& log7TeV2 &
-#nice ./analyzer QCD_7TeV.root $DIR/NtuplesMCQCD_Pt-20_MuEnrichedPt-15_TuneZ2_7TeV-pythia6_Fall11-PU_S6_START44_V9B-v1/minimal/QCD_Pt_20_MuEnrichedPt_15_minimal.root -r 7TeV $OPTIONS >& log7TeV2 &
+#nice ./analyzer WJetsToLNu_7TeV.root $DIR/NtuplesMCWJetsToLNu_TuneZ2_7TeV-madgraph-tauola_Fall11-PU_S6_START44_V9B-v1/minimal/WJetsToLNu_minimal.root -r 7TeV $OPTIONS 2>&1 >> log7TeV2 &
+#nice ./analyzer QCD_7TeV.root $DIR/NtuplesMCQCD_Pt-20_MuEnrichedPt-15_TuneZ2_7TeV-pythia6_Fall11-PU_S6_START44_V9B-v1/minimal/QCD_Pt_20_MuEnrichedPt_15_minimal.root -r 7TeV $OPTIONS 2>&1 >> log7TeV2 &
 
-nice ./analyzer ggHmumu125TrainingSample_7TeV.root $DIR/NtuplesMCPrivateSignal/testForIvan/ggHmumu7TeV125/ggHmmu7TeV125_fortraining_big.root -r 7TeV $OPTIONS  >& logTrainingSampleVBF27 &
-nice ./analyzer vbfHmumu125TrainingSample_7TeV.root $DIR/NtuplesMCPrivateSignal/testForIvan/vbfHmumu7TeV125/vbfHmmu7TeV125_fortraining_big.root -r 7TeV $OPTIONS >& logTrainingSampleVBF7 &
+nice ./analyzer ggHmumu125TrainingSample_7TeV.root $DIR/NtuplesMCPrivateSignal/testForIvan/ggHmumu7TeV125/ggHmmu7TeV125_fortraining_big.root -r 7TeV $OPTIONS  2>&1 >> logTrainingSampleVBF27 &
+nice ./analyzer vbfHmumu125TrainingSample_7TeV.root $DIR/NtuplesMCPrivateSignal/testForIvan/vbfHmumu7TeV125/vbfHmmu7TeV125_fortraining_big.root -r 7TeV $OPTIONS 2>&1 >> logTrainingSampleVBF7 &
 
-nice ./analyzer SingleMuRun2011Av1.root $DIR/NtuplesDataSingleMuRun2011A-08Nov2011-v1/minimal/SingleMuRun2011A-08Nov2011-v1_minimal.root -r 7TeV $OPTIONS >& log7TeV2 &
+nice ./analyzer SingleMuRun2011Av1.root $DIR/NtuplesDataSingleMuRun2011A-08Nov2011-v1/minimal/SingleMuRun2011A-08Nov2011-v1_minimal.root -r 7TeV $OPTIONS 2>&1 >> log7TeV2 &
 nice ./analyzer SingleMuRun2011Bv1.root $DIR/NtuplesDataSingleMuRun2011B-19Nov2011-v1/minimal/SingleMuRun2011B-19Nov2011-v1_minimal.root -r 7TeV $OPTIONS 
 
 wait

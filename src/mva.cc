@@ -8,6 +8,11 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
   outTree_ = NULL;
   outFile_ = NULL;
 
+#ifdef DISABLE_MVA
+  resetValues();
+  return;
+#endif
+
   if(outFileName.size()>0)
   {
     outFile_ = new TFile(outFileName.c_str(),"RECREATE");
@@ -378,6 +383,9 @@ MVA::MVA(const std::vector<std::string> configFileNames, const std::string outFi
 
 MVA::~MVA()
 {
+#ifdef DISABLE_MVA
+  return;
+#endif
   if (outTree_ != NULL)
   {
     outFile_->cd();
@@ -400,6 +408,9 @@ MVA::~MVA()
 float
 MVA::getMVA(const std::string configFileName, const std::string mvaName)
 {
+#ifdef DISABLE_MVA
+  return -999.;
+#endif
   float value = -1000.0;
   if(readers_.count(configFileName))
   {
@@ -492,6 +503,9 @@ MVA::resetValues()
 float
 MVA::getSigEffCut(const std::string configFileName, float eff)
 {
+#ifdef DISABLE_MVA
+  return -999.;
+#endif
   float result=-999.;
   // example names:
   //inclusive.cfg
@@ -519,6 +533,9 @@ MVA::getSigEffCut(const std::string configFileName, float eff)
 bool 
 MVA::getMVAPassBDTCut(const std::string configFileName)
 {
+#ifdef DISABLE_MVA
+  return false;
+#endif
   if(getMVA(configFileName,"BDT") > mvaCuts_[configFileName])
      return true;
   else

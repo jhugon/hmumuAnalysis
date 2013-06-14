@@ -39,7 +39,9 @@
 #include "src/ScaleFactors.h"
 #include "src/ScaleFactors_2011.h"
 
+#ifdef MEKD_STANDALONE
 #include "MEKD_Wrapper.h"
+#endif
 
 #include "TEfficiency.h"
 #include <algorithm>    // std::min
@@ -207,6 +209,8 @@ int main(int argc, char *argv[])
   float maxBlind = 130;
 
   gErrorIgnoreLevel = kError;
+  //gErrorIgnoreLevel = kUnset;
+  //gDebug = kLogCrit;
   time_t timeStart = time(NULL);
 
 
@@ -658,8 +662,9 @@ int main(int argc, char *argv[])
 
   //////////////////////////
   // Defining the outTree
+  outFile->cd();
   TTree* _outTree = new TTree("outtree", "myTree");
-  _outTree->SetDirectory(0);
+  cout << "outtree directory name: " << _outTree->GetDirectory()->GetName()<<endl;
 
   int _eventInfo_run;
   int _eventInfo_lumi;
@@ -885,11 +890,13 @@ int main(int argc, char *argv[])
   //////////////////////////
   // Creating the MEKD
 
+#ifdef MEKD_STANDALONE
   double nTeV = 8.;
   if (runPeriod == "7TeV")
     nTeV = 7.;
   MEKD_Wrapper mekd(nTeV,false);
   MEKD_Wrapper mekdPdf(nTeV,true);
+#endif
 
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -1506,6 +1513,13 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
     //////////////////////////////////////////
     // MEKD
 
+    _kd = -1.; 
+    _sigME = -1.; 
+    _bakME = -1.;
+    _kdPdf = -1.; 
+    _sigMEPdf = -1.; 
+    _bakMEPdf = -1.;
+#ifdef MEKD_STANDALONE
     int kdStatus = 0;
     kdStatus = mekd.getKD(reco1Vec, reco2Vec, 
                             reco1.charge, 
@@ -1520,6 +1534,7 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
     if (kdStatus != 0)
       cout << "Error: MEKD w/ PDF: " << _kdPdf << " Status: "<<kdStatus 
         << " sigME: " << _sigMEPdf << " bakME: "<< _bakMEPdf<<endl;
+#endif
 
     //////////////////////////////////////////
     //Computing CosTheta*
@@ -2709,10 +2724,14 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
 //////////////////////////////////////////////////////////////////////
 
   // write the ttree
+  cout << "About to begin writting stuff to files..." << endl;
   outFile->cd();
+  cout << "Writing tree..." << endl;
   _outTree->Write();
 
+  cout << "Writing first hists..." << endl;
   hists.Write(outFile,"");
+  /*
   histsBB.Write(outFile,"BB");
   histsBO.Write(outFile,"BO");
   histsBE.Write(outFile,"BE");
@@ -2777,7 +2796,9 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
   histsVBFMJJG550.Write(outFile,"VBFMJJG550");
   histsVBFDeJJG3p5MJJG550pTmissL100.Write(outFile,"histsVBFDeJJG3p5MJJG550pTmissL100");
   histsVBFDeJJG3p4MJJG500pTmissL25 .Write(outFile,"histsVBFDeJJG3p4MJJG500pTmissL25");
+  */
 
+  cout << "Writing baseline++..." << endl;
   // baseline++
   histsJets01PassPtG10  .Write(outFile,"Jets01PassPtG10");
   histsJets01PassPtG10BB.Write(outFile,"Jets01PassPtG10BB");

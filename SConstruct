@@ -8,7 +8,7 @@ includes = []
 libpath = []
 libs = []
 env.MergeFlags('-fPIC -O2 -lm')
-#env.MergeFlags('-g')
+#env.MergeFlags('-ggdb')
 
 # For BLINDING
 ####env.MergeFlags("-D BLIND")
@@ -66,9 +66,15 @@ includes.append("rochester/")
 includes.append("musclefit/")
 
 #MEKD
-mekdSources = ["src/MEKD_Wrapper.cc"]+glob.glob("mekd/src/*.cpp")+glob.glob("mekd/src/*/*.cpp")+glob.glob("mekd/src/*/*.cc")+glob.glob("mekd/src/*/*.c")
-includes += ["mekd/interface","mekd/src"]#,"mekd/Extra_code/","mekd/MadGraphSrc/","mekd/PDFTables/","mekd/higgs_properties/"]
-env.MergeFlags("-D MEKD_STANDALONE")
+buildMEKD=False
+mekdSources = []
+if buildMEKD:
+  mekdSources = ["src/MEKD_Wrapper.cc"]+glob.glob("mekd/src/*.cpp")+glob.glob("mekd/src/*/*.cpp")+glob.glob("mekd/src/*/*.cc")+glob.glob("mekd/src/*/*.c")
+  includes += ["mekd/interface","mekd/src"]#,"mekd/Extra_code/","mekd/MadGraphSrc/","mekd/PDFTables/","mekd/higgs_properties/"]
+  env.MergeFlags("-D MEKD_STANDALONE")
+
+#MVA Disable!!
+env.MergeFlags("-D DISABLE_MVA")
 
 env.Append(CPPPATH=includes)
 env.Append(LIBPATH=libpath)
