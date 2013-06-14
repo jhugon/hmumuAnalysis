@@ -68,7 +68,8 @@ using namespace boost;
 
   // 7 subcategories in the analysis + 3 useful selections 
   //const int NsubCat = 17;
-  const int NsubCat = 23;
+  //const int NsubCat = 23;
+  const int NsubCat = 44;
   TString subCategory[NsubCat] = {"IncPreselPtG10BB             ",
                                   "IncPreselPtG10BO             ",
                                   "IncPreselPtG10BE             ",
@@ -91,7 +92,31 @@ using namespace boost;
                                   "IncPreselPtG10BOres1         ",
                                   "IncPreselPtG10BOres2         ",
                                   "VBFDeJJG3p5MJJG550pTmissL100 ",
-                                  "VBFDeJJG3p4MJJG500pTmissL25  "};
+                                  "VBFDeJJG3p4MJJG500pTmissL25  ",
+                                  // baseline++ from i = 23
+                                  "Jets01PassPtG10    ",
+                                  "Jets01PassPtG10BB  ",
+                                  "Jets01PassPtG10BO  ",
+                                  "Jets01PassPtG10BE  ",
+                                  "Jets01PassPtG10OO  ",
+                                  "Jets01PassPtG10OE  ",
+                                  "Jets01PassPtG10EE  ",
+                                  "Jets01PassPtG10CC  ", // BE+OO
+                                  "Jets01PassPtG10FF  ", // OE+EE
+
+                                  "Jets01FailPtG10    ",
+                                  "Jets01FailPtG10BB  ",
+                                  "Jets01FailPtG10BO  ",
+                                  "Jets01FailPtG10BE  ",
+                                  "Jets01FailPtG10OO  ",
+                                  "Jets01FailPtG10OE  ",
+                                  "Jets01FailPtG10EE  ",
+                                  "Jets01FailPtG10CC  ", // BE+OO
+                                  "Jets01FailPtG10FF  ", // OE+EE
+
+                                  "Jet2CutsVBFPass    ",
+                                  "Jet2CutsGFPass     ",
+                                  "Jet2CutsFailVBFGF  "};
   int Flag_subCat = 1; // 1 make sub category eff and don't split on Nsample <- used
                        // 0 don't make sub category and split on Nsample <- not used now
   const int Nsample = 1; // devide event on subsamples <- not used now 
@@ -973,7 +998,10 @@ int main(int argc, char *argv[])
 //////////////////////////////////////////////////////////////////////
         //create txt file with fit output
         ofstream myfile ("EffInfo.txt");
-        ofstream myfileSubCat ("EffInfoSubCat.txt");
+        std::string effFileName = outputFileName;
+        effFileName.append(".txt");
+        //ofstream myfileSubCat ("EffInfoSubCat.txt");
+        ofstream myfileSubCat (effFileName.c_str());
 //////////////////////////////////////////////////////////////////////
 
 
@@ -2197,6 +2225,7 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
     if ( atLeastOneMuonFired ) {
 
       //std::cout << "test" << std::endl;
+      bool CutMassISO = IFMinimCuts && mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12; // mass cut + PF iso
       
       bool Jet2PtCuts = false;
 
@@ -2216,9 +2245,18 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
         if (Jet2CutsVBFPass == false &&
             mva.mDiJet > 250. && mva.ptDiMu > 50. ) Jet2CutsGFPass = true;
 
-        if      (Jet2CutsVBFPass) histsJet2CutsVBFPass  .Fill(mva,blind);
-        else if (Jet2CutsGFPass ) histsJet2CutsGFPass   .Fill(mva,blind);
-        else                      histsJet2CutsFailVBFGF.Fill(mva,blind);
+        if      (Jet2CutsVBFPass) {
+                                      histsJet2CutsVBFPass  .Fill(mva,blind);
+                                      if (CutMassISO) counterBDTvbfCut[40+1]++; 
+                                  }
+        else if (Jet2CutsGFPass ){
+                                      histsJet2CutsGFPass   .Fill(mva,blind);
+                                      if (CutMassISO) counterBDTvbfCut[40+2]++; 
+                                  }
+        else                      {
+                                      histsJet2CutsFailVBFGF.Fill(mva,blind);
+                                      if (CutMassISO) counterBDTvbfCut[40+3]++; 
+                                  }
       } //if (Jet2PtCuts)
       
 
@@ -2243,7 +2281,17 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
 
           if (isBE || isOO ) histsJets01PassPtG10CC.Fill(mva,blind);
           if (isOE || isEE ) histsJets01PassPtG10FF.Fill(mva,blind);
-
+          if (CutMassISO) {
+             counterDiPt10GeV[23]++;
+             if (isBB) counterDiPt10GeV[23+1]++;
+             if (isBO) counterDiPt10GeV[23+2]++;
+             if (isBE) counterDiPt10GeV[23+3]++;
+             if (isOO) counterDiPt10GeV[23+4]++;
+             if (isOE) counterDiPt10GeV[23+5]++;
+             if (isEE) counterDiPt10GeV[23+6]++;
+             if (isBE || isOO ) counterDiPt10GeV[23+7]++;
+             if (isOE || isEE ) counterDiPt10GeV[23+8]++;
+          }
         }//if (mva.ptDiMu > 10. ) 
 
         else {
@@ -2262,6 +2310,17 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
           if (isBE || isOO ) histsJets01FailPtG10CC.Fill(mva,blind);
           if (isOE || isEE ) histsJets01FailPtG10FF.Fill(mva,blind);
 
+          if (CutMassISO) {
+             counterDiPt10GeV[32]++;
+             if (isBB) counterDiPt10GeV[32+1]++;
+             if (isBO) counterDiPt10GeV[32+2]++;
+             if (isBE) counterDiPt10GeV[32+3]++;
+             if (isOO) counterDiPt10GeV[32+4]++;
+             if (isOE) counterDiPt10GeV[32+5]++;
+             if (isEE) counterDiPt10GeV[32+6]++;
+             if (isBE || isOO ) counterDiPt10GeV[32+7]++;
+             if (isOE || isEE ) counterDiPt10GeV[32+8]++;
+          } 
         }
 
       }
@@ -2715,6 +2774,24 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
   myfileSubCat << subCategory[22] << EffJetSel[11];
      myfileSubCat.precision(2);
      myfileSubCat << "   " << dEffJetSel[11] << "\n";
+
+  //Baseline++
+
+  // write efficiency for sub categories to myfileSubCat
+  for(unsigned iS = 23; iS < 41 ;iS++){
+     myfileSubCat.precision(4);
+     myfileSubCat << subCategory[iS] << EffDiPt10GeV[iS];
+     myfileSubCat.precision(2);
+     myfileSubCat << "   " << dEffDiPt10GeV[iS] << "\n";
+  }
+ 
+  for(unsigned iS = 41; iS < 44 ;iS++){
+     myfileSubCat.precision(4);
+     myfileSubCat << subCategory[iS] << EffBDTvbfCut[iS];
+     myfileSubCat.precision(2);
+     myfileSubCat << "   " << dEffBDTvbfCut[iS] << "\n";
+  }
+ 
 
   myfileSubCat.close();
 

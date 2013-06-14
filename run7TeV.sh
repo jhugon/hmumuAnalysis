@@ -5,9 +5,11 @@ nice scons -j4
 #TRAININGTREES="true"
 #TRAIN="true"
 # Makes each analyzer only run on 1k events:
-OPTIONS=" -m 1000"
+#OPTIONS=" -m 1000"
 # Makes each analyzer only run on the data/MC comparison range in m_mumu:
 #OPTIONS=$OPTIONS" -d"
+
+#SIGNALEFF="true"
 
 DIR=/data/uftrig01b/digiovan/root/higgs/CMSSW_4_4_5/V00-01-10/
 
@@ -80,6 +82,41 @@ nice ./analyzer SingleMuRun2011Av1.root $DIR/NtuplesDataSingleMuRun2011A-08Nov20
 nice ./analyzer SingleMuRun2011Bv1.root $DIR/NtuplesDataSingleMuRun2011B-19Nov2011-v1/minimal/SingleMuRun2011B-19Nov2011-v1_minimal.root -r 7TeV $OPTIONS 
 
 wait
+
+######################################
+### for signal efficiency calculation
+######################################
+
+if [ "$SIGNALEFF" = "true" ]; then
+
+## Private GluGlu Higgs to MuMu
+nice ./analyzer ggHmumu115_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/ggHmmu7TeV115.root -r 7TeV $OPTIONS >& log_GluGlu7TeV-115.log & 
+nice ./analyzer ggHmumu120_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/ggHmmu7TeV120.root -r 7TeV $OPTIONS >& log_GluGlu7TeV-120.log & 
+nice ./analyzer ggHmumu125_7TeV.root $DIR/NtuplesMCPrivateSignal/testForIvan/ggHmumu7TeV125/ggHmmu7TeV125_forxcheck_big.root -r 7TeV $OPTIONS >& log_GluGlu7TeV-125.log & 
+nice ./analyzer ggHmumu130_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/ggHmmu7TeV130.root -r 7TeV $OPTIONS >& log_GluGlu7TeV-130.log &
+nice ./analyzer ggHmumu135_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/ggHmmu7TeV135.root -r 7TeV $OPTIONS >& log_GluGlu7TeV-135.log 
+nice ./analyzer ggHmumu140_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/ggHmmu7TeV140.root -r 7TeV $OPTIONS >& log_GluGlu7TeV-140.log & 
+nice ./analyzer ggHmumu145_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/ggHmmu7TeV145.root -r 7TeV $OPTIONS >& log_GluGlu7TeV-145.log & 
+nice ./analyzer ggHmumu150_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/ggHmmu7TeV150.root -r 7TeV $OPTIONS >& log_GluGlu7TeV-150.log &
+nice ./analyzer ggHmumu155_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/ggHmmu7TeV155.root -r 7TeV $OPTIONS >& log_GluGlu7TeV-155.log & 
+nice ./analyzer ggHmumu160_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/ggHmmu7TeV160.root -r 7TeV $OPTIONS >& log_GluGlu7TeV-160.log 
+
+nice ./analyzer vbfHmumu115_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/vbfHmmu7TeV115.root -r 7TeV $OPTIONS >& log_VBF7TeV-115.log & 
+nice ./analyzer vbfHmumu120_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/vbfHmmu7TeV120.root -r 7TeV $OPTIONS >& log_VBF7TeV-120.log & 
+nice ./analyzer vbfHmumu125_7TeV.root $DIR/NtuplesMCPrivateSignal/testForIvan/vbfHmumu7TeV125/vbfHmmu7TeV125_forxcheck_big.root -r 7TeV $OPTIONS >& log_VBF7TeV-125.log & 
+nice ./analyzer vbfHmumu130_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/vbfHmmu7TeV130.root -r 7TeV $OPTIONS >& log_VBF7TeV-130.log & 
+nice ./analyzer vbfHmumu135_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/vbfHmmu7TeV135.root -r 7TeV $OPTIONS >& log_VBF7TeV-135.log 
+nice ./analyzer vbfHmumu140_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/vbfHmmu7TeV140.root -r 7TeV $OPTIONS >& log_VBF7TeV-140.log & 
+nice ./analyzer vbfHmumu145_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/vbfHmmu7TeV145.root -r 7TeV $OPTIONS >& log_VBF7TeV-145.log & 
+nice ./analyzer vbfHmumu150_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/vbfHmmu7TeV150.root -r 7TeV $OPTIONS >& log_VBF7TeV-150.log & 
+nice ./analyzer vbfHmumu155_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/vbfHmmu7TeV155.root -r 7TeV $OPTIONS >& log_VBF7TeV-155.log & 
+nice ./analyzer vbfHmumu160_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/vbfHmmu7TeV160.root -r 7TeV $OPTIONS >& log_VBF7TeV-160.log 
+
+wait
+
+
+fi
+
 
 tar czf result.tgz ggHmumu*.root vbfHmumu*.root zHmumu*.root wHmumu*.root ttbar*.root DY*.root WW*.root WZ*.root ZZ*.root SingleMu*.root
 
