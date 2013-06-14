@@ -1682,13 +1682,14 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
     _PFJetInfo originalJets = jets;
     float jetPtCut = 30.;
     float jetPtCutC = 30.;
+    int jetPUIDCut = 4; // >=    tight = 7, medium = 6, loose = 4
     std::vector<unsigned> goodJetIndices;
     for(unsigned iJet=0; (iJet < jets.nJets && iJet < 10);iJet++)
     {
         if (jets.genPt[iJet]>0.0 && jets.pt[iJet]>15.)
           jets.pt[iJet] = jerCorr(jets.pt[iJet],jets.genPt[iJet],jets.eta[iJet]);
         bool goodPt = jets.pt[iJet]>jetPtCut || (fabs(jets.eta[iJet < 2.4]) && jets.pt[iJet]>jetPtCutC);
-        bool goodPUID = puJetFullId[iJet] >= 7;
+        bool goodPUID = puJetFullId[iJet] >= jetPUIDCut;
         if (goodPt && goodPUID)
         {
           mva.nJets++;
@@ -1839,7 +1840,7 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
           jetsJESUp.pt[iJet] += jetsJESUp.jecUnc[iJet]*jetsJESUp.pt[iJet];
         }
         bool goodPt = jetsJESUp.pt[iJet]>jetPtCut || (fabs(jetsJESUp.eta[iJet < 2.4]) && jetsJESUp.pt[iJet]>jetPtCutC);
-        bool goodPUID = puJetFullId[iJet] >= 7;
+        bool goodPUID = puJetFullId[iJet] >= jetPUIDCut;
         if (goodPt && goodPUID)
         {
           _nJets_JESUp++;
@@ -1884,7 +1885,7 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
           jetsJESDown.pt[iJet] -= jetsJESDown.jecUnc[iJet]*jetsJESDown.pt[iJet];
         }
         bool goodPt = jetsJESDown.pt[iJet]>jetPtCut || (fabs(jetsJESDown.eta[iJet < 2.4]) && jetsJESDown.pt[iJet]>jetPtCutC);
-        bool goodPUID = puJetFullId[iJet] >= 7;
+        bool goodPUID = puJetFullId[iJet] >= jetPUIDCut;
         if (goodPt && goodPUID)
         {
           _nJets_JESDown++;
@@ -1952,7 +1953,7 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
           jetsJERUp.pt[iJet] = corrPtUp(jetsJERUp.pt[iJet],jetsJERUp.genPt[iJet],jetsJERUp.eta[iJet]);
         }
         bool goodPt = jetsJERUp.pt[iJet]>jetPtCut || (fabs(jetsJERUp.eta[iJet < 2.4]) && jetsJERUp.pt[iJet]>jetPtCutC);
-        bool goodPUID = puJetFullId[iJet] >= 7;
+        bool goodPUID = puJetFullId[iJet] >= jetPUIDCut;
         if (goodPt && goodPUID)
         {
           _nJets_JERUp++;
@@ -1997,7 +1998,7 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
           jetsJERDown.pt[iJet] = corrPtDown(jetsJERDown.pt[iJet],jetsJERDown.genPt[iJet],jetsJERDown.eta[iJet]);
         }
         bool goodPt = jetsJERDown.pt[iJet]>jetPtCut || (fabs(jetsJERDown.eta[iJet < 2.4]) && jetsJERDown.pt[iJet]>jetPtCutC);
-        bool goodPUID = puJetFullId[iJet] >= 7;
+        bool goodPUID = puJetFullId[iJet] >= jetPUIDCut;
         if (goodPt && goodPUID)
         {
           _nJets_JERDown++;
