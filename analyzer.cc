@@ -223,6 +223,7 @@ struct HistStruct
   TH1F* met;
   TH1F* ptmiss;
   TH1F* weight;
+
 };
 
 int main(int argc, char *argv[])
@@ -919,6 +920,92 @@ int main(int argc, char *argv[])
   _outTree->Branch("jetSub_pt_JERDown",           &_jetSub_pt_JERDown,             "jetSub_pt_JERDown/F");          
   _outTree->Branch("jetSub_eta_JERDown",          &_jetSub_eta_JERDown,            "jetSub_eta_JERDown/F");         
 
+
+  // Defining the outTree
+  TTree* treeJets01PassPtG10   = new TTree("outtreeJets01PassPtG10","");
+  TTree* treeJets01PassPtG10BB = new TTree("outtreeJets01PassPtG10BB","");
+  TTree* treeJets01PassPtG10BO = new TTree("outtreeJets01PassPtG10BO","");
+  TTree* treeJets01PassPtG10BE = new TTree("outtreeJets01PassPtG10BE","");
+  TTree* treeJets01PassPtG10OO = new TTree("outtreeJets01PassPtG10OO","");
+  TTree* treeJets01PassPtG10OE = new TTree("outtreeJets01PassPtG10OE","");
+  TTree* treeJets01PassPtG10EE = new TTree("outtreeJets01PassPtG10EE","");
+                                            
+  TTree* treeJets01FailPtG10   = new TTree("outtreeJets01FailPtG10","");
+  TTree* treeJets01FailPtG10BB = new TTree("outtreeJets01FailPtG10BB","");
+  TTree* treeJets01FailPtG10BO = new TTree("outtreeJets01FailPtG10BO","");
+  TTree* treeJets01FailPtG10BE = new TTree("outtreeJets01FailPtG10BE","");
+  TTree* treeJets01FailPtG10OO = new TTree("outtreeJets01FailPtG10OO","");
+  TTree* treeJets01FailPtG10OE = new TTree("outtreeJets01FailPtG10OE","");
+  TTree* treeJets01FailPtG10EE = new TTree("outtreeJets01FailPtG10EE","");
+                                            
+  TTree* treeJet2CutsVBFPass   = new TTree("outtreeJet2CutsVBFPass","");
+  TTree* treeJet2CutsGFPass    = new TTree("outtreeJet2CutsGFPass","");
+  TTree* treeJet2CutsFailVBFGF = new TTree("outtreeJet2CutsFailVBFGF","");
+
+
+  treeJets01PassPtG10   -> SetDirectory(0);
+  treeJets01PassPtG10BB -> SetDirectory(0);
+  treeJets01PassPtG10BO -> SetDirectory(0);
+  treeJets01PassPtG10BE -> SetDirectory(0);
+  treeJets01PassPtG10OO -> SetDirectory(0);
+  treeJets01PassPtG10OE -> SetDirectory(0);
+  treeJets01PassPtG10EE -> SetDirectory(0);
+                      
+  treeJets01FailPtG10   -> SetDirectory(0);
+  treeJets01FailPtG10BB -> SetDirectory(0);
+  treeJets01FailPtG10BO -> SetDirectory(0);
+  treeJets01FailPtG10BE -> SetDirectory(0);
+  treeJets01FailPtG10OO -> SetDirectory(0);
+  treeJets01FailPtG10OE -> SetDirectory(0);
+  treeJets01FailPtG10EE -> SetDirectory(0);
+
+  treeJet2CutsVBFPass   -> SetDirectory(0);
+  treeJet2CutsGFPass    -> SetDirectory(0);
+  treeJet2CutsFailVBFGF -> SetDirectory(0);
+
+
+  float _dimuonMassJets01PassPtG10  ;
+  float _dimuonMassJets01PassPtG10BB;
+  float _dimuonMassJets01PassPtG10BO;
+  float _dimuonMassJets01PassPtG10BE;
+  float _dimuonMassJets01PassPtG10OO;
+  float _dimuonMassJets01PassPtG10OE;
+  float _dimuonMassJets01PassPtG10EE;
+        
+  float _dimuonMassJets01FailPtG10  ;
+  float _dimuonMassJets01FailPtG10BB;
+  float _dimuonMassJets01FailPtG10BO;
+  float _dimuonMassJets01FailPtG10BE;
+  float _dimuonMassJets01FailPtG10OO;
+  float _dimuonMassJets01FailPtG10OE;
+  float _dimuonMassJets01FailPtG10EE;
+        
+  float _dimuonMassJet2CutsVBFPass  ;
+  float _dimuonMassJet2CutsGFPass   ;
+  float _dimuonMassJet2CutsFailVBFGF;
+
+
+  treeJets01PassPtG10   -> Branch("dimuonMass",   &_dimuonMassJets01PassPtG10  ,   "dimuonMass/F");
+  treeJets01PassPtG10BB -> Branch("dimuonMass",   &_dimuonMassJets01PassPtG10BB,   "dimuonMass/F");
+  treeJets01PassPtG10BO -> Branch("dimuonMass",   &_dimuonMassJets01PassPtG10BO,   "dimuonMass/F");
+  treeJets01PassPtG10BE -> Branch("dimuonMass",   &_dimuonMassJets01PassPtG10BE,   "dimuonMass/F");
+  treeJets01PassPtG10OO -> Branch("dimuonMass",   &_dimuonMassJets01PassPtG10OO,   "dimuonMass/F");
+  treeJets01PassPtG10OE -> Branch("dimuonMass",   &_dimuonMassJets01PassPtG10OE,   "dimuonMass/F");
+  treeJets01PassPtG10EE -> Branch("dimuonMass",   &_dimuonMassJets01PassPtG10EE,   "dimuonMass/F");
+                                                                                     
+  treeJets01FailPtG10   -> Branch("dimuonMass",   &_dimuonMassJets01FailPtG10  ,   "dimuonMass/F");
+  treeJets01FailPtG10BB -> Branch("dimuonMass",   &_dimuonMassJets01FailPtG10BB,   "dimuonMass/F");
+  treeJets01FailPtG10BO -> Branch("dimuonMass",   &_dimuonMassJets01FailPtG10BO,   "dimuonMass/F");
+  treeJets01FailPtG10BE -> Branch("dimuonMass",   &_dimuonMassJets01FailPtG10BE,   "dimuonMass/F");
+  treeJets01FailPtG10OO -> Branch("dimuonMass",   &_dimuonMassJets01FailPtG10OO,   "dimuonMass/F");
+  treeJets01FailPtG10OE -> Branch("dimuonMass",   &_dimuonMassJets01FailPtG10OE,   "dimuonMass/F");
+  treeJets01FailPtG10EE -> Branch("dimuonMass",   &_dimuonMassJets01FailPtG10EE,   "dimuonMass/F");
+                                                                                     
+  treeJet2CutsVBFPass   -> Branch("dimuonMass",   &_dimuonMassJet2CutsVBFPass  ,   "dimuonMass/F");
+  treeJet2CutsGFPass    -> Branch("dimuonMass",   &_dimuonMassJet2CutsGFPass   ,   "dimuonMass/F");
+  treeJet2CutsFailVBFGF -> Branch("dimuonMass",   &_dimuonMassJet2CutsFailVBFGF,   "dimuonMass/F");
+
+
   //////////////////////////
   // Creating the MEKD
 
@@ -1062,12 +1149,12 @@ int main(int argc, char *argv[])
     //if (counterGenBoson>= 10000) continue;
     //if (counterGenBoson>= 50000) continue;
     // check for fhe doublets:
-                pairOfDouble massPt(genHpostFSR.mass,genHpostFSR.pt);
-                //if(MassGenBoson >= MinMassEff && MassGenBoson < MaxMassEff && uniqueGeneratedEvents.insert(massPt).second){
-                if(uniqueGeneratedEvents.insert(massPt).second){ // no mass cuts at all for gen level only
-                    counterGenBoson[IsampleGen]++;
-                    //hMassGenBoson ->Fill(MassGenBoson);
-                }
+    pairOfDouble massPt(genHpostFSR.mass,genHpostFSR.pt);
+    //if(MassGenBoson >= MinMassEff && MassGenBoson < MaxMassEff && uniqueGeneratedEvents.insert(massPt).second){
+    if(uniqueGeneratedEvents.insert(massPt).second){ // no mass cuts at all for gen level only
+      counterGenBoson[IsampleGen]++;
+      //hMassGenBoson ->Fill(MassGenBoson);
+    }
 
     if(reco1.pt<0. || reco2.pt<0.)
         continue;
@@ -1085,23 +1172,23 @@ int main(int argc, char *argv[])
     _dimuonMass_noMuscle=recoCandMass;
     _dimuonPt_noMuscle=recoCandPt;
     if (reco1.pt>reco2.pt)
-    {
-      _muonLead_pt_noMuscle=reco1.pt;
-      _muonSub_pt_noMuscle=reco2.pt;
-      _muonLead_passPFRelIso_noMuscle  = getPFRelIso (reco1) < 0.12 ? 1 : 0;
-      _muonLead_passTrkRelIso_noMuscle = getTrkRelIso(reco1) < 0.10 ? 1 : 0;
-      _muonSub_passPFRelIso_noMuscle  = getPFRelIso (reco2) < 0.12 ? 1 : 0;
-      _muonSub_passTrkRelIso_noMuscle = getTrkRelIso(reco2) < 0.10 ? 1 : 0;
-    }
+      {
+        _muonLead_pt_noMuscle=reco1.pt;
+        _muonSub_pt_noMuscle=reco2.pt;
+        _muonLead_passPFRelIso_noMuscle  = getPFRelIso (reco1) < 0.12 ? 1 : 0;
+        _muonLead_passTrkRelIso_noMuscle = getTrkRelIso(reco1) < 0.10 ? 1 : 0;
+        _muonSub_passPFRelIso_noMuscle  = getPFRelIso (reco2) < 0.12 ? 1 : 0;
+        _muonSub_passTrkRelIso_noMuscle = getTrkRelIso(reco2) < 0.10 ? 1 : 0;
+      }
     else
-    {
-      _muonLead_pt_noMuscle=reco2.pt;
-      _muonSub_pt_noMuscle=reco1.pt;
-      _muonLead_passPFRelIso_noMuscle  = getPFRelIso (reco2) < 0.12 ? 1 : 0;
-      _muonLead_passTrkRelIso_noMuscle = getTrkRelIso(reco2) < 0.10 ? 1 : 0;
-      _muonSub_passPFRelIso_noMuscle  = getPFRelIso (reco1) < 0.12 ? 1 : 0;
-      _muonSub_passTrkRelIso_noMuscle = getTrkRelIso(reco1) < 0.10 ? 1 : 0;
-    }
+      {
+        _muonLead_pt_noMuscle=reco2.pt;
+        _muonSub_pt_noMuscle=reco1.pt;
+        _muonLead_passPFRelIso_noMuscle  = getPFRelIso (reco2) < 0.12 ? 1 : 0;
+        _muonLead_passTrkRelIso_noMuscle = getTrkRelIso(reco2) < 0.10 ? 1 : 0;
+        _muonSub_passPFRelIso_noMuscle  = getPFRelIso (reco1) < 0.12 ? 1 : 0;
+        _muonSub_passTrkRelIso_noMuscle = getTrkRelIso(reco1) < 0.10 ? 1 : 0;
+      }
 
     float recoCandMassOrig = recoCandMass;
     TLorentzVector reco1Vec;
@@ -2280,17 +2367,30 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
             mva.mDiJet > 250. && mva.ptDiMu > 50. ) Jet2CutsGFPass = true;
 
         if      (Jet2CutsVBFPass) {
-                                      histsJet2CutsVBFPass  .Fill(mva,blind);
-                                      if (CutMassISO) counterBDTvbfCut[40+1]++; 
-                                  }
-        else if (Jet2CutsGFPass ){
-                                      histsJet2CutsGFPass   .Fill(mva,blind);
-                                      if (CutMassISO) counterBDTvbfCut[40+2]++; 
-                                  }
-        else                      {
-                                      histsJet2CutsFailVBFGF.Fill(mva,blind);
-                                      if (CutMassISO) counterBDTvbfCut[40+3]++; 
-                                  }
+          histsJet2CutsVBFPass  .Fill(mva,blind);
+          if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
+            _dimuonMassJet2CutsVBFPass = mva.mDiMu;
+            if (CutMassISO) counterBDTvbfCut[40+1]++; 
+            treeJet2CutsVBFPass->Fill();
+          }
+        }
+        else if (Jet2CutsGFPass ) {
+          histsJet2CutsGFPass   .Fill(mva,blind);
+          if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
+            _dimuonMassJet2CutsGFPass = mva.mDiMu;
+            if (CutMassISO) counterBDTvbfCut[40+2]++; 
+            treeJet2CutsGFPass->Fill();
+          }
+        }
+
+        else {
+          histsJet2CutsFailVBFGF.Fill(mva,blind);
+          if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
+            _dimuonMassJet2CutsFailVBFGF = mva.mDiMu;
+            if (CutMassISO) counterBDTvbfCut[40+3]++; 
+            treeJet2CutsFailVBFGF->Fill();
+          }
+        }
       } //if (Jet2PtCuts)
       
 
@@ -2305,13 +2405,60 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
           // inclusive
           histsJets01PassPtG10.Fill(mva,blind);
 
+          if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
+            _dimuonMassJets01PassPtG10 = mva.mDiMu;
+            treeJets01PassPtG10->Fill();
+          }
+
           // geom. categories
-          if (isBB) histsJets01PassPtG10BB.Fill(mva,blind);
-          if (isBO) histsJets01PassPtG10BO.Fill(mva,blind);
-          if (isBE) histsJets01PassPtG10BE.Fill(mva,blind);
-          if (isOO) histsJets01PassPtG10OO.Fill(mva,blind);
-          if (isOE) histsJets01PassPtG10OE.Fill(mva,blind);
-          if (isEE) histsJets01PassPtG10EE.Fill(mva,blind);
+          if (isBB) {
+            histsJets01PassPtG10BB.Fill(mva,blind);
+            if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
+              _dimuonMassJets01PassPtG10BB = mva.mDiMu;
+              treeJets01PassPtG10BB->Fill();
+            }
+          }
+
+          if (isBO) {
+            histsJets01PassPtG10BO.Fill(mva,blind);
+            if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
+              _dimuonMassJets01PassPtG10BO = mva.mDiMu;
+              treeJets01PassPtG10BO->Fill();
+            }
+          }
+
+          if (isBE) {
+            histsJets01PassPtG10BE.Fill(mva,blind);
+            if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
+              _dimuonMassJets01PassPtG10BE = mva.mDiMu;
+              treeJets01PassPtG10BE->Fill();
+            }
+          }
+
+          if (isOO) {
+            histsJets01PassPtG10OO.Fill(mva,blind);
+            if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
+              _dimuonMassJets01PassPtG10OO = mva.mDiMu;
+              treeJets01PassPtG10OO->Fill();
+            }
+          }
+
+          if (isOE) {
+            histsJets01PassPtG10OE.Fill(mva,blind);
+            if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
+              _dimuonMassJets01PassPtG10OE = mva.mDiMu;
+              treeJets01PassPtG10OE->Fill();
+            }
+          }
+
+          if (isEE) {
+            histsJets01PassPtG10EE.Fill(mva,blind);
+            if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
+              _dimuonMassJets01PassPtG10EE = mva.mDiMu;
+              treeJets01PassPtG10EE->Fill();
+            }
+          }
+
 
           if (isBE || isOO ) histsJets01PassPtG10CC.Fill(mva,blind);
           if (isOE || isEE ) histsJets01PassPtG10FF.Fill(mva,blind);
@@ -2333,13 +2480,66 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
           // inclusive
           histsJets01FailPtG10.Fill(mva,blind);
           
+          if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
+            _dimuonMassJets01FailPtG10 = mva.mDiMu;
+            treeJets01FailPtG10->Fill();
+          }
+          
+
           // geom. categories
-          if (isBB) histsJets01FailPtG10BB.Fill(mva,blind);
-          if (isBO) histsJets01FailPtG10BO.Fill(mva,blind);
-          if (isBE) histsJets01FailPtG10BE.Fill(mva,blind);
-          if (isOO) histsJets01FailPtG10OO.Fill(mva,blind);
-          if (isOE) histsJets01FailPtG10OE.Fill(mva,blind);
-          if (isEE) histsJets01FailPtG10EE.Fill(mva,blind);
+          if (isBB) {
+            histsJets01FailPtG10BB.Fill(mva,blind);
+
+            if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
+              _dimuonMassJets01FailPtG10BB = mva.mDiMu;
+              treeJets01FailPtG10BB->Fill();
+            }
+          }
+
+          if (isBO) {
+            histsJets01FailPtG10BO.Fill(mva,blind);
+
+            if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
+              _dimuonMassJets01FailPtG10BO = mva.mDiMu;
+              treeJets01FailPtG10BO->Fill();
+            }
+          }
+
+          if (isBE) {
+            histsJets01FailPtG10BE.Fill(mva,blind);
+
+            if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
+              _dimuonMassJets01FailPtG10BE = mva.mDiMu;
+              treeJets01FailPtG10BE->Fill();
+            }
+          }
+
+          if (isOO) {
+            histsJets01FailPtG10OO.Fill(mva,blind);
+
+            if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
+              _dimuonMassJets01FailPtG10OO = mva.mDiMu;
+              treeJets01FailPtG10OO->Fill();
+            }
+          }
+
+          if (isOE) {
+            histsJets01FailPtG10OE.Fill(mva,blind);
+
+            if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
+              _dimuonMassJets01FailPtG10OE = mva.mDiMu;
+              treeJets01FailPtG10OE->Fill();
+            }
+          }
+
+          if (isEE) {
+            histsJets01FailPtG10EE.Fill(mva,blind);
+
+            if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
+              _dimuonMassJets01FailPtG10EE = mva.mDiMu;
+              treeJets01FailPtG10EE->Fill();
+            }
+          }
 
           if (isBE || isOO ) histsJets01FailPtG10CC.Fill(mva,blind);
           if (isOE || isEE ) histsJets01FailPtG10FF.Fill(mva,blind);
@@ -2935,6 +3135,29 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
   histsJet2CutsGFPass.Write(outFile,"Jet2CutsGFPass");
   histsJet2CutsFailVBFGF.Write(outFile,"Jet2CutsFailVBFGF");
 
+  treeJets01PassPtG10   -> Write();
+  treeJets01PassPtG10BB -> Write();
+  treeJets01PassPtG10BO -> Write();
+  treeJets01PassPtG10BE -> Write();
+  treeJets01PassPtG10OO -> Write();
+  treeJets01PassPtG10OE -> Write();
+  treeJets01PassPtG10EE -> Write();
+
+  treeJets01FailPtG10   -> Write();
+  treeJets01FailPtG10BB -> Write();
+  treeJets01FailPtG10BO -> Write();
+  treeJets01FailPtG10BE -> Write();
+  treeJets01FailPtG10OO -> Write();
+  treeJets01FailPtG10OE -> Write();
+  treeJets01FailPtG10EE -> Write();
+
+  treeJet2CutsVBFPass   -> Write();
+  treeJet2CutsGFPass    -> Write();
+  treeJet2CutsFailVBFGF -> Write();
+
+  
+
+
   //
   ofstream testOutFile;
   testOutFile.open("testEventNums.txt");
@@ -3237,6 +3460,7 @@ HistStruct::HistStruct()
     (*hist)->Sumw2();
   for(hist2D = histVec2D.begin();hist2D != histVec2D.end(); hist2D++)
     (*hist2D)->Sumw2();
+
 }
 
 HistStruct::~HistStruct()
@@ -3360,6 +3584,7 @@ HistStruct::Fill(const MVA& mva, bool blind)
             BDTHistVBFVMass->Fill(mva.mDiMu, mva.bdtValVBF, mva.weight);
           }
       }
+
   } // is PF Rel Iso passed on both muons
   
 }
