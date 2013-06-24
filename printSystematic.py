@@ -58,8 +58,8 @@ while True:
           correlation = "-"
         
     relErr = max(errEffs)/nomEff
-    print "%s  %s%.4f" % (nomName, correlation,relErr)
-    #print "%s  %s%.4f  %.4f" % (nomName, correlation, relErr,relStatErr)
+    #print "%s  %s%.4f" % (nomName, correlation,relErr)
+    print "%s  %s%.4f  %.4f" % (nomName, correlation, relErr,relStatErr)
   except StopIteration:
     break
 
