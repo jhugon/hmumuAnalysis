@@ -148,10 +148,10 @@ def getUncertainty(nomFilename,sysFileNames):
   effFile.close()
   return uncertainties, statErrors
 
-#datasets = ["ggH","vbfH"]
-datasets = ["ggH"]
-energies = ["8TeV"]
-masses = ["125"]
+#datasets = ["ggH"]
+#energies = ["8TeV"]
+#masses = ["125"]
+datasets = ["ggH","vbfH"]
 energies = ["8TeV","7TeV"]
 masses = ["115","125","135","150"]
 errorSets = {
@@ -302,6 +302,8 @@ for errorSet in errorSets:
         tableStr +=  " %.2f%% &" % (yMax*100.)
     tableStr = tableStr[:-1] + r" \\ \hline "+ "\n"
   tableStr += r"\end{tabular}" + "\n"
+
+  tableStr = tableStr.replace(r"%",r"\%")
   print
   print errorSet
   print
