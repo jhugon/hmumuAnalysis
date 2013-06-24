@@ -9,6 +9,16 @@ from ROOT import gStyle as gStyle
 root.gErrorIgnoreLevel = root.kWarning
 root.gROOT.SetBatch(True)
 
+THRESHOLD=0.01
+
+def absMax(x,y):
+  absx = abs(x)
+  absy = abs(y)
+  if absx > absy:
+    return x
+  else:
+    return y
+
 def setStyle():
   gStyle.SetCanvasColor(0)
   gStyle.SetCanvasBorderSize(10)
@@ -138,6 +148,8 @@ def getUncertainty(nomFilename,sysFileNames):
   effFile.close()
   return uncertainties, statErrors
 
+#datasets = ["ggH","vbfH"]
+datasets = ["ggH"]
 energies = ["8TeV"]
 masses = ["125"]
 energies = ["8TeV","7TeV"]
@@ -145,6 +157,10 @@ masses = ["115","125","135","150"]
 errorSets = {
   "Scale Variations":["0p5X","2X"],
   "UE Variations":["D6T","P0","ProPT0","ProQ20","UEOFF"]
+}
+errorSetKeyName = {
+  "Scale Variations":"scale",
+  "UE Variations":"ue"
 }
 categories = [
   "Jets01PassPtG10",
@@ -154,11 +170,11 @@ categories = [
   "Jet2CutsFailVBFGF"
 ]
 labels = [
-  "Non-VBF Tight",
-  "Non-VBF Loose",
-  "VBF-Presel VBF Tight",
-  "VBF-Presel GF Tight",
-  "VBF-Presel Loose"
+  "Non-VBF Presel. Tight",
+  "Non-VBF Presel. Loose",
+  "VBF-Presel. VBF Tight",
+  "VBF-Presel. GF Tight",
+  "VBF-Presel. Loose"
 ]
 colors = [
   root.kBlue,
@@ -176,58 +192,158 @@ for errorSet in errorSets:
   dataUnc = {}
   dataStat = {}
   for energy in energies:
-    tmpMassesList = []
-    tmpUncList = []
-    tmpStatList = []
-    for mass in sorted(masses,key=float):
-      nomFn =  "ggHmumu%s_%s.root.txt" % (mass,energy)
-      if not os.path.exists(nomFn):
-        print("Nominal File doesn't exist: %s" % nomFn)
-        continue
-      errFns =  ["ggHmmu%s%s_%s.root.txt" % (energy,mass,i) for i in errorSets[errorSet]]
-      sysNotExist = False
-      for fn in errFns:
-        if not os.path.exists(fn):
-          print("Systematic File doesn't exist: %s" % fn)
-          sysNotExist = True
-      if sysNotExist:
-        continue
-      tmpUnc, tmpStat = getUncertainty(nomFn, errFns)
-      tmpMassesList.append(float(mass))
-      tmpUncList.append(tmpUnc)
-      tmpStatList.append(tmpStat)
-    dataMasses[energy] = tmpMassesList
-    dataUnc[energy] = tmpUncList
-    dataStat[energy] = tmpStatList
-
+    dataMasses[energy] = {}
+    dataUnc[energy] = {}
+    dataStat[energy] = {}
+    for ds in datasets:
+      tmpMassesList = []
+      tmpUncList = []
+      tmpStatList = []
+      for mass in sorted(masses,key=float):
+        nomFn =  "%smumu%s_%s.root.txt" % (ds,mass,energy)
+        if not os.path.exists(nomFn):
+          print("Nominal File doesn't exist: %s" % nomFn)
+          continue
+        errFns =  ["%smmu%s%s_%s.root.txt" % (ds,energy,mass,i) for i in errorSets[errorSet]]
+        sysNotExist = False
+        for fn in errFns:
+          if not os.path.exists(fn):
+            print("Systematic File doesn't exist: %s" % fn)
+            sysNotExist = True
+        if sysNotExist:
+          continue
+        tmpUnc, tmpStat = getUncertainty(nomFn, errFns)
+        tmpMassesList.append(float(mass))
+        tmpUncList.append(tmpUnc)
+        tmpStatList.append(tmpStat)
+      dataMasses[energy][ds] = tmpMassesList
+      dataUnc[energy][ds] = tmpUncList
+      dataStat[energy][ds] = tmpStatList
+  
   graphs = []
   axisList = []
   for energy in energies:
-    axis = root.TH2F("axis"+errorSet+energy,"",1,110,160,1,0.0,50)
-    axis.GetXaxis().SetTitle("m_{H} [GeV/c^{2}]")
-    axis.GetYaxis().SetTitle("Uncertainty on Signal Yield [%]")
-    axis.Draw()
-    axisList.append(axis)
-    leg = root.TLegend(0.58,0.70,0.9,0.9)
-    #leg = root.TLegend(0.45,0.60,0.95,0.9)
-    leg.SetFillColor(0)
-    leg.SetLineColor(0)
-    for cat,col,shift,label in zip(categories,colors,shifts,labels):
-      graph = root.TGraphErrors()
-      graph.SetLineColor(col)
-      graph.SetMarkerColor(col)
-      for iMass in range(len(dataMasses[energy])):
-        x = dataMasses[energy][iMass]
-        y = dataUnc[energy][iMass][cat]
-        yErr = dataStat[energy][iMass][cat]*100.
-        y = abs(y)*100.
-        #print("x = %s, y = %s" % (x,y))
-        graph.SetPoint(iMass,x+shift,y)
-        graph.SetPointError(iMass,0.,yErr)
-      graph.Draw("PEZ")
-      #graph.Print()
-      graphs.append(graph)
-      leg.AddEntry(graph,label,"P")
-    leg.Draw()
-    errorSetSaveName = errorSet.replace(" ","") 
-    canvas.SaveAs(errorSetSaveName+"_"+energy+".png")
+    for ds in datasets:
+      axis = root.TH2F("axis"+errorSet+energy,"",1,110,160,1,0.0,50)
+      axis.GetXaxis().SetTitle("m_{H} [GeV/c^{2}]")
+      axis.GetYaxis().SetTitle("Uncertainty on Signal Yield [%]")
+      axis.Draw()
+      axisList.append(axis)
+      leg = root.TLegend(0.58,0.70,0.9,0.9)
+      #leg = root.TLegend(0.45,0.60,0.95,0.9)
+      leg.SetFillColor(0)
+      leg.SetLineColor(0)
+      for cat,col,shift,label in zip(categories,colors,shifts,labels):
+        graph = root.TGraphErrors()
+        graph.SetLineColor(col)
+        graph.SetMarkerColor(col)
+        for iMass in range(len(dataMasses[energy][ds])):
+          x = dataMasses[energy][ds][iMass]
+          y = dataUnc[energy][ds][iMass][cat]
+          yErr = dataStat[energy][ds][iMass][cat]*100.
+          y = abs(y)*100.
+          #print("x = %s, y = %s" % (x,y))
+          graph.SetPoint(iMass,x+shift,y)
+          graph.SetPointError(iMass,0.,yErr)
+        graph.Draw("PEZ")
+        #graph.Print()
+        graphs.append(graph)
+        leg.AddEntry(graph,label,"P")
+      leg.Draw()
+      errorSetSaveName = errorSet.replace(" ","") 
+      canvas.SaveAs(errorSetSaveName+"_"+energy+".png")
+  
+  # Now for a table
+  tableStr = ""
+  #extraCols = len(datasets)
+  #tableStr += r"\begin{tabular}{|c|l|"+"c|"*extraCols+r"} \hline" + "\n"
+  #tableStr += r"$\sqrt{s}$ & Category & "
+  #for ds in datasets:
+  #  dsLabel = "GF"
+  #  if ds=="vbfH":
+  #    dsLabel = "VBF"
+  #  tableStr += r"%s &" % dsLabel
+  #tableStr = tableStr[:-1] + r"\\ \hline \hline" + "\n"
+  #for energy in energies:
+  #  tableStr += "\multirow{"+str(len(categories))+"}{*}"
+  #  tableStr += "{%s} \n" % energy.replace("TeV"," TeV")
+  #  for cat,label in zip(categories,labels):
+  #    tableStr += " & "+label + " & "
+  #    for ds in datasets:
+  #      yMax = 0.
+  #      for iMass in range(len(dataMasses[energy][ds])):
+  #        x = dataMasses[energy][ds][iMass]
+  #        y = dataUnc[energy][ds][iMass][cat]
+  #        yMax = absMax(y,yMax)
+  #      tableStr +=  "%.2f%% &" % (yMax*100.)
+  #    tableStr = tableStr[:-1] + r" \\ "+ "\n"
+  #  tableStr = tableStr[:-1] + r" \hline "+ "\n"
+  #tableStr += r"\end{tabular}" + "\n"
+
+  extraCols = len(datasets)*len(energies)
+  tableStr += r"\begin{tabular}{|l|"+"c|"*extraCols+r"} \hline" + "\n"
+  tableStr += r"Category &"
+  for ds in datasets:
+    dsLabel = "GF"
+    if ds=="vbfH":
+      dsLabel = "VBF"
+    for energy in energies:
+      tableStr += r" %s %s &" % (dsLabel,energy.replace("TeV"," TeV"))
+  tableStr = tableStr[:-1] + r"\\ \hline \hline" + "\n"
+  for cat,label in zip(categories,labels):
+    tableStr += label + " &"
+    for ds in datasets:
+      for energy in energies:
+        yMax = 0.
+        for iMass in range(len(dataMasses[energy][ds])):
+          x = dataMasses[energy][ds][iMass]
+          y = dataUnc[energy][ds][iMass][cat]
+          yMax = absMax(y,yMax)
+        tableStr +=  " %.2f%% &" % (yMax*100.)
+    tableStr = tableStr[:-1] + r" \\ \hline "+ "\n"
+  tableStr += r"\end{tabular}" + "\n"
+  print
+  print errorSet
+  print
+  print tableStr
+  print
+
+  print("    self."+errorSetKeyName[errorSet]+" = {")
+  for dsName in datasets:
+    dsLabel = "gg"
+    if ds=="vbfH":
+      dsLabel = "vbf"
+    print "      '"+dsLabel+"' : {"
+    for energy in energies:
+      print "        '"+energy+"' : {"
+      for key in categories:
+        maxErr = 0.
+        for iMass in range(len(dataMasses[energy][ds])):
+          x = dataMasses[energy][dsName][iMass]
+          y = dataUnc[energy][dsName][iMass][key]
+          maxErr = absMax(y,maxErr)
+        if abs(maxErr) < THRESHOLD:
+          print "          '"+key+"' : None,"
+        else:
+          if maxErr>0.:
+            maxErr += 1.
+          else:
+            maxErr -= 1.
+          print "          '"+key+"' : %.4f," % (maxErr)
+      print("          },")
+    print("        },")
+  # for wH and zH
+  for dsName in datasets:
+    dsPrint = "w"
+    if "vbf" in dsName:
+      dsPrint = "z"
+    print "      '"+dsPrint+"' : {"
+    for energy in energies:
+      print "        '"+energy+"' : {"
+      for key in categories:
+          print "          '"+key+"' : None,"
+      print("          },")
+    print("        },")
+  print("      }")
+  print
+  
