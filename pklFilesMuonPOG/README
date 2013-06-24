@@ -1,12 +1,17 @@
 Useful twikis:
 https://twiki.cern.ch/twiki/bin/view/CMS/MuonReferenceEffs#2012_data
 
-File 2012C is in 
+File 2012ABCD for ID and ISO is in: 
+https://twiki.cern.ch/twiki/pub/CMS/MuonReferenceEffs/Muon_ID_iso_Efficiencies_Run_2012ABCD_53X.pkl
+
+Files for IsoMu24 trigger are in:
+https://twiki.cern.ch/twiki/pub/CMS/MuonReferenceEffs/MuonEfficiencies_Run_2012A_2012_B_53X.pkl
 https://twiki.cern.ch/twiki/pub/CMS/MuonReferenceEffs/MuonEfficiencies_Run_2012C_53X.pkl
-https://twiki.cern.ch/twiki/pub/CMS/MuonReferenceEffs/MuonEfficiencies_Run_2012C_53X.root
+https://twiki.cern.ch/twiki/pub/CMS/MuonReferenceEffs/TriggerMuonEfficiencies_Run_2012D_53X.pkl
 
-
+How to read a pickle file:
 python -i 
 import pickle
-f = open('MuonEfficiencies_Run_2012C_53X.pkl', 'r')
+f = open('Muon_ID_iso_Efficiencies_Run_2012ABCD_53X.pkl', 'r')
 dict = pickle.load(f)
+

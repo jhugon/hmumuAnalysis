@@ -36,7 +36,7 @@
 #include "annaCalibCode/SmearingTool.h"
 #include "annaCalibCode/SmearingTool2011.h"
 
-#include "src/ScaleFactors.h"
+#include "src/ScaleFactors_2012.h"
 #include "src/ScaleFactors_2011.h"
 
 #ifdef MEKD_STANDALONE
@@ -367,6 +367,9 @@ int main(int argc, char *argv[])
   bool isSignal = false;
   std::vector<std::string> signalWords;
   signalWords.push_back("Hmumu");
+  signalWords.push_back("Hmm");
+  signalWords.push_back("HToMM");
+  signalWords.push_back("HToMuMu");
   std::vector<std::string>::const_iterator signalWord;
   for(signalWord = signalWords.begin(); signalWord != signalWords.end();signalWord++)
   {
@@ -705,6 +708,8 @@ int main(int argc, char *argv[])
 
   float _nPU;
   float _puWeight;
+  float _puWeightMuonEffUp;
+  float _puWeightMuonEffDown;
   int _eventType;
 
   float _dimuonMass; 
@@ -767,8 +772,11 @@ int main(int argc, char *argv[])
   _outTree->Branch("eventInfo_lumi",   &_eventInfo_lumi,  "eventInfo_lumi/I");
   _outTree->Branch("eventInfo_event",  &_eventInfo_event, "eventInfo_event/I");
 
-  _outTree->Branch("nPU",          &_nPU,         "nPU/F");
-  _outTree->Branch("puWeight",     &_puWeight,    "puWeight/F");
+  _outTree->Branch("nPU",                 &_nPU,                 "nPU/F");
+  _outTree->Branch("puWeight",            &_puWeight,            "puWeight/F");
+  _outTree->Branch("puWeightMuonEffUp",   &_puWeightMuonEffUp,   "puWeightMuonEffUp/F");
+  _outTree->Branch("puWeightMuonEffDown", &_puWeightMuonEffDown, "puWeightMuonEffDown/F");
+
   _outTree->Branch("eventType",    &_eventType,   "eventType/I");
 
   _outTree->Branch("dimuonMass",   &_dimuonMass,   "dimuonMass/F");
@@ -1160,14 +1168,23 @@ int main(int argc, char *argv[])
         continue;
 
     double weight = 1.0;
+    double weightMuonEffUp   = 1.0;
+    double weightMuonEffDown = 1.0;
     if (isSignal)
     {
-        double randForSF = randomForSF.Rndm();
-        if (runPeriod == "7TeV")
-            weight *= weightFromSF_2011(randForSF,reco1,reco2,0.,0.,0.);
-        else
-            weight *= weightFromSF(randForSF,reco1,reco2,0.,0.,0.);
+      double randForSF = randomForSF.Rndm();
+        if (runPeriod == "7TeV"){
+          weight            *= weightFromSF_2011(randForSF,reco1,reco2, 0.   , 0.   ,0.    );
+          weightMuonEffUp   *= weightFromSF_2011(randForSF,reco1,reco2, 0.005, 0.002, 0.002);
+          weightMuonEffDown *= weightFromSF_2011(randForSF,reco1,reco2,-0.005,-0.002,-0.002);
+        }else{
+          weight            *= weightFromSF(randForSF,reco1,reco2, 0.   , 0.   , 0.   );
+          weightMuonEffUp   *= weightFromSF(randForSF,reco1,reco2, 0.005, 0.002, 0.002);
+          weightMuonEffDown *= weightFromSF(randForSF,reco1,reco2,-0.005,-0.002,-0.002);
+        }
     }
+
+
 
     _dimuonMass_noMuscle=recoCandMass;
     _dimuonPt_noMuscle=recoCandPt;
@@ -1504,7 +1521,10 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
 #ifdef PUREWEIGHT
     if (!isData)
     {
-      weight *= lumiWeights.weight(nPU);
+      weight            *= lumiWeights.weight(nPU);
+      weightMuonEffUp   *= lumiWeights.weight(nPU);
+      weightMuonEffDown *= lumiWeights.weight(nPU);
+
     }
 #endif
 
@@ -2279,6 +2299,8 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
 
     _nPU = mva.nPU;
     _puWeight = mva.weight;
+    _puWeightMuonEffUp   = weightMuonEffUp;
+    _puWeightMuonEffDown = weightMuonEffDown;
     _eventType = whichSelection(muon1,muon2,
                                 runPeriod,
                                 jets,
