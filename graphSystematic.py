@@ -5,11 +5,12 @@ import sys
 import re
 
 import ROOT as root
-from ROOT import gStyle as gStyle
-root.gErrorIgnoreLevel = root.kWarning
 root.gROOT.SetBatch(True)
+root.gErrorIgnoreLevel = root.kWarning
+from ROOT import gStyle as gStyle
 
 THRESHOLD=0.01
+PRELIMINARYSTRING="CMS Preliminary"
 
 def absMax(x,y):
   absx = abs(x)
@@ -186,6 +187,11 @@ colors = [
 shifts = [0.2*(-len(categories)/2.+i) for i in range(len(categories))]
 
 canvas = root.TCanvas("c1")
+tlatex = root.TLatex()
+tlatex.SetNDC()
+tlatex.SetTextFont(root.gStyle.GetLabelFont())
+tlatex.SetTextSize(0.04)
+tlatex.SetTextAlign(12)
 
 for errorSet in errorSets:
   dataMasses = {}
@@ -250,8 +256,17 @@ for errorSet in errorSets:
         graphs.append(graph)
         leg.AddEntry(graph,label,"P")
       leg.Draw()
+      tlatex.DrawLatex(gStyle.GetPadLeftMargin(),0.96,PRELIMINARYSTRING)
+      tlatex.SetTextAlign(32)
+      tlatex.DrawLatex(1.02-gStyle.GetPadRightMargin(),0.96,errorSet)
+      tlatex.SetTextAlign(12)
+      dsLabel = "GF"
+      if ds=="vbfH":
+        dsLabel = "VBF"
+      captionStr = r"%s %s" % (dsLabel,energy.replace("TeV"," TeV"))
+      tlatex.DrawLatex(0.04+gStyle.GetPadLeftMargin(),0.88,captionStr)
       errorSetSaveName = errorSet.replace(" ","") 
-      canvas.SaveAs(errorSetSaveName+"_"+energy+".png")
+      canvas.SaveAs(errorSetSaveName+"_"+ds+energy+".png")
   
   # Now for a table
   tableStr = ""
