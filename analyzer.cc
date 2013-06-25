@@ -743,6 +743,7 @@ int main(int argc, char *argv[])
   float _jetLead_FullPUIDDisc;         
   int   _jetLead_FullPUIDFlag;         
   float _jetLead_CutPUIDDisc;         
+  int   _jetLead_flav;          
 
   float _jetSub_pt;          
   float _jetSub_eta;         
@@ -751,6 +752,7 @@ int main(int argc, char *argv[])
   float _jetSub_FullPUIDDisc;         
   int   _jetSub_FullPUIDFlag;         
   float _jetSub_CutPUIDDisc;         
+  int   _jetSub_flav;          
 
   float _kd;
   float _sigME;
@@ -807,6 +809,7 @@ int main(int argc, char *argv[])
   _outTree->Branch("jetLead_FullPUIDDisc",          &_jetLead_FullPUIDDisc,            "jetLead_FullPUIDDisc/F");         
   _outTree->Branch("jetLead_FullPUIDFlag",          &_jetLead_FullPUIDFlag,            "jetLead_FullPUIDFlag/I");         
   _outTree->Branch("jetLead_CutPUIDDisc",          &_jetLead_CutPUIDDisc,            "jetLead_CutPUIDDisc/F");         
+  _outTree->Branch("jetLead_flav",           &_jetLead_flav,             "jetLead_flav/I");          
 
   _outTree->Branch("jetSub_pt",           &_jetSub_pt,             "jetSub_pt/F");          
   _outTree->Branch("jetSub_eta",          &_jetSub_eta,            "jetSub_eta/F");         
@@ -815,6 +818,7 @@ int main(int argc, char *argv[])
   _outTree->Branch("jetSub_FullPUIDDisc",          &_jetSub_FullPUIDDisc,            "jetSub_FullPUIDDisc/F");         
   _outTree->Branch("jetSub_FullPUIDFlag",          &_jetSub_FullPUIDFlag,            "jetSub_FullPUIDFlag/I");         
   _outTree->Branch("jetSub_CutPUIDDisc",          &_jetSub_CutPUIDDisc,            "jetSub_CutPUIDDisc/F");         
+  _outTree->Branch("jetSub_flav",           &_jetSub_flav,             "jetSub_flav/I");          
 
   _outTree->Branch("kd",           &_kd,           "kd/F");
   _outTree->Branch("sigME",        &_sigME,        "sigME/F");
@@ -1741,6 +1745,7 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
       mva.etaJet1 = pJet1.Eta();
       hists.ptJet1->Fill(mva.ptJet1, weight);
       hists.etaJet1->Fill(mva.etaJet1, weight);
+      _jetLead_flav = jets.partonFlavour[iJet1];
 
       mva.puJetIDSimpleDiscJet1 = puJetSimpleDisc[iJet1];
       mva.puJetIDFullDiscJet1 = puJetFullDisc[iJet1];
@@ -1795,6 +1800,8 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
             mva.htInRapidityGap += jets.pt[*iGoodJet];
           }
       }
+
+      _jetSub_flav = jets.partonFlavour[iJet2];
 
       mva.puJetIDSimpleDiscJet2 = puJetSimpleDisc[iJet2];
       mva.puJetIDFullDiscJet2 = puJetFullDisc[iJet2];

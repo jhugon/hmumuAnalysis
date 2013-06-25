@@ -3,6 +3,7 @@
 import os
 import sys
 import re
+from math import sqrt, ceil
 
 import ROOT as root
 root.gROOT.SetBatch(True)
@@ -229,6 +230,8 @@ for errorSet in errorSets:
         if not os.path.exists(nomFn):
           print("Nominal File doesn't exist: %s" % nomFn)
           continue
+        if ds=="ggH" and mass=="125" and energy=="7TeV":
+          continue
         errFns =  ["%smmu%s%s_%s.root.txt" % (ds,energy,mass,i) for i in errorSets[errorSet]]
         sysNotExist = False
         for fn in errFns:
@@ -393,6 +396,8 @@ for ds in datasets:
     for mass in ueMasses:
       data[energy][mass] = {}
       # Also do nominal
+      #if ds=="ggH" and mass=="125" and energy=="7TeV":
+      #  continue
       nomFn =  "%smumu%s_%s.root.txt" % (ds,mass,energy)
       if not os.path.exists(nomFn):
         #print("Nominal File doesn't exist: %s" % nomFn)
@@ -407,14 +412,14 @@ for ds in datasets:
         errEffs = getEfficiencies(errFn)
         data[energy][mass][error] = errEffs
   for cat,label in zip(categories,labels):
-    graphs = []
-    leg = root.TLegend(0.75,0.66,0.9,0.9)
-    #leg = root.TLegend(0.45,0.60,0.95,0.9)
-    leg.SetFillColor(0)
-    leg.SetLineColor(0)
-    yMax = 0.
-    yMin = 1.
     for energy in energies:
+      graphs = []
+      leg = root.TLegend(0.75,0.66,0.9,0.9)
+      #leg = root.TLegend(0.45,0.60,0.95,0.9)
+      leg.SetFillColor(0)
+      leg.SetLineColor(0)
+      yMax = 0.
+      yMin = 1.
       for error,color in zip(["nom"]+errorSets["UE Variations"],[1]+colors[:len(errorSets["UE Variations"])]):
         graph = root.TGraphErrors()
         iPoint = 0
@@ -438,32 +443,46 @@ for ds in datasets:
         #print "energy: %s mass: %.1f error: %s cat: %s" % (energy,tmpMass,error,cat)
         #print "  %.2f +/- %.2e" % (tmpEff,tmpErr)
         graph.Draw("ap")
-        if energy=="8TeV":
-          if error == "nom":
-            error = "Z2 / Z2*"
-          leg.AddEntry(graph,error,"lep")
-        else:
-          graph.SetLineWidth(graph.GetLineWidth()/2)
-          graph.SetLineStyle(2)
-          graph.SetMarkerStyle(24)
+        if error == "nom":
+          if energy=="8TeV":
+            error = "Z2*"
+          else:
+            error = "Z2"
+        leg.AddEntry(graph,error,"lep")
         graphs.append(graph)
-    canvas.Clear()
-    #axis = root.TH2F("axisTunes"+cat+ds+energy,"",1,110,160,1,0.0,0.5)
-    axis = root.TH2F("axisTunes"+cat+ds+energy,"",1,110,160,1,0.,yMax*2.)
-    axis.GetXaxis().SetTitle("m_{H} [GeV/c^{2}]")
-    axis.GetYaxis().SetTitle("Signal Efficiency [%]")
-    axis.Draw()
-    for graph in graphs:
-      graph.Draw("PL")
-    leg.Draw()
-    tlatex.DrawLatex(gStyle.GetPadLeftMargin(),0.96,PRELIMINARYSTRING)
-    tlatex.SetTextAlign(32)
-    tlatex.DrawLatex(1.02-gStyle.GetPadRightMargin(),0.96,label)
-    tlatex.SetTextAlign(12)
-    dsLabel = "GF"
-    if ds=="vbfH":
-      dsLabel = "VBF"
-    captionStr = r"%s" % (dsLabel)
-    tlatex.DrawLatex(0.04+gStyle.GetPadLeftMargin(),0.88,captionStr)
-    errorSetSaveName = errorSet.replace(" ","") 
-    canvas.SaveAs("TuneEffComp_"+cat+"_"+ds+".png")
+      canvas.Clear()
+      #axis = root.TH2F("axisTunes"+cat+ds+energy,"",1,110,160,1,0.0,0.5)
+      yMax = yMax*2.
+      if yMax > 30.:
+        yMax = ceil(yMax/10) * 10
+      elif yMax > 16.:
+        yMax = ceil(yMax/5) * 5
+      elif yMax > 6.:
+        yMax = ceil(yMax/2) * 2
+      elif yMax > 1.6:
+        yMax = ceil(yMax)
+      elif yMax > 0.6:
+        yMax = ceil(yMax*5) / 5.
+      elif yMax > 0.2:
+        yMax = ceil(yMax*10) / 10.
+      elif yMax > 0.03:
+        yMax = ceil(yMax*100) / 100.
+        
+      axis = root.TH2F("axisTunes"+cat+ds+energy,"",1,110,160,1,0.,yMax)
+      axis.GetXaxis().SetTitle("m_{H} [GeV/c^{2}]")
+      axis.GetYaxis().SetTitle("Signal Efficiency [%]")
+      axis.Draw()
+      for graph in graphs:
+        graph.Draw("PL")
+      leg.Draw()
+      tlatex.DrawLatex(gStyle.GetPadLeftMargin(),0.96,PRELIMINARYSTRING)
+      tlatex.SetTextAlign(32)
+      tlatex.DrawLatex(1.02-gStyle.GetPadRightMargin(),0.96,label)
+      tlatex.SetTextAlign(12)
+      dsLabel = "GF"
+      if ds=="vbfH":
+        dsLabel = "VBF"
+      captionStr = r"%s %s" % (dsLabel,energy.replace("TeV"," TeV"))
+      tlatex.DrawLatex(0.04+gStyle.GetPadLeftMargin(),0.88,captionStr)
+      errorSetSaveName = errorSet.replace(" ","") 
+      canvas.SaveAs("TuneEffComp_"+cat+"_"+ds+"_"+energy+".png")
