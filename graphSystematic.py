@@ -149,6 +149,22 @@ def getUncertainty(nomFilename,sysFileNames):
   effFile.close()
   return uncertainties, statErrors
 
+def getEfficiencies(filename):
+  effFile = open(filename, 'r')
+  matchString = r"([\w]+)[\s]+([-0-9.eE]+)[\s]+([-0-9.eE]+)[\s]*"
+  effs = {}
+  for line in effFile:
+    nomMatch = re.match(matchString,line)
+    if not nomMatch:
+      print("Error: Eff line didn't match: %s" % line)
+      continue
+    nomName = nomMatch.group(1)
+    nomEff = float(nomMatch.group(2))
+    statErr = float(nomMatch.group(3))
+    effs[nomName] = {"eff":float(nomEff),"err":float(statErr)}
+  effFile.close()
+  return effs
+
 #datasets = ["ggH"]
 #energies = ["8TeV"]
 #masses = ["125"]
@@ -182,7 +198,10 @@ colors = [
   root.kRed,
   root.kGreen,
   root.kMagenta,
-  root.kCyan
+  root.kCyan,
+  root.kOrange+3,
+  root.kOrange-3,
+  root.kGray+2
 ]
 shifts = [0.2*(-len(categories)/2.+i) for i in range(len(categories))]
 
@@ -230,7 +249,7 @@ for errorSet in errorSets:
   axisList = []
   for energy in energies:
     for ds in datasets:
-      axis = root.TH2F("axis"+errorSet+energy,"",1,110,160,1,0.0,50)
+      axis = root.TH2F("axis"+errorSet+energy+ds,"",1,110,160,1,0.0,50)
       axis.GetXaxis().SetTitle("m_{H} [GeV/c^{2}]")
       axis.GetYaxis().SetTitle("Uncertainty on Signal Yield [%]")
       axis.Draw()
@@ -239,7 +258,7 @@ for errorSet in errorSets:
       #leg = root.TLegend(0.45,0.60,0.95,0.9)
       leg.SetFillColor(0)
       leg.SetLineColor(0)
-      for cat,col,shift,label in zip(categories,colors,shifts,labels):
+      for cat,col,shift,label in zip(categories,colors[:len(categories)],shifts,labels):
         graph = root.TGraphErrors()
         graph.SetLineColor(col)
         graph.SetMarkerColor(col)
@@ -364,3 +383,87 @@ for errorSet in errorSets:
   print("      }")
   print
   
+# Now UE specific plot
+ueMasses = masses
+ueMasses.remove("135")
+for ds in datasets:
+  data = {}
+  for energy in energies:
+    data[energy] = {}
+    for mass in ueMasses:
+      data[energy][mass] = {}
+      # Also do nominal
+      nomFn =  "%smumu%s_%s.root.txt" % (ds,mass,energy)
+      if not os.path.exists(nomFn):
+        #print("Nominal File doesn't exist: %s" % nomFn)
+        continue
+      nomEffs = getEfficiencies(nomFn)
+      data[energy][mass]["nom"] = nomEffs
+      # Now do variations
+      for error in errorSets["UE Variations"]:
+        errFn =  "%smmu%s%s_%s.root.txt" % (ds,energy,mass,error)
+        if not os.path.exists(errFn):
+          continue
+        errEffs = getEfficiencies(errFn)
+        data[energy][mass][error] = errEffs
+  for cat,label in zip(categories,labels):
+    graphs = []
+    leg = root.TLegend(0.75,0.66,0.9,0.9)
+    #leg = root.TLegend(0.45,0.60,0.95,0.9)
+    leg.SetFillColor(0)
+    leg.SetLineColor(0)
+    yMax = 0.
+    yMin = 1.
+    for energy in energies:
+      for error,color in zip(["nom"]+errorSets["UE Variations"],[1]+colors[:len(errorSets["UE Variations"])]):
+        graph = root.TGraphErrors()
+        iPoint = 0
+        for mass in masses:
+          if not data[energy].has_key(mass):
+            continue
+          if not data[energy][mass].has_key(error):
+            continue
+          tmpMass = float(mass)
+          tmpEff = data[energy][mass][error][cat]["eff"]
+          tmpErr = data[energy][mass][error][cat]["err"]
+          tmpEff *= 100.
+          tmpErr *= 100.
+          graph.SetPoint(iPoint,tmpMass,tmpEff)
+          graph.SetPointError(iPoint,0.,tmpErr)
+          yMin = min(yMin,tmpEff-tmpErr)
+          yMax = max(yMax,tmpEff+tmpErr)
+          iPoint += 1
+        graph.SetMarkerColor(color)
+        graph.SetLineColor(color)
+        #print "energy: %s mass: %.1f error: %s cat: %s" % (energy,tmpMass,error,cat)
+        #print "  %.2f +/- %.2e" % (tmpEff,tmpErr)
+        graph.Draw("ap")
+        if energy=="8TeV":
+          if error == "nom":
+            error = "Z2 / Z2*"
+          leg.AddEntry(graph,error,"lep")
+        else:
+          graph.SetLineWidth(graph.GetLineWidth()/2)
+          graph.SetLineStyle(2)
+          graph.SetMarkerStyle(24)
+        graphs.append(graph)
+    canvas.Clear()
+    #axis = root.TH2F("axisTunes"+cat+ds+energy,"",1,110,160,1,0.0,0.5)
+    axis = root.TH2F("axisTunes"+cat+ds+energy,"",1,110,160,1,0.,yMax*2.)
+    axis.GetXaxis().SetTitle("m_{H} [GeV/c^{2}]")
+    axis.GetYaxis().SetTitle("Signal Efficiency [%]")
+    axis.Draw()
+    for graph in graphs:
+      graph.Draw("PL")
+    leg.Draw()
+    tlatex.DrawLatex(gStyle.GetPadLeftMargin(),0.96,PRELIMINARYSTRING)
+    tlatex.SetTextAlign(32)
+    tlatex.DrawLatex(1.02-gStyle.GetPadRightMargin(),0.96,label)
+    tlatex.SetTextAlign(12)
+    dsLabel = "GF"
+    if ds=="vbfH":
+      dsLabel = "VBF"
+    captionStr = r"%s" % (dsLabel)
+    tlatex.DrawLatex(0.04+gStyle.GetPadLeftMargin(),0.88,captionStr)
+    errorSetSaveName = errorSet.replace(" ","") 
+    canvas.SaveAs("TuneEffComp_"+cat+"_"+ds+".png")
