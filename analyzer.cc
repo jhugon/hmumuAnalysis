@@ -923,6 +923,9 @@ int main(int argc, char *argv[])
   _outTree->Branch("jetSub_pt_JERDown",           &_jetSub_pt_JERDown,             "jetSub_pt_JERDown/F");          
   _outTree->Branch("jetSub_eta_JERDown",          &_jetSub_eta_JERDown,            "jetSub_eta_JERDown/F");         
 
+  float _puidUncWeight;         
+  _outTree->Branch("puidUncWeight",     &_puidUncWeight,    "puidUncWeight/F");
+
   //////////////////////////
   // Creating the MEKD
 
@@ -2253,6 +2256,23 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
     _jetSub_CutPUIDDisc = mva.puJetIDCutDiscJet2;
     _bdtVBF = mva.bdtValVBF;
     _bdtNonVBF = mva.bdtValInc;
+
+    // puid uncertainty weight.
+    _puidUncWeight = 1.;
+    if (fabs(mva.etaJet1)>2.4)
+    {
+      if (mva.ptJet1>40.)
+        _puidUncWeight *= 1.02;
+      else if(mva.ptJet1>30.)
+        _puidUncWeight *= 1.05;
+    }
+    if (fabs(mva.etaJet2)>2.4)
+    {
+      if (mva.ptJet2>40.)
+        _puidUncWeight *= 1.02;
+      else if(mva.ptJet2>30.)
+        _puidUncWeight *= 1.05;
+    }
 
     if (_eventType != 0) _outTree -> Fill();
 
