@@ -177,8 +177,8 @@ errorSets = {
   "UE Variations":["D6T","P0","ProPT0","ProQ20","UEOFF"]
 }
 errorSetKeyName = {
-  "Scale Variations":"scale",
-  "UE Variations":"ue"
+  "Scale Variations":"QCDScale",
+  "UE Variations":"UE"
 }
 categories = [
   "Jets01PassPtG10",
@@ -332,6 +332,7 @@ for errorSet in errorSets:
     for ds in datasets:
       for energy in energies:
         yMax = 0.
+        #print ("len(dataMasses[%s][%s]) = %i" % (energy,ds,len(dataMasses[energy][ds])))
         for iMass in range(len(dataMasses[energy][ds])):
           x = dataMasses[energy][ds][iMass]
           y = dataUnc[energy][ds][iMass][cat]
@@ -350,14 +351,15 @@ for errorSet in errorSets:
   print("    self."+errorSetKeyName[errorSet]+" = {")
   for dsName in datasets:
     dsLabel = "gg"
-    if ds=="vbfH":
+    if "vbf" in dsName:
       dsLabel = "vbf"
     print "      '"+dsLabel+"' : {"
     for energy in energies:
       print "        '"+energy+"' : {"
       for key in categories:
         maxErr = 0.
-        for iMass in range(len(dataMasses[energy][ds])):
+        #print ("len(dataMasses[%s][%s]) = %i" % (energy,dsName,len(dataMasses[energy][dsName])))
+        for iMass in range(len(dataMasses[energy][dsName])):
           x = dataMasses[energy][dsName][iMass]
           y = dataUnc[energy][dsName][iMass][key]
           maxErr = absMax(y,maxErr)
