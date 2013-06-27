@@ -129,7 +129,7 @@ env.Library(target="src/helpers",source=["src/helpers.cc"])
 mekd = env.Library(target="mekd/MEKD",source=mekdSources)
 env.Program(target="analyzer", source=["analyzer.cc","src/libmva.a","src/libhelpers.a",mekd]+corrFiles+smearFiles)
 #env.Program(target="systematics", source=["systematics.cc","src/libmva.a","src/libhelpers.a",mekd]+corrFiles+smearFiles)
-env.Program(target="systematicsJets", source=["systematicsJets.cc","src/libmva.a","src/libhelpers.a",mekd]+corrFiles+smearFiles)
+#env.Program(target="systematicsJets", source=["systematicsJets.cc","src/libmva.a","src/libhelpers.a",mekd]+corrFiles+smearFiles)
 env.Program(target="mvaTrain", source=["mvaTrain.cc"])
 
 env.Program(target="testVertex", source=["testVertex.cc","src/libmva.a","src/libhelpers.a",mekd])

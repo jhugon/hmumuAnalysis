@@ -70,60 +70,60 @@ typedef std::pair<float,float> pairOfDouble;
 using namespace std;
 using namespace boost;
 
-  // 7 subcategories in the analysis + 3 useful selections 
-  //const int NsubCat = 17;
-  //const int NsubCat = 23;
-  const int NsubCat = 44;
-  TString subCategory[NsubCat] = {"IncPreselPtG10BB             ",
-                                  "IncPreselPtG10BO             ",
-                                  "IncPreselPtG10BE             ",
-                                  "IncPreselPtG10OO             ",
-                                  "IncPreselPtG10OE             ",
-                                  "IncPreselPtG10EE             ",
-                                  "IncPresel                    ",
-                                  "IncPreselPtG10               ",
-                                  "VBFPresel                    ",
-                                  "VBFBDTCut                    ",
-                                  "IncPreselBB                  ",
-                                  "IncPreselBO                  ",
-                                  "IncPreselBE                  ",
-                                  "IncPreselOO                  ",
-                                  "IncPreselOE                  ",
-                                  "IncPreselEE                  ",
-                                  "VBFMJJG550                   ", 
-                                  "IncPreselPtG10BBres1         ",
-                                  "IncPreselPtG10BBres2         ",
-                                  "IncPreselPtG10BOres1         ",
-                                  "IncPreselPtG10BOres2         ",
-                                  "VBFDeJJG3p5MJJG550pTmissL100 ",
-                                  "VBFDeJJG3p4MJJG500pTmissL25  ",
-                                  // baseline++ from i = 23
-                                  "Jets01PassPtG10    ",
-                                  "Jets01PassPtG10BB  ",
-                                  "Jets01PassPtG10BO  ",
-                                  "Jets01PassPtG10BE  ",
-                                  "Jets01PassPtG10OO  ",
-                                  "Jets01PassPtG10OE  ",
-                                  "Jets01PassPtG10EE  ",
-                                  "Jets01PassPtG10CC  ", // BE+OO
-                                  "Jets01PassPtG10FF  ", // OE+EE
+// 7 subcategories in the analysis + 3 useful selections 
+//const int NsubCat = 17;
+//const int NsubCat = 23;
+const int NsubCat = 44;
+TString subCategory[NsubCat] = {"IncPreselPtG10BB             ",
+                                "IncPreselPtG10BO             ",
+                                "IncPreselPtG10BE             ",
+                                "IncPreselPtG10OO             ",
+                                "IncPreselPtG10OE             ",
+                                "IncPreselPtG10EE             ",
+                                "IncPresel                    ",
+                                "IncPreselPtG10               ",
+                                "VBFPresel                    ",
+                                "VBFBDTCut                    ",
+                                "IncPreselBB                  ",
+                                "IncPreselBO                  ",
+                                "IncPreselBE                  ",
+                                "IncPreselOO                  ",
+                                "IncPreselOE                  ",
+                                "IncPreselEE                  ",
+                                "VBFMJJG550                   ", 
+                                "IncPreselPtG10BBres1         ",
+                                "IncPreselPtG10BBres2         ",
+                                "IncPreselPtG10BOres1         ",
+                                "IncPreselPtG10BOres2         ",
+                                "VBFDeJJG3p5MJJG550pTmissL100 ",
+                                "VBFDeJJG3p4MJJG500pTmissL25  ",
+                                // baseline++ from i = 23
+                                "Jets01PassPtG10    ",
+                                "Jets01PassPtG10BB  ",
+                                "Jets01PassPtG10BO  ",
+                                "Jets01PassPtG10BE  ",
+                                "Jets01PassPtG10OO  ",
+                                "Jets01PassPtG10OE  ",
+                                "Jets01PassPtG10EE  ",
+                                "Jets01PassPtG10CC  ", // BE+OO
+                                "Jets01PassPtG10FF  ", // OE+EE
 
-                                  "Jets01FailPtG10    ",
-                                  "Jets01FailPtG10BB  ",
-                                  "Jets01FailPtG10BO  ",
-                                  "Jets01FailPtG10BE  ",
-                                  "Jets01FailPtG10OO  ",
-                                  "Jets01FailPtG10OE  ",
-                                  "Jets01FailPtG10EE  ",
-                                  "Jets01FailPtG10CC  ", // BE+OO
-                                  "Jets01FailPtG10FF  ", // OE+EE
+                                "Jets01FailPtG10    ",
+                                "Jets01FailPtG10BB  ",
+                                "Jets01FailPtG10BO  ",
+                                "Jets01FailPtG10BE  ",
+                                "Jets01FailPtG10OO  ",
+                                "Jets01FailPtG10OE  ",
+                                "Jets01FailPtG10EE  ",
+                                "Jets01FailPtG10CC  ", // BE+OO
+                                "Jets01FailPtG10FF  ", // OE+EE
 
-                                  "Jet2CutsVBFPass    ",
-                                  "Jet2CutsGFPass     ",
-                                  "Jet2CutsFailVBFGF  "};
-  int Flag_subCat = 1; // 1 make sub category eff and don't split on Nsample <- used
-                       // 0 don't make sub category and split on Nsample <- not used now
-  const int Nsample = 1; // devide event on subsamples <- not used now 
+                                "Jet2CutsVBFPass    ",
+                                "Jet2CutsGFPass     ",
+                                "Jet2CutsFailVBFGF  "};
+int Flag_subCat = 1; // 1 make sub category eff and don't split on Nsample <- used
+// 0 don't make sub category and split on Nsample <- not used now
+const int Nsample = 1; // devide event on subsamples <- not used now 
 
 Double_t MASS_MUON = 0.105658367;    //GeV/c2
 
@@ -148,10 +148,6 @@ struct HistStruct
   TH1F* mDiMu; // default is PFIso
   TH1F* mDiMu110to160; 
   TH1F* mDiMuTrkRelIso;
-  TH1F* mDiMuResSigUp;
-  TH1F* mDiMuResSigDown;
-  TH1F* mDiMuResASigUp;
-  TH1F* mDiMuResASigDown;
 
   TH1F* RelMassRes;
   TH1F* RelMassResCov;
@@ -253,13 +249,13 @@ int main(int argc, char *argv[])
   const char* optionIntro = "H->MuMu Analyzer\n\nUsage: ./analyzer [--help] [--train] [--maxEvents N] <outputFileName.root> <inputFileName.root> [<inputFileName2.root>...]\n\nAllowed Options";
   program_options::options_description optionDesc(optionIntro);
   optionDesc.add_options()
-      ("help,h", "Produce Help Message")
-      ("trainingTree,t",program_options::value<string>(), "Create Training Tree File with filename")
-      ("filenames",program_options::value<vector<string> >(), "Input & Output File Names, put output name first followed by all input file names")
-      ("maxEvents,m",program_options::value<int>(), "Maximum Number of Events to Process")
-      ("runPeriod,r",program_options::value<string>(), "Running Periods e.g. 7TeV, 8TeV")
-      ("dataMC,d", (std::string("Flag to only keep events in mass range: ").appendAny(dataMCMinMass).append(" to ").appendAny(dataMCMaxMass)).c_str())
-  ;
+    ("help,h", "Produce Help Message")
+    ("trainingTree,t",program_options::value<string>(), "Create Training Tree File with filename")
+    ("filenames",program_options::value<vector<string> >(), "Input & Output File Names, put output name first followed by all input file names")
+    ("maxEvents,m",program_options::value<int>(), "Maximum Number of Events to Process")
+    ("runPeriod,r",program_options::value<string>(), "Running Periods e.g. 7TeV, 8TeV")
+    ("dataMC,d", (std::string("Flag to only keep events in mass range: ").appendAny(dataMCMinMass).append(" to ").appendAny(dataMCMaxMass)).c_str())
+    ;
   
   program_options::positional_options_description optionPos;
   optionPos.add("filenames",-1);
@@ -269,47 +265,47 @@ int main(int argc, char *argv[])
   program_options::notify(optionMap);    
   
   if (optionMap.count("help")) 
-  {
+    {
       cout << optionDesc << "\n";
       return 1;
-  }
+    }
 
   std::vector<std::string> filenames;
   vector<string>::const_iterator filename;
   std::string outputFileName;
   if (optionMap.count("filenames")>0)
-  {
-     filenames = optionMap["filenames"].as<vector<string> >();
-     if(filenames.size()<2)
-     {
-       cout << "Error: Need both input file and output file names, exiting." << endl;
-       return 1;
-     }
-     outputFileName = filenames[0];
-     filenames.erase(filenames.begin());
-  }
+    {
+      filenames = optionMap["filenames"].as<vector<string> >();
+      if(filenames.size()<2)
+        {
+          cout << "Error: Need both input file and output file names, exiting." << endl;
+          return 1;
+        }
+      outputFileName = filenames[0];
+      filenames.erase(filenames.begin());
+    }
   else
-  {
-     cout << "Error: Input file name  and ouput file name arguments required, exiting." << endl;
-     return 1;
-  }
+    {
+      cout << "Error: Input file name  and ouput file name arguments required, exiting." << endl;
+      return 1;
+    }
 
   int maxEvents = std::numeric_limits<int>::max();
   if (optionMap.count("maxEvents")) 
-  {
+    {
       int tmp = optionMap["maxEvents"].as<int>();
       if (tmp > 0)
-      {
-        maxEvents = tmp;
-      }
-  }
+        {
+          maxEvents = tmp;
+        }
+    }
   cout << "maxEvents = "<< maxEvents << "\n";
 
   string runPeriod = "";
   if (optionMap.count("runPeriod"))
-  {
-    runPeriod = optionMap["runPeriod"].as<string>();
-  }
+    {
+      runPeriod = optionMap["runPeriod"].as<string>();
+    }
   //else
   //{
   //  cout << "Run Period not specified, exiting"<< endl;
@@ -318,11 +314,11 @@ int main(int argc, char *argv[])
   cout << "Run Period: " << runPeriod << endl;
 
   if (optionMap.count("dataMC"))
-  {
-    cout << "Only Running in Data/MC Mass range\n";
-    minMmm = dataMCMinMass;
-    maxMmm = dataMCMaxMass;
-  }
+    {
+      cout << "Only Running in Data/MC Mass range\n";
+      minMmm = dataMCMinMass;
+      maxMmm = dataMCMaxMass;
+    }
   cout << std::string("Cutting on m_{\\mu\\mu} in [").appendAny(minMmm).append(",").appendAny(maxMmm).append("] \n");
 
   /////////////////////////////
@@ -354,14 +350,14 @@ int main(int argc, char *argv[])
   dataWords.push_back("DoubleMu");
   std::vector<std::string>::const_iterator dataWord;
   for(dataWord = dataWords.begin(); dataWord != dataWords.end();dataWord++)
-  {
-    regex re(*dataWord);
-    if(regex_search(filenames[0],re))
     {
-        isData = true;
-        break;
+      regex re(*dataWord);
+      if(regex_search(filenames[0],re))
+        {
+          isData = true;
+          break;
+        }
     }
-  }
 
   // Check to see if it is signal
   bool isSignal = false;
@@ -372,14 +368,14 @@ int main(int argc, char *argv[])
   signalWords.push_back("HToMuMu");
   std::vector<std::string>::const_iterator signalWord;
   for(signalWord = signalWords.begin(); signalWord != signalWords.end();signalWord++)
-  {
-    regex re(*signalWord);
-    if(regex_search(filenames[0],re))
     {
-        isSignal = true;
-        break;
+      regex re(*signalWord);
+      if(regex_search(filenames[0],re))
+        {
+          isSignal = true;
+          break;
+        }
     }
-  }
 
   // Run periods
   bool is2011A = false;
@@ -431,15 +427,15 @@ int main(int argc, char *argv[])
 
   bool (*muonIdFuncPtr)(_MuonInfo&);
   if (runPeriod == "7TeV")
-  {
-    cout << "Using 2011 Tight Muon Selection\n";
-    muonIdFuncPtr = &isKinTight_2011_noIso;
-  }
+    {
+      cout << "Using 2011 Tight Muon Selection\n";
+      muonIdFuncPtr = &isKinTight_2011_noIso;
+    }
   else
-  {
-    cout << "Using 2012 Tight Muon Selection\n";
-    muonIdFuncPtr = &isKinTight_2012_noIso;
-  }
+    {
+      cout << "Using 2012 Tight Muon Selection\n";
+      muonIdFuncPtr = &isKinTight_2012_noIso;
+    }
 
   ////////////
   
@@ -447,10 +443,10 @@ int main(int argc, char *argv[])
 
   cout << "Input File Names: \n"; 
   for(filename = filenames.begin();filename != filenames.end();filename++)
-  {
-    cout<<"  "<< *filename << endl;
-    tree->AddFile(filename->c_str());
-  }
+    {
+      cout<<"  "<< *filename << endl;
+      tree->AddFile(filename->c_str());
+    }
 
   cout << "Output File Name: " << outputFileName << endl;
   TFile * outFile = new TFile(outputFileName.c_str(),"RECREATE");
@@ -458,12 +454,12 @@ int main(int argc, char *argv[])
   std::string trainingTreeFileName = "";
   bool trainingTreeRun=false;
   if (optionMap.count("trainingTree")) 
-  {
+    {
       cout << "Training enabled" << "\n";
       trainingTreeFileName = optionMap["trainingTree"].as<string>();
       cout << "Training Tree File Name: " << trainingTreeFileName << "\n";
       trainingTreeRun=true;
-  }
+    }
 
   //////////////////////////
   // Tree Branches
@@ -487,7 +483,7 @@ int main(int argc, char *argv[])
   if(!isData && tree->GetBranchStatus("trueMass"))
     tree->SetBranchAddress("trueMass", &trueMass);
 
-   /// Higgs Boson 
+  /// Higgs Boson 
   _genPartInfo genHpostFSR;
   if(!isData && tree->GetBranchStatus("genHpostFSR"))
     tree->SetBranchAddress("genHpostFSR", &genHpostFSR);
@@ -522,9 +518,9 @@ int main(int argc, char *argv[])
   int nPU=0;
 #ifdef PUREWEIGHT
   if (!isData)
-  {
-    tree->SetBranchAddress("nPU",&nPU);
-  }
+    {
+      tree->SetBranchAddress("nPU",&nPU);
+    }
 #endif
   _VertexInfo vertexInfo;
   tree->SetBranchAddress("vertexInfo",&vertexInfo);
@@ -644,14 +640,14 @@ int main(int argc, char *argv[])
 #ifdef PUREWEIGHT
   reweight::LumiReWeighting lumiWeights("pileupDists/PileUpHistMC2012Summer50nsPoissonOOTPU.root","pileupDists/PileUpHist2012ABCD.root","pileup","pileup");
   if (runPeriod == "7TeV")
-  {
-    cout << "Using 2011AB PU reweighting\n";
-    lumiWeights = reweight::LumiReWeighting("pileupDists/PileUpHistMCFall11.root","pileupDists/PileUpHist2011AB.root","pileup","pileup");
-  }
+    {
+      cout << "Using 2011AB PU reweighting\n";
+      lumiWeights = reweight::LumiReWeighting("pileupDists/PileUpHistMCFall11.root","pileupDists/PileUpHist2011AB.root","pileup","pileup");
+    }
   else
-  {
-    cout << "Using 2012ABCD PU reweighting\n";
-  }
+    {
+      cout << "Using 2012ABCD PU reweighting\n";
+    }
 #endif
 
   /////////////////////////////
@@ -661,19 +657,19 @@ int main(int argc, char *argv[])
   MuScleFitCorrector* mfCorr;
   TString mfInFile;
   if (isData)
-  {
-    if(runPeriod == "8TeV")
-      mfInFile = "musclefit/MuScleFit_2012_DATA_53X.txt";
-    else
-      mfInFile = "musclefit/MuScleFit_2011_DATA_44X.txt";
-  }
+    {
+      if(runPeriod == "8TeV")
+        mfInFile = "musclefit/MuScleFit_2012_DATA_53X.txt";
+      else
+        mfInFile = "musclefit/MuScleFit_2011_DATA_44X.txt";
+    }
   else
-  {
-    if(runPeriod == "8TeV")
-      mfInFile = "musclefit/MuScleFit_2012_MC_52X.txt";
-    else
-      mfInFile = "musclefit/MuScleFit_2011_MC_44X.txt";
-  }
+    {
+      if(runPeriod == "8TeV")
+        mfInFile = "musclefit/MuScleFit_2012_MC_52X.txt";
+      else
+        mfInFile = "musclefit/MuScleFit_2011_MC_44X.txt";
+    }
   mfCorr = new MuScleFitCorrector(mfInFile);
 #endif
 #ifdef ROCHESTER
@@ -713,6 +709,8 @@ int main(int argc, char *argv[])
   int _eventType;
 
   float _dimuonMass; 
+  float _dimuonMassResSFUp; 
+  float _dimuonMassResSFDown; 
   float _dimuonPt; 
   float _dimuonY;    
   float _cosThetaStar;
@@ -779,7 +777,9 @@ int main(int argc, char *argv[])
 
   _outTree->Branch("eventType",    &_eventType,   "eventType/I");
 
-  _outTree->Branch("dimuonMass",   &_dimuonMass,   "dimuonMass/F");
+  _outTree->Branch("dimuonMass",            &_dimuonMass,          "dimuonMass/F");
+  _outTree->Branch("dimuonMassResSFUp",     &_dimuonMassResSFUp,   "dimuonMassResSFUp/F");
+  _outTree->Branch("dimuonMassResSFDown",   &_dimuonMassResSFDown, "dimuonMassResSFDown/F");
   _outTree->Branch("dimuonPt"  ,   &_dimuonPt  ,   "dimuonPt/F");
   _outTree->Branch("dimuonY",      &_dimuonY,      "dimuonY/F");
   _outTree->Branch("cosThetaStar", &_cosThetaStar, "cosThetaStar/F");
@@ -971,26 +971,26 @@ int main(int argc, char *argv[])
   treeJet2CutsGFPass    -> SetDirectory(0);
   treeJet2CutsFailVBFGF -> SetDirectory(0);
 
+  // I am so sad I could not find a better way to do that
+  float _dimuonMassJets01PassPtG10  ;  float _dimuonMassJets01PassPtG10ResSFUp  ;  float _dimuonMassJets01PassPtG10ResSFDown  ;
+  float _dimuonMassJets01PassPtG10BB;  float _dimuonMassJets01PassPtG10BBResSFUp;  float _dimuonMassJets01PassPtG10BBResSFDown;
+  float _dimuonMassJets01PassPtG10BO;  float _dimuonMassJets01PassPtG10BOResSFUp;  float _dimuonMassJets01PassPtG10BOResSFDown;
+  float _dimuonMassJets01PassPtG10BE;  float _dimuonMassJets01PassPtG10BEResSFUp;  float _dimuonMassJets01PassPtG10BEResSFDown;
+  float _dimuonMassJets01PassPtG10OO;  float _dimuonMassJets01PassPtG10OOResSFUp;  float _dimuonMassJets01PassPtG10OOResSFDown;
+  float _dimuonMassJets01PassPtG10OE;  float _dimuonMassJets01PassPtG10OEResSFUp;  float _dimuonMassJets01PassPtG10OEResSFDown;
+  float _dimuonMassJets01PassPtG10EE;  float _dimuonMassJets01PassPtG10EEResSFUp;  float _dimuonMassJets01PassPtG10EEResSFDown;
 
-  float _dimuonMassJets01PassPtG10  ;
-  float _dimuonMassJets01PassPtG10BB;
-  float _dimuonMassJets01PassPtG10BO;
-  float _dimuonMassJets01PassPtG10BE;
-  float _dimuonMassJets01PassPtG10OO;
-  float _dimuonMassJets01PassPtG10OE;
-  float _dimuonMassJets01PassPtG10EE;
-        
-  float _dimuonMassJets01FailPtG10  ;
-  float _dimuonMassJets01FailPtG10BB;
-  float _dimuonMassJets01FailPtG10BO;
-  float _dimuonMassJets01FailPtG10BE;
-  float _dimuonMassJets01FailPtG10OO;
-  float _dimuonMassJets01FailPtG10OE;
-  float _dimuonMassJets01FailPtG10EE;
-        
-  float _dimuonMassJet2CutsVBFPass  ;
-  float _dimuonMassJet2CutsGFPass   ;
-  float _dimuonMassJet2CutsFailVBFGF;
+  float _dimuonMassJets01FailPtG10  ;  float _dimuonMassJets01FailPtG10ResSFUp  ;  float _dimuonMassJets01FailPtG10ResSFDown  ;
+  float _dimuonMassJets01FailPtG10BB;  float _dimuonMassJets01FailPtG10BBResSFUp;  float _dimuonMassJets01FailPtG10BBResSFDown;
+  float _dimuonMassJets01FailPtG10BO;  float _dimuonMassJets01FailPtG10BOResSFUp;  float _dimuonMassJets01FailPtG10BOResSFDown;
+  float _dimuonMassJets01FailPtG10BE;  float _dimuonMassJets01FailPtG10BEResSFUp;  float _dimuonMassJets01FailPtG10BEResSFDown;
+  float _dimuonMassJets01FailPtG10OO;  float _dimuonMassJets01FailPtG10OOResSFUp;  float _dimuonMassJets01FailPtG10OOResSFDown;
+  float _dimuonMassJets01FailPtG10OE;  float _dimuonMassJets01FailPtG10OEResSFUp;  float _dimuonMassJets01FailPtG10OEResSFDown;
+  float _dimuonMassJets01FailPtG10EE;  float _dimuonMassJets01FailPtG10EEResSFUp;  float _dimuonMassJets01FailPtG10EEResSFDown;
+
+  float _dimuonMassJet2CutsVBFPass  ;  float _dimuonMassJet2CutsVBFPassResSFUp  ;  float _dimuonMassJet2CutsVBFPassResSFDown  ;
+  float _dimuonMassJet2CutsGFPass   ;  float _dimuonMassJet2CutsGFPassResSFUp   ;  float _dimuonMassJet2CutsGFPassResSFDown   ;
+  float _dimuonMassJet2CutsFailVBFGF;  float _dimuonMassJet2CutsFailVBFGFResSFUp;  float _dimuonMassJet2CutsFailVBFGFResSFDown;
 
 
   treeJets01PassPtG10   -> Branch("dimuonMass",   &_dimuonMassJets01PassPtG10  ,   "dimuonMass/F");
@@ -1014,6 +1014,49 @@ int main(int argc, char *argv[])
   treeJet2CutsFailVBFGF -> Branch("dimuonMass",   &_dimuonMassJet2CutsFailVBFGF,   "dimuonMass/F");
 
 
+  // Muon Momentum Resolution SF Up
+  treeJets01PassPtG10   -> Branch("dimuonMassResSFUp",   &_dimuonMassJets01PassPtG10ResSFUp  ,   "dimuonMassResSFUp/F");
+  treeJets01PassPtG10BB -> Branch("dimuonMassResSFUp",   &_dimuonMassJets01PassPtG10BBResSFUp,   "dimuonMassResSFUp/F");
+  treeJets01PassPtG10BO -> Branch("dimuonMassResSFUp",   &_dimuonMassJets01PassPtG10BOResSFUp,   "dimuonMassResSFUp/F");
+  treeJets01PassPtG10BE -> Branch("dimuonMassResSFUp",   &_dimuonMassJets01PassPtG10BEResSFUp,   "dimuonMassResSFUp/F");
+  treeJets01PassPtG10OO -> Branch("dimuonMassResSFUp",   &_dimuonMassJets01PassPtG10OOResSFUp,   "dimuonMassResSFUp/F");
+  treeJets01PassPtG10OE -> Branch("dimuonMassResSFUp",   &_dimuonMassJets01PassPtG10OEResSFUp,   "dimuonMassResSFUp/F");
+  treeJets01PassPtG10EE -> Branch("dimuonMassResSFUp",   &_dimuonMassJets01PassPtG10EEResSFUp,   "dimuonMassResSFUp/F");
+
+  treeJets01FailPtG10   -> Branch("dimuonMassResSFUp",   &_dimuonMassJets01FailPtG10ResSFUp  ,   "dimuonMassResSFUp/F");
+  treeJets01FailPtG10BB -> Branch("dimuonMassResSFUp",   &_dimuonMassJets01FailPtG10BBResSFUp,   "dimuonMassResSFUp/F");
+  treeJets01FailPtG10BO -> Branch("dimuonMassResSFUp",   &_dimuonMassJets01FailPtG10BOResSFUp,   "dimuonMassResSFUp/F");
+  treeJets01FailPtG10BE -> Branch("dimuonMassResSFUp",   &_dimuonMassJets01FailPtG10BEResSFUp,   "dimuonMassResSFUp/F");
+  treeJets01FailPtG10OO -> Branch("dimuonMassResSFUp",   &_dimuonMassJets01FailPtG10OOResSFUp,   "dimuonMassResSFUp/F");
+  treeJets01FailPtG10OE -> Branch("dimuonMassResSFUp",   &_dimuonMassJets01FailPtG10OEResSFUp,   "dimuonMassResSFUp/F");
+  treeJets01FailPtG10EE -> Branch("dimuonMassResSFUp",   &_dimuonMassJets01FailPtG10EEResSFUp,   "dimuonMassResSFUp/F");
+
+  treeJet2CutsVBFPass   -> Branch("dimuonMassResSFUp",   &_dimuonMassJet2CutsVBFPassResSFUp  ,   "dimuonMassResSFUp/F");
+  treeJet2CutsGFPass    -> Branch("dimuonMassResSFUp",   &_dimuonMassJet2CutsGFPassResSFUp   ,   "dimuonMassResSFUp/F");
+  treeJet2CutsFailVBFGF -> Branch("dimuonMassResSFUp",   &_dimuonMassJet2CutsFailVBFGFResSFUp,   "dimuonMassResSFUp/F");
+
+
+  // Muon Momentum Resolution SF Down
+  treeJets01PassPtG10   -> Branch("dimuonMassResSFDown",   &_dimuonMassJets01PassPtG10ResSFDown  ,   "dimuonMassResSFDown/F");
+  treeJets01PassPtG10BB -> Branch("dimuonMassResSFDown",   &_dimuonMassJets01PassPtG10BBResSFDown,   "dimuonMassResSFDown/F");
+  treeJets01PassPtG10BO -> Branch("dimuonMassResSFDown",   &_dimuonMassJets01PassPtG10BOResSFDown,   "dimuonMassResSFDown/F");
+  treeJets01PassPtG10BE -> Branch("dimuonMassResSFDown",   &_dimuonMassJets01PassPtG10BEResSFDown,   "dimuonMassResSFDown/F");
+  treeJets01PassPtG10OO -> Branch("dimuonMassResSFDown",   &_dimuonMassJets01PassPtG10OOResSFDown,   "dimuonMassResSFDown/F");
+  treeJets01PassPtG10OE -> Branch("dimuonMassResSFDown",   &_dimuonMassJets01PassPtG10OEResSFDown,   "dimuonMassResSFDown/F");
+  treeJets01PassPtG10EE -> Branch("dimuonMassResSFDown",   &_dimuonMassJets01PassPtG10EEResSFDown,   "dimuonMassResSFDown/F");
+
+  treeJets01FailPtG10   -> Branch("dimuonMassResSFDown",   &_dimuonMassJets01FailPtG10ResSFDown  ,   "dimuonMassResSFDown/F");
+  treeJets01FailPtG10BB -> Branch("dimuonMassResSFDown",   &_dimuonMassJets01FailPtG10BBResSFDown,   "dimuonMassResSFDown/F");
+  treeJets01FailPtG10BO -> Branch("dimuonMassResSFDown",   &_dimuonMassJets01FailPtG10BOResSFDown,   "dimuonMassResSFDown/F");
+  treeJets01FailPtG10BE -> Branch("dimuonMassResSFDown",   &_dimuonMassJets01FailPtG10BEResSFDown,   "dimuonMassResSFDown/F");
+  treeJets01FailPtG10OO -> Branch("dimuonMassResSFDown",   &_dimuonMassJets01FailPtG10OOResSFDown,   "dimuonMassResSFDown/F");
+  treeJets01FailPtG10OE -> Branch("dimuonMassResSFDown",   &_dimuonMassJets01FailPtG10OEResSFDown,   "dimuonMassResSFDown/F");
+  treeJets01FailPtG10EE -> Branch("dimuonMassResSFDown",   &_dimuonMassJets01FailPtG10EEResSFDown,   "dimuonMassResSFDown/F");
+
+  treeJet2CutsVBFPass   -> Branch("dimuonMassResSFDown",   &_dimuonMassJet2CutsVBFPassResSFDown  ,   "dimuonMassResSFDown/F");
+  treeJet2CutsGFPass    -> Branch("dimuonMassResSFDown",   &_dimuonMassJet2CutsGFPassResSFDown   ,   "dimuonMassResSFDown/F");
+  treeJet2CutsFailVBFGF -> Branch("dimuonMassResSFDown",   &_dimuonMassJet2CutsFailVBFGFResSFDown,   "dimuonMassResSFDown/F");
+
   //////////////////////////
   // Creating the MEKD
 
@@ -1025,13 +1068,13 @@ int main(int argc, char *argv[])
   MEKD_Wrapper mekdPdf(nTeV,true);
 #endif
 
-//////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////
   int Nbin;
   if(Flag_subCat == 1) Nbin = NsubCat;
   else Nbin = Nsample;
-//////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////
   int counterGenBoson  [Nbin]; // mass cut only
   int counterMinimCuts [Nbin]; // mass, charge, vertex, cosmic
   int counterAccCuts   [Nbin]; // pt, eta
@@ -1063,48 +1106,48 @@ int main(int argc, char *argv[])
   float dEffNonJetSel [Nbin]; // jet selection
   float dEffDiPt10GeV [Nbin]; // pt(mumu) > = 10 GeV/c 
 
-//reset them
+  //reset them
   for(unsigned iS=0; iS < Nbin;iS++){
-   counterGenBoson  [iS] = 0;
-   counterMinimCuts [iS] = 0;
-   counterAccCuts   [iS] = 0;
-   counterIDCuts    [iS] = 0;
-   counterIsoCuts   [iS] = 0; // trk Iso
-   counterTrigCuts  [iS] = 0; // iso mu 24_eta2p1
-   counterJetSel    [iS] = 0; // jet selection
-   counterBDTvbfCut [iS] = 0; // VBF BDT cut
-   counterNonJetSel [iS] = 0; // jet selection
-   counterDiPt10GeV [iS] = 0; // jet selection
+    counterGenBoson  [iS] = 0;
+    counterMinimCuts [iS] = 0;
+    counterAccCuts   [iS] = 0;
+    counterIDCuts    [iS] = 0;
+    counterIsoCuts   [iS] = 0; // trk Iso
+    counterTrigCuts  [iS] = 0; // iso mu 24_eta2p1
+    counterJetSel    [iS] = 0; // jet selection
+    counterBDTvbfCut [iS] = 0; // VBF BDT cut
+    counterNonJetSel [iS] = 0; // jet selection
+    counterDiPt10GeV [iS] = 0; // jet selection
 
-   EffMinimCuts [iS] = 0; // mass, charge, vertex, cosmic
-   EffAccCuts   [iS] = 0; // pt, eta
-   EffIDCuts    [iS] = 0; // tight muon id
-   EffIsoCuts   [iS] = 0; // trk Iso
-   EffTrigCuts  [iS] = 0; // iso mu 24_eta2p1
-   EffJetSel    [iS] = 0; // jet selection
-   EffBDTvbfCut [iS] = 0; // VBF BDT cut
-   EffNonJetSel [iS] = 0; // jet selection
-   EffDiPt10GeV [iS] = 0; // pt(mumu) > = 10 GeV/c 
+    EffMinimCuts [iS] = 0; // mass, charge, vertex, cosmic
+    EffAccCuts   [iS] = 0; // pt, eta
+    EffIDCuts    [iS] = 0; // tight muon id
+    EffIsoCuts   [iS] = 0; // trk Iso
+    EffTrigCuts  [iS] = 0; // iso mu 24_eta2p1
+    EffJetSel    [iS] = 0; // jet selection
+    EffBDTvbfCut [iS] = 0; // VBF BDT cut
+    EffNonJetSel [iS] = 0; // jet selection
+    EffDiPt10GeV [iS] = 0; // pt(mumu) > = 10 GeV/c 
 
-   dEffMinimCuts [iS] = 0; // mass, charge, vertex, cosmic
-   dEffAccCuts   [iS] = 0; // pt, eta
-   dEffIDCuts    [iS] = 0; // tight muon id
-   dEffIsoCuts   [iS] = 0; // trk Iso
-   dEffTrigCuts  [iS] = 0; // iso mu 24_eta2p1
-   dEffJetSel    [iS] = 0; // jet selection
-   dEffBDTvbfCut [iS] = 0; // VBF BDT cut
-   dEffNonJetSel [iS] = 0; // jet selection
-   dEffDiPt10GeV [iS] = 0; // pt(mumu) > = 10 GeV/c 
+    dEffMinimCuts [iS] = 0; // mass, charge, vertex, cosmic
+    dEffAccCuts   [iS] = 0; // pt, eta
+    dEffIDCuts    [iS] = 0; // tight muon id
+    dEffIsoCuts   [iS] = 0; // trk Iso
+    dEffTrigCuts  [iS] = 0; // iso mu 24_eta2p1
+    dEffJetSel    [iS] = 0; // jet selection
+    dEffBDTvbfCut [iS] = 0; // VBF BDT cut
+    dEffNonJetSel [iS] = 0; // jet selection
+    dEffDiPt10GeV [iS] = 0; // pt(mumu) > = 10 GeV/c 
   }
 
-//////////////////////////////////////////////////////////////////////
-        //create txt file with fit output
-        ofstream myfile ("EffInfo.txt");
-        std::string effFileName = outputFileName;
-        effFileName.append(".txt");
-        //ofstream myfileSubCat ("EffInfoSubCat.txt");
-        ofstream myfileSubCat (effFileName.c_str());
-//////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////
+  //create txt file with fit output
+  ofstream myfile ("EffInfo.txt");
+  std::string effFileName = outputFileName;
+  effFileName.append(".txt");
+  //ofstream myfileSubCat ("EffInfoSubCat.txt");
+  ofstream myfileSubCat (effFileName.c_str());
+  //////////////////////////////////////////////////////////////////////
 
 
   unsigned nEvents = tree->GetEntries();
@@ -1135,20 +1178,20 @@ int main(int argc, char *argv[])
     if (i % reportEach == 0) cout << "Event: " << i << endl;
 
     //for efficiency:
-   //find sub sample
+    //find sub sample
     int IsampleGen = -1;
     if(Flag_subCat != 1){
-       for(unsigned iS = 0; iS<Nbin ;iS++){
-           if(i >= nSubEven*iS && i < nSubEven*(iS+1)){
-                IsampleGen = iS;
-           }
-           if(iS == (Nbin -1) && i >= nSubEven*iS){
-                IsampleGen = iS;
-           }
-       }
+      for(unsigned iS = 0; iS<Nbin ;iS++){
+        if(i >= nSubEven*iS && i < nSubEven*(iS+1)){
+          IsampleGen = iS;
+        }
+        if(iS == (Nbin -1) && i >= nSubEven*iS){
+          IsampleGen = iS;
+        }
+      }
     }
     if(Flag_subCat == 1)IsampleGen = 0;
-   //cout << "subcategory = " << IsampleGen << " for iEvent = " << i << " and Nbin = " << Nbin << " nSubEven = " << nSubEven << endl;  
+    //cout << "subcategory = " << IsampleGen << " for iEvent = " << i << " and Nbin = " << Nbin << " nSubEven = " << nSubEven << endl;  
     if (IsampleGen < 0) cout << " IsampleGen = -1 for Event = " << i << endl;
     if (IsampleGen < 0) continue;
     //end: find sub sample
@@ -1165,14 +1208,14 @@ int main(int argc, char *argv[])
     }
 
     if(reco1.pt<0. || reco2.pt<0.)
-        continue;
+      continue;
 
     double weight = 1.0;
     double weightMuonEffUp   = 1.0;
     double weightMuonEffDown = 1.0;
     if (isSignal)
-    {
-      double randForSF = randomForSF.Rndm();
+      {
+        double randForSF = randomForSF.Rndm();
         if (runPeriod == "7TeV"){
           weight            *= weightFromSF_2011(randForSF,reco1,reco2, 0.   , 0.   ,0.    );
           weightMuonEffUp   *= weightFromSF_2011(randForSF,reco1,reco2, 0.005, 0.002, 0.002);
@@ -1182,7 +1225,7 @@ int main(int argc, char *argv[])
           weightMuonEffUp   *= weightFromSF(randForSF,reco1,reco2, 0.005, 0.002, 0.002);
           weightMuonEffDown *= weightFromSF(randForSF,reco1,reco2,-0.005,-0.002,-0.002);
         }
-    }
+      }
 
 
 
@@ -1221,36 +1264,36 @@ int main(int argc, char *argv[])
     float recoOrigRes1 = -999.;
     float recoOrigRes2 = -999.;
     if (reco1GenPostFSR.pt > 0.0 && reco2GenPostFSR.pt > 0.0)
-    {
-      reco1GenVec.SetPtEtaPhiM(reco1GenPostFSR.pt,reco1GenPostFSR.eta,reco1GenPostFSR.phi,MASS_MUON);
-      reco2GenVec.SetPtEtaPhiM(reco2GenPostFSR.pt,reco2GenPostFSR.eta,reco2GenPostFSR.phi,MASS_MUON);
-      float deltaR_t1r1 = reco1GenVec.DeltaR(reco1Vec);
-      float deltaR_t1r2 = reco1GenVec.DeltaR(reco2Vec);
-      float deltaR_t2r1 = reco2GenVec.DeltaR(reco1Vec);
-      float deltaR_t2r2 = reco2GenVec.DeltaR(reco2Vec);
-      _TrackInfo tmpTrue1 = reco1GenPostFSR;
-      _TrackInfo tmpTrue2 = reco2GenPostFSR;
-      TLorentzVector tmpVec1 = reco1GenVec;
-      TLorentzVector tmpVec2 = reco2GenVec;
-      if (deltaR_t1r1 > deltaR_t1r2)
       {
-        tmpTrue1 = reco2GenPostFSR;
-        tmpVec1 = reco2GenVec;
+        reco1GenVec.SetPtEtaPhiM(reco1GenPostFSR.pt,reco1GenPostFSR.eta,reco1GenPostFSR.phi,MASS_MUON);
+        reco2GenVec.SetPtEtaPhiM(reco2GenPostFSR.pt,reco2GenPostFSR.eta,reco2GenPostFSR.phi,MASS_MUON);
+        float deltaR_t1r1 = reco1GenVec.DeltaR(reco1Vec);
+        float deltaR_t1r2 = reco1GenVec.DeltaR(reco2Vec);
+        float deltaR_t2r1 = reco2GenVec.DeltaR(reco1Vec);
+        float deltaR_t2r2 = reco2GenVec.DeltaR(reco2Vec);
+        _TrackInfo tmpTrue1 = reco1GenPostFSR;
+        _TrackInfo tmpTrue2 = reco2GenPostFSR;
+        TLorentzVector tmpVec1 = reco1GenVec;
+        TLorentzVector tmpVec2 = reco2GenVec;
+        if (deltaR_t1r1 > deltaR_t1r2)
+          {
+            tmpTrue1 = reco2GenPostFSR;
+            tmpVec1 = reco2GenVec;
+          }
+        if (deltaR_t2r2 > deltaR_t2r1)
+          {
+            tmpTrue2 = reco1GenPostFSR;
+            tmpVec2 = reco1GenVec;
+          }
+        reco1GenPostFSR=tmpTrue1;
+        reco2GenPostFSR=tmpTrue2;
+        reco1GenVec = tmpVec1;
+        reco2GenVec = tmpVec2;
+        recoGenDR1 = reco1GenVec.DeltaR(reco1Vec);
+        recoGenDR2 = reco2GenVec.DeltaR(reco2Vec);
+        recoOrigRes1 = (reco1.pt-reco1GenPostFSR.pt)/reco1.pt;
+        recoOrigRes2 = (reco2.pt-reco2GenPostFSR.pt)/reco2.pt;
       }
-      if (deltaR_t2r2 > deltaR_t2r1)
-      {
-        tmpTrue2 = reco1GenPostFSR;
-        tmpVec2 = reco1GenVec;
-      }
-      reco1GenPostFSR=tmpTrue1;
-      reco2GenPostFSR=tmpTrue2;
-      reco1GenVec = tmpVec1;
-      reco2GenVec = tmpVec2;
-      recoGenDR1 = reco1GenVec.DeltaR(reco1Vec);
-      recoGenDR2 = reco2GenVec.DeltaR(reco2Vec);
-      recoOrigRes1 = (reco1.pt-reco1GenPostFSR.pt)/reco1.pt;
-      recoOrigRes2 = (reco2.pt-reco2GenPostFSR.pt)/reco2.pt;
-    }
     // reject fake muon matches to gen level for signal only : very loose rejection DR < 0.5 and Resolution < 40%!
     //if(isSignal){
     //   if(recoGenDR1 > 0.5 || recoGenDR2 > 0.5) continue;
@@ -1290,31 +1333,31 @@ int main(int argc, char *argv[])
     reco2Cor.SetPtEtaPhiM(reco2.pt,reco2.eta,reco2.phi,MASS_MUON);
     float rochesterError=1.0; //1.0 if you don't care
     if (runPeriod == "7TeV")
-    {
-      if (isData)
       {
-        rCorr11->momcor_data(reco1Cor,reco1.charge,0,rochesterRun,rochesterError);
-        rCorr11->momcor_data(reco2Cor,reco2.charge,0,rochesterRun,rochesterError);
+        if (isData)
+          {
+            rCorr11->momcor_data(reco1Cor,reco1.charge,0,rochesterRun,rochesterError);
+            rCorr11->momcor_data(reco2Cor,reco2.charge,0,rochesterRun,rochesterError);
+          }
+        else
+          {
+            rCorr11->momcor_mc(reco1Cor,reco1.charge,0,rochesterRun,rochesterError);
+            rCorr11->momcor_mc(reco2Cor,reco2.charge,0,rochesterRun,rochesterError);
+          }
       }
-      else
-      {
-        rCorr11->momcor_mc(reco1Cor,reco1.charge,0,rochesterRun,rochesterError);
-        rCorr11->momcor_mc(reco2Cor,reco2.charge,0,rochesterRun,rochesterError);
-      }
-    }
     else
-    {
-      if (isData)
       {
-        rCorr12->momcor_data(reco1Cor,reco1.charge,0,rochesterRun,rochesterError);
-        rCorr12->momcor_data(reco2Cor,reco2.charge,0,rochesterRun,rochesterError);
+        if (isData)
+          {
+            rCorr12->momcor_data(reco1Cor,reco1.charge,0,rochesterRun,rochesterError);
+            rCorr12->momcor_data(reco2Cor,reco2.charge,0,rochesterRun,rochesterError);
+          }
+        else
+          {
+            rCorr12->momcor_mc(reco1Cor,reco1.charge,0,rochesterRun,rochesterError);
+            rCorr12->momcor_mc(reco2Cor,reco2.charge,0,rochesterRun,rochesterError);
+          }
       }
-      else
-      {
-        rCorr12->momcor_mc(reco1Cor,reco1.charge,0,rochesterRun,rochesterError);
-        rCorr12->momcor_mc(reco2Cor,reco2.charge,0,rochesterRun,rochesterError);
-      }
-    }
     TLorentzVector diMuonCor = reco1Cor + reco2Cor;
     reco1.pt = reco1Cor.Pt();
     reco2.pt = reco2Cor.Pt();
@@ -1332,15 +1375,15 @@ int main(int argc, char *argv[])
     reco2Cor.SetPtEtaPhiM(reco2.pt,reco2.eta,reco2.phi,MASS_MUON);
     float rochesterError=1.0; //1.0 if you don't care
     if (isData)
-    {
-      rCorr12jan22->momcor_data(reco1Cor,reco1.charge,0,rochesterError);
-      rCorr12jan22->momcor_data(reco2Cor,reco2.charge,0,rochesterError);
-    }
+      {
+        rCorr12jan22->momcor_data(reco1Cor,reco1.charge,0,rochesterError);
+        rCorr12jan22->momcor_data(reco2Cor,reco2.charge,0,rochesterError);
+      }
     else
-    {
-      rCorr12jan22->momcor_mc(reco1Cor,reco1.charge,0,rochesterError);
-      rCorr12jan22->momcor_mc(reco2Cor,reco2.charge,0,rochesterError);
-    }
+      {
+        rCorr12jan22->momcor_mc(reco1Cor,reco1.charge,0,rochesterError);
+        rCorr12jan22->momcor_mc(reco2Cor,reco2.charge,0,rochesterError);
+      }
     TLorentzVector diMuonCor = reco1Cor + reco2Cor;
     reco1.pt = reco1Cor.Pt();
     reco2.pt = reco2Cor.Pt();
@@ -1354,105 +1397,73 @@ int main(int argc, char *argv[])
 
     TLorentzVector recoCandVec = reco1Vec+reco2Vec;
 
-    float mDiMuResSigUp = recoCandMass;
-    float mDiMuResSigDown = recoCandMass;
-    float mDiMuResASigUp = recoCandMass;
-    float mDiMuResASigDown = recoCandMass;
+    float mDiMuResSFUp   = recoCandMass;
+    float mDiMuResSFDown = recoCandMass;
 
 #ifdef SMEARING
     if(isSignal) // smear only signal because it has muons from higgs 
-    {
-      if(reco1GenPostFSR.pt<0.)
-        cout << "Muon 1 Post FSR not valid!\n";
-      if(reco2GenPostFSR.pt<0.)
-        cout << "Muon 2 Post FSR not valid!\n";
-      float ptReco1 = -1.;
-      float ptReco2 = -1.;
-      if(runPeriod == "7TeV")
       {
-        ptReco1 = smearPT2011 -> PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge, reco1.pt, ISMEAR);
-        ptReco2 = smearPT2011 -> PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge, reco2.pt, ISMEAR);
-      }
-      else
-      {
-        ptReco1 = smearPT -> PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge, reco1.pt, ISMEAR);
-        ptReco2 = smearPT -> PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge, reco2.pt, ISMEAR);
-      }
-      TLorentzVector reco1Vec;
-      TLorentzVector reco2Vec;
-      reco1Vec.SetPtEtaPhiM(ptReco1,reco1.eta,reco1.phi,MASS_MUON);
-      reco2Vec.SetPtEtaPhiM(ptReco2,reco2.eta,reco2.phi,MASS_MUON);
-      TLorentzVector diMuonVec = reco1Vec + reco2Vec;
+        if(reco1GenPostFSR.pt<0.)
+          cout << "Muon 1 Post FSR not valid!\n";
+        if(reco2GenPostFSR.pt<0.)
+          cout << "Muon 2 Post FSR not valid!\n";
+        float ptReco1 = -1.;
+        float ptReco2 = -1.;
+        if(runPeriod == "7TeV")
+          {
+            ptReco1 = smearPT2011 -> PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge, reco1.pt, ISMEAR);
+            ptReco2 = smearPT2011 -> PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge, reco2.pt, ISMEAR);
+          }
+        else
+          {
+            ptReco1 = smearPT -> PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge, reco1.pt, ISMEAR);
+            ptReco2 = smearPT -> PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge, reco2.pt, ISMEAR);
+          }
+        TLorentzVector reco1Vec;
+        TLorentzVector reco2Vec;
+        reco1Vec.SetPtEtaPhiM(ptReco1,reco1.eta,reco1.phi,MASS_MUON);
+        reco2Vec.SetPtEtaPhiM(ptReco2,reco2.eta,reco2.phi,MASS_MUON);
+        TLorentzVector diMuonVec = reco1Vec + reco2Vec;
 
-      reco1.pt = ptReco1;
-      reco2.pt = ptReco2;
-      recoCandMass = diMuonVec.M();
-      recoCandPt = diMuonVec.Pt();
-      recoCandY = diMuonVec.Rapidity();
-      recoCandPhi = diMuonVec.Phi();
-
-      //Systematics Time
-      if(runPeriod == "7TeV")
-      {
-        ptReco1 = smearPT2011->PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge, reco1.pt, ISMEAR, "sig1",1.0);
-        ptReco2 = smearPT2011->PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge, reco2.pt, ISMEAR,"sig1",1.0);
-      }
-      else
-      {
-        ptReco1 = smearPT->PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge, reco1.pt, ISMEAR, "sig1",1.0);
-        ptReco2 = smearPT->PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge, reco2.pt, ISMEAR,"sig1",1.0);
-      }
-      reco1Vec.SetPtEtaPhiM(ptReco1,reco1.eta,reco1.phi,MASS_MUON);
-      reco2Vec.SetPtEtaPhiM(ptReco2,reco2.eta,reco2.phi,MASS_MUON);
-      diMuonVec = reco1Vec + reco2Vec;
-      mDiMuResSigUp = diMuonVec.M();
-
-      if(runPeriod == "7TeV")
-      {
-        ptReco1 = smearPT2011->PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge, reco1.pt, ISMEAR,"sig1",-1.0);
-        ptReco2 = smearPT2011->PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge, reco2.pt, ISMEAR,"sig1",-1.0);
-      }
-      else
-      {
-        ptReco1 = smearPT->PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge, reco1.pt, ISMEAR,"sig1",-1.0);
-        ptReco2 = smearPT->PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge, reco2.pt, ISMEAR,"sig1",-1.0);
-      }
-      reco1Vec.SetPtEtaPhiM(ptReco1,reco1.eta,reco1.phi,MASS_MUON);
-      reco2Vec.SetPtEtaPhiM(ptReco2,reco2.eta,reco2.phi,MASS_MUON);
-      diMuonVec = reco1Vec + reco2Vec;
-      mDiMuResSigDown = diMuonVec.M();
-
-      if(runPeriod == "7TeV")
-      {
-        ptReco1 = smearPT2011->PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge, reco1.pt, ISMEAR,"Asig2Var",1.0);
-        ptReco2 = smearPT2011->PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge, reco2.pt, ISMEAR,"Asig2Var",1.0);
-      }
-      else
-      {
-        ptReco1 = smearPT->PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge, reco1.pt, ISMEAR,"Asig2Var",1.0);
-        ptReco2 = smearPT->PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge, reco2.pt, ISMEAR,"Asig2Var",1.0);
-      }
-      reco1Vec.SetPtEtaPhiM(ptReco1,reco1.eta,reco1.phi,MASS_MUON);
-      reco2Vec.SetPtEtaPhiM(ptReco2,reco2.eta,reco2.phi,MASS_MUON);
-      diMuonVec = reco1Vec + reco2Vec;
-      mDiMuResASigUp = diMuonVec.M();
-
-      if(runPeriod == "7TeV")
-      {
-        ptReco1 = smearPT2011->PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge, reco1.pt, ISMEAR,"Asig2Var",-1.0);
-        ptReco2 = smearPT2011->PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge, reco2.pt, ISMEAR,"Asig2Var",-1.0);
-      }
-      else
-      {
-        ptReco1 = smearPT->PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge, reco1.pt, ISMEAR,"Asig2Var",-1.0);
-        ptReco2 = smearPT->PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge, reco2.pt, ISMEAR,"Asig2Var",-1.0);
-      }
-      reco1Vec.SetPtEtaPhiM(ptReco1,reco1.eta,reco1.phi,MASS_MUON);
-      reco2Vec.SetPtEtaPhiM(ptReco2,reco2.eta,reco2.phi,MASS_MUON);
-      diMuonVec = reco1Vec + reco2Vec;
-      mDiMuResASigDown = diMuonVec.M();
+        reco1.pt = ptReco1;
+        reco2.pt = ptReco2;
+        recoCandMass = diMuonVec.M();
+        recoCandPt = diMuonVec.Pt();
+        recoCandY = diMuonVec.Rapidity();
+        recoCandPhi = diMuonVec.Phi();
       
-    }
+        //Systematics Time For Muon Momentum Resolution
+        if(runPeriod == "7TeV")
+          {
+            ptReco1 = smearPT2011->PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge, reco1.pt, ISMEAR, 0.13);
+            ptReco2 = smearPT2011->PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge, reco2.pt, ISMEAR, 0.13);
+          }
+        else
+          {
+            ptReco1 = smearPT->PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge, reco1.pt, ISMEAR, 0.02);
+            ptReco2 = smearPT->PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge, reco2.pt, ISMEAR, 0.02);
+          }
+        reco1Vec.SetPtEtaPhiM(ptReco1,reco1.eta,reco1.phi,MASS_MUON);
+        reco2Vec.SetPtEtaPhiM(ptReco2,reco2.eta,reco2.phi,MASS_MUON);
+        diMuonVec = reco1Vec + reco2Vec;
+        mDiMuResSFUp = diMuonVec.M();
+      
+        if(runPeriod == "7TeV")
+          {
+            ptReco1 = smearPT2011->PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge, reco1.pt, ISMEAR, -0.13);
+            ptReco2 = smearPT2011->PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge, reco2.pt, ISMEAR, -0.13);
+          }
+        else
+          {
+            ptReco1 = smearPT->PTsmear(reco1GenPostFSR.pt, reco1GenPostFSR.eta, reco1GenPostFSR.charge, reco1.pt, ISMEAR, -0.02);
+            ptReco2 = smearPT->PTsmear(reco2GenPostFSR.pt, reco2GenPostFSR.eta, reco2GenPostFSR.charge, reco2.pt, ISMEAR, -0.02);
+          }
+        reco1Vec.SetPtEtaPhiM(ptReco1,reco1.eta,reco1.phi,MASS_MUON);
+        reco2Vec.SetPtEtaPhiM(ptReco2,reco2.eta,reco2.phi,MASS_MUON);
+        diMuonVec = reco1Vec + reco2Vec;
+        mDiMuResSFDown = diMuonVec.M();
+      }
+    
 #endif
 
     // Anna's Extra Checks on Muons; Moved To After Corrections
@@ -1463,36 +1474,36 @@ int main(int argc, char *argv[])
     if(reco1.eta < -900. || reco2.eta < -900) continue;//rejection fake in reco level
 
 
-// EFFTEST:
+    // EFFTEST:
 #ifdef EFFTEST 
 
-// 1st EFFTEST
+    // 1st EFFTEST
 
-if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.eta)<2.4 && recoCandMass > 50){
+    if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.eta)<2.4 && recoCandMass > 50){
+      
+      cout << "info1: " << eventInfo.run <<  " " << eventInfo.lumi << " " << eventInfo.event << " "
+           << reco1.pt << " " << reco1.eta << " " << reco1.phi << " "
+           << reco2.pt << " " << reco2.eta << " " << reco2.phi << " "
+           << endl;
 
-   cout << "info1: " << eventInfo.run <<  " " << eventInfo.lumi << " " << eventInfo.event << " "
-        << reco1.pt << " " << reco1.eta << " " << reco1.phi << " "
-        << reco2.pt << " " << reco2.eta << " " << reco2.phi << " "
-    << endl;
+      if(isKinTight_2012_noIso_noPF(reco1) && isKinTight_2012_noIso_noPF(reco2)){
 
-   if(isKinTight_2012_noIso_noPF(reco1) && isKinTight_2012_noIso_noPF(reco2)){
+        cout << "info2 tight noPFIso, noPF: " << eventInfo.run <<  " " << eventInfo.lumi << " " << eventInfo.event << " "
+             << reco1.pt << " " << reco1.eta << " " << reco1.phi << " "
+             << reco2.pt << " " << reco2.eta << " " << reco2.phi << " "
+             << endl;
 
-   cout << "info2 tight noPFIso, noPF: " << eventInfo.run <<  " " << eventInfo.lumi << " " << eventInfo.event << " "
-        << reco1.pt << " " << reco1.eta << " " << reco1.phi << " "
-        << reco2.pt << " " << reco2.eta << " " << reco2.phi << " "
-    << endl;
+      }
+      if( (isKinTight_2012_noIso_noPF(reco1) && isKinTight_2012_noIso_noPF(reco2))
+          && reco1.isPFMuon && reco1.isPFMuon  ){
+        cout << "info3 tight noPFIso: " << eventInfo.run <<  " " << eventInfo.lumi << " " << eventInfo.event << " "
+             << reco1.pt << " " << reco1.eta << " " << reco1.phi << " "
+             << reco2.pt << " " << reco2.eta << " " << reco2.phi << " "
+             << endl;
 
-   }
-   if( (isKinTight_2012_noIso_noPF(reco1) && isKinTight_2012_noIso_noPF(reco2))
-       && reco1.isPFMuon && reco1.isPFMuon  ){
-   cout << "info3 tight noPFIso: " << eventInfo.run <<  " " << eventInfo.lumi << " " << eventInfo.event << " "
-        << reco1.pt << " " << reco1.eta << " " << reco1.phi << " "
-        << reco2.pt << " " << reco2.eta << " " << reco2.phi << " "
-    << endl;
-
-   }
-}
-// END EFFTEST
+      }
+    }
+    // END EFFTEST
 #endif
 
     fillMuonHist(hists.countsHist2, reco1, reco2);
@@ -1504,9 +1515,9 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
     mva.RelMassResCov = 0.;
     //if(recoCandMassResCov < 0.0001) cout << "recoCandMassResCov = " << recoCandMassResCov << endl;
     if(recoCandMass > 0) 
-          mva.RelMassRes = GetMassRes(reco1,reco2)/recoCandMass;
+      mva.RelMassRes = GetMassRes(reco1,reco2)/recoCandMass;
     if(recoCandMassOrig > 0) 
-          mva.RelMassResCov = recoCandMassResCov/recoCandMassOrig;
+      mva.RelMassResCov = recoCandMassResCov/recoCandMassOrig;
 
 
     bool inBlindWindow = mva.mDiMu < maxBlind && mva.mDiMu > minBlind;
@@ -1515,17 +1526,17 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
   
 #ifdef BLIND
     if (inBlindWindow && isData)
-        blind = true;
+      blind = true;
 #endif
 
 #ifdef PUREWEIGHT
     if (!isData)
-    {
-      weight            *= lumiWeights.weight(nPU);
-      weightMuonEffUp   *= lumiWeights.weight(nPU);
-      weightMuonEffDown *= lumiWeights.weight(nPU);
+      {
+        weight            *= lumiWeights.weight(nPU);
+        weightMuonEffUp   *= lumiWeights.weight(nPU);
+        weightMuonEffDown *= lumiWeights.weight(nPU);
 
-    }
+      }
 #endif
 
     hists.countsHist->Fill(0.0, weight);
@@ -1534,15 +1545,15 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
     _MuonInfo muon1;
     _MuonInfo muon2;
     if(reco1.pt>reco2.pt)
-    {
+      {
         muon1 = reco1;
         muon2 = reco2;
-    }
+      }
     else
-    {
+      {
         muon1 = reco2;
         muon2 = reco1;
-    }
+      }
     // define geometrical categories: 
     bool isBB = false;
     bool isBO = false;
@@ -1551,82 +1562,82 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
     bool isOE = false;
     bool isEE = false;
     if(fabs(muon1.eta)<0.8 && fabs(muon2.eta)<0.8)
-    {
+      {
         isBB=true;
-    }
+      }
     else if(
-        (fabs(muon1.eta)<0.8 && fabs(muon2.eta)<1.6)
+            (fabs(muon1.eta)<0.8 && fabs(muon2.eta)<1.6)
             || (fabs(muon1.eta)<1.6 && fabs(muon2.eta)<0.8)
-        )
-    {
+            )
+      {
         isBO=true;
-    }
+      }
     else if(
-        fabs(muon1.eta)<0.8 || fabs(muon2.eta)<0.8
-        )
-    {
+            fabs(muon1.eta)<0.8 || fabs(muon2.eta)<0.8
+            )
+      {
         isBE=true;
-    }
+      }
     else if(
-        fabs(muon1.eta)<1.6 && fabs(muon2.eta)<1.6
-        )
-    {
+            fabs(muon1.eta)<1.6 && fabs(muon2.eta)<1.6
+            )
+      {
         isOO=true;
-    }
+      }
     else if(
-        fabs(muon1.eta)<1.6 || fabs(muon2.eta)<1.6
-        )
-    {
+            fabs(muon1.eta)<1.6 || fabs(muon2.eta)<1.6
+            )
+      {
         isOE=true;
-    }
+      }
     else
-    {
+      {
         isEE=true;
-    }
+      }
     bool isNotBB = !isBB;
 
-   // for efficiency:
+    // for efficiency:
     //find sub sample
     int Isample = -1;
     if(Flag_subCat != 1){
-       for(unsigned iS = 0; iS<Nbin ;iS++){
-           if(i >= nSubEven*iS && i < nSubEven*(iS+1)){
-                Isample = iS;
-           }
-           if(iS == (Nbin -1) && i >= nSubEven*iS){
-                Isample = iS;
-           }
-       }
+      for(unsigned iS = 0; iS<Nbin ;iS++){
+        if(i >= nSubEven*iS && i < nSubEven*(iS+1)){
+          Isample = iS;
+        }
+        if(iS == (Nbin -1) && i >= nSubEven*iS){
+          Isample = iS;
+        }
+      }
     }
     if(Flag_subCat == 1){
-       if(isBB) Isample = 0;
-       if(isBO) Isample = 1;
-       if(isBE) Isample = 2;
-       if(isOO) Isample = 3;
-       if(isOE) Isample = 4;
-       if(isEE) Isample = 5;
+      if(isBB) Isample = 0;
+      if(isBO) Isample = 1;
+      if(isBE) Isample = 2;
+      if(isOO) Isample = 3;
+      if(isOE) Isample = 4;
+      if(isEE) Isample = 5;
     }
     //cout << "subcategory = " << Isample << " for iEvent = " << i << " and Nbin = " << Nbin << " nSubEven = " << nSubEven << endl;  
     if (Isample < 0) cout << " Isample = -1 for Event = " << i << endl;
     if (Isample < 0) continue;
     //end: find sub sample
 
-   bool IFMinimCuts = mva.mDiMu >= MinMassEff && mva.mDiMu <= MaxMassEff;
-   bool IFAccCuts   = reco1.pt >= 25 && reco2.pt >= 25 && fabs(reco1.eta) <= 2.1 && fabs(reco2.eta) <= 2.1; 
-   bool IFIDCuts    = ((*muonIdFuncPtr)(reco1)) && ((*muonIdFuncPtr)(reco2)); // NOT contain ISO anymore
-   bool IFPFIsoCuts   = getPFRelIso(reco1) <= 0.12 && getPFRelIso(reco2) <= 0.12;
-   bool IFTrigCuts  = isHltMatched(reco1,reco2,allowedHLTPaths);
-   bool IFAllTrigCuts  = IFMinimCuts && IFAccCuts && IFIDCuts && IFPFIsoCuts && IFTrigCuts;
+    bool IFMinimCuts = mva.mDiMu >= MinMassEff && mva.mDiMu <= MaxMassEff;
+    bool IFAccCuts   = reco1.pt >= 25 && reco2.pt >= 25 && fabs(reco1.eta) <= 2.1 && fabs(reco2.eta) <= 2.1; 
+    bool IFIDCuts    = ((*muonIdFuncPtr)(reco1)) && ((*muonIdFuncPtr)(reco2)); // NOT contain ISO anymore
+    bool IFPFIsoCuts   = getPFRelIso(reco1) <= 0.12 && getPFRelIso(reco2) <= 0.12;
+    bool IFTrigCuts  = isHltMatched(reco1,reco2,allowedHLTPaths);
+    bool IFAllTrigCuts  = IFMinimCuts && IFAccCuts && IFIDCuts && IFPFIsoCuts && IFTrigCuts;
 
-   if(IFMinimCuts)                                          counterMinimCuts[Isample]++;
-   if(IFMinimCuts && IFAccCuts)                             counterAccCuts[Isample]++;
-   if(IFMinimCuts && IFAccCuts && IFIDCuts)                 counterIDCuts[Isample]++;
-   if(IFMinimCuts && IFAccCuts && IFIDCuts && IFPFIsoCuts)  counterIsoCuts[Isample]++;
-   if(IFAllTrigCuts)                                        counterTrigCuts[Isample]++; 
+    if(IFMinimCuts)                                          counterMinimCuts[Isample]++;
+    if(IFMinimCuts && IFAccCuts)                             counterAccCuts[Isample]++;
+    if(IFMinimCuts && IFAccCuts && IFIDCuts)                 counterIDCuts[Isample]++;
+    if(IFMinimCuts && IFAccCuts && IFIDCuts && IFPFIsoCuts)  counterIsoCuts[Isample]++;
+    if(IFAllTrigCuts)                                        counterTrigCuts[Isample]++; 
 
     // this selection does NOT contain ISO anymore!!!
     if (!((*muonIdFuncPtr)(reco1)) || !((*muonIdFuncPtr)(reco2)))
-          continue;
+      continue;
 
     hists.countsHist->Fill(1.0, weight);
 
@@ -1637,12 +1648,12 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
     hists.countsHist->Fill(2.0, weight);
 
     if (reco1.charge*reco2.charge != -1)
-        continue;
+      continue;
 
     hists.countsHist->Fill(3.0, weight);
 
     if (mva.mDiMu < minMmm || mva.mDiMu > maxMmm)
-        continue;
+      continue;
 
     hists.countsHist->Fill(4.0, weight);
 
@@ -1650,11 +1661,6 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
     mva.weight = weight;
     mva.met = met.pt;
     mva.nPU = nPU;
-
-    mva.mDiMuResSigUp = mDiMuResSigUp;
-    mva.mDiMuResSigDown = mDiMuResSigDown;
-    mva.mDiMuResASigUp = mDiMuResASigUp;
-    mva.mDiMuResASigDown = mDiMuResASigDown;
 
     mva.ptMu1=muon1.pt;
     mva.ptMu2=muon2.pt;
@@ -1673,7 +1679,8 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
     float mDiMuCalibUp = mva.mDiMu+calibSysSmear;
     float mDiMuCalibDown = mva.mDiMu-calibSysSmear;
 
-    float mDiMuResUp = smearMC(trueMass,recoCandMass,calib,resSmear+resSysSmear,random);
+
+    float mDiMuResUp   = smearMC(trueMass,recoCandMass,calib,resSmear+resSysSmear,random);
     float mDiMuResDown = smearMC(trueMass,recoCandMass,calib,resSmear-resSysSmear,random);
 
     bool inTrainingWindow = (mva.mDiMu < 160. && mva.mDiMu > 70.);
@@ -1690,18 +1697,18 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
 #ifdef MEKD_STANDALONE
     int kdStatus = 0;
     kdStatus = mekd.getKD(reco1Vec, reco2Vec, 
-                            reco1.charge, 
-                            _kd, _sigME, _bakME);
+                          reco1.charge, 
+                          _kd, _sigME, _bakME);
     if (kdStatus != 0)
       cout << "Error: MEKD: " << _kd << " Status: "<<kdStatus 
-        << " sigME: " << _sigME << " bakME: "<< _bakME<<endl;
+           << " sigME: " << _sigME << " bakME: "<< _bakME<<endl;
 
     kdStatus = mekdPdf.getKD(reco1Vec, reco2Vec, 
-                            reco1.charge, 
-                            _kdPdf, _sigMEPdf, _bakMEPdf);
+                             reco1.charge, 
+                             _kdPdf, _sigMEPdf, _bakMEPdf);
     if (kdStatus != 0)
       cout << "Error: MEKD w/ PDF: " << _kdPdf << " Status: "<<kdStatus 
-        << " sigME: " << _sigMEPdf << " bakME: "<< _bakMEPdf<<endl;
+           << " sigME: " << _sigMEPdf << " bakME: "<< _bakMEPdf<<endl;
 #endif
 
     //////////////////////////////////////////
@@ -1725,46 +1732,46 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
     //if (muon1.charge>0)
     //std::cout << "Run: " << eventInfo.run << " lumi: " << eventInfo.lumi << " event: " << eventInfo.event << std::endl;
     if ((int) (eventInfo.event) % 2 == 0)
-    {
+      {
         TVector3 directionOfBoost = starMuon1.BoostVector();
         mva.cosThetaStar = directionOfBoost.Dot(diMuon.BoostVector()) / (directionOfBoost.Mag()*diMuon.BoostVector().Mag());
-    }
+      }
     else
-    {
+      {
         TVector3 directionOfBoost = starMuon2.BoostVector();
         mva.cosThetaStar = directionOfBoost.Dot(diMuon.BoostVector()) / (directionOfBoost.Mag()*diMuon.BoostVector().Mag());
-    }
+      }
 
     //////////////////////////////////////////
     //Computing CosTheta* Collins-Soper
 
     //std::cout << "muon1 charge: " << muon1.charge << "muon2 charge: "<<muon2.charge << std::endl;
     if (muon1.charge != muon2.charge)
-    {
-      // p1 is lepton
-      // p2 is anti-lepton
-      float p1Plus=-1e15;
-      float p2Plus=-1e15;
-      float p1Minus=-1e15;
-      float p2Minus=-1e15;
-      if (muon1.charge < 0)
       {
-        p1Plus  = (pMuon1.E()+pMuon1.Pz())/SQRT2;
-        p1Minus = (pMuon1.E()-pMuon1.Pz())/SQRT2;
-        p2Plus  = (pMuon2.E()+pMuon2.Pz())/SQRT2;
-        p2Minus = (pMuon2.E()-pMuon2.Pz())/SQRT2;
+        // p1 is lepton
+        // p2 is anti-lepton
+        float p1Plus=-1e15;
+        float p2Plus=-1e15;
+        float p1Minus=-1e15;
+        float p2Minus=-1e15;
+        if (muon1.charge < 0)
+          {
+            p1Plus  = (pMuon1.E()+pMuon1.Pz())/SQRT2;
+            p1Minus = (pMuon1.E()-pMuon1.Pz())/SQRT2;
+            p2Plus  = (pMuon2.E()+pMuon2.Pz())/SQRT2;
+            p2Minus = (pMuon2.E()-pMuon2.Pz())/SQRT2;
+          }
+        else
+          {
+            p1Plus  = (pMuon2.E()+pMuon2.Pz())/SQRT2;
+            p1Minus = (pMuon2.E()-pMuon2.Pz())/SQRT2;
+            p2Plus  = (pMuon1.E()+pMuon1.Pz())/SQRT2;
+            p2Minus = (pMuon1.E()-pMuon1.Pz())/SQRT2;
+          }
+        mva.cosThetaStarCS = diMuon.Pz()/fabs(diMuon.Pz()) * 
+          2*(p1Plus*p2Minus-p1Minus*p2Plus) / 
+          (diMuon.Mag()*sqrt(diMuon.Mag2()+diMuon.Pt()*diMuon.Pt()));
       }
-      else
-      {
-        p1Plus  = (pMuon2.E()+pMuon2.Pz())/SQRT2;
-        p1Minus = (pMuon2.E()-pMuon2.Pz())/SQRT2;
-        p2Plus  = (pMuon1.E()+pMuon1.Pz())/SQRT2;
-        p2Minus = (pMuon1.E()-pMuon1.Pz())/SQRT2;
-      }
-      mva.cosThetaStarCS = diMuon.Pz()/fabs(diMuon.Pz()) * 
-                               2*(p1Plus*p2Minus-p1Minus*p2Plus) / 
-                               (diMuon.Mag()*sqrt(diMuon.Mag2()+diMuon.Pt()*diMuon.Pt()));
-    }
 
     // Computing nVtx Valid
     //for(unsigned iVtx=0;iVtx<vertexInfo.nVertices;iVtx++)
@@ -1780,19 +1787,15 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
     // Filling Hists
 
     if (!blind)
-    {
-      hists.mDiMu->Fill(mva.mDiMu, weight);
-      hists.mDiMuResSigUp->Fill(mDiMuResSigUp, weight);
-      hists.mDiMuResSigDown->Fill(mDiMuResSigDown, weight);
-      hists.mDiMuResASigUp->Fill(mDiMuResASigUp, weight);
-      hists.mDiMuResASigDown->Fill(mDiMuResASigDown, weight);
-      hists.yVmDiMu->Fill(mva.mDiMu,fabs(mva.yDiMu), weight);
-      hists.ptVmDiMu->Fill(mva.mDiMu,mva.ptDiMu, weight);
-      hists.phiVmDiMu->Fill(mva.mDiMu,recoCandPhi, weight);
+      {
+        hists.mDiMu->Fill(mva.mDiMu, weight);
+        hists.yVmDiMu->Fill(mva.mDiMu,fabs(mva.yDiMu), weight);
+        hists.ptVmDiMu->Fill(mva.mDiMu,mva.ptDiMu, weight);
+        hists.phiVmDiMu->Fill(mva.mDiMu,recoCandPhi, weight);
 
-      hists.RelMassRes->Fill(mva.RelMassRes, weight);
-      hists.RelMassResCov->Fill(mva.RelMassResCov, weight);
-    }
+        hists.RelMassRes->Fill(mva.RelMassRes, weight);
+        hists.RelMassResCov->Fill(mva.RelMassResCov, weight);
+      }
 
     hists.yDiMu->Fill(mva.yDiMu, weight);
     hists.ptDiMu->Fill(mva.ptDiMu, weight);
@@ -1825,127 +1828,127 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
     int jetPUIDCut = 4; // >=    tight = 7, medium = 6, loose = 4
     std::vector<unsigned> goodJetIndices;
     for(unsigned iJet=0; (iJet < jets.nJets && iJet < 10);iJet++)
-    {
+      {
         if (jets.genPt[iJet]>0.0 && jets.pt[iJet]>15.)
           jets.pt[iJet] = jerCorr(jets.pt[iJet],jets.genPt[iJet],jets.eta[iJet]);
         bool goodPt = jets.pt[iJet]>jetPtCut || (fabs(jets.eta[iJet < 2.4]) && jets.pt[iJet]>jetPtCutC);
         bool goodPUID = puJetFullId[iJet] >= jetPUIDCut;
         if (goodPt && goodPUID)
-        {
-          mva.nJets++;
-          mva.ht += jets.pt[iJet];
-          goodJetIndices.push_back(iJet);
-        }
-    }
-
-    if (mva.nJets>=1)
-    {
-      unsigned iJet1 = goodJetIndices[0];
-      TLorentzVector pJet1;
-      pJet1.SetXYZM(jets.px[iJet1],jets.py[iJet1],jets.pz[iJet1],jets.mass[iJet1]);
-
-      mva.ptJet1 = pJet1.Pt();
-      mva.etaJet1 = pJet1.Eta();
-      hists.ptJet1->Fill(mva.ptJet1, weight);
-      hists.etaJet1->Fill(mva.etaJet1, weight);
-
-      mva.puJetIDSimpleDiscJet1 = puJetSimpleDisc[iJet1];
-      mva.puJetIDFullDiscJet1 = puJetFullDisc[iJet1];
-      mva.puJetIDSimpleJet1 = (int) puJetSimpleId[iJet1];
-      mva.puJetIDFullJet1 = (int) puJetFullId[iJet1];
-      hists.puJetIDSimpleDiscJet1->Fill(mva.puJetIDSimpleDiscJet1,weight);
-      hists.puJetIDSimpleJet1->Fill(mva.puJetIDSimpleJet1,weight);
-
-      mva.deltaPhiHJ1 = pJet1.DeltaPhi(diMuon);
-      hists.deltaPhiHJ1->Fill(mva.deltaPhiHJ1, weight);
-      if (mva.nJets < 2)
-      {
-        mva.ptmiss = (pJet1+recoCandVec).Pt();
-      }
-    }
-
-    if(mva.nJets>=2)
-    {
-      unsigned iJet1 = goodJetIndices[0];
-      unsigned iJet2 = goodJetIndices[1];
-      TLorentzVector pJet1;
-      TLorentzVector pJet2;
-      pJet1.SetXYZM(jets.px[iJet1],jets.py[iJet1],jets.pz[iJet1],jets.mass[iJet1]);
-      pJet2.SetXYZM(jets.px[iJet2],jets.py[iJet2],jets.pz[iJet2],jets.mass[iJet2]);
-      TLorentzVector diJet = pJet1+pJet2;
-
-      double dEtaJets = fabs(jets.eta[iJet1]-jets.eta[iJet2]);
-      double etaJetProduct = jets.eta[iJet1]*jets.eta[iJet2];
-      mva.deltaPhiJets = pJet1.DeltaPhi(pJet2);
-      mva.deltaRJets = pJet1.DeltaR(pJet2);
-
-      // Seeing if there are jets in the rapidity gap
-      float etaMax = jets.eta[iJet1];
-      float etaMin = 9999999.0;
-      if(etaMax < jets.eta[iJet2])
-      {
-          etaMax = jets.eta[iJet2];
-          etaMin = jets.eta[iJet1];
-      }
-      else
-      {
-          etaMin = jets.eta[iJet2];
-      }
-      bool jetInRapidityGap=false;
-      for(std::vector<unsigned>::const_iterator iGoodJet=goodJetIndices.begin();
-                                      iGoodJet != goodJetIndices.end();iGoodJet++)
-      {
-          if(jets.eta[*iGoodJet] < etaMax && jets.eta[*iGoodJet] > etaMin)
           {
-            jetInRapidityGap = true;
-            mva.nJetsInRapidityGap++;
-            mva.htInRapidityGap += jets.pt[*iGoodJet];
+            mva.nJets++;
+            mva.ht += jets.pt[iJet];
+            goodJetIndices.push_back(iJet);
           }
       }
 
-      mva.puJetIDSimpleDiscJet2 = puJetSimpleDisc[iJet2];
-      mva.puJetIDFullDiscJet2 = puJetFullDisc[iJet2];
-      mva.puJetIDSimpleJet2 = (int) puJetSimpleId[iJet2];
-      mva.puJetIDFullJet2 = (int) puJetFullId[iJet2];
-
-      if (mva.nJets>=3)
+    if (mva.nJets>=1)
       {
-        unsigned iJet3 = goodJetIndices[2];
-        mva.puJetIDSimpleDiscJet3 = puJetSimpleDisc[iJet3];
-        mva.puJetIDFullDiscJet3 = puJetFullDisc[iJet3];
-        mva.puJetIDSimpleJet3 = (int) puJetSimpleId[iJet3];
-        mva.puJetIDFullJet3 = (int) puJetFullId[iJet3];
-        hists.puJetIDSimpleDiscJet3->Fill(mva.puJetIDSimpleDiscJet3,weight);
-        hists.puJetIDSimpleJet3->Fill(mva.puJetIDSimpleJet3,weight);
+        unsigned iJet1 = goodJetIndices[0];
+        TLorentzVector pJet1;
+        pJet1.SetXYZM(jets.px[iJet1],jets.py[iJet1],jets.pz[iJet1],jets.mass[iJet1]);
+
+        mva.ptJet1 = pJet1.Pt();
+        mva.etaJet1 = pJet1.Eta();
+        hists.ptJet1->Fill(mva.ptJet1, weight);
+        hists.etaJet1->Fill(mva.etaJet1, weight);
+
+        mva.puJetIDSimpleDiscJet1 = puJetSimpleDisc[iJet1];
+        mva.puJetIDFullDiscJet1 = puJetFullDisc[iJet1];
+        mva.puJetIDSimpleJet1 = (int) puJetSimpleId[iJet1];
+        mva.puJetIDFullJet1 = (int) puJetFullId[iJet1];
+        hists.puJetIDSimpleDiscJet1->Fill(mva.puJetIDSimpleDiscJet1,weight);
+        hists.puJetIDSimpleJet1->Fill(mva.puJetIDSimpleJet1,weight);
+
+        mva.deltaPhiHJ1 = pJet1.DeltaPhi(diMuon);
+        hists.deltaPhiHJ1->Fill(mva.deltaPhiHJ1, weight);
+        if (mva.nJets < 2)
+          {
+            mva.ptmiss = (pJet1+recoCandVec).Pt();
+          }
       }
 
-      mva.mDiJet = diJet.M();
-      mva.yDiJet = diJet.Rapidity();
-      mva.ptDiJet = diJet.Pt();
-      mva.ptJet2 = pJet2.Pt();
-      mva.etaJet2 = pJet2.Eta();
-      mva.productEtaJets = etaJetProduct;
-      mva.deltaEtaJets = dEtaJets;
-      mva.ptmiss = (diJet+recoCandVec).Pt();
+    if(mva.nJets>=2)
+      {
+        unsigned iJet1 = goodJetIndices[0];
+        unsigned iJet2 = goodJetIndices[1];
+        TLorentzVector pJet1;
+        TLorentzVector pJet2;
+        pJet1.SetXYZM(jets.px[iJet1],jets.py[iJet1],jets.pz[iJet1],jets.mass[iJet1]);
+        pJet2.SetXYZM(jets.px[iJet2],jets.py[iJet2],jets.pz[iJet2],jets.mass[iJet2]);
+        TLorentzVector diJet = pJet1+pJet2;
 
-      hists.mDiJet->Fill(mva.mDiJet, weight);
-      hists.ptDiJet->Fill(mva.ptDiJet, weight);
-      hists.yDiJet->Fill(mva.yDiJet, weight);
-      hists.ptJet2->Fill(mva.ptJet2, weight);
-      hists.etaJet2->Fill(mva.etaJet2, weight);
-      hists.deltaEtaJets->Fill(mva.deltaEtaJets, weight);
-      hists.deltaPhiJets->Fill(mva.deltaPhiJets, weight);
-      hists.deltaRJets->Fill(mva.deltaRJets, weight);
-      hists.nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, weight);
-      hists.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
-      hists.nJets->Fill(mva.nJets, weight);
-      hists.ht->Fill(mva.ht, weight);
-      hists.ptmiss->Fill(mva.ptmiss, weight);
+        double dEtaJets = fabs(jets.eta[iJet1]-jets.eta[iJet2]);
+        double etaJetProduct = jets.eta[iJet1]*jets.eta[iJet2];
+        mva.deltaPhiJets = pJet1.DeltaPhi(pJet2);
+        mva.deltaRJets = pJet1.DeltaR(pJet2);
 
-      hists.puJetIDSimpleDiscJet2->Fill(mva.puJetIDSimpleDiscJet2,weight);
+        // Seeing if there are jets in the rapidity gap
+        float etaMax = jets.eta[iJet1];
+        float etaMin = 9999999.0;
+        if(etaMax < jets.eta[iJet2])
+          {
+            etaMax = jets.eta[iJet2];
+            etaMin = jets.eta[iJet1];
+          }
+        else
+          {
+            etaMin = jets.eta[iJet2];
+          }
+        bool jetInRapidityGap=false;
+        for(std::vector<unsigned>::const_iterator iGoodJet=goodJetIndices.begin();
+            iGoodJet != goodJetIndices.end();iGoodJet++)
+          {
+            if(jets.eta[*iGoodJet] < etaMax && jets.eta[*iGoodJet] > etaMin)
+              {
+                jetInRapidityGap = true;
+                mva.nJetsInRapidityGap++;
+                mva.htInRapidityGap += jets.pt[*iGoodJet];
+              }
+          }
 
-      hists.puJetIDSimpleJet2->Fill(mva.puJetIDSimpleJet2,weight);
-    }
+        mva.puJetIDSimpleDiscJet2 = puJetSimpleDisc[iJet2];
+        mva.puJetIDFullDiscJet2 = puJetFullDisc[iJet2];
+        mva.puJetIDSimpleJet2 = (int) puJetSimpleId[iJet2];
+        mva.puJetIDFullJet2 = (int) puJetFullId[iJet2];
+
+        if (mva.nJets>=3)
+          {
+            unsigned iJet3 = goodJetIndices[2];
+            mva.puJetIDSimpleDiscJet3 = puJetSimpleDisc[iJet3];
+            mva.puJetIDFullDiscJet3 = puJetFullDisc[iJet3];
+            mva.puJetIDSimpleJet3 = (int) puJetSimpleId[iJet3];
+            mva.puJetIDFullJet3 = (int) puJetFullId[iJet3];
+            hists.puJetIDSimpleDiscJet3->Fill(mva.puJetIDSimpleDiscJet3,weight);
+            hists.puJetIDSimpleJet3->Fill(mva.puJetIDSimpleJet3,weight);
+          }
+
+        mva.mDiJet = diJet.M();
+        mva.yDiJet = diJet.Rapidity();
+        mva.ptDiJet = diJet.Pt();
+        mva.ptJet2 = pJet2.Pt();
+        mva.etaJet2 = pJet2.Eta();
+        mva.productEtaJets = etaJetProduct;
+        mva.deltaEtaJets = dEtaJets;
+        mva.ptmiss = (diJet+recoCandVec).Pt();
+
+        hists.mDiJet->Fill(mva.mDiJet, weight);
+        hists.ptDiJet->Fill(mva.ptDiJet, weight);
+        hists.yDiJet->Fill(mva.yDiJet, weight);
+        hists.ptJet2->Fill(mva.ptJet2, weight);
+        hists.etaJet2->Fill(mva.etaJet2, weight);
+        hists.deltaEtaJets->Fill(mva.deltaEtaJets, weight);
+        hists.deltaPhiJets->Fill(mva.deltaPhiJets, weight);
+        hists.deltaRJets->Fill(mva.deltaRJets, weight);
+        hists.nJetsInRapidityGap->Fill(mva.nJetsInRapidityGap, weight);
+        hists.htInRapidityGap->Fill(mva.htInRapidityGap, weight);
+        hists.nJets->Fill(mva.nJets, weight);
+        hists.ht->Fill(mva.ht, weight);
+        hists.ptmiss->Fill(mva.ptmiss, weight);
+
+        hists.puJetIDSimpleDiscJet2->Fill(mva.puJetIDSimpleDiscJet2,weight);
+
+        hists.puJetIDSimpleJet2->Fill(mva.puJetIDSimpleJet2,weight);
+      }
 
     /////////////////////////////////////////////
     // JES Uncertainties
@@ -1974,91 +1977,91 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
     _PFJetInfo jetsJESUp = jets;
     goodJetIndices.clear();
     for(unsigned iJet=0; (iJet < jetsJESUp.nJets && iJet < 10);iJet++)
-    {
+      {
         if (jetsJESUp.jecUnc[iJet]>0.0 && jetsJESUp.jecUnc[iJet]<1.)
-        {
-          jetsJESUp.pt[iJet] += jetsJESUp.jecUnc[iJet]*jetsJESUp.pt[iJet];
-        }
+          {
+            jetsJESUp.pt[iJet] += jetsJESUp.jecUnc[iJet]*jetsJESUp.pt[iJet];
+          }
         bool goodPt = jetsJESUp.pt[iJet]>jetPtCut || (fabs(jetsJESUp.eta[iJet < 2.4]) && jetsJESUp.pt[iJet]>jetPtCutC);
         bool goodPUID = puJetFullId[iJet] >= jetPUIDCut;
         if (goodPt && goodPUID)
-        {
-          _nJets_JESUp++;
-          goodJetIndices.push_back(iJet);
-        }
-    }
+          {
+            _nJets_JESUp++;
+            goodJetIndices.push_back(iJet);
+          }
+      }
 
     if (goodJetIndices.size()>=1)
-    {
-      unsigned iJet1 = goodJetIndices[0];
-      _jetLead_pt_JESUp = jetsJESUp.pt[iJet1];
-      _jetLead_eta_JESUp = jetsJESUp.eta[iJet1];
-    }
+      {
+        unsigned iJet1 = goodJetIndices[0];
+        _jetLead_pt_JESUp = jetsJESUp.pt[iJet1];
+        _jetLead_eta_JESUp = jetsJESUp.eta[iJet1];
+      }
 
     if(goodJetIndices.size()>=2)
-    {
-      unsigned iJet1 = goodJetIndices[0];
-      unsigned iJet2 = goodJetIndices[1];
-      TLorentzVector pJet1;
-      TLorentzVector pJet2;
-      pJet1.SetXYZM(jetsJESUp.px[iJet1],jetsJESUp.py[iJet1],jetsJESUp.pz[iJet1],jetsJESUp.mass[iJet1]);
-      pJet2.SetXYZM(jetsJESUp.px[iJet2],jetsJESUp.py[iJet2],jetsJESUp.pz[iJet2],jetsJESUp.mass[iJet2]);
-      TLorentzVector diJet = pJet1+pJet2;
+      {
+        unsigned iJet1 = goodJetIndices[0];
+        unsigned iJet2 = goodJetIndices[1];
+        TLorentzVector pJet1;
+        TLorentzVector pJet2;
+        pJet1.SetXYZM(jetsJESUp.px[iJet1],jetsJESUp.py[iJet1],jetsJESUp.pz[iJet1],jetsJESUp.mass[iJet1]);
+        pJet2.SetXYZM(jetsJESUp.px[iJet2],jetsJESUp.py[iJet2],jetsJESUp.pz[iJet2],jetsJESUp.mass[iJet2]);
+        TLorentzVector diJet = pJet1+pJet2;
 
-      double dEtaJets = fabs(jetsJESUp.eta[iJet1]-jetsJESUp.eta[iJet2]);
-      double etaJetProduct = jetsJESUp.eta[iJet1]*jetsJESUp.eta[iJet2];
+        double dEtaJets = fabs(jetsJESUp.eta[iJet1]-jetsJESUp.eta[iJet2]);
+        double etaJetProduct = jetsJESUp.eta[iJet1]*jetsJESUp.eta[iJet2];
 
-      _dijetMass_JESUp = diJet.M();
-      _jetSub_pt_JESUp = pJet2.Pt();
-      _jetSub_eta_JESUp = pJet2.Eta();
-      _deltaEtaJets_JESUp = dEtaJets;
-      _ptMiss_JESUp = (diJet+recoCandVec).Pt();
-    }
+        _dijetMass_JESUp = diJet.M();
+        _jetSub_pt_JESUp = pJet2.Pt();
+        _jetSub_eta_JESUp = pJet2.Eta();
+        _deltaEtaJets_JESUp = dEtaJets;
+        _ptMiss_JESUp = (diJet+recoCandVec).Pt();
+      }
 
     // JES Down
     _PFJetInfo jetsJESDown = jets;
     goodJetIndices.clear();
     for(unsigned iJet=0; (iJet < jetsJESDown.nJets && iJet < 10);iJet++)
-    {
+      {
         if (jetsJESDown.jecUnc[iJet]>0.0 && jetsJESDown.jecUnc[iJet]<1.)
-        {
-          jetsJESDown.pt[iJet] -= jetsJESDown.jecUnc[iJet]*jetsJESDown.pt[iJet];
-        }
+          {
+            jetsJESDown.pt[iJet] -= jetsJESDown.jecUnc[iJet]*jetsJESDown.pt[iJet];
+          }
         bool goodPt = jetsJESDown.pt[iJet]>jetPtCut || (fabs(jetsJESDown.eta[iJet < 2.4]) && jetsJESDown.pt[iJet]>jetPtCutC);
         bool goodPUID = puJetFullId[iJet] >= jetPUIDCut;
         if (goodPt && goodPUID)
-        {
-          _nJets_JESDown++;
-          goodJetIndices.push_back(iJet);
-        }
-    }
+          {
+            _nJets_JESDown++;
+            goodJetIndices.push_back(iJet);
+          }
+      }
 
     if (goodJetIndices.size()>=1)
-    {
-      unsigned iJet1 = goodJetIndices[0];
-      _jetLead_pt_JESDown = jetsJESDown.pt[iJet1];
-      _jetLead_eta_JESDown = jetsJESDown.eta[iJet1];
-    }
+      {
+        unsigned iJet1 = goodJetIndices[0];
+        _jetLead_pt_JESDown = jetsJESDown.pt[iJet1];
+        _jetLead_eta_JESDown = jetsJESDown.eta[iJet1];
+      }
 
     if(goodJetIndices.size()>=2)
-    {
-      unsigned iJet1 = goodJetIndices[0];
-      unsigned iJet2 = goodJetIndices[1];
-      TLorentzVector pJet1;
-      TLorentzVector pJet2;
-      pJet1.SetXYZM(jetsJESDown.px[iJet1],jetsJESDown.py[iJet1],jetsJESDown.pz[iJet1],jetsJESDown.mass[iJet1]);
-      pJet2.SetXYZM(jetsJESDown.px[iJet2],jetsJESDown.py[iJet2],jetsJESDown.pz[iJet2],jetsJESDown.mass[iJet2]);
-      TLorentzVector diJet = pJet1+pJet2;
+      {
+        unsigned iJet1 = goodJetIndices[0];
+        unsigned iJet2 = goodJetIndices[1];
+        TLorentzVector pJet1;
+        TLorentzVector pJet2;
+        pJet1.SetXYZM(jetsJESDown.px[iJet1],jetsJESDown.py[iJet1],jetsJESDown.pz[iJet1],jetsJESDown.mass[iJet1]);
+        pJet2.SetXYZM(jetsJESDown.px[iJet2],jetsJESDown.py[iJet2],jetsJESDown.pz[iJet2],jetsJESDown.mass[iJet2]);
+        TLorentzVector diJet = pJet1+pJet2;
 
-      double dEtaJets = fabs(jetsJESDown.eta[iJet1]-jetsJESDown.eta[iJet2]);
-      double etaJetProduct = jetsJESDown.eta[iJet1]*jetsJESDown.eta[iJet2];
+        double dEtaJets = fabs(jetsJESDown.eta[iJet1]-jetsJESDown.eta[iJet2]);
+        double etaJetProduct = jetsJESDown.eta[iJet1]*jetsJESDown.eta[iJet2];
 
-      _dijetMass_JESDown = diJet.M();
-      _jetSub_pt_JESDown = pJet2.Pt();
-      _jetSub_eta_JESDown = pJet2.Eta();
-      _deltaEtaJets_JESDown = dEtaJets;
-      _ptMiss_JESDown = (diJet+recoCandVec).Pt();
-    }
+        _dijetMass_JESDown = diJet.M();
+        _jetSub_pt_JESDown = pJet2.Pt();
+        _jetSub_eta_JESDown = pJet2.Eta();
+        _deltaEtaJets_JESDown = dEtaJets;
+        _ptMiss_JESDown = (diJet+recoCandVec).Pt();
+      }
 
     /////////////////////////////////////////////
     // JER Uncertainties
@@ -2087,108 +2090,108 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
     _PFJetInfo jetsJERUp = originalJets;
     goodJetIndices.clear();
     for(unsigned iJet=0; (iJet < jetsJERUp.nJets && iJet < 10);iJet++)
-    {
+      {
         if (jetsJERUp.genPt[iJet]>0.0 && jetsJERUp.pt[iJet]>15.)
-        {
-          jetsJERUp.pt[iJet] = corrPtUp(jetsJERUp.pt[iJet],jetsJERUp.genPt[iJet],jetsJERUp.eta[iJet]);
-        }
+          {
+            jetsJERUp.pt[iJet] = corrPtUp(jetsJERUp.pt[iJet],jetsJERUp.genPt[iJet],jetsJERUp.eta[iJet]);
+          }
         bool goodPt = jetsJERUp.pt[iJet]>jetPtCut || (fabs(jetsJERUp.eta[iJet < 2.4]) && jetsJERUp.pt[iJet]>jetPtCutC);
         bool goodPUID = puJetFullId[iJet] >= jetPUIDCut;
         if (goodPt && goodPUID)
-        {
-          _nJets_JERUp++;
-          goodJetIndices.push_back(iJet);
-        }
-    }
+          {
+            _nJets_JERUp++;
+            goodJetIndices.push_back(iJet);
+          }
+      }
 
     if (goodJetIndices.size()>=1)
-    {
-      unsigned iJet1 = goodJetIndices[0];
-      _jetLead_pt_JERUp = jetsJERUp.pt[iJet1];
-      _jetLead_eta_JERUp = jetsJERUp.eta[iJet1];
-    }
+      {
+        unsigned iJet1 = goodJetIndices[0];
+        _jetLead_pt_JERUp = jetsJERUp.pt[iJet1];
+        _jetLead_eta_JERUp = jetsJERUp.eta[iJet1];
+      }
 
     if(goodJetIndices.size()>=2)
-    {
-      unsigned iJet1 = goodJetIndices[0];
-      unsigned iJet2 = goodJetIndices[1];
-      TLorentzVector pJet1;
-      TLorentzVector pJet2;
-      pJet1.SetXYZM(jetsJERUp.px[iJet1],jetsJERUp.py[iJet1],jetsJERUp.pz[iJet1],jetsJERUp.mass[iJet1]);
-      pJet2.SetXYZM(jetsJERUp.px[iJet2],jetsJERUp.py[iJet2],jetsJERUp.pz[iJet2],jetsJERUp.mass[iJet2]);
-      TLorentzVector diJet = pJet1+pJet2;
+      {
+        unsigned iJet1 = goodJetIndices[0];
+        unsigned iJet2 = goodJetIndices[1];
+        TLorentzVector pJet1;
+        TLorentzVector pJet2;
+        pJet1.SetXYZM(jetsJERUp.px[iJet1],jetsJERUp.py[iJet1],jetsJERUp.pz[iJet1],jetsJERUp.mass[iJet1]);
+        pJet2.SetXYZM(jetsJERUp.px[iJet2],jetsJERUp.py[iJet2],jetsJERUp.pz[iJet2],jetsJERUp.mass[iJet2]);
+        TLorentzVector diJet = pJet1+pJet2;
 
-      double dEtaJets = fabs(jetsJERUp.eta[iJet1]-jetsJERUp.eta[iJet2]);
-      double etaJetProduct = jetsJERUp.eta[iJet1]*jetsJERUp.eta[iJet2];
+        double dEtaJets = fabs(jetsJERUp.eta[iJet1]-jetsJERUp.eta[iJet2]);
+        double etaJetProduct = jetsJERUp.eta[iJet1]*jetsJERUp.eta[iJet2];
 
-      _dijetMass_JERUp = diJet.M();
-      _jetSub_pt_JERUp = pJet2.Pt();
-      _jetSub_eta_JERUp = pJet2.Eta();
-      _deltaEtaJets_JERUp = dEtaJets;
-      _ptMiss_JERUp = (diJet+recoCandVec).Pt();
-    }
+        _dijetMass_JERUp = diJet.M();
+        _jetSub_pt_JERUp = pJet2.Pt();
+        _jetSub_eta_JERUp = pJet2.Eta();
+        _deltaEtaJets_JERUp = dEtaJets;
+        _ptMiss_JERUp = (diJet+recoCandVec).Pt();
+      }
 
     // JER Down
     _PFJetInfo jetsJERDown = originalJets;
     goodJetIndices.clear();
     for(unsigned iJet=0; (iJet < jetsJERDown.nJets && iJet < 10);iJet++)
-    {
+      {
         if (jetsJERDown.genPt[iJet]>0.0 && jetsJERDown.pt[iJet]>15.)
-        {
-          jetsJERDown.pt[iJet] = corrPtDown(jetsJERDown.pt[iJet],jetsJERDown.genPt[iJet],jetsJERDown.eta[iJet]);
-        }
+          {
+            jetsJERDown.pt[iJet] = corrPtDown(jetsJERDown.pt[iJet],jetsJERDown.genPt[iJet],jetsJERDown.eta[iJet]);
+          }
         bool goodPt = jetsJERDown.pt[iJet]>jetPtCut || (fabs(jetsJERDown.eta[iJet < 2.4]) && jetsJERDown.pt[iJet]>jetPtCutC);
         bool goodPUID = puJetFullId[iJet] >= jetPUIDCut;
         if (goodPt && goodPUID)
-        {
-          _nJets_JERDown++;
-          goodJetIndices.push_back(iJet);
-        }
-    }
+          {
+            _nJets_JERDown++;
+            goodJetIndices.push_back(iJet);
+          }
+      }
 
     if (goodJetIndices.size()>=1)
-    {
-      unsigned iJet1 = goodJetIndices[0];
-      _jetLead_pt_JERDown = jetsJERDown.pt[iJet1];
-      _jetLead_eta_JERDown = jetsJERDown.eta[iJet1];
-    }
+      {
+        unsigned iJet1 = goodJetIndices[0];
+        _jetLead_pt_JERDown = jetsJERDown.pt[iJet1];
+        _jetLead_eta_JERDown = jetsJERDown.eta[iJet1];
+      }
 
     if(goodJetIndices.size()>=2)
-    {
-      unsigned iJet1 = goodJetIndices[0];
-      unsigned iJet2 = goodJetIndices[1];
-      TLorentzVector pJet1;
-      TLorentzVector pJet2;
-      pJet1.SetXYZM(jetsJERDown.px[iJet1],jetsJERDown.py[iJet1],jetsJERDown.pz[iJet1],jetsJERDown.mass[iJet1]);
-      pJet2.SetXYZM(jetsJERDown.px[iJet2],jetsJERDown.py[iJet2],jetsJERDown.pz[iJet2],jetsJERDown.mass[iJet2]);
-      TLorentzVector diJet = pJet1+pJet2;
+      {
+        unsigned iJet1 = goodJetIndices[0];
+        unsigned iJet2 = goodJetIndices[1];
+        TLorentzVector pJet1;
+        TLorentzVector pJet2;
+        pJet1.SetXYZM(jetsJERDown.px[iJet1],jetsJERDown.py[iJet1],jetsJERDown.pz[iJet1],jetsJERDown.mass[iJet1]);
+        pJet2.SetXYZM(jetsJERDown.px[iJet2],jetsJERDown.py[iJet2],jetsJERDown.pz[iJet2],jetsJERDown.mass[iJet2]);
+        TLorentzVector diJet = pJet1+pJet2;
 
-      double dEtaJets = fabs(jetsJERDown.eta[iJet1]-jetsJERDown.eta[iJet2]);
-      double etaJetProduct = jetsJERDown.eta[iJet1]*jetsJERDown.eta[iJet2];
+        double dEtaJets = fabs(jetsJERDown.eta[iJet1]-jetsJERDown.eta[iJet2]);
+        double etaJetProduct = jetsJERDown.eta[iJet1]*jetsJERDown.eta[iJet2];
 
-      _dijetMass_JERDown = diJet.M();
-      _jetSub_pt_JERDown = pJet2.Pt();
-      _jetSub_eta_JERDown = pJet2.Eta();
-      _deltaEtaJets_JERDown = dEtaJets;
-      _ptMiss_JERDown = (diJet+recoCandVec).Pt();
-    }
+        _dijetMass_JERDown = diJet.M();
+        _jetSub_pt_JERDown = pJet2.Pt();
+        _jetSub_eta_JERDown = pJet2.Eta();
+        _deltaEtaJets_JERDown = dEtaJets;
+        _ptMiss_JERDown = (diJet+recoCandVec).Pt();
+      }
   
   
-//HIG-12-007 PAS H->tautau
-//The VBF category requires at least two jets with pT > 30 GeV/c, |η1 − η2 | > 4.0 and
-//η1 · η2 < 0 (with η1 the pseudorapidty of the leading jet and η2 the pseudorapidity
-//of the subleading jet), and a di-jet invariant mass m12 > 400 GeV/c2 , with no other
-//jet with pT > 30 GeV/c in the rapidity region between the two jets.
+    //HIG-12-007 PAS H->tautau
+    //The VBF category requires at least two jets with pT > 30 GeV/c, |η1 − η2 | > 4.0 and
+    //η1 · η2 < 0 (with η1 the pseudorapidty of the leading jet and η2 the pseudorapidity
+    //of the subleading jet), and a di-jet invariant mass m12 > 400 GeV/c2 , with no other
+    //jet with pT > 30 GeV/c in the rapidity region between the two jets.
 
     if (
-           !(inBlindWindow && isData) && inTrainingWindow
-           && isHltMatched(reco1,reco2,allowedHLTPaths)
-           && mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12
+        !(inBlindWindow && isData) && inTrainingWindow
+        && isHltMatched(reco1,reco2,allowedHLTPaths)
+        && mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12
         )
       mva.writeEvent();
 
     if (trainingTreeRun) //Skip Filling of histos when training Tree
-        continue;
+      continue;
 
     bool vbfPreselection = mva.mDiJet>300.0 && mva.deltaEtaJets>3.0 && mva.productEtaJets<0.0;
     //if(vbfPreselection)
@@ -2196,36 +2199,36 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
     mva.vbfPreselection = vbfPreselection;
 
     if(vbfPreselection)
-        hists.countsHist->Fill(6);
+      hists.countsHist->Fill(6);
     else
-        hists.countsHist->Fill(5);
+      hists.countsHist->Fill(5);
     
     // for efficiency:
     if(Flag_subCat != 1){
-       if((!vbfPreselection) && IFAllTrigCuts ) counterNonJetSel[Isample]++;
-       if ((!vbfPreselection) && mva.ptDiMu >= 10. && IFAllTrigCuts) counterDiPt10GeV[Isample]++;
-       if(vbfPreselection && IFAllTrigCuts) counterJetSel[Isample]++;
+      if((!vbfPreselection) && IFAllTrigCuts ) counterNonJetSel[Isample]++;
+      if ((!vbfPreselection) && mva.ptDiMu >= 10. && IFAllTrigCuts) counterDiPt10GeV[Isample]++;
+      if(vbfPreselection && IFAllTrigCuts) counterJetSel[Isample]++;
     }
     if(Flag_subCat == 1){
-       if((!vbfPreselection) && IFAllTrigCuts){
-                counterNonJetSel[Isample]++;
-                counterNonJetSel[6]++;
-       }
-       if ((!vbfPreselection) && mva.ptDiMu >= 10. && IFAllTrigCuts) {
-                counterDiPt10GeV[Isample]++;
-                counterDiPt10GeV[7]++;
-                if(mva.RelMassRes < 0.009 && isBB) counterDiPt10GeV[8]++; //BB res1
-                if(mva.RelMassRes >= 0.009 && isBB) counterDiPt10GeV[9]++; //BB res2 
-                if(mva.RelMassRes < 0.011 && isBO) counterDiPt10GeV[10]++; //BO res1 
-                if(mva.RelMassRes >= 0.011 && isBO) counterDiPt10GeV[11]++; //BO res2
-       }
-       if(vbfPreselection && IFAllTrigCuts){
-                counterJetSel[Isample]++;
-                counterJetSel[8]++;
-                if(mva.mDiJet> 550.)counterJetSel[9]++;
-                if(mva.mDiJet> 550. && mva.deltaEtaJets>3.5 && mva.ptmiss < 100)counterJetSel[10]++;
-                if(mva.mDiJet> 500. && mva.deltaEtaJets>3.4 && mva.ptmiss < 25)counterJetSel[11]++;
-       }
+      if((!vbfPreselection) && IFAllTrigCuts){
+        counterNonJetSel[Isample]++;
+        counterNonJetSel[6]++;
+      }
+      if ((!vbfPreselection) && mva.ptDiMu >= 10. && IFAllTrigCuts) {
+        counterDiPt10GeV[Isample]++;
+        counterDiPt10GeV[7]++;
+        if(mva.RelMassRes < 0.009 && isBB) counterDiPt10GeV[8]++; //BB res1
+        if(mva.RelMassRes >= 0.009 && isBB) counterDiPt10GeV[9]++; //BB res2 
+        if(mva.RelMassRes < 0.011 && isBO) counterDiPt10GeV[10]++; //BO res1 
+        if(mva.RelMassRes >= 0.011 && isBO) counterDiPt10GeV[11]++; //BO res2
+      }
+      if(vbfPreselection && IFAllTrigCuts){
+        counterJetSel[Isample]++;
+        counterJetSel[8]++;
+        if(mva.mDiJet> 550.)counterJetSel[9]++;
+        if(mva.mDiJet> 550. && mva.deltaEtaJets>3.5 && mva.ptmiss < 100)counterJetSel[10]++;
+        if(mva.mDiJet> 500. && mva.deltaEtaJets>3.4 && mva.ptmiss < 25)counterJetSel[11]++;
+      }
     }
     // 
 
@@ -2234,21 +2237,21 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
     bool vbfMedium = false;
     bool vbfLoose = false;
     if(vbfPreselection && mva.mDiJet>700.0 && mva.deltaEtaJets>5.)
-    {
+      {
         vbfVeryTight=true;
-    }
+      }
     else if(vbfPreselection && mva.mDiJet>400.0 && mva.deltaEtaJets>5.)
-    {
+      {
         vbfTight=true;
-    }
+      }
     else if(vbfPreselection && mva.mDiJet>400.0 && mva.deltaEtaJets>4.)
-    {
+      {
         vbfMedium=true;
-    }
+      }
     else if(vbfPreselection && mva.mDiJet>300.0 && mva.deltaEtaJets>3.)
-    {
+      {
         vbfLoose=true;
-    }
+      }
 
     bool pt0to30 = !vbfPreselection  && mva.ptDiMu <30.;
     bool pt30to50 = !vbfPreselection && mva.ptDiMu> 30. && mva.ptDiMu <50.;
@@ -2265,8 +2268,8 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
     // for efficiency:
     if(IFAllTrigCuts && vbfPreselection && passVBFBDTCut && (Flag_subCat != 1)) counterBDTvbfCut[Isample]++;
     if(IFAllTrigCuts && vbfPreselection && passVBFBDTCut && (Flag_subCat == 1)){
-          counterBDTvbfCut[Isample]++;
-          counterBDTvbfCut[9]++;
+      counterBDTvbfCut[Isample]++;
+      counterBDTvbfCut[9]++;
     }
     //
 
@@ -2276,19 +2279,19 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
     time_t timeStartFilling = time(NULL);
 
     if (!blind)
-    {
-      if(!vbfPreselection)
       {
-        hists.BDTHistMuonOnly->Fill(bdtValInc, weight);
-        hists.BDTHistMuonOnlyVMass->Fill(mva.mDiMu, bdtValInc, weight);
+        if(!vbfPreselection)
+          {
+            hists.BDTHistMuonOnly->Fill(bdtValInc, weight);
+            hists.BDTHistMuonOnlyVMass->Fill(mva.mDiMu, bdtValInc, weight);
   
+          }
+        else
+          {
+            hists.BDTHistVBFVMass->Fill(mva.mDiMu, bdtValVBF, weight);
+            hists.BDTHistVBF->Fill(bdtValVBF, weight);
+          }
       }
-      else
-      {
-        hists.BDTHistVBFVMass->Fill(mva.mDiMu, bdtValVBF, weight);
-        hists.BDTHistVBF->Fill(bdtValVBF, weight);
-      }
-    }
 
 
     ///////////////////////////////////////////
@@ -2309,6 +2312,8 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
     
     
     _dimuonMass   = mva.mDiMu;
+    _dimuonMassResSFUp   = mDiMuResSFUp;
+    _dimuonMassResSFDown = mDiMuResSFDown;
     _dimuonPt     = mva.ptDiMu;
     _dimuonY      = mva.yDiMu;
     _cosThetaStar = mva.cosThetaStar;
@@ -2391,7 +2396,10 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
         if      (Jet2CutsVBFPass) {
           histsJet2CutsVBFPass  .Fill(mva,blind);
           if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
-            _dimuonMassJet2CutsVBFPass = mva.mDiMu;
+            _dimuonMassJet2CutsVBFPass          = mva.mDiMu;
+            _dimuonMassJet2CutsVBFPassResSFUp   = mDiMuResSFUp;
+            _dimuonMassJet2CutsVBFPassResSFDown = mDiMuResSFDown;
+
             if (CutMassISO) counterBDTvbfCut[40+1]++; 
             treeJet2CutsVBFPass->Fill();
           }
@@ -2399,7 +2407,10 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
         else if (Jet2CutsGFPass ) {
           histsJet2CutsGFPass   .Fill(mva,blind);
           if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
-            _dimuonMassJet2CutsGFPass = mva.mDiMu;
+            _dimuonMassJet2CutsGFPass          = mva.mDiMu;
+            _dimuonMassJet2CutsGFPassResSFUp   = mDiMuResSFUp;  
+            _dimuonMassJet2CutsGFPassResSFDown = mDiMuResSFDown;
+
             if (CutMassISO) counterBDTvbfCut[40+2]++; 
             treeJet2CutsGFPass->Fill();
           }
@@ -2408,7 +2419,10 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
         else {
           histsJet2CutsFailVBFGF.Fill(mva,blind);
           if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
-            _dimuonMassJet2CutsFailVBFGF = mva.mDiMu;
+            _dimuonMassJet2CutsFailVBFGF          = mva.mDiMu;
+            _dimuonMassJet2CutsFailVBFGFResSFUp   = mDiMuResSFUp;  
+            _dimuonMassJet2CutsFailVBFGFResSFDown = mDiMuResSFDown;
+
             if (CutMassISO) counterBDTvbfCut[40+3]++; 
             treeJet2CutsFailVBFGF->Fill();
           }
@@ -2416,9 +2430,9 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
       } //if (Jet2PtCuts)
       
 
-      // #########################################
-      // 0+1 JET CATEGORIES
-      // #########################################
+        // #########################################
+        // 0+1 JET CATEGORIES
+        // #########################################
       else {
 
         // pt(mm)> 10 GeV/c
@@ -2428,7 +2442,10 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
           histsJets01PassPtG10.Fill(mva,blind);
 
           if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
-            _dimuonMassJets01PassPtG10 = mva.mDiMu;
+            _dimuonMassJets01PassPtG10          = mva.mDiMu;
+            _dimuonMassJets01PassPtG10ResSFUp   = mDiMuResSFUp;  
+            _dimuonMassJets01PassPtG10ResSFDown = mDiMuResSFDown;
+
             treeJets01PassPtG10->Fill();
           }
 
@@ -2436,7 +2453,10 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
           if (isBB) {
             histsJets01PassPtG10BB.Fill(mva,blind);
             if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
-              _dimuonMassJets01PassPtG10BB = mva.mDiMu;
+              _dimuonMassJets01PassPtG10BB          = mva.mDiMu;
+              _dimuonMassJets01PassPtG10BBResSFUp   = mDiMuResSFUp;  
+              _dimuonMassJets01PassPtG10BBResSFDown = mDiMuResSFDown;
+
               treeJets01PassPtG10BB->Fill();
             }
           }
@@ -2444,7 +2464,10 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
           if (isBO) {
             histsJets01PassPtG10BO.Fill(mva,blind);
             if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
-              _dimuonMassJets01PassPtG10BO = mva.mDiMu;
+              _dimuonMassJets01PassPtG10BO          = mva.mDiMu;
+              _dimuonMassJets01PassPtG10BOResSFUp   = mDiMuResSFUp;  
+              _dimuonMassJets01PassPtG10BOResSFDown = mDiMuResSFDown;
+
               treeJets01PassPtG10BO->Fill();
             }
           }
@@ -2452,7 +2475,10 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
           if (isBE) {
             histsJets01PassPtG10BE.Fill(mva,blind);
             if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
-              _dimuonMassJets01PassPtG10BE = mva.mDiMu;
+              _dimuonMassJets01PassPtG10BE          = mva.mDiMu;
+              _dimuonMassJets01PassPtG10BEResSFUp   = mDiMuResSFUp;  
+              _dimuonMassJets01PassPtG10BEResSFDown = mDiMuResSFDown;
+
               treeJets01PassPtG10BE->Fill();
             }
           }
@@ -2460,7 +2486,10 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
           if (isOO) {
             histsJets01PassPtG10OO.Fill(mva,blind);
             if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
-              _dimuonMassJets01PassPtG10OO = mva.mDiMu;
+              _dimuonMassJets01PassPtG10OO          = mva.mDiMu;
+              _dimuonMassJets01PassPtG10OOResSFUp   = mDiMuResSFUp;  
+              _dimuonMassJets01PassPtG10OOResSFDown = mDiMuResSFDown;
+
               treeJets01PassPtG10OO->Fill();
             }
           }
@@ -2468,7 +2497,10 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
           if (isOE) {
             histsJets01PassPtG10OE.Fill(mva,blind);
             if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
-              _dimuonMassJets01PassPtG10OE = mva.mDiMu;
+              _dimuonMassJets01PassPtG10OE          = mva.mDiMu;
+              _dimuonMassJets01PassPtG10OEResSFUp   = mDiMuResSFUp;  
+              _dimuonMassJets01PassPtG10OEResSFDown = mDiMuResSFDown;
+
               treeJets01PassPtG10OE->Fill();
             }
           }
@@ -2476,7 +2508,10 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
           if (isEE) {
             histsJets01PassPtG10EE.Fill(mva,blind);
             if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
-              _dimuonMassJets01PassPtG10EE = mva.mDiMu;
+              _dimuonMassJets01PassPtG10EE          = mva.mDiMu;
+              _dimuonMassJets01PassPtG10EEResSFUp   = mDiMuResSFUp;  
+              _dimuonMassJets01PassPtG10EEResSFDown = mDiMuResSFDown;
+
               treeJets01PassPtG10EE->Fill();
             }
           }
@@ -2485,15 +2520,15 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
           if (isBE || isOO ) histsJets01PassPtG10CC.Fill(mva,blind);
           if (isOE || isEE ) histsJets01PassPtG10FF.Fill(mva,blind);
           if (CutMassISO) {
-             counterDiPt10GeV[23]++;
-             if (isBB) counterDiPt10GeV[23+1]++;
-             if (isBO) counterDiPt10GeV[23+2]++;
-             if (isBE) counterDiPt10GeV[23+3]++;
-             if (isOO) counterDiPt10GeV[23+4]++;
-             if (isOE) counterDiPt10GeV[23+5]++;
-             if (isEE) counterDiPt10GeV[23+6]++;
-             if (isBE || isOO ) counterDiPt10GeV[23+7]++;
-             if (isOE || isEE ) counterDiPt10GeV[23+8]++;
+            counterDiPt10GeV[23]++;
+            if (isBB) counterDiPt10GeV[23+1]++;
+            if (isBO) counterDiPt10GeV[23+2]++;
+            if (isBE) counterDiPt10GeV[23+3]++;
+            if (isOO) counterDiPt10GeV[23+4]++;
+            if (isOE) counterDiPt10GeV[23+5]++;
+            if (isEE) counterDiPt10GeV[23+6]++;
+            if (isBE || isOO ) counterDiPt10GeV[23+7]++;
+            if (isOE || isEE ) counterDiPt10GeV[23+8]++;
           }
         }//if (mva.ptDiMu > 10. ) 
 
@@ -2503,7 +2538,10 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
           histsJets01FailPtG10.Fill(mva,blind);
           
           if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
-            _dimuonMassJets01FailPtG10 = mva.mDiMu;
+            _dimuonMassJets01FailPtG10          = mva.mDiMu;
+            _dimuonMassJets01FailPtG10ResSFUp   = mDiMuResSFUp;  
+            _dimuonMassJets01FailPtG10ResSFDown = mDiMuResSFDown;
+
             treeJets01FailPtG10->Fill();
           }
           
@@ -2513,7 +2551,10 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
             histsJets01FailPtG10BB.Fill(mva,blind);
 
             if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
-              _dimuonMassJets01FailPtG10BB = mva.mDiMu;
+              _dimuonMassJets01FailPtG10BB          = mva.mDiMu;
+              _dimuonMassJets01FailPtG10BBResSFUp   = mDiMuResSFUp;  
+              _dimuonMassJets01FailPtG10BBResSFDown = mDiMuResSFDown;
+
               treeJets01FailPtG10BB->Fill();
             }
           }
@@ -2522,7 +2563,10 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
             histsJets01FailPtG10BO.Fill(mva,blind);
 
             if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
-              _dimuonMassJets01FailPtG10BO = mva.mDiMu;
+              _dimuonMassJets01FailPtG10BO          = mva.mDiMu;
+              _dimuonMassJets01FailPtG10BOResSFUp   = mDiMuResSFUp;  
+              _dimuonMassJets01FailPtG10BOResSFDown = mDiMuResSFDown;
+
               treeJets01FailPtG10BO->Fill();
             }
           }
@@ -2531,7 +2575,10 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
             histsJets01FailPtG10BE.Fill(mva,blind);
 
             if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
-              _dimuonMassJets01FailPtG10BE = mva.mDiMu;
+              _dimuonMassJets01FailPtG10BE          = mva.mDiMu;
+              _dimuonMassJets01FailPtG10BEResSFUp   = mDiMuResSFUp;  
+              _dimuonMassJets01FailPtG10BEResSFDown = mDiMuResSFDown;
+
               treeJets01FailPtG10BE->Fill();
             }
           }
@@ -2540,7 +2587,10 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
             histsJets01FailPtG10OO.Fill(mva,blind);
 
             if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
-              _dimuonMassJets01FailPtG10OO = mva.mDiMu;
+              _dimuonMassJets01FailPtG10OO          = mva.mDiMu;
+              _dimuonMassJets01FailPtG10OOResSFUp   = mDiMuResSFUp;  
+              _dimuonMassJets01FailPtG10OOResSFDown = mDiMuResSFDown;
+
               treeJets01FailPtG10OO->Fill();
             }
           }
@@ -2549,7 +2599,10 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
             histsJets01FailPtG10OE.Fill(mva,blind);
 
             if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
-              _dimuonMassJets01FailPtG10OE = mva.mDiMu;
+              _dimuonMassJets01FailPtG10OE          = mva.mDiMu;
+              _dimuonMassJets01FailPtG10OEResSFUp   = mDiMuResSFUp;  
+              _dimuonMassJets01FailPtG10OEResSFDown = mDiMuResSFDown;
+
               treeJets01FailPtG10OE->Fill();
             }
           }
@@ -2558,7 +2611,10 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
             histsJets01FailPtG10EE.Fill(mva,blind);
 
             if (mva.relIsoMu1 < 0.12 && mva.relIsoMu2 < 0.12) {
-              _dimuonMassJets01FailPtG10EE = mva.mDiMu;
+              _dimuonMassJets01FailPtG10EE          = mva.mDiMu;
+              _dimuonMassJets01FailPtG10EEResSFUp   = mDiMuResSFUp;  
+              _dimuonMassJets01FailPtG10EEResSFDown = mDiMuResSFDown;
+
               treeJets01FailPtG10EE->Fill();
             }
           }
@@ -2567,15 +2623,15 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
           if (isOE || isEE ) histsJets01FailPtG10FF.Fill(mva,blind);
 
           if (CutMassISO) {
-             counterDiPt10GeV[32]++;
-             if (isBB) counterDiPt10GeV[32+1]++;
-             if (isBO) counterDiPt10GeV[32+2]++;
-             if (isBE) counterDiPt10GeV[32+3]++;
-             if (isOO) counterDiPt10GeV[32+4]++;
-             if (isOE) counterDiPt10GeV[32+5]++;
-             if (isEE) counterDiPt10GeV[32+6]++;
-             if (isBE || isOO ) counterDiPt10GeV[32+7]++;
-             if (isOE || isEE ) counterDiPt10GeV[32+8]++;
+            counterDiPt10GeV[32]++;
+            if (isBB) counterDiPt10GeV[32+1]++;
+            if (isBO) counterDiPt10GeV[32+2]++;
+            if (isBE) counterDiPt10GeV[32+3]++;
+            if (isOO) counterDiPt10GeV[32+4]++;
+            if (isOE) counterDiPt10GeV[32+5]++;
+            if (isEE) counterDiPt10GeV[32+6]++;
+            if (isBE || isOO ) counterDiPt10GeV[32+7]++;
+            if (isOE || isEE ) counterDiPt10GeV[32+8]++;
           } 
         }
 
@@ -2583,7 +2639,7 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
       
     } //atLeastOneMuonFired
     
-    ///////////////////////////////////////////
+      ///////////////////////////////////////////
 
 
     if (!isHltMatched(reco1,reco2,allowedHLTPaths))
@@ -2592,249 +2648,249 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
 
     //4 GeV Window Plots
     if (mva.mDiMu < 127.0 && mva.mDiMu > 123.0)
-    {
-      if (!blind)
       {
-        hists4GeVWindow.Fill(mva,blind);
+        if (!blind)
+          {
+            hists4GeVWindow.Fill(mva,blind);
+          }
       }
-    }
 
     if (isBB)
-    {
-      histsBB.Fill(mva,blind);
-    }
+      {
+        histsBB.Fill(mva,blind);
+      }
 
     if (isBO)
-    {
-      histsBO.Fill(mva,blind);
-    }
+      {
+        histsBO.Fill(mva,blind);
+      }
 
     if (isBE)
-    {
-      histsBE.Fill(mva,blind);
-    }
+      {
+        histsBE.Fill(mva,blind);
+      }
 
     if (isOO)
-    {
-      histsOO.Fill(mva,blind);
-    }
+      {
+        histsOO.Fill(mva,blind);
+      }
 
     if (isOE)
-    {
-      histsOE.Fill(mva,blind);
-    }
+      {
+        histsOE.Fill(mva,blind);
+      }
 
     if (isEE)
-    {
-      histsEE.Fill(mva,blind);
-    }
+      {
+        histsEE.Fill(mva,blind);
+      }
 
     if (isNotBB)
-    {
-      histsNotBB.Fill(mva,blind);
-    }
+      {
+        histsNotBB.Fill(mva,blind);
+      }
 
     //VBF Preselected Plots
     if (vbfPreselection)
-    {
-      histsVBFPresel.Fill(mva,blind);
-    }
+      {
+        histsVBFPresel.Fill(mva,blind);
+      }
 
     if (vbfPreselection && isBB)
-    {
-      histsVBFPreselBB.Fill(mva,blind);
-    }
+      {
+        histsVBFPreselBB.Fill(mva,blind);
+      }
 
     if (vbfPreselection && isNotBB)
-    {
-      histsVBFPreselNotBB.Fill(mva,blind);
-    }
+      {
+        histsVBFPreselNotBB.Fill(mva,blind);
+      }
 
     //Inc Preselected Plots
     if (!vbfPreselection)
-    {
-      histsIncPresel.Fill(mva,blind);
-    }
+      {
+        histsIncPresel.Fill(mva,blind);
+      }
 
     if (!vbfPreselection && isBB)
-    {
-      histsIncPreselBB.Fill(mva,blind);
-    }
+      {
+        histsIncPreselBB.Fill(mva,blind);
+      }
 
     if (!vbfPreselection && isBO)
-    {
-      histsIncPreselBO.Fill(mva,blind);
-    }
+      {
+        histsIncPreselBO.Fill(mva,blind);
+      }
 
     if (!vbfPreselection && isBE)
-    {
-      histsIncPreselBE.Fill(mva,blind);
-    }
+      {
+        histsIncPreselBE.Fill(mva,blind);
+      }
 
     if (!vbfPreselection && isOO)
-    {
-      histsIncPreselOO.Fill(mva,blind);
-    }
+      {
+        histsIncPreselOO.Fill(mva,blind);
+      }
 
     if (!vbfPreselection && isOE)
-    {
-      histsIncPreselOE.Fill(mva,blind);
-    }
+      {
+        histsIncPreselOE.Fill(mva,blind);
+      }
 
     if (!vbfPreselection && isEE)
-    {
-      histsIncPreselEE.Fill(mva,blind);
-    }
+      {
+        histsIncPreselEE.Fill(mva,blind);
+      }
 
     if (!vbfPreselection && isNotBB)
-    {
-      histsIncPreselNotBB.Fill(mva,blind);
-    }
+      {
+        histsIncPreselNotBB.Fill(mva,blind);
+      }
 
 
 
 
     //VBF BDT Cut Plots
     if (vbfPreselection && passVBFBDTCut)
-    {
-      histsVBFBDTCut.Fill(mva,blind);
-    }
+      {
+        histsVBFBDTCut.Fill(mva,blind);
+      }
 
     if (vbfPreselection && isBB && passVBFBDTCut)
-    {
-      histsVBFBDTCutBB.Fill(mva,blind);
-    }
+      {
+        histsVBFBDTCutBB.Fill(mva,blind);
+      }
 
     if (vbfPreselection && isNotBB && passVBFBDTCut)
-    {
-      histsVBFBDTCutNotBB.Fill(mva,blind);
-    }
+      {
+        histsVBFBDTCutNotBB.Fill(mva,blind);
+      }
 
     //Inc BDT Cut Plots
     if (!vbfPreselection && passIncBDTCut)
-    {
-      histsIncBDTCut.Fill(mva,blind);
-    }
+      {
+        histsIncBDTCut.Fill(mva,blind);
+      }
 
     if (!vbfPreselection && isBB && passIncBDTCut)
-    {
-      histsIncBDTCutBB.Fill(mva,blind);
-    }
+      {
+        histsIncBDTCutBB.Fill(mva,blind);
+      }
 
     if (!vbfPreselection && isBO && passIncBDTCut)
-    {
-      histsIncBDTCutBO.Fill(mva,blind);
-    }
+      {
+        histsIncBDTCutBO.Fill(mva,blind);
+      }
 
     if (!vbfPreselection && isBE && passIncBDTCut)
-    {
-      histsIncBDTCutBE.Fill(mva,blind);
-    }
+      {
+        histsIncBDTCutBE.Fill(mva,blind);
+      }
 
     if (!vbfPreselection && isOO && passIncBDTCut)
-    {
-      histsIncBDTCutOO.Fill(mva,blind);
-    }
+      {
+        histsIncBDTCutOO.Fill(mva,blind);
+      }
 
     if (!vbfPreselection && isOE && passIncBDTCut)
-    {
-      histsIncBDTCutOE.Fill(mva,blind);
-    }
+      {
+        histsIncBDTCutOE.Fill(mva,blind);
+      }
 
     if (!vbfPreselection && isEE && passIncBDTCut)
-    {
-      histsIncBDTCutEE.Fill(mva,blind);
-    }
+      {
+        histsIncBDTCutEE.Fill(mva,blind);
+      }
 
     if (!vbfPreselection && isNotBB && passIncBDTCut)
-    {
-      histsIncBDTCutNotBB.Fill(mva,blind);
-    }
+      {
+        histsIncBDTCutNotBB.Fill(mva,blind);
+      }
 
 
     if (!vbfPreselection && mva.ptDiMu < 20.0)
-    {
-      histsIncPreselDiMuPtL20.Fill(mva,blind);
-    }
+      {
+        histsIncPreselDiMuPtL20.Fill(mva,blind);
+      }
 
     if (vbfPreselection && mva.ptDiMu < 20.0)
-    {
-      histsVBFPreselDiMuPtL20.Fill(mva,blind);
-    }
+      {
+        histsVBFPreselDiMuPtL20.Fill(mva,blind);
+      }
 
     if (vbfPreselection && mva.ptmiss < 50.0)
-    {
-      histsVBFPreselPtMiss50Veto.Fill(mva,blind);
-    }
+      {
+        histsVBFPreselPtMiss50Veto.Fill(mva,blind);
+      }
 
     if (!vbfPreselection && mva.ptDiMu > 10.0)
-    {
-      histsIncPreselPtG10.Fill(mva,blind);
-    }
+      {
+        histsIncPreselPtG10.Fill(mva,blind);
+      }
 
     if (!vbfPreselection && isBB && mva.ptDiMu > 10.0)
-    {
-      histsIncPreselPtG10BB.Fill(mva,blind);
-      if(mva.RelMassRes < 0.009) {histsIncPreselPtG10BBres1.Fill(mva,blind);}
-      else{histsIncPreselPtG10BBres2.Fill(mva,blind);}
-      if(mva.RelMassResCov < 0.010) {histsIncPreselPtG10BBres1Cov.Fill(mva,blind);}
-      else{histsIncPreselPtG10BBres2Cov.Fill(mva,blind);}
-    }
+      {
+        histsIncPreselPtG10BB.Fill(mva,blind);
+        if(mva.RelMassRes < 0.009) {histsIncPreselPtG10BBres1.Fill(mva,blind);}
+        else{histsIncPreselPtG10BBres2.Fill(mva,blind);}
+        if(mva.RelMassResCov < 0.010) {histsIncPreselPtG10BBres1Cov.Fill(mva,blind);}
+        else{histsIncPreselPtG10BBres2Cov.Fill(mva,blind);}
+      }
 
     if (!vbfPreselection && isBO && mva.ptDiMu > 10.0)
-    {
-      histsIncPreselPtG10BO.Fill(mva,blind);
-      if(mva.RelMassRes < 0.011) {histsIncPreselPtG10BOres1.Fill(mva,blind);}
-      else{histsIncPreselPtG10BOres2.Fill(mva,blind);}
-    }
+      {
+        histsIncPreselPtG10BO.Fill(mva,blind);
+        if(mva.RelMassRes < 0.011) {histsIncPreselPtG10BOres1.Fill(mva,blind);}
+        else{histsIncPreselPtG10BOres2.Fill(mva,blind);}
+      }
 
     if (!vbfPreselection && isBE && mva.ptDiMu > 10.0)
-    {
-      histsIncPreselPtG10BE.Fill(mva,blind);
-    }
+      {
+        histsIncPreselPtG10BE.Fill(mva,blind);
+      }
 
     if (!vbfPreselection && isOO && mva.ptDiMu > 10.0)
-    {
-      histsIncPreselPtG10OO.Fill(mva,blind);
-    }
+      {
+        histsIncPreselPtG10OO.Fill(mva,blind);
+      }
 
     if (!vbfPreselection && isOE && mva.ptDiMu > 10.0)
-    {
-      histsIncPreselPtG10OE.Fill(mva,blind);
-    }
+      {
+        histsIncPreselPtG10OE.Fill(mva,blind);
+      }
 
     if (!vbfPreselection && isEE && mva.ptDiMu > 10.0)
-    {
-      histsIncPreselPtG10EE.Fill(mva,blind);
-    }
+      {
+        histsIncPreselPtG10EE.Fill(mva,blind);
+      }
 
     if (!vbfPreselection && isNotBB && mva.ptDiMu > 10.0)
-    {
-      histsIncPreselPtG10NotBB.Fill(mva,blind);
-    }
+      {
+        histsIncPreselPtG10NotBB.Fill(mva,blind);
+      }
 
     if (vbfPreselection && mva.mDiJet > 550.)
-    {
-      histsVBFMJJG550.Fill(mva,blind);
-    }
+      {
+        histsVBFMJJG550.Fill(mva,blind);
+      }
 
     if (vbfPreselection        && 
         mva.mDiJet > 550.      && 
         mva.deltaEtaJets > 3.5 && 
         mva.ptmiss<100. )
-    {
-      histsVBFDeJJG3p5MJJG550pTmissL100.Fill(mva,blind);
-    }
+      {
+        histsVBFDeJJG3p5MJJG550pTmissL100.Fill(mva,blind);
+      }
 
     if (vbfPreselection        && 
         mva.mDiJet > 500.      && 
         mva.deltaEtaJets > 3.4 && 
         mva.ptmiss<25. )
-    {
-      histsVBFDeJJG3p4MJJG500pTmissL25.Fill(mva,blind);
-    }
+      {
+        histsVBFDeJJG3p4MJJG500pTmissL25.Fill(mva,blind);
+      }
 
-///////////////////////////////////////////
+    ///////////////////////////////////////////
 
     timeReading += difftime(timeStopReading,timeStartReading);
     timeProcessing += difftime(timeStartFilling,timeStopReading);
@@ -2842,38 +2898,38 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
   }// end event loop
   time_t timeEndEventLoop = time(NULL);
 
-// for efficiency:
-//////////////////////////////////////////////////////////////////////
+  // for efficiency:
+  //////////////////////////////////////////////////////////////////////
   for(unsigned iS = 0; iS<Nbin ;iS++){
-     if(Flag_subCat == 1) counterGenBoson[iS] = counterGenBoson[0]; // the same dominator for sub catergories
-     std::cout << " ########################################## \n";
-     std::cout << " ########################################## \n";
-     std::cout << " For subcategory = " << iS << " Events after: \n\n";
-     //counterGenBoson = counterGenBoson - 40000;
-     std::cout << " Gen Mass   Cuts = " << counterGenBoson[iS] << std::endl;
-     std::cout << " Minimal    Cuts = " << counterMinimCuts[iS] << std::endl;
-     std::cout << " pT/eta     Cuts = " << counterAccCuts[iS]   << std::endl;
-     std::cout << " Muon ID    Cuts = " << counterIDCuts[iS]    << std::endl;
-     std::cout << " Muon Iso   Cuts = " << counterIsoCuts[iS]   << std::endl;
-     std::cout << " Trigger    Cuts = " << counterTrigCuts[iS]  << std::endl;
-     std::cout << " VBF pres.  Cuts = " << counterJetSel[iS]  << std::endl;
-     std::cout << " VBF BDT    Cuts = " << counterBDTvbfCut[iS]  << std::endl;
-     std::cout << " non VBF pres.  Cuts = " << counterNonJetSel[iS]  << std::endl;
-     std::cout << " pt(mumu)>10 GeV = " << counterDiPt10GeV[iS]  << std::endl;
-     // calculate efficiency and binom. error:
-     // calculate efficiency and binom. error:
-     EffMinimCuts[iS] = float(counterMinimCuts[iS])/float(counterGenBoson[iS]);
-     EffAccCuts[iS] = float(counterAccCuts[iS])/float(counterGenBoson[iS]);
-     EffIDCuts[iS] = float(counterIDCuts[iS])/float(counterGenBoson[iS]);
-     EffIsoCuts[iS] = float(counterIsoCuts[iS])/float(counterGenBoson[iS]);
-     EffTrigCuts[iS] = float(counterTrigCuts[iS])/float(counterGenBoson[iS]);
-     EffJetSel[iS] = float(counterJetSel[iS])/float(counterGenBoson[iS]);
-     EffBDTvbfCut[iS] = float(counterBDTvbfCut[iS])/float(counterGenBoson[iS]);
-     EffNonJetSel[iS] = float(counterNonJetSel[iS])/float(counterGenBoson[iS]);
-     EffDiPt10GeV[iS] = float(counterDiPt10GeV[iS])/float(counterGenBoson[iS]);
+    if(Flag_subCat == 1) counterGenBoson[iS] = counterGenBoson[0]; // the same dominator for sub catergories
+    std::cout << " ########################################## \n";
+    std::cout << " ########################################## \n";
+    std::cout << " For subcategory = " << iS << " Events after: \n\n";
+    //counterGenBoson = counterGenBoson - 40000;
+    std::cout << " Gen Mass   Cuts = " << counterGenBoson[iS] << std::endl;
+    std::cout << " Minimal    Cuts = " << counterMinimCuts[iS] << std::endl;
+    std::cout << " pT/eta     Cuts = " << counterAccCuts[iS]   << std::endl;
+    std::cout << " Muon ID    Cuts = " << counterIDCuts[iS]    << std::endl;
+    std::cout << " Muon Iso   Cuts = " << counterIsoCuts[iS]   << std::endl;
+    std::cout << " Trigger    Cuts = " << counterTrigCuts[iS]  << std::endl;
+    std::cout << " VBF pres.  Cuts = " << counterJetSel[iS]  << std::endl;
+    std::cout << " VBF BDT    Cuts = " << counterBDTvbfCut[iS]  << std::endl;
+    std::cout << " non VBF pres.  Cuts = " << counterNonJetSel[iS]  << std::endl;
+    std::cout << " pt(mumu)>10 GeV = " << counterDiPt10GeV[iS]  << std::endl;
+    // calculate efficiency and binom. error:
+    // calculate efficiency and binom. error:
+    EffMinimCuts[iS] = float(counterMinimCuts[iS])/float(counterGenBoson[iS]);
+    EffAccCuts[iS] = float(counterAccCuts[iS])/float(counterGenBoson[iS]);
+    EffIDCuts[iS] = float(counterIDCuts[iS])/float(counterGenBoson[iS]);
+    EffIsoCuts[iS] = float(counterIsoCuts[iS])/float(counterGenBoson[iS]);
+    EffTrigCuts[iS] = float(counterTrigCuts[iS])/float(counterGenBoson[iS]);
+    EffJetSel[iS] = float(counterJetSel[iS])/float(counterGenBoson[iS]);
+    EffBDTvbfCut[iS] = float(counterBDTvbfCut[iS])/float(counterGenBoson[iS]);
+    EffNonJetSel[iS] = float(counterNonJetSel[iS])/float(counterGenBoson[iS]);
+    EffDiPt10GeV[iS] = float(counterDiPt10GeV[iS])/float(counterGenBoson[iS]);
 
-     int iTypeDEff = 1;// 1 - TEfficiency, 2 - Benomial  
-     if(iTypeDEff == 2){
+    int iTypeDEff = 1;// 1 - TEfficiency, 2 - Benomial  
+    if(iTypeDEff == 2){
       dEffMinimCuts[iS] = sqrt( EffMinimCuts[iS]*(1-EffMinimCuts[iS])/float(counterGenBoson[iS]) );
       dEffAccCuts[iS] = sqrt( EffAccCuts[iS]*(1-EffAccCuts[iS])/float(counterGenBoson[iS]) );
       dEffIDCuts[iS] = sqrt( EffIDCuts[iS]*(1-EffIDCuts[iS])/float(counterGenBoson[iS]) );
@@ -2883,8 +2939,8 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
       dEffBDTvbfCut[iS] = sqrt( EffBDTvbfCut[iS]*(1-EffBDTvbfCut[iS])/float(counterGenBoson[iS]) );
       dEffNonJetSel[iS] = sqrt( EffNonJetSel[iS]*(1-EffNonJetSel[iS])/float(counterGenBoson[iS]) );
       dEffDiPt10GeV[iS] = sqrt( EffDiPt10GeV[iS]*(1-EffDiPt10GeV[iS])/float(counterGenBoson[iS]) );
-     }
-     if(iTypeDEff == 1){
+    }
+    if(iTypeDEff == 1){
       //0.683 - 1 sigma, true - upper, false - lower boundary
       bool upper = true;
       dEffMinimCuts[iS] = TEfficiency::ClopperPearson( counterGenBoson[iS], counterMinimCuts[iS], 0.683, upper ) - EffMinimCuts[iS];
@@ -2896,46 +2952,46 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
       dEffBDTvbfCut[iS] = TEfficiency::ClopperPearson( counterGenBoson[iS], counterBDTvbfCut[iS], 0.683, upper ) - EffBDTvbfCut[iS];
       dEffNonJetSel[iS] = TEfficiency::ClopperPearson( counterGenBoson[iS], counterNonJetSel[iS], 0.683, upper ) - EffNonJetSel[iS];
       dEffDiPt10GeV[iS] = TEfficiency::ClopperPearson( counterGenBoson[iS], counterDiPt10GeV[iS], 0.683, upper ) - EffDiPt10GeV[iS];
-     }
-     std::cout << " ########################################## \n";
-     std::cout << " Efficiency after selection: \n\n";
-     cout.unsetf(ios::floatfield);            // floatfield not set
-     cout.precision(3);
-     std::cout << " Opposit charge, M_RECO = 110-150 GeV  = " << EffMinimCuts[iS] <<" +/- ";
-     cout.precision(1);
-     std::cout << dEffMinimCuts[iS] << std::endl;
-     cout.precision(3);
-     std::cout << " + pT > 25 GeV,|eta| < 2.1         Cut = " << EffAccCuts[iS]   <<" +/- ";
-     cout.precision(1);
-     std::cout << dEffAccCuts[iS]   << std::endl;
-     cout.precision(3);
-     std::cout << " + Tight Muon ID                   Cut = " << EffIDCuts[iS]    <<" +/- " ;
-     cout.precision(1);
-     std::cout <<  dEffIDCuts[iS]    << std::endl;
-     cout.precision(3);
-     std::cout << " + Muon Relative PF Isolation      Cut = " << EffIsoCuts[iS]   <<" +/- " ;
-     cout.precision(1);
-     std::cout << dEffIsoCuts[iS]   << std::endl;
-     cout.precision(3);
-     std::cout << " + Trigger HLT_Mu24Iso_eta2p1      Cut = " << EffTrigCuts[iS]  <<" +/- " ;
-     cout.precision(1);
-     std::cout << dEffTrigCuts[iS]  << std::endl;
-     cout.precision(3);
-     std::cout << " + VBF Jet preselection            Cut = " << EffJetSel[iS]    <<" +/- " ;
-     cout.precision(1);
-     std::cout << dEffJetSel[iS] << std::endl;
-     cout.precision(3);
-     std::cout << " + VBF BDT                         Cut = " << EffBDTvbfCut[iS]    <<" +/- " ;
-     cout.precision(1);
-     std::cout << dEffBDTvbfCut[iS] << std::endl;
-     cout.precision(3);
-     std::cout << " + non VBF Jet preselection         Cut = " << EffNonJetSel[iS]    <<" +/- " ;
-     cout.precision(1);
-     std::cout << dEffNonJetSel[iS] << std::endl;
-     cout.precision(3);
-     std::cout << " + pt(mumu)> 10 GeV/c, no VBF pres. and no BDT  Cut = " << EffDiPt10GeV[iS]    <<" +/- " ;
-     cout.precision(1);
-     std::cout << dEffDiPt10GeV[iS] << std::endl;
+    }
+    std::cout << " ########################################## \n";
+    std::cout << " Efficiency after selection: \n\n";
+    cout.unsetf(ios::floatfield);            // floatfield not set
+    cout.precision(3);
+    std::cout << " Opposit charge, M_RECO = 110-150 GeV  = " << EffMinimCuts[iS] <<" +/- ";
+    cout.precision(1);
+    std::cout << dEffMinimCuts[iS] << std::endl;
+    cout.precision(3);
+    std::cout << " + pT > 25 GeV,|eta| < 2.1         Cut = " << EffAccCuts[iS]   <<" +/- ";
+    cout.precision(1);
+    std::cout << dEffAccCuts[iS]   << std::endl;
+    cout.precision(3);
+    std::cout << " + Tight Muon ID                   Cut = " << EffIDCuts[iS]    <<" +/- " ;
+    cout.precision(1);
+    std::cout <<  dEffIDCuts[iS]    << std::endl;
+    cout.precision(3);
+    std::cout << " + Muon Relative PF Isolation      Cut = " << EffIsoCuts[iS]   <<" +/- " ;
+    cout.precision(1);
+    std::cout << dEffIsoCuts[iS]   << std::endl;
+    cout.precision(3);
+    std::cout << " + Trigger HLT_Mu24Iso_eta2p1      Cut = " << EffTrigCuts[iS]  <<" +/- " ;
+    cout.precision(1);
+    std::cout << dEffTrigCuts[iS]  << std::endl;
+    cout.precision(3);
+    std::cout << " + VBF Jet preselection            Cut = " << EffJetSel[iS]    <<" +/- " ;
+    cout.precision(1);
+    std::cout << dEffJetSel[iS] << std::endl;
+    cout.precision(3);
+    std::cout << " + VBF BDT                         Cut = " << EffBDTvbfCut[iS]    <<" +/- " ;
+    cout.precision(1);
+    std::cout << dEffBDTvbfCut[iS] << std::endl;
+    cout.precision(3);
+    std::cout << " + non VBF Jet preselection         Cut = " << EffNonJetSel[iS]    <<" +/- " ;
+    cout.precision(1);
+    std::cout << dEffNonJetSel[iS] << std::endl;
+    cout.precision(3);
+    std::cout << " + pt(mumu)> 10 GeV/c, no VBF pres. and no BDT  Cut = " << EffDiPt10GeV[iS]    <<" +/- " ;
+    cout.precision(1);
+    std::cout << dEffDiPt10GeV[iS] << std::endl;
 
   } // end for 
 
@@ -2944,14 +3000,14 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
   myfile << "EffBDT{}  = {";
   myfile.precision(3);
   for(unsigned iS = 0; iS<Nbin ;iS++){
-     myfile << EffBDTvbfCut[iS] << ", ";
+    myfile << EffBDTvbfCut[iS] << ", ";
   }
   myfile << "};\n\n";
 
   myfile << "dEffBDT{} = {";
   myfile.precision(1);
   for(unsigned iS = 0; iS<Nbin ;iS++){
-     myfile << dEffBDTvbfCut[iS] << ", ";
+    myfile << dEffBDTvbfCut[iS] << ", ";
   }
   myfile << "};\n\n";
 
@@ -2960,101 +3016,101 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
 
   // write efficiency for sub categories to myfileSubCat
   for(unsigned iS = 0; iS < 6 ;iS++){
-     myfileSubCat.precision(4);
-     myfileSubCat << subCategory[iS] << EffDiPt10GeV[iS];
-     myfileSubCat.precision(2);
-     myfileSubCat << "   " << dEffDiPt10GeV[iS] << "\n";
+    myfileSubCat.precision(4);
+    myfileSubCat << subCategory[iS] << EffDiPt10GeV[iS];
+    myfileSubCat.precision(2);
+    myfileSubCat << "   " << dEffDiPt10GeV[iS] << "\n";
   }
   myfileSubCat.precision(4);
   myfileSubCat << subCategory[6] << EffNonJetSel[6];
-     myfileSubCat.precision(2);
-     myfileSubCat << "   " << dEffNonJetSel[6] << "\n";
+  myfileSubCat.precision(2);
+  myfileSubCat << "   " << dEffNonJetSel[6] << "\n";
 
   myfileSubCat.precision(4);
   myfileSubCat << subCategory[7] << EffDiPt10GeV[7];
-     myfileSubCat.precision(2);
-     myfileSubCat << "   " << dEffDiPt10GeV[7] << "\n";
+  myfileSubCat.precision(2);
+  myfileSubCat << "   " << dEffDiPt10GeV[7] << "\n";
 
   myfileSubCat.precision(4);
   myfileSubCat << subCategory[8] << EffJetSel[8];
-     myfileSubCat.precision(2);
-     myfileSubCat << "   " << dEffJetSel[8] << "\n";
+  myfileSubCat.precision(2);
+  myfileSubCat << "   " << dEffJetSel[8] << "\n";
 
   myfileSubCat.precision(4);
   myfileSubCat << subCategory[9] << EffBDTvbfCut[9];
-     myfileSubCat.precision(2);
-     myfileSubCat << "   " << dEffBDTvbfCut[9] << "\n";
+  myfileSubCat.precision(2);
+  myfileSubCat << "   " << dEffBDTvbfCut[9] << "\n";
 
   for(unsigned iS = 0; iS < 6 ;iS++){
-     myfileSubCat.precision(4);
-     myfileSubCat << subCategory[iS+10] << EffNonJetSel[iS];
-     myfileSubCat.precision(2);
-     myfileSubCat << "   " << dEffNonJetSel[iS] << "\n";
+    myfileSubCat.precision(4);
+    myfileSubCat << subCategory[iS+10] << EffNonJetSel[iS];
+    myfileSubCat.precision(2);
+    myfileSubCat << "   " << dEffNonJetSel[iS] << "\n";
   }
 
   myfileSubCat.precision(4);
   myfileSubCat << subCategory[16] << EffJetSel[9];
-     myfileSubCat.precision(2);
-     myfileSubCat << "   " << dEffJetSel[9] << "\n";
+  myfileSubCat.precision(2);
+  myfileSubCat << "   " << dEffJetSel[9] << "\n";
 
   // resolution categories for BB and BO
 
   myfileSubCat.precision(4);
   myfileSubCat << subCategory[17] << EffDiPt10GeV[8];
-     myfileSubCat.precision(2);
-     myfileSubCat << "   " << dEffDiPt10GeV[8] << "\n";
+  myfileSubCat.precision(2);
+  myfileSubCat << "   " << dEffDiPt10GeV[8] << "\n";
  
   myfileSubCat.precision(4);
   myfileSubCat << subCategory[18] << EffDiPt10GeV[9];
-     myfileSubCat.precision(2);
-     myfileSubCat << "   " << dEffDiPt10GeV[9] << "\n";
+  myfileSubCat.precision(2);
+  myfileSubCat << "   " << dEffDiPt10GeV[9] << "\n";
  
   myfileSubCat.precision(4);
   myfileSubCat << subCategory[19] << EffDiPt10GeV[10];
-     myfileSubCat.precision(2);
-     myfileSubCat << "   " << dEffDiPt10GeV[10] << "\n";
+  myfileSubCat.precision(2);
+  myfileSubCat << "   " << dEffDiPt10GeV[10] << "\n";
  
   myfileSubCat.precision(4);
   myfileSubCat << subCategory[20] << EffDiPt10GeV[11];
-     myfileSubCat.precision(2);
-     myfileSubCat << "   " << dEffDiPt10GeV[11] << "\n";
+  myfileSubCat.precision(2);
+  myfileSubCat << "   " << dEffDiPt10GeV[11] << "\n";
  
   // VBF cutbased efficiency
 
   myfileSubCat.precision(4);
   myfileSubCat << subCategory[21] << EffJetSel[10];
-     myfileSubCat.precision(2);
-     myfileSubCat << "   " << dEffJetSel[10] << "\n";
+  myfileSubCat.precision(2);
+  myfileSubCat << "   " << dEffJetSel[10] << "\n";
 
   myfileSubCat.precision(4);
   myfileSubCat << subCategory[22] << EffJetSel[11];
-     myfileSubCat.precision(2);
-     myfileSubCat << "   " << dEffJetSel[11] << "\n";
+  myfileSubCat.precision(2);
+  myfileSubCat << "   " << dEffJetSel[11] << "\n";
 
   //Baseline++
 
   // write efficiency for sub categories to myfileSubCat
   for(unsigned iS = 23; iS < 41 ;iS++){
-     myfileSubCat.precision(4);
-     myfileSubCat << subCategory[iS] << EffDiPt10GeV[iS];
-     myfileSubCat.precision(2);
-     myfileSubCat << "   " << dEffDiPt10GeV[iS] << "\n";
+    myfileSubCat.precision(4);
+    myfileSubCat << subCategory[iS] << EffDiPt10GeV[iS];
+    myfileSubCat.precision(2);
+    myfileSubCat << "   " << dEffDiPt10GeV[iS] << "\n";
   }
  
   for(unsigned iS = 41; iS < 44 ;iS++){
-     myfileSubCat.precision(4);
-     myfileSubCat << subCategory[iS] << EffBDTvbfCut[iS];
-     myfileSubCat.precision(2);
-     myfileSubCat << "   " << dEffBDTvbfCut[iS] << "\n";
+    myfileSubCat.precision(4);
+    myfileSubCat << subCategory[iS] << EffBDTvbfCut[iS];
+    myfileSubCat.precision(2);
+    myfileSubCat << "   " << dEffBDTvbfCut[iS] << "\n";
   }
  
 
   myfileSubCat.close();
 
 
-//////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////
 
   // write the ttree
   cout << "About to begin writting stuff to files..." << endl;
@@ -3065,70 +3121,70 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
   cout << "Writing first hists..." << endl;
   hists.Write(outFile,"");
   /*
-  histsBB.Write(outFile,"BB");
-  histsBO.Write(outFile,"BO");
-  histsBE.Write(outFile,"BE");
-  histsOO.Write(outFile,"OO");
-  histsOE.Write(outFile,"OE");
-  histsEE.Write(outFile,"EE");
-  histsNotBB.Write(outFile,"NotBB");
-  hists4GeVWindow.Write(outFile,"4GeVWindow");
+    histsBB.Write(outFile,"BB");
+    histsBO.Write(outFile,"BO");
+    histsBE.Write(outFile,"BE");
+    histsOO.Write(outFile,"OO");
+    histsOE.Write(outFile,"OE");
+    histsEE.Write(outFile,"EE");
+    histsNotBB.Write(outFile,"NotBB");
+    hists4GeVWindow.Write(outFile,"4GeVWindow");
 
-  histsVBFPresel.Write(outFile,"VBFPresel");
-  histsVBFPreselBB.Write(outFile,"VBFPreselBB");
-  histsVBFPreselNotBB.Write(outFile,"VBFPreselNotBB");
+    histsVBFPresel.Write(outFile,"VBFPresel");
+    histsVBFPreselBB.Write(outFile,"VBFPreselBB");
+    histsVBFPreselNotBB.Write(outFile,"VBFPreselNotBB");
 
-  histsIncPresel.Write(outFile,"IncPresel");
-  histsIncPreselBB.Write(outFile,"IncPreselBB");
-  histsIncPreselBO.Write(outFile,"IncPreselBO");
-  histsIncPreselBE.Write(outFile,"IncPreselBE");
-  histsIncPreselOO.Write(outFile,"IncPreselOO");
-  histsIncPreselOE.Write(outFile,"IncPreselOE");
-  histsIncPreselEE.Write(outFile,"IncPreselEE");
-  histsIncPreselNotBB.Write(outFile,"IncPreselNotBB");
+    histsIncPresel.Write(outFile,"IncPresel");
+    histsIncPreselBB.Write(outFile,"IncPreselBB");
+    histsIncPreselBO.Write(outFile,"IncPreselBO");
+    histsIncPreselBE.Write(outFile,"IncPreselBE");
+    histsIncPreselOO.Write(outFile,"IncPreselOO");
+    histsIncPreselOE.Write(outFile,"IncPreselOE");
+    histsIncPreselEE.Write(outFile,"IncPreselEE");
+    histsIncPreselNotBB.Write(outFile,"IncPreselNotBB");
 
-  histsIncBDTCut.Write(outFile,"IncBDTCut");
-  histsIncBDTCutBB.Write(outFile,"IncBDTCutBB");
-  histsIncBDTCutBO.Write(outFile,"IncBDTCutBO");
-  histsIncBDTCutBE.Write(outFile,"IncBDTCutBE");
-  histsIncBDTCutOO.Write(outFile,"IncBDTCutOO");
-  histsIncBDTCutOE.Write(outFile,"IncBDTCutOE");
-  histsIncBDTCutEE.Write(outFile,"IncBDTCutEE");
-  histsIncBDTCutNotBB.Write(outFile,"IncBDTCutNotBB");
+    histsIncBDTCut.Write(outFile,"IncBDTCut");
+    histsIncBDTCutBB.Write(outFile,"IncBDTCutBB");
+    histsIncBDTCutBO.Write(outFile,"IncBDTCutBO");
+    histsIncBDTCutBE.Write(outFile,"IncBDTCutBE");
+    histsIncBDTCutOO.Write(outFile,"IncBDTCutOO");
+    histsIncBDTCutOE.Write(outFile,"IncBDTCutOE");
+    histsIncBDTCutEE.Write(outFile,"IncBDTCutEE");
+    histsIncBDTCutNotBB.Write(outFile,"IncBDTCutNotBB");
 
-  histsVBFBDTCut.Write(outFile,"VBFBDTCut");
-  histsVBFBDTCutBB.Write(outFile,"VBFBDTCutBB");
-  histsVBFBDTCut.Write(outFile,"VBFBDTCutNotBB");
+    histsVBFBDTCut.Write(outFile,"VBFBDTCut");
+    histsVBFBDTCutBB.Write(outFile,"VBFBDTCutBB");
+    histsVBFBDTCut.Write(outFile,"VBFBDTCutNotBB");
 
-  histsVBFPreselDiMuPtL20.Write(outFile,"VBFPreselDiMuPtL20");
-  histsIncPreselDiMuPtL20.Write(outFile,"IncPreselDiMuPtL20");
+    histsVBFPreselDiMuPtL20.Write(outFile,"VBFPreselDiMuPtL20");
+    histsIncPreselDiMuPtL20.Write(outFile,"IncPreselDiMuPtL20");
 
-  histsIncPreselPUJETID.Write(outFile,"IncPreselPUJETID");
-  histsVBFPreselPUJETID.Write(outFile,"VBFPreselPUJETID");
+    histsIncPreselPUJETID.Write(outFile,"IncPreselPUJETID");
+    histsVBFPreselPUJETID.Write(outFile,"VBFPreselPUJETID");
 
-  histsIncPreselPUJETIDForVeto.Write(outFile,"IncPreselPUJETIDForVeto");
-  histsVBFPreselPUJETIDForVeto.Write(outFile,"VBFPreselPUJETIDForVeto");
+    histsIncPreselPUJETIDForVeto.Write(outFile,"IncPreselPUJETIDForVeto");
+    histsVBFPreselPUJETIDForVeto.Write(outFile,"VBFPreselPUJETIDForVeto");
 
-  histsVBFPreselPtMiss50Veto.Write(outFile,"VBFPreselPtMiss50Veto");
+    histsVBFPreselPtMiss50Veto.Write(outFile,"VBFPreselPtMiss50Veto");
 
-  histsIncPreselPtG10.Write(outFile,"IncPreselPtG10");
-  histsIncPreselPtG10BB.Write(outFile,"IncPreselPtG10BB");
-  histsIncPreselPtG10BO.Write(outFile,"IncPreselPtG10BO");
-  histsIncPreselPtG10BE.Write(outFile,"IncPreselPtG10BE");
-  histsIncPreselPtG10OO.Write(outFile,"IncPreselPtG10OO");
-  histsIncPreselPtG10OE.Write(outFile,"IncPreselPtG10OE");
-  histsIncPreselPtG10EE.Write(outFile,"IncPreselPtG10EE");
-  histsIncPreselPtG10NotBB.Write(outFile,"IncPreselPtG10NotBB");
-  histsIncPreselPtG10BBres1.Write(outFile,"IncPreselPtG10BBres1");
-  histsIncPreselPtG10BBres2.Write(outFile,"IncPreselPtG10BBres2");
-  histsIncPreselPtG10BOres1.Write(outFile,"IncPreselPtG10BOres1");
-  histsIncPreselPtG10BOres2.Write(outFile,"IncPreselPtG10BOres2");
-  histsIncPreselPtG10BBres1Cov.Write(outFile,"IncPreselPtG10BBres1Cov");
-  histsIncPreselPtG10BBres2Cov.Write(outFile,"IncPreselPtG10BBres2Cov");
+    histsIncPreselPtG10.Write(outFile,"IncPreselPtG10");
+    histsIncPreselPtG10BB.Write(outFile,"IncPreselPtG10BB");
+    histsIncPreselPtG10BO.Write(outFile,"IncPreselPtG10BO");
+    histsIncPreselPtG10BE.Write(outFile,"IncPreselPtG10BE");
+    histsIncPreselPtG10OO.Write(outFile,"IncPreselPtG10OO");
+    histsIncPreselPtG10OE.Write(outFile,"IncPreselPtG10OE");
+    histsIncPreselPtG10EE.Write(outFile,"IncPreselPtG10EE");
+    histsIncPreselPtG10NotBB.Write(outFile,"IncPreselPtG10NotBB");
+    histsIncPreselPtG10BBres1.Write(outFile,"IncPreselPtG10BBres1");
+    histsIncPreselPtG10BBres2.Write(outFile,"IncPreselPtG10BBres2");
+    histsIncPreselPtG10BOres1.Write(outFile,"IncPreselPtG10BOres1");
+    histsIncPreselPtG10BOres2.Write(outFile,"IncPreselPtG10BOres2");
+    histsIncPreselPtG10BBres1Cov.Write(outFile,"IncPreselPtG10BBres1Cov");
+    histsIncPreselPtG10BBres2Cov.Write(outFile,"IncPreselPtG10BBres2Cov");
 
-  histsVBFMJJG550.Write(outFile,"VBFMJJG550");
-  histsVBFDeJJG3p5MJJG550pTmissL100.Write(outFile,"histsVBFDeJJG3p5MJJG550pTmissL100");
-  histsVBFDeJJG3p4MJJG500pTmissL25 .Write(outFile,"histsVBFDeJJG3p4MJJG500pTmissL25");
+    histsVBFMJJG550.Write(outFile,"VBFMJJG550");
+    histsVBFDeJJG3p5MJJG550pTmissL100.Write(outFile,"histsVBFDeJJG3p5MJJG550pTmissL100");
+    histsVBFDeJJG3p4MJJG500pTmissL25 .Write(outFile,"histsVBFDeJJG3p4MJJG500pTmissL25");
   */
 
   cout << "Writing baseline++..." << endl;
@@ -3190,11 +3246,11 @@ if(reco1.charge != reco2.charge && reco1.pt > 20 && reco2.pt > 20 && fabs(reco1.
   cout << "Total Time: "<<std::setprecision(3) << difftime(time(NULL),timeStart)<<"\n";
   cout << "Setup Time: "<<std::setprecision(3) <<difftime(timeStartEventLoop,timeStart)<<"\n";
   cout << "Event Loop Time: "<<std::setprecision(3) 
-        <<difftime(timeEndEventLoop,timeStartEventLoop)<< ", "<<std::setprecision(3) 
-        <<difftime(timeEndEventLoop,timeStartEventLoop)/(std::min(nEvents,(unsigned) maxEvents))*1000.
-        <<" s / 1000 events or "
-        <<(std::min(nEvents,(unsigned) maxEvents))/difftime(timeEndEventLoop,timeStartEventLoop)*3600./1.0e6
-        <<"M events/hour \n";
+       <<difftime(timeEndEventLoop,timeStartEventLoop)<< ", "<<std::setprecision(3) 
+       <<difftime(timeEndEventLoop,timeStartEventLoop)/(std::min(nEvents,(unsigned) maxEvents))*1000.
+       <<" s / 1000 events or "
+       <<(std::min(nEvents,(unsigned) maxEvents))/difftime(timeEndEventLoop,timeStartEventLoop)*3600./1.0e6
+       <<"M events/hour \n";
   cout << "  Read Time: "<<std::setprecision(3) << timeReading << std::endl;
   cout << "  Proc Time: "<<std::setprecision(3) << timeProcessing << std::endl;
   cout << "  Fill Time: "<<std::setprecision(3) << timeFilling << std::endl;
@@ -3225,10 +3281,10 @@ fillMuonHist(TH1F* hist, _MuonInfo& mu1, _MuonInfo& mu2)
   hist->Fill(6.0);
 
   if(getPFRelIso(mu1) > 0.12 || getPFRelIso(mu2) > 0.12)
-  {
+    {
       //cout << "Iso 1: "<< getPFRelIso(mu1) << "    Iso 2: " << getPFRelIso(mu2) << endl;
       return;
-  }
+    }
   hist->Fill(7.0);
 
   if (fabs(mu1.d0_PV) > 0.2 || fabs(mu2.d0_PV) > 0.2) return;
@@ -3241,10 +3297,10 @@ fillMuonHist(TH1F* hist, _MuonInfo& mu1, _MuonInfo& mu2)
   if ( mu1.numValidPixelHits < 1  || mu2.numValidPixelHits < 1) return;
   hist->Fill(11.0);
   if ( mu1.numOfMatchedStations < 2  || mu2.numOfMatchedStations < 2)
-  {
+    {
       //cout << "Sta 1: "<<mu1.numOfMatchedStations << "    Sta 2: " << mu2.numOfMatchedStations << endl;
       return;
-  }
+    }
   hist->Fill(12.0);
   if ( mu1.normChiSquare > 10 || mu2.normChiSquare > 10)     return;
   hist->Fill(13.0);
@@ -3266,10 +3322,10 @@ printStationMiss(_MuonInfo& mu1, _MuonInfo& mu2, _EventInfo& eventInfo, std::str
   if (mu1.numTrackerLayers < 6 || mu2.numTrackerLayers < 6) return; // # hits in tracker
 
   if(getPFRelIso(mu1) > 0.12 || getPFRelIso(mu2) > 0.12)
-  {
+    {
       //cout << "Iso 1: "<< getPFRelIso(mu1) << "    Iso 2: " << getPFRelIso(mu2) << endl;
       return;
-  }
+    }
 
   if (fabs(mu1.d0_PV) > 0.2 || fabs(mu2.d0_PV) > 0.2) return;
   if (fabs(mu1.dz_PV) > 0.5 || fabs(mu2.dz_PV) > 0.5) return;
@@ -3277,20 +3333,20 @@ printStationMiss(_MuonInfo& mu1, _MuonInfo& mu2, _EventInfo& eventInfo, std::str
   if ( mu1.numValidMuonHits  < 1  || mu2.numValidMuonHits  < 1) return;
   if ( mu1.numValidPixelHits < 1  || mu2.numValidPixelHits < 1) return;
   if ( mu1.numOfMatchedStations < 2  || mu2.numOfMatchedStations < 2)
-  {
-        testCounter++;
-        //std::cout <<eventInfo.run <<":"<<eventInfo.event <<"\n"<< std::endl;
-        testString.appendAny(eventInfo.run);
-        testString.append(":");
-        testString.appendAny(eventInfo.event);
-        //testString.append("  #  ");
-        //testString.appendAny(mu1.numOfMatchedStations);
-        //testString.append("  ");
-        //testString.appendAny(mu2.numOfMatchedStations);
-        testString.append("\n");
+    {
+      testCounter++;
+      //std::cout <<eventInfo.run <<":"<<eventInfo.event <<"\n"<< std::endl;
+      testString.appendAny(eventInfo.run);
+      testString.append(":");
+      testString.appendAny(eventInfo.event);
+      //testString.append("  #  ");
+      //testString.appendAny(mu1.numOfMatchedStations);
+      //testString.append("  ");
+      //testString.appendAny(mu2.numOfMatchedStations);
+      testString.append("\n");
       
       return;
-  }
+    }
   if ( mu1.normChiSquare > 10 || mu2.normChiSquare > 10)     return;
 
 }
@@ -3311,15 +3367,6 @@ HistStruct::HistStruct()
 
   mDiMuTrkRelIso = new TH1F("mDiMuTrkRelIso","DiMuon Mass w/ TrkRelIso",nMassBins,minMass,maxMass);
   histVec.push_back(mDiMuTrkRelIso);
-
-  mDiMuResSigUp = new TH1F("mDiMuResSigUp","DiMuon Mass Systematic Shift Up: Sigma",nMassBins,minMass,maxMass);
-  histVec.push_back(mDiMuResSigUp);
-  mDiMuResSigDown = new TH1F("mDiMuResSigDown","DiMuon Mass Systematic Shift Down: Sigma",nMassBins,minMass,maxMass);
-  histVec.push_back(mDiMuResSigDown);
-  mDiMuResASigUp = new TH1F("mDiMuResASigUp","DiMuon Mass Systematic Shift Up: ASigma",nMassBins,minMass,maxMass);
-  histVec.push_back(mDiMuResASigUp);
-  mDiMuResASigDown = new TH1F("mDiMuResASigDown","DiMuon Mass Systematic Shift Down: ASigma",nMassBins,minMass,maxMass);
-  histVec.push_back(mDiMuResASigDown);
 
   RelMassRes = new TH1F("RelMassRes","Mass Resoluton",100,0.,0.05);
   histVec.push_back(RelMassRes);
@@ -3499,14 +3546,14 @@ void
 HistStruct::Write(TFile* outfile, std::string directory)
 {
   if(directory == "")
-  {
-    outfile->cd();
-  }
+    {
+      outfile->cd();
+    }
   else
-  {
-    TDirectory* dir = outfile->mkdir(directory.c_str());
-    dir->cd();
-  }
+    {
+      TDirectory* dir = outfile->mkdir(directory.c_str());
+      dir->cd();
+    }
 
   std::vector<TH1F*>::iterator hist;
   std::vector<TH2F*>::iterator hist2D;
@@ -3583,11 +3630,6 @@ HistStruct::Fill(const MVA& mva, bool blind)
 
         if (mva.mDiMu >= 110. && mva.mDiMu <= 160.)
           mDiMu110to160 ->Fill(mva.mDiMu, mva.weight);
-
-        mDiMuResSigUp->Fill(mva.mDiMuResSigUp, mva.weight);
-        mDiMuResSigDown->Fill(mva.mDiMuResSigDown, mva.weight);
-        mDiMuResASigUp->Fill(mva.mDiMuResASigUp, mva.weight);
-        mDiMuResASigDown->Fill(mva.mDiMuResASigDown, mva.weight);
 
         RelMassRes->Fill(mva.RelMassRes, mva.weight);
         RelMassResCov->Fill(mva.RelMassResCov, mva.weight);
