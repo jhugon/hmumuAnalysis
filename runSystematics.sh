@@ -36,13 +36,13 @@ nice ./analyzer vbfHmumu150_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/vbfHm
 
 wait
 
-## Varied samples
-#echo "Running Variation Samples..."
-#
-#for i in /data/uftrig01b/jhugon/hmumu/samples/systematics/*.root; do
-#  tmp=$(basename $i | sed "s/.*\([0-9]TeV\).*/\1/")
-#  echo "./analyzer $(basename $i) $i -r $tmp >&  log_$(basename $i)"
-#  ./analyzer $(basename $i) $i -r $tmp >& log_$(basename $i)
-#done
+# Varied samples
+echo "Running Variation Samples..."
+
+for i in /data/uftrig01b/jhugon/hmumu/samples/systematics/*.root; do
+  tmp=$(basename $i | sed "s/.*\([0-9]TeV\).*/\1/")
+  echo "./analyzer $(basename $i) $i -r $tmp >&  log_$(basename $i)"
+  nice ./analyzer $(basename $i) $i -r $tmp >& log_$(basename $i)
+done
 
 echo "Done."

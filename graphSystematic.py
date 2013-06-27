@@ -11,6 +11,7 @@ root.gErrorIgnoreLevel = root.kWarning
 from ROOT import gStyle as gStyle
 
 THRESHOLD=0.01
+#THRESHOLD=0.0000001
 PRELIMINARYSTRING="CMS Preliminary"
 
 def absMax(x,y):
@@ -289,6 +290,9 @@ for errorSet in errorSets:
       tlatex.DrawLatex(0.04+gStyle.GetPadLeftMargin(),0.88,captionStr)
       errorSetSaveName = errorSet.replace(" ","") 
       canvas.SaveAs(errorSetSaveName+"_"+ds+energy+".png")
+      canvas.SaveAs(errorSetSaveName+"_"+ds+energy+".eps")
+      canvas.SaveAs(errorSetSaveName+"_"+ds+energy+".pdf")
+      canvas.SaveAs(errorSetSaveName+"_"+ds+energy+".root")
   
   # Now for a table
   tableStr = ""
@@ -488,3 +492,6 @@ for ds in datasets:
       tlatex.DrawLatex(0.04+gStyle.GetPadLeftMargin(),0.88,captionStr)
       errorSetSaveName = errorSet.replace(" ","") 
       canvas.SaveAs("TuneEffComp_"+cat+"_"+ds+"_"+energy+".png")
+      canvas.SaveAs("TuneEffComp_"+cat+"_"+ds+"_"+energy+".pdf")
+      canvas.SaveAs("TuneEffComp_"+cat+"_"+ds+"_"+energy+".eps")
+      canvas.SaveAs("TuneEffComp_"+cat+"_"+ds+"_"+energy+".root")
