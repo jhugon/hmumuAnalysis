@@ -43,6 +43,7 @@ libs.append("TreePlayer")
 #Anna's Calibration Code & Corrections
 doSmearing = True
 doMuScleFit = True
+doMuScleFitReReco = False
 doRochester = False
 doRochesterReReco = False
 assert(not (doMuScleFit and doRochester))
@@ -56,6 +57,11 @@ if doMuScleFit:
   env.MergeFlags("-D MUSCLEFIT")
   smearFiles = ["annaCalibCode/FuncSmearingZmumu2012PtCorr2.C"] #For Muscle 2012
   smearFiles += ["annaCalibCode/FuncSmearingZmumu2011ChargePtCorr2.C"] #For Muscle 2011
+  if doMuScleFitReReco:
+    includes.append("musclefitReReco/")
+    env.MergeFlags("-D MUSCLEFIT2012ReReco")
+  else:
+    includes.append("musclefit/")
 if doRochester:
   env.MergeFlags("-D ROCHESTER")
   smearFiles = ["annaCalibCode/FuncSmearingZmumu2012PtCorr1.C"] #For Rochester 2012
@@ -69,7 +75,6 @@ corrFiles = ["rochester/rochcor2012.C",
             "rochester/rochcor2012jan22.C"
         ]
 includes.append("rochester/")
-includes.append("musclefit/")
 
 #MEKD
 buildMEKD=False

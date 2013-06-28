@@ -60,7 +60,7 @@
 #include "rochester/rochcor.h"
 #endif
 #ifdef MUSCLEFIT
-#include "musclefit/MuScleFitCorrector.h"
+#include "MuScleFitCorrector.h"
 #endif
 
 // for check doublets in Gen level:
@@ -656,6 +656,27 @@ int main(int argc, char *argv[])
 #ifdef MUSCLEFIT
   MuScleFitCorrector* mfCorr;
   TString mfInFile;
+#ifdef MUSCLEFIT2012ReReco
+  if (isData)
+  {
+    if(runPeriod == "8TeV")
+    {
+      if(is2012D)
+        mfInFile = "musclefitReReco/MuScleFit_2012D_DATA_ReReco_53X.txt";
+      else
+        mfInFile = "musclefitReReco/MuScleFit_2012ABC_DATA_ReReco_53X.txt";
+    }
+    else
+      mfInFile = "musclefitReReco/MuScleFit_2011_DATA_44X.txt";
+  }
+  else
+  {
+    if(runPeriod == "8TeV")
+      mfInFile = "musclefitReReco/MuScleFit_2012_MC_53X_smearReReco.txt";
+    else
+      mfInFile = "musclefitReReco/MuScleFit_2011_MC_44X.txt";
+  }
+#else
   if (isData)
   {
     if(runPeriod == "8TeV")
@@ -670,6 +691,8 @@ int main(int argc, char *argv[])
     else
       mfInFile = "musclefit/MuScleFit_2011_MC_44X.txt";
   }
+#endif
+  cout << "Using musclefit file: "<<mfInFile<<endl;
   mfCorr = new MuScleFitCorrector(mfInFile);
 #endif
 #ifdef ROCHESTER
