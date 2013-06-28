@@ -133,6 +133,13 @@ nice ./analyzer vbfHmumu160_8TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/vbfHm
 
 wait
 
+#nice ./analyzer SingleMuRun2012Dv1-22Jan2013.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_9/V00-01-10/NtuplesDataSingleMuRun2012D-22Jan2013-v1/minimal/SingleMuRun2012D-13Jan2013-v1_minimal.root -r 8TeV $OPTIONS  >& log2 &
+#nice ./analyzer SingleMuRun2012Av1-22Jan2013.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_9/V00-01-10/NtuplesDataSingleMuRun2012A-22Jan2013-v1/minimal/SingleMuRun2012A-13Jan2013-v1_minimal.root -r 8TeV $OPTIONS 
+#nice ./analyzer SingleMuRun2012Bv1-22Jan2013.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_9/V00-01-10/NtuplesDataSingleMuRun2012B-22Jan2013-v1/minimal/SingleMuRun2012B-13Jan2013-v1_minimal.root -r 8TeV $OPTIONS 
+#nice ./analyzer SingleMuRun2012Cv1-22Jan2013.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_9/V00-01-10/NtuplesDataSingleMuRun2012C-22Jan2013-v1/minimal/SingleMuRun2012C-13Jan2013-v1_minimal.root -r 8TeV $OPTIONS 
+#
+#wait
+
 fi
 
 tar czf result.tgz ggHmumu*.root vbfHmumu*.root zHmumu*.root wHmumu*.root ttbar*.root DY*.root WW*.root WZ*.root ZZ*.root SingleMu*.root
