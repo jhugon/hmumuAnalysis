@@ -82,6 +82,13 @@ nice ./analyzer SingleMuRun2012Cv1.root $DIR/NtuplesDataSingleMuRun2012C-24Aug20
 nice ./analyzer SingleMuRun2012Cv2.root $DIR/NtuplesDataSingleMuRun2012C-PromptReco-v2/minimal/SingleMuRun2012C-PromptReco-v2_minimal.root -r 8TeV $OPTIONS  2>&1 >> log2 &
 nice ./analyzer SingleMuRun2012D.root $DIR/NtuplesDataSingleMuRun2012D-PromptReco-v1/minimal/SingleMuRun2012D-PromptReco-v1_minimal.root -r 8TeV $OPTIONS 
 
+#nice ./analyzer SingleMuRun2012Dv1-22Jan2013.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_9/V00-01-10/NtuplesDataSingleMuRun2012D-22Jan2013-v1/minimal/SingleMuRun2012D-13Jan2013-v1_minimal.root -r 8TeV $OPTIONS  >& log2 &
+#nice ./analyzer SingleMuRun2012Av1-22Jan2013.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_9/V00-01-10/NtuplesDataSingleMuRun2012A-22Jan2013-v1/minimal/SingleMuRun2012A-13Jan2013-v1_minimal.root -r 8TeV $OPTIONS 
+#nice ./analyzer SingleMuRun2012Bv1-22Jan2013.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_9/V00-01-10/NtuplesDataSingleMuRun2012B-22Jan2013-v1/minimal/SingleMuRun2012B-13Jan2013-v1_minimal.root -r 8TeV $OPTIONS 
+#nice ./analyzer SingleMuRun2012Cv1-22Jan2013.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_9/V00-01-10/NtuplesDataSingleMuRun2012C-22Jan2013-v1/minimal/SingleMuRun2012C-13Jan2013-v1_minimal.root -r 8TeV $OPTIONS 
+#
+#wait
+
 wait
 
 ######################################
@@ -132,13 +139,6 @@ nice ./analyzer vbfHmumu155_8TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/vbfHm
 nice ./analyzer vbfHmumu160_8TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/vbfHmmu8TeV160.root -r 8TeV $OPTIONS >& log_VBF-160.log & 
 
 wait
-
-#nice ./analyzer SingleMuRun2012Dv1-22Jan2013.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_9/V00-01-10/NtuplesDataSingleMuRun2012D-22Jan2013-v1/minimal/SingleMuRun2012D-13Jan2013-v1_minimal.root -r 8TeV $OPTIONS  >& log2 &
-#nice ./analyzer SingleMuRun2012Av1-22Jan2013.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_9/V00-01-10/NtuplesDataSingleMuRun2012A-22Jan2013-v1/minimal/SingleMuRun2012A-13Jan2013-v1_minimal.root -r 8TeV $OPTIONS 
-#nice ./analyzer SingleMuRun2012Bv1-22Jan2013.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_9/V00-01-10/NtuplesDataSingleMuRun2012B-22Jan2013-v1/minimal/SingleMuRun2012B-13Jan2013-v1_minimal.root -r 8TeV $OPTIONS 
-#nice ./analyzer SingleMuRun2012Cv1-22Jan2013.root /data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_9/V00-01-10/NtuplesDataSingleMuRun2012C-22Jan2013-v1/minimal/SingleMuRun2012C-13Jan2013-v1_minimal.root -r 8TeV $OPTIONS 
-#
-#wait
 
 fi
 
