@@ -104,7 +104,7 @@ Double_t DoubleGauss(Double_t*, Double_t* );
 
 SmearingTool::SmearingTool(){
 }
-float SmearingTool::PTsmear(float PTmuonGen, float ETAmuonGen, float CHARGEmuonGen, float PTmuonReco, int Ismear, TString ParVar,float ParSig){
+float SmearingTool::PTsmear(float PTmuonGen, float ETAmuonGen, float CHARGEmuonGen, float PTmuonReco, int Ismear, float ParSig, TString ParVar){
    //Ismear = 1 - Smear with RND (no RECO use), Ismear = 2 - Smear with SF for RECO and GEN
    if(Ismear != 1 && Ismear != 2)std::cout << "ERROR SmearingTool::PTsmear: set Ismear to 1 or 2 for smearing" << std::endl;
    const int NPThist = (sizeof(PTbin)/sizeof(float)-1);
@@ -159,7 +159,7 @@ float SmearingTool::PTsmear(float PTmuonGen, float ETAmuonGen, float CHARGEmuonG
    }
    delete fitDoubleGauss;
    if(iK_cand > -1 && Ismear == 2){
-      PTmuonSmear = PTmuonGen + ScaleFactor*(PTmuonReco - PTmuonGen);
+     PTmuonSmear = PTmuonGen + (ScaleFactorParSig)*(PTmuonReco - PTmuonGen);
    }
    ////// End Smearing parametrization for single muon:
 
