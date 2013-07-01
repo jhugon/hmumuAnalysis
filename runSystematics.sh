@@ -4,7 +4,7 @@ nice scons -j4
 
 #OPTIONS=" -m 1000"
 
-# Standard Samples
+##### Standard Samples
 
 echo "Running 8 TeV Samples..."
 DIR=/data/uftrig01b/digiovan/root/higgs/CMSSW_5_3_5/V00-01-10/
@@ -25,23 +25,23 @@ echo "Running 7 TeV Samples..."
 DIR=/data/uftrig01b/digiovan/root/higgs/CMSSW_4_4_5/V00-01-10/
 
 nice ./analyzer ggHmumu115_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/ggHmmu7TeV115.root -r 7TeV $OPTIONS >& log_GluGlu7TeV-115.log & 
-nice ./analyzer ggHmumu125_7TeV.root $DIR/NtuplesMCPrivateSignal/testForIvan/ggHmumu7TeV125/ggHmmu7TeV125_forxcheck_big.root -r 7TeV $OPTIONS >& log_GluGlu7TeV-125.log & 
+nice ./analyzer ggHmumu125_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/ggHmmu7TeV125.root -r 7TeV $OPTIONS >& log_GluGlu7TeV-125.log & 
 nice ./analyzer ggHmumu135_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/ggHmmu7TeV135.root -r 7TeV $OPTIONS >& log_GluGlu7TeV-135.log &
 nice ./analyzer ggHmumu150_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/ggHmmu7TeV150.root -r 7TeV $OPTIONS >& log_GluGlu7TeV-150.log 
 
 nice ./analyzer vbfHmumu115_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/vbfHmmu7TeV115.root -r 7TeV $OPTIONS >& log_VBF7TeV-115.log &
-nice ./analyzer vbfHmumu125_7TeV.root $DIR/NtuplesMCPrivateSignal/testForIvan/vbfHmumu7TeV125/vbfHmmu7TeV125_forxcheck_big.root -r 7TeV $OPTIONS >& log_VBF7TeV-125.log & 
+nice ./analyzer vbfHmumu125_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/vbfHmmu7TeV125.root -r 7TeV $OPTIONS >& log_VBF7TeV-125.log &
 nice ./analyzer vbfHmumu135_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/vbfHmmu7TeV135.root -r 7TeV $OPTIONS >& log_VBF7TeV-135.log &
 nice ./analyzer vbfHmumu150_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/vbfHmmu7TeV150.root -r 7TeV $OPTIONS >& log_VBF7TeV-150.log 
 
 wait
 
-# Varied samples
+### Varied samples
 echo "Running Variation Samples..."
 
 for i in /data/uftrig01b/jhugon/hmumu/samples/systematics/*.root; do
   tmp=$(basename $i | sed "s/.*\([0-9]TeV\).*/\1/")
-  echo "./analyzer $(basename $i) $i -r $tmp >&  log_$(basename $i)"
+  echo "nice ./analyzer $(basename $i) $i -r $tmp >& log_$(basename $i)"
   nice ./analyzer $(basename $i) $i -r $tmp >& log_$(basename $i)
 done
 

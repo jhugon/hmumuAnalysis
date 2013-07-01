@@ -231,8 +231,6 @@ for errorSet in errorSets:
         if not os.path.exists(nomFn):
           print("Nominal File doesn't exist: %s" % nomFn)
           continue
-        if ds=="ggH" and mass=="125" and energy=="7TeV":
-          continue
         errFns =  ["%smmu%s%s_%s.root.txt" % (ds,energy,mass,i) for i in errorSets[errorSet]]
         sysNotExist = False
         for fn in errFns:

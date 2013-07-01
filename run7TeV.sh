@@ -63,8 +63,8 @@ nice ./analyzer DYJetsToLL_7TeV.root $DIR/NtuplesMCDYJetsToLL_TuneZ2_M-50_7TeV-m
 #nice ./analyzer DYToMuMu_7TeV.root $DIR/NtuplesMCDYToMuMu_M-20_CT10_TuneZ2_7TeV-powheg-pythia_Fall11-PU_S6_START44_V9B-v1/minimal/DYToMuMu_minimal.root -r 7TeV $OPTIONS  2>&1 >> log7TeV2 &
 nice ./analyzer ttbar_7TeV.root $DIR/NtuplesMCTTJets_TuneZ2_7TeV-madgraph-tauola_Fall11-PU_S6_START44_V9B-v1/minimal/TTJets_minimal.root -r 7TeV $OPTIONS  2>&1 >> log7TeV2 &
 
-nice ./analyzer ggHmumu125_7TeV.root $DIR/NtuplesMCPrivateSignal/testForIvan/ggHmumu7TeV125/ggHmmu7TeV125_forxcheck_big.root -r 7TeV $OPTIONS 
-nice ./analyzer vbfHmumu125_7TeV.root $DIR/NtuplesMCPrivateSignal/testForIvan/vbfHmumu7TeV125/vbfHmmu7TeV125_forxcheck_big.root -r 7TeV $OPTIONS 
+nice ./analyzer ggHmumu125_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/ggHmmu7TeV125.root -r 7TeV $OPTIONS >& log_GluGlu7TeV-125.log & 
+nice ./analyzer vbfHmumu125_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/vbfHmmu7TeV125.root -r 7TeV $OPTIONS >& log_VBF7TeV-125.log & 
 nice ./analyzer zHmumu125_7TeV.root $DIR/NtuplesMCPrivateSignal/zHmumu7TeV125.root -r 7TeV $OPTIONS 
 nice ./analyzer wHmumu125_7TeV.root $DIR/NtuplesMCPrivateSignal/wHmumu7TeV125.root -r 7TeV $OPTIONS 
 
@@ -92,7 +92,7 @@ if [ "$SIGNALEFF" = "true" ]; then
 ## Private GluGlu Higgs to MuMu
 nice ./analyzer ggHmumu115_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/ggHmmu7TeV115.root -r 7TeV $OPTIONS >& log_GluGlu7TeV-115.log & 
 nice ./analyzer ggHmumu120_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/ggHmmu7TeV120.root -r 7TeV $OPTIONS >& log_GluGlu7TeV-120.log & 
-nice ./analyzer ggHmumu125_7TeV.root $DIR/NtuplesMCPrivateSignal/testForIvan/ggHmumu7TeV125/ggHmmu7TeV125_forxcheck_big.root -r 7TeV $OPTIONS >& log_GluGlu7TeV-125.log & 
+#nice ./analyzer ggHmumu125_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/ggHmmu7TeV125.root -r 7TeV $OPTIONS >& log_GluGlu7TeV-125.log & 
 nice ./analyzer ggHmumu130_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/ggHmmu7TeV130.root -r 7TeV $OPTIONS >& log_GluGlu7TeV-130.log &
 nice ./analyzer ggHmumu135_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/ggHmmu7TeV135.root -r 7TeV $OPTIONS >& log_GluGlu7TeV-135.log 
 nice ./analyzer ggHmumu140_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/ggHmmu7TeV140.root -r 7TeV $OPTIONS >& log_GluGlu7TeV-140.log & 
@@ -103,7 +103,7 @@ nice ./analyzer ggHmumu160_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/ggHmmu
 
 nice ./analyzer vbfHmumu115_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/vbfHmmu7TeV115.root -r 7TeV $OPTIONS >& log_VBF7TeV-115.log & 
 nice ./analyzer vbfHmumu120_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/vbfHmmu7TeV120.root -r 7TeV $OPTIONS >& log_VBF7TeV-120.log & 
-nice ./analyzer vbfHmumu125_7TeV.root $DIR/NtuplesMCPrivateSignal/testForIvan/vbfHmumu7TeV125/vbfHmmu7TeV125_forxcheck_big.root -r 7TeV $OPTIONS >& log_VBF7TeV-125.log & 
+#nice ./analyzer vbfHmumu125_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/vbfHmmu7TeV125.root -r 7TeV $OPTIONS >& log_VBF7TeV-125.log & 
 nice ./analyzer vbfHmumu130_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/vbfHmmu7TeV130.root -r 7TeV $OPTIONS >& log_VBF7TeV-130.log & 
 nice ./analyzer vbfHmumu135_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/vbfHmmu7TeV135.root -r 7TeV $OPTIONS >& log_VBF7TeV-135.log 
 nice ./analyzer vbfHmumu140_7TeV.root $DIR/NtuplesMCPrivateSignal/HPC/100K/vbfHmmu7TeV140.root -r 7TeV $OPTIONS >& log_VBF7TeV-140.log & 
