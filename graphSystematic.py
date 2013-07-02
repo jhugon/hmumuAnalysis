@@ -92,7 +92,13 @@ def setHistTitles(hist,xlabel,ylabel):
 
 def getUncertainty(nomFilename,sysFileNames):
   effFile = open(nomFilename, 'r')
-  sysFiles = [open(i, 'r') for i in sysFileNames]
+  sysFiles = []
+  #sysFiles = [open(i, 'r') for i in sysFileNames]
+  for i in sysFileNames:
+    try:
+      sysFiles.append(open(i,'r'))
+    except IOError:
+      print("Warning: Could not open %s, not taking into account uncertainty" % i)
   
   matchString = r"([\w]+)[\s]+([-0-9.eE]+)[\s]+([-0-9.eE]+)[\s]*"
 
@@ -232,12 +238,12 @@ for errorSet in errorSets:
           print("Nominal File doesn't exist: %s" % nomFn)
           continue
         errFns =  ["%smmu%s%s_%s.root.txt" % (ds,energy,mass,i) for i in errorSets[errorSet]]
-        sysNotExist = False
+        nSysNotExist = 0
         for fn in errFns:
           if not os.path.exists(fn):
-            print("Systematic File doesn't exist: %s" % fn)
-            sysNotExist = True
-        if sysNotExist:
+            nSysNotExist += 1
+        if len(errFns)==nSysNotExist:
+          print("Warning: No Systematic Files for: %s, %s, %s, %s" % (errorSet,energy,ds,mass))
           continue
         tmpUnc, tmpStat = getUncertainty(nomFn, errFns)
         tmpMassesList.append(float(mass))
@@ -251,7 +257,10 @@ for errorSet in errorSets:
   axisList = []
   for energy in energies:
     for ds in datasets:
-      axis = root.TH2F("axis"+errorSet+energy+ds,"",1,110,160,1,0.0,50)
+      yMax = 50.
+      if errorSet=="UE Variations" and ds == "ggH":
+        yMax = 100.
+      axis = root.TH2F("axis"+errorSet+energy+ds,"",1,110,160,1,0.0,yMax)
       axis.GetXaxis().SetTitle("m_{H} [GeV/c^{2}]")
       axis.GetYaxis().SetTitle("Uncertainty on Signal Yield [%]")
       axis.Draw()
