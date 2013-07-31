@@ -3084,94 +3084,95 @@ int main(int argc, char *argv[])
 
   myfile.close();
 
+  std::cout << "write efficiency for sub categories\n" << std::fixed;
   // write efficiency for sub categories to myfileSubCat
   for(unsigned iS = 0; iS < 6 ;iS++){
-    myfileSubCat.precision(4);
-    myfileSubCat << subCategory[iS] << EffDiPt10GeV[iS];
-    myfileSubCat.precision(2);
-    myfileSubCat << "   " << dEffDiPt10GeV[iS] << "\n";
+    myfileSubCat.precision(8);
+    myfileSubCat << subCategory[iS] << std::fixed << EffDiPt10GeV[iS];
+    myfileSubCat.precision(8);
+    myfileSubCat << "   " << std::fixed <<  dEffDiPt10GeV[iS] << "\n";
   }
-  myfileSubCat.precision(4);
-  myfileSubCat << subCategory[6] << EffNonJetSel[6];
-  myfileSubCat.precision(2);
-  myfileSubCat << "   " << dEffNonJetSel[6] << "\n";
+  myfileSubCat.precision(8);
+  myfileSubCat << subCategory[6] << std::fixed << EffNonJetSel[6];
+  myfileSubCat.precision(8);
+  myfileSubCat << "   " <<  std::fixed << dEffNonJetSel[6] << "\n";
 
-  myfileSubCat.precision(4);
-  myfileSubCat << subCategory[7] << EffDiPt10GeV[7];
-  myfileSubCat.precision(2);
-  myfileSubCat << "   " << dEffDiPt10GeV[7] << "\n";
+  myfileSubCat.precision(8);
+  myfileSubCat << subCategory[7] <<  std::fixed << EffDiPt10GeV[7];
+  myfileSubCat.precision(8);
+  myfileSubCat << "   " <<  std::fixed << dEffDiPt10GeV[7] << "\n";
 
-  myfileSubCat.precision(4);
-  myfileSubCat << subCategory[8] << EffJetSel[8];
-  myfileSubCat.precision(2);
-  myfileSubCat << "   " << dEffJetSel[8] << "\n";
+  myfileSubCat.precision(8);
+  myfileSubCat << subCategory[8] <<  std::fixed << EffJetSel[8];
+  myfileSubCat.precision(8);
+  myfileSubCat << "   " <<  std::fixed << dEffJetSel[8] << "\n";
 
-  myfileSubCat.precision(4);
-  myfileSubCat << subCategory[9] << EffBDTvbfCut[9];
-  myfileSubCat.precision(2);
-  myfileSubCat << "   " << dEffBDTvbfCut[9] << "\n";
+  myfileSubCat.precision(8);
+  myfileSubCat << subCategory[9] <<  std::fixed << EffBDTvbfCut[9];
+  myfileSubCat.precision(8);
+  myfileSubCat << "   " <<  std::fixed << dEffBDTvbfCut[9] << "\n";
 
   for(unsigned iS = 0; iS < 6 ;iS++){
-    myfileSubCat.precision(4);
-    myfileSubCat << subCategory[iS+10] << EffNonJetSel[iS];
-    myfileSubCat.precision(2);
-    myfileSubCat << "   " << dEffNonJetSel[iS] << "\n";
+    myfileSubCat.precision(8);
+    myfileSubCat << subCategory[iS+10] <<  std::fixed << EffNonJetSel[iS];
+    myfileSubCat.precision(8);
+    myfileSubCat << "   " <<  std::fixed << dEffNonJetSel[iS] << "\n";
   }
 
-  myfileSubCat.precision(4);
-  myfileSubCat << subCategory[16] << EffJetSel[9];
-  myfileSubCat.precision(2);
-  myfileSubCat << "   " << dEffJetSel[9] << "\n";
+  myfileSubCat.precision(8);
+  myfileSubCat << subCategory[16] <<  std::fixed << EffJetSel[9];
+  myfileSubCat.precision(8);
+  myfileSubCat << "   " <<  std::fixed << dEffJetSel[9] << "\n";
 
   // resolution categories for BB and BO
 
-  myfileSubCat.precision(4);
-  myfileSubCat << subCategory[17] << EffDiPt10GeV[8];
-  myfileSubCat.precision(2);
-  myfileSubCat << "   " << dEffDiPt10GeV[8] << "\n";
+  myfileSubCat.precision(8);
+  myfileSubCat << subCategory[17] <<  std::fixed << EffDiPt10GeV[8];
+  myfileSubCat.precision(8);
+  myfileSubCat << "   " <<  std::fixed << dEffDiPt10GeV[8] << "\n";
  
-  myfileSubCat.precision(4);
-  myfileSubCat << subCategory[18] << EffDiPt10GeV[9];
-  myfileSubCat.precision(2);
-  myfileSubCat << "   " << dEffDiPt10GeV[9] << "\n";
+  myfileSubCat.precision(8);
+  myfileSubCat << subCategory[18] <<  std::fixed << EffDiPt10GeV[9];
+  myfileSubCat.precision(8);
+  myfileSubCat << "   " <<  std::fixed << dEffDiPt10GeV[9] << "\n";
  
-  myfileSubCat.precision(4);
-  myfileSubCat << subCategory[19] << EffDiPt10GeV[10];
-  myfileSubCat.precision(2);
-  myfileSubCat << "   " << dEffDiPt10GeV[10] << "\n";
+  myfileSubCat.precision(8);
+  myfileSubCat << subCategory[19] <<  std::fixed << EffDiPt10GeV[10];
+  myfileSubCat.precision(8);
+  myfileSubCat << "   " <<  std::fixed << dEffDiPt10GeV[10] << "\n";
  
-  myfileSubCat.precision(4);
-  myfileSubCat << subCategory[20] << EffDiPt10GeV[11];
-  myfileSubCat.precision(2);
-  myfileSubCat << "   " << dEffDiPt10GeV[11] << "\n";
+  myfileSubCat.precision(8);
+  myfileSubCat << subCategory[20] <<  std::fixed << EffDiPt10GeV[11];
+  myfileSubCat.precision(8);
+  myfileSubCat << "   " <<  std::fixed << dEffDiPt10GeV[11] << "\n";
  
   // VBF cutbased efficiency
 
-  myfileSubCat.precision(4);
-  myfileSubCat << subCategory[21] << EffJetSel[10];
-  myfileSubCat.precision(2);
-  myfileSubCat << "   " << dEffJetSel[10] << "\n";
+  myfileSubCat.precision(8);
+  myfileSubCat << subCategory[21] <<  std::fixed << EffJetSel[10];
+  myfileSubCat.precision(8);
+  myfileSubCat << "   " <<  std::fixed << dEffJetSel[10] << "\n";
 
-  myfileSubCat.precision(4);
-  myfileSubCat << subCategory[22] << EffJetSel[11];
-  myfileSubCat.precision(2);
-  myfileSubCat << "   " << dEffJetSel[11] << "\n";
+  myfileSubCat.precision(8);
+  myfileSubCat << subCategory[22] <<  std::fixed << EffJetSel[11];
+  myfileSubCat.precision(8);
+  myfileSubCat << "   " <<  std::fixed << dEffJetSel[11] << "\n";
 
   //Baseline++
 
   // write efficiency for sub categories to myfileSubCat
   for(unsigned iS = 23; iS < 41 ;iS++){
-    myfileSubCat.precision(4);
-    myfileSubCat << subCategory[iS] << EffDiPt10GeV[iS];
-    myfileSubCat.precision(2);
-    myfileSubCat << "   " << dEffDiPt10GeV[iS] << "\n";
+    myfileSubCat.precision(8);
+    myfileSubCat << subCategory[iS] <<  std::fixed << EffDiPt10GeV[iS];
+    myfileSubCat.precision(8);
+    myfileSubCat << "   " <<  std::fixed << dEffDiPt10GeV[iS] << "\n";
   }
  
   for(unsigned iS = 41; iS < 44 ;iS++){
-    myfileSubCat.precision(4);
-    myfileSubCat << subCategory[iS] << EffBDTvbfCut[iS];
-    myfileSubCat.precision(2);
-    myfileSubCat << "   " << dEffBDTvbfCut[iS] << "\n";
+    myfileSubCat.precision(8);
+    myfileSubCat << subCategory[iS] <<  std::fixed << EffBDTvbfCut[iS];
+    myfileSubCat.precision(8);
+    myfileSubCat << "   " <<  std::fixed << dEffBDTvbfCut[iS] << "\n";
   }
  
 
