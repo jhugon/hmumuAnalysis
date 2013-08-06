@@ -1,9 +1,0 @@
-*.png
-*.eps
-*.pdf
-*.root
-*.d
-.scon*
-weights*
-log*
-*.txt
